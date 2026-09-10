@@ -1,0 +1,6 @@
+- text: ONBOARD·OS Interactive Prototype 직무별 라이선스 온보딩 포털
+- paragraph: 직무에 맞는 SaaS·업무 도구를 확인하고, 필요한 라이선스의 신청 → 검토·승인 → 지급 완료 흐름을 직접 체험해 보세요.
+- text: ✓ SSO 인증 후 신규입사자 정보 확인 ✓ 직무별 라이선스 자동 노출 ✓ 신청 · 검토·승인 · 지급 완료 흐름 체험 약 2~3분 · PC/태블릿/모바일 지원
+- note "연동될 회사 계정": 연동될 계정 hong.gildong@company.com
+- button "Google SSO로 시작하기"
+- text: Google SSO 연동을 가정한 가상 데이터 기반 프로토타입입니다.

@@ -1,0 +1,18 @@
+- dialog "관리자 체험":
+  - heading "관리자 체험" [level=3]
+  - button "닫기": ×
+  - button "검토 대기 1":
+    - text: ""
+    - strong: "1"
+  - button "지급 대기 0":
+    - text: ""
+    - strong: "0"
+  - button "보완 대기 0":
+    - text: ""
+    - strong: "0"
+  - button "완료 0":
+    - text: ""
+    - strong: "0"
+  - text: /Interactive Prototype · IT 관리자 역할 미리보기 Microsoft OfficeITSM-\d+ 요청자 · 홍길동 \(경영지원·총무 · 신규입사자\) 담당 · IT팀 상태 · 처리 중 SLA 정상 · D-2 목표 9월 \d+일 \(화\) · 기준 D\+1~2 신청일 · 9월 \d+일 홍길동 · 신청 접수 · 9\/\d+ \d+:\d+/
+  - button "IT 검토 완료"
+  - button "반려"

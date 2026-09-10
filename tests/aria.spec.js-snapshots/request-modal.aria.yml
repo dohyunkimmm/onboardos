@@ -1,0 +1,8 @@
+- dialog "Microsoft Office 신청":
+  - heading "Microsoft Office 신청" [level=3]
+  - paragraph: 해당 라이선스는 신청 후 IT 담당자 검토를 거쳐 지급됩니다.
+  - text: /담당 부서 IT팀 지급 대상 경영지원·총무 직군 상태 신청 필요 예상 처리 시간 신청 후 영업일 기준 1~2일 이내 처리 SLA 기준 SLA · D\+1~2 영업일 기준 1~2일 이내 예상 지급일 9월 \d+일 \(화\) 신청 경로 Jira Service Management 접수 시 JSM 요청번호가 발급되고, 신청현황과 관리자 화면에서 같은 번호로 추적됩니다\. 신청 사유 \(선택\)/
+  - textbox "신청 사유 (선택)":
+    - /placeholder: 사용 목적이나 필요 기간을 적어두면 검토가 빨라집니다
+  - button "취소"
+  - button "신청 완료"
