@@ -10,6 +10,7 @@ let selectedRequestItem = null;
 let drawerMode = 'user';
 let adminStatusFilter = 'all';
 let loggedIn = false;
+let supportRequestContext = null;
 const SESSION_KEY = 'onboard-os:v3';
 const FILTER_GROUPS = {
   all:null,
@@ -57,7 +58,7 @@ function toggleMoreMenu(event){
   const opening=menu.hidden;
   menu.hidden=!opening;
   btn.setAttribute('aria-expanded',opening?'true':'false');
-  if(opening) requestAnimationFrame(()=>menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true}));
+  if(opening) requestAnimationFrame(()=>menu.querySelector('button,a')?.focus({preventScroll:true}));
 }
 function closeMoreMenu(){
   const menu=document.getElementById('moreMenu');
@@ -292,11 +293,13 @@ function slaHealthHTML(req){
 function renderAdminSummary(requests){
   const pending = requests.filter(req => req.status === 'pending').length;
   const approved = requests.filter(req => req.status === 'approved').length;
+  const rejected = requests.filter(req => req.status === 'rejected').length;
   const completed = requests.filter(req => req.status === 'completed').length;
   const makeKpi = (status,label,count) => `<button type="button" class="admin-kpi ${status}${adminStatusFilter===status?' is-active':''}" aria-pressed="${adminStatusFilter===status?'true':'false'}" onclick="toggleAdminFilter('${status}')" title="${label} 요청만 보기 · 다시 누르면 전체 보기"><span class="admin-kpi-label">${label}</span><strong class="admin-kpi-value mono">${count}</strong></button>`;
   return `<div class="admin-kpis" aria-label="요청 처리 현황 요약 및 상태 필터">
     ${makeKpi('pending','검토 대기',pending)}
     ${makeKpi('approved','지급 대기',approved)}
+    ${makeKpi('rejected','보완 대기',rejected)}
     ${makeKpi('completed','완료',completed)}
   </div>`;
 }
@@ -375,7 +378,7 @@ function setRole(key){
   grid.classList.toggle('balanced-four', r.cards.length === 4);
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
-      ? `<div class="empty-state" style="grid-column:1/-1;"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" onclick="showToast('직무 정보 확인 요청이 IT 헬프데스크로 전달되는 데모입니다')">직무 정보 확인 요청</button></div>`
+      ? `<div class="empty-state" style="grid-column:1/-1;"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" onclick="openSupportRequest('role')">직무 정보 확인 요청</button></div>`
       : `<div class="empty-state" style="grid-column:1/-1;"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 위의 전사 공통 라이선스만 확인하시면 됩니다.</div>`;
   } else {
     grid.innerHTML = r.cards.map(item => renderCard(item, true)).join('');
@@ -393,6 +396,72 @@ function showToast(message){
 }
 
 
+function openSupportRequest(kind){
+  const roleRequest = kind === 'role';
+  const name = roleRequest ? '직무 정보 확인 요청' : '기타 라이선스 요청';
+  const existing = requestState[name];
+  if(existing){
+    showToast(`${name}은 이미 접수되어 있습니다. 신청현황에서 같은 ITSM 번호로 상태를 확인해 주세요.`);
+    openDrawer('user');
+    return;
+  }
+  supportRequestContext = {kind,name};
+  document.getElementById('actionModalEyebrow').textContent = 'IT HELPDESK';
+  document.getElementById('actionModalTitle').textContent = roleRequest ? '직무 정보 확인 요청' : '목록에 없는 라이선스 요청';
+  document.getElementById('actionModalBody').innerHTML = `
+    <p class="support-request-lead">${roleRequest
+      ? 'Google Workspace 조직·직무 정보가 매핑되지 않은 상황을 가정한 Fallback Flow입니다. 접수 후 사용자와 IT 관리자 화면에서 같은 요청번호로 추적됩니다.'
+      : '필요한 SaaS·업무 도구가 목록에 없는 상황을 가정한 IT 헬프데스크 Flow입니다. 필요한 도구와 사용 목적을 입력해 주세요.'}</p>
+    <div class="action-grid">
+      <div class="action-info"><label>담당 부서</label><div>IT팀</div></div>
+      <div class="action-info"><label>SLA 기준</label><div>영업일 기준 1~2일 이내</div></div>
+    </div>
+    <label class="request-note-label" for="supportRequestNote">${roleRequest ? '확인 요청 내용 (선택)' : '필요한 도구 · 사용 목적 (필수)'}</label>
+    <textarea id="supportRequestNote" class="request-note" rows="3" maxlength="200" placeholder="${roleRequest ? '예: 신규 입사자 직무 정보가 포털에 매핑되지 않습니다' : '예: Tableau Creator · 데이터 시각화 대시보드 제작 목적'}"></textarea>
+    <div class="detail-hint">접수 시 데모 ITSM 요청번호가 발급되며 신청현황과 관리자 체험에서 동일하게 표시됩니다.</div>`;
+  document.getElementById('actionModalActions').innerHTML =
+    `<button class="ghost-btn" onclick="hideActionModal()">취소</button>` +
+    `<button class="primary-btn" onclick="submitSupportRequest()">요청 접수</button>`;
+  document.getElementById('actionModalBackdrop').style.display = 'flex';
+  activateOverlay('actionModalBackdrop','#supportRequestNote');
+}
+
+function submitSupportRequest(){
+  if(!supportRequestContext) return;
+  const {kind,name} = supportRequestContext;
+  const noteEl = document.getElementById('supportRequestNote');
+  let note = (noteEl?.value || '').trim();
+  if(kind === 'other' && !note){
+    showToast('필요한 도구와 사용 목적을 입력해 주세요.');
+    noteEl?.focus();
+    return;
+  }
+  if(!note) note = 'Google Workspace 조직·직무 정보 매핑 확인 요청';
+  const today = new Date();
+  requestState[name] = {
+    name,
+    owner:'IT팀',
+    ticket:nextTicket(),
+    baseStatus:'request',
+    status:'pending',
+    createdAt:`${today.getMonth()+1}월 ${today.getDate()}일`,
+    createdTs:Date.now(),
+    dueDate:businessDate(2).toISOString(),
+    expected:expectedDate(2),
+    note,
+    roleLabel:roles[currentRole]?.label || '직무 확인 필요',
+    history:[{actor:'홍길동',label:'IT 헬프데스크 요청 접수 · 사유 기재',at:timeLabel()}]
+  };
+  const ticket = requestState[name].ticket;
+  supportRequestContext = null;
+  hideActionModal();
+  renderCommon();
+  setRole(currentRole);
+  updateDashboard();
+  requestAnimationFrame(()=>document.getElementById('statusBtn')?.focus({preventScroll:true}));
+  showToast(`${name}이 접수되었습니다 (${ticket}). 신청현황과 관리자 체험에서 같은 번호로 추적할 수 있습니다.`);
+}
+
 function resetDemo(){
   requestState = {};
   cancelledHistory = {};
@@ -402,6 +471,7 @@ function resetDemo(){
   selectedRequestItem = null;
   drawerMode = 'user';
   adminStatusFilter = 'all';
+  supportRequestContext = null;
   currentRole = 'office';
   clearSession();
 
@@ -582,6 +652,7 @@ function submitRequest(){
   setRole(currentRole);
   // 4) 드로어를 자동으로 열지 않는다 — 연속 신청을 막지 않기 위해 안내만 남긴다.
   showToast(`${item.name} 신청이 접수되었습니다 (${requestState[item.name].ticket}). 상단 신청현황에서 처리 상태를 확인해 보세요.`);
+  requestAnimationFrame(()=>document.getElementById('statusBtn')?.focus({preventScroll:true}));
 }
 
 function completeLicense(name){
@@ -599,6 +670,18 @@ function completeLicense(name){
 
 function approveLicense(name){
   if(!requestState[name]) return;
+  if(!findLicenseByName(name)){
+    requestState[name].status = 'completed';
+    requestState[name].completedAt = Date.now();
+    requestState[name].history.push({actor:requestState[name].owner || 'IT팀',label:'요청 처리 완료',at:timeLabel()});
+    if(drawerMode === 'admin') adminStatusFilter = 'completed';
+    renderCommon();
+    setRole(currentRole);
+    renderDrawer();
+    requestAnimationFrame(()=>focusCurrentOverlay('.drawer-close'));
+    showToast(`${name} 처리가 완료되었습니다. 사용자 신청현황에서도 동일 상태로 확인할 수 있습니다.`);
+    return;
+  }
   requestState[name].status = 'approved';
   requestState[name].approvedAt = Date.now();
   requestState[name].history.push({actor:requestState[name].owner || 'IT팀',label:requestState[name].baseStatus === 'approval' ? '관리자 승인 완료' : 'IT 검토 완료',at:timeLabel()});
@@ -607,7 +690,7 @@ function approveLicense(name){
   setRole(currentRole);
   renderDrawer();
   requestAnimationFrame(()=>focusCurrentOverlay('.drawer-close'));
-  showToast(`${name} 검토·승인이 완료되었습니다. 관리자 화면에서 지급 완료 처리를 진행해 보세요.`);
+  showToast(`${name} ${requestState[name].baseStatus === 'approval' ? '관리자 승인이' : 'IT 검토가'} 완료되었습니다. 관리자 체험에서 지급 완료 처리를 진행해 보세요.`);
 }
 
 // 관리자가 반려 사유를 직접 선택한다(운영에서는 사유가 사용자 안내·재신청 기준이 되므로 고정 문구로 두지 않는다).
@@ -701,24 +784,28 @@ function renderDrawer(){
   const allRequests = Object.values(requestState);
   const body = document.getElementById('drawerBody');
   const adminSummary = drawerMode === 'admin' ? renderAdminSummary(allRequests) : '';
-  document.getElementById('drawerTitle').textContent = drawerMode === 'admin' ? '관리자 화면' : '신청현황';
+  const adminDemoNote = drawerMode === 'admin' ? `<div class="admin-demo-note"><b>Interactive Prototype</b> · IT 관리자 역할 미리보기</div>` : '';
+  const adminHeader = adminSummary + adminDemoNote;
+  document.getElementById('drawerTitle').textContent = drawerMode === 'admin' ? '관리자 체험' : '신청현황';
   if(!allRequests.length){
     const hadHistory = Object.keys(cancelledHistory).length > 0;
-    body.innerHTML = adminSummary + `<div class="empty-drawer"><b>${hadHistory ? '진행 중인 신청이 없습니다.' : '아직 신청한 라이선스가 없습니다.'}</b><br>${hadHistory ? '취소한 요청의 이력은 다시 신청할 때 이어서 표시됩니다.' : '신청 필요 또는 승인 필요 라이선스의 버튼을 눌러 신청 흐름을 확인해 보세요.'}</div>`;
+    body.innerHTML = adminHeader + `<div class="empty-drawer"><b>${hadHistory ? '진행 중인 신청이 없습니다.' : '아직 신청한 라이선스가 없습니다.'}</b><br>${hadHistory ? '취소한 요청의 이력은 다시 신청할 때 이어서 표시됩니다.' : '신청 필요 또는 승인 필요 라이선스의 버튼을 눌러 신청 흐름을 확인해 보세요.'}</div>`;
     return;
   }
   const arr = drawerMode === 'admin' && adminStatusFilter !== 'all'
     ? allRequests.filter(req => req.status === adminStatusFilter)
     : allRequests;
   if(!arr.length){
-    const label = adminStatusFilter === 'pending' ? '검토 대기' : adminStatusFilter === 'approved' ? '지급 대기' : '완료';
-    body.innerHTML = adminSummary + `<div class="empty-drawer"><b>${label} 요청이 없습니다.</b><br>선택한 KPI를 다시 누르면 전체 요청을 볼 수 있습니다.</div>`;
+    const label = adminStatusFilter === 'pending' ? '검토 대기' : adminStatusFilter === 'approved' ? '지급 대기' : adminStatusFilter === 'rejected' ? '보완 대기' : '완료';
+    body.innerHTML = adminHeader + `<div class="empty-drawer"><b>${label} 요청이 없습니다.</b><br>선택한 KPI를 다시 누르면 전체 요청을 볼 수 있습니다.</div>`;
     return;
   }
-  body.innerHTML = adminSummary + arr.map(req => {
+  body.innerHTML = adminHeader + arr.map(req => {
     const sc = statusConfig[req.status];
+    const isSupportRequest = !findLicenseByName(req.name);
+    const stateLabel = isSupportRequest && req.status === 'completed' ? '처리 완료' : sc.label;
     const sla = getSlaMeta(req.baseStatus);
-    const reviewLabel = req.baseStatus === 'approval' ? '관리자 승인하기' : 'IT 검토 완료';
+    const reviewLabel = isSupportRequest ? '요청 처리 완료' : req.baseStatus === 'approval' ? '관리자 승인하기' : 'IT 검토 완료';
     const adminActions = drawerMode === 'admin' && req.status === 'pending'
       ? `<div class="request-actions"><button class="btn-primary" onclick="approveLicense('${req.name}')">${reviewLabel}</button><button class="btn-secondary" onclick="rejectLicense('${req.name}')">반려</button></div>`
       : drawerMode === 'admin' && req.status === 'approved'
@@ -731,7 +818,7 @@ function renderDrawer(){
     const history = `<div class="request-history">${(req.history || []).map(h=>`<div class="history-row"><span class="history-dot"></span><span><b class="history-actor">${escapeHTML(historyActor(h,req))}</b> · ${escapeHTML(h.label)} · ${escapeHTML(h.at)}</span></div>`).join('')}</div>`;
     return `<div class="request-item">
       <div class="request-item-title">${req.name}<span class="ticket-key mono">${req.ticket}</span></div>
-      <div class="request-item-meta">${drawerMode === 'admin' ? `요청자 · <b>홍길동</b> (${escapeHTML(req.roleLabel || '경영지원·총무')} · 신규입사자)<br>` : ''}담당 · ${req.owner}<br>상태 · <b>${sc.label}</b><br><span class="request-sla">${slaHealthHTML(req)}<span class="sla-target">목표 ${req.expected} · 기준 ${sla.short}</span></span><br>신청일 · ${req.createdAt}</div>
+      <div class="request-item-meta">${drawerMode === 'admin' ? `요청자 · <b>홍길동</b> (${escapeHTML(req.roleLabel || '경영지원·총무')} · 신규입사자)<br>` : ''}담당 · ${req.owner}<br>상태 · <b>${stateLabel}</b><br><span class="request-sla">${slaHealthHTML(req)}<span class="sla-target">목표 ${req.expected} · 기준 ${sla.short}</span></span><br>신청일 · ${req.createdAt}</div>
       ${req.note ? `<div class="request-note-view"><b>${req.status === 'rejected' ? '직전 신청 사유' : '신청 사유'}</b><br>${escapeHTML(req.note)}</div>` : ''}
       ${reason}${history}${adminActions}${userActions}
     </div>`;
@@ -832,10 +919,10 @@ function updateProgressHint({state}){
     }
   } else if(state === 'pending'){
     step='체험 2/3';
-    msg='상단 <b>관리자 화면</b>에서 접수된 요청을 검토해 보세요.';
+    msg='상단 <b>관리자 체험</b>에서 접수된 요청을 검토해 보세요.';
   } else if(state === 'approved'){
     step='체험 3/3';
-    msg='상단 <b>관리자 화면</b>에서 라이선스 지급 완료를 처리해 보세요.';
+    msg='상단 <b>관리자 체험</b>에서 처리 완료 또는 라이선스 지급 완료를 진행해 보세요.';
   } else {
     step='체험 완료'; done=true;
     msg='신청 → 검토·승인 → 지급 완료까지 확인했습니다. 아래에서 <b>설계 배경과 운영 정책</b>을 이어서 확인해 보세요.';

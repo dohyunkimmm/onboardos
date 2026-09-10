@@ -4,8 +4,8 @@ const statusConfig = {
   auto:     { label:'자동 지급',  cls:'status-auto',     cta:'',                 timing:'계정 생성 후 1시간 이내 자동 지급' },
   request:  { label:'신청 필요',  cls:'status-request',  cta:'신청하기',        timing:'신청 후 영업일 기준 1~2일 이내 처리' },
   approval: { label:'승인 필요',  cls:'status-approval', cta:'승인 요청하기',   timing:'담당 부서 확인·관리자 승인 후 영업일 기준 2~3일 이내 처리' },
-  pending:  { label:'처리 중',    cls:'status-pending',  cta:'상태 보기',          timing:'담당자 검토 및 승인 대기 중' },
-  approved: { label:'지급 대기',  cls:'status-approved', cta:'상태 보기', timing:'검토·승인 완료 · 라이선스 지급 대기' },
+  pending:  { label:'처리 중',    cls:'status-pending',  cta:'상태 보기',          timing:'담당자 처리 대기 중' },
+  approved: { label:'지급 대기',  cls:'status-approved', cta:'상태 보기', timing:'검토 또는 승인 완료 · 라이선스 지급 대기' },
   rejected: { label:'반려',      cls:'status-rejected', cta:'사유 확인·재신청', timing:'반려 사유 확인 후 재신청 가능' },
   completed:{ label:'지급 완료',  cls:'status-completed',cta:'접속하기',        timing:'라이선스 지급 완료' }
 };
@@ -72,8 +72,8 @@ const tooltipText = {
   auto:     '별도 신청 없이 계정 생성 후 1시간 이내 자동으로 지급됩니다.',
   request:  '신청 버튼을 눌러 요청하면 IT팀이 검토 후 영업일 1~2일 이내 처리합니다.',
   approval: '비용·관리 권한 또는 담당 부서 확인이 필요한 항목입니다. 신청 → 담당자 검토 → 관리자 승인 순으로 진행되며 영업일 2~3일 이내 처리됩니다.',
-  pending: '신청이 접수되어 담당자 검토 또는 관리자 승인 대기 중입니다.',
-  approved: '검토·승인이 완료되어 라이선스 지급을 기다리고 있습니다.',
+  pending: '신청이 접수되어 담당자 처리를 기다리고 있습니다.',
+  approved: '필요한 검토 또는 승인이 완료되어 라이선스 지급을 기다리고 있습니다.',
   rejected: '요청이 반려되었습니다. 신청현황에서 사유를 확인하고 다시 신청할 수 있습니다.',
   completed: '라이선스 지급이 완료되었습니다. 접속하기 버튼으로 서비스를 이용할 수 있습니다.'
 };
