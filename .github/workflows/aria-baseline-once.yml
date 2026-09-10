@@ -1,0 +1,33 @@
+name: Materialize ARIA baselines once
+
+on:
+  push:
+    branches: [feat/p4-verification-matrix]
+    paths:
+      - '.github/workflows/aria-baseline-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/p4-verification-matrix
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Generate ARIA baselines
+        run: npx playwright test tests/aria.spec.js --project=desktop-chromium --update-snapshots
+      - name: Commit baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/aria.spec.js-snapshots/
+          git commit -m "test: add ARIA snapshot baselines"
+          git push origin HEAD:feat/p4-verification-matrix
