@@ -13,7 +13,7 @@ if(securityHeaders['Content-Security-Policy']){
     .replace(/^;|;$/g, '')
     .trim();
 }
-const mime = {'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.json':'application/json; charset=utf-8'};
+const mime = {'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.json':'application/json; charset=utf-8'};
 
 http.createServer((req,res) => {
   let pathname = decodeURIComponent(new URL(req.url, `http://${req.headers.host}`).pathname);

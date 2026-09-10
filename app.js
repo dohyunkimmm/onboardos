@@ -211,7 +211,9 @@ function renderRoleTabs(){
 }
 
 function setRole(key){
-  currentRole = key;
+  currentRole = roles[key] ? key : 'office';
+  activateRoleState(currentRole);
+  key = currentRole;
   document.querySelectorAll('.role-tab').forEach(b=>{
     b.classList.toggle('active', b.dataset.role === key);
     b.setAttribute('aria-pressed', b.dataset.role === key ? 'true' : 'false');
@@ -316,16 +318,17 @@ function submitSupportRequest(){
 
 function resetDemo(){
   trackEvent('Demo Reset',{role:currentRole});
-  requestState = {};
-  cancelledHistory = {};
-  cancelledTickets = {};
+  requestStateByRole = {};
+  cancelledHistoryByRole = {};
+  cancelledTicketsByRole = {};
+  currentRole = 'office';
+  activateRoleState(currentRole);
   ticketSeq = 1041;
   selectedFilter = 'all';
   selectedRequestItem = null;
   drawerMode = 'user';
   adminStatusFilter = 'all';
   supportRequestContext = null;
-  currentRole = 'office';
   clearSession();
 
 
@@ -381,7 +384,7 @@ function loadBrandFont(){
     void document.body.offsetWidth;
     return document.fonts?.ready || Promise.resolve();
   });
-  // Never make the prototype unusable because a third-party font CDN is slow.
+  // Never make the prototype unusable if the optional self-hosted brand font is delayed.
   return Promise.race([fontReady, new Promise(resolve => setTimeout(resolve, 1400))]);
 }
 
