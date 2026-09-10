@@ -77,6 +77,7 @@ const dependabot = read(path.join('.github','dependabot.yml'));
 if(!/package-ecosystem:\s*npm/.test(dependabot) || !/package-ecosystem:\s*github-actions/.test(dependabot)) fail('Dependabot must cover npm and GitHub Actions');
 const e2eWorkflow = read(path.join('.github','workflows','e2e.yml'));
 if(!/npm audit --audit-level=high/.test(e2eWorkflow)) fail('high+ npm audit gate missing');
-if(!/dependency-review-action@[0-9a-f]{40}/.test(e2eWorkflow)) fail('Dependency Review action is not SHA pinned');
+if(!/scripts\/dependency-review\.js/.test(e2eWorkflow)) fail('PR dependency delta gate missing');
+if(!fs.existsSync(path.join('scripts','dependency-review.js'))) fail('dependency-review.js is missing');
 
 console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, role isolation, CSP + SHA-pinned workflows`);
