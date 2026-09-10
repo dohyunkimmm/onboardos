@@ -69,7 +69,7 @@ stateDiagram-v2
 - Firefox·WebKit Cross-browser Smoke / Production Smoke
 - Lighthouse 13.4.1 · 3-run Performance Budget
 - SHA-256 Production Asset Integrity
-- npm audit / GitHub Dependency Review / Dependabot
+- npm audit / PR Dependency Delta Review / Dependabot
 - GitHub Actions Quality Gate + Verification Evidence
 - GitHub → Vercel Production
 
@@ -157,7 +157,7 @@ Playwright는 Desktop Chromium과 Mobile Chromium에서 기능·접근성·상�
 
 PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·workflow pinning을 포함한 Fast Quality Gate와 high 이상 npm advisory Gate를 먼저 실행합니다. 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Desktop/Mobile Visual Regression을 검증하고, Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인합니다. Lighthouse 13.4.1은 동일 화면을 3회 측정하며 **각 실행이 모두** 설정된 성능 Budget을 만족해야 통과합니다.
 
-PR에서는 GitHub Dependency Review가 high 이상 신규 취약 의존성을 차단합니다. npm과 GitHub Actions 업데이트는 Dependabot이 주 단위로 확인하고, workflow의 외부 GitHub Action은 mutable major tag 대신 검증한 **40자리 commit SHA**로 고정합니다.
+PR에서는 base/current `package-lock.json` delta를 비교하고 remote package의 HTTPS·integrity metadata를 검사하며, `npm audit --audit-level=high`로 현재 의존성 전체의 high 이상 advisory를 차단합니다. npm과 GitHub Actions 업데이트는 Dependabot이 주 단위로 확인하고, workflow의 외부 GitHub Action은 mutable major tag 대신 검증한 **40자리 commit SHA**로 고정합니다.
 
 `main` push에서는 위 검증이 모두 통과한 뒤 **해당 commit의 Vercel status가 success인지 확인하고 실제 Production URL을 검증**합니다. 저장소 checkout과 Production의 핵심 HTML/CSS/JS 및 self-hosted font asset을 SHA-256으로 비교한 뒤, Chromium으로 핵심 Flow·CSP·주요 asset 200·page/console error를 다시 확인합니다. Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
 
@@ -174,7 +174,7 @@ PR에서는 GitHub Dependency Review가 high 이상 신규 취약 의존성을 �
 | Visual Regression | Playwright Screenshot | Desktop/Mobile 로그인·Dashboard·신청 Modal |
 | Cross-browser | Playwright | Firefox/WebKit 핵심 신청·관리자 Flow |
 | Performance | Lighthouse 13.4.1 | 3회 모두 Performance/A11y/Best Practices/SEO·Web Vitals/byte budget 통과 |
-| Supply Chain | npm audit + Dependency Review | high 이상 advisory 차단·GitHub Actions SHA pin·Dependabot |
+| Supply Chain | npm audit + PR Dependency Delta | high 이상 advisory·비HTTPS/무결성 누락 차단·GitHub Actions SHA pin·Dependabot |
 | Production | Playwright + Vercel status | 실제 Production Flow·CSP·asset 200·page/console error |
 | Deployment Integrity | SHA-256 | GitHub checkout과 Production의 핵심 static/font asset hash 일치 |
 | Evidence | GitHub Actions Summary + artifact | commit/run별 검증 결과 JSON·Markdown 및 Production integrity report |
