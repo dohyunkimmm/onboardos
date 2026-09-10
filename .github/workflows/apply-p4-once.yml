@@ -23,7 +23,9 @@ jobs:
           cache: npm
 
       - name: Apply P4 verification files
-        run: python3 .github/scripts/p4_refactor.py
+        run: |
+          python3 .github/scripts/p4_refactor.py
+          python3 .github/scripts/p4_webkit_fix.py
 
       - name: Install dependencies
         run: npm install
@@ -65,10 +67,10 @@ jobs:
 
       - name: Commit validated P4 changes
         run: |
-          rm -f .github/scripts/p4_refactor.py
+          rm -f .github/scripts/p4_refactor.py .github/scripts/p4_webkit_fix.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add . ':!.github/workflows/apply-p4-once.yml'
-          git add -u .github/scripts/p4_refactor.py
+          git add -u .github/scripts/p4_refactor.py .github/scripts/p4_webkit_fix.py
           git commit -m "test: add production domain WCAG lighthouse and cross-browser gates"
           git push origin HEAD:feat/p4-verification-matrix
