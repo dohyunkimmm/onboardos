@@ -122,7 +122,7 @@ PR 및 `main` push에서 GitHub Actions E2E가 실행됩니다.
 - **Product events** — `Demo Login`, `Role Preview`, `License Request`, `License Resubmit`, `Fallback Request`, `Admin Review`, `License Complete`, `Fallback Complete`, `Case Study CTA`
 - **Privacy boundary** — 이름·이메일·EMP ID·자유 입력 신청 사유는 Custom Event data에 넣지 않습니다.
 - **Security headers** — `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options`를 Vercel 응답에 적용합니다.
-- **Docs-only deploy skip** — Markdown/`docs/`만 변경된 commit은 Vercel Ignored Build Step으로 새 배포를 생성하지 않습니다.
+- **Docs-only deploy skip** — Markdown 및 `docs/`만 변경된 commit은 Vercel Ignored Build Step에서 애플리케이션 배포를 건너뜁니다.
 
 ## Code Structure
 
