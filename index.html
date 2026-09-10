@@ -41,11 +41,11 @@
 </div>
 <div class="top-actions">
 <button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="statusBtn" onclick="openDrawer('user')">신청현황 <span class="notif-dot is-empty" id="requestCount">0</span></button>
-<button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="adminBtn" onclick="openDrawer('admin')"><span class="desktop-label">관리자 화면</span><span class="mobile-label">관리자</span> </button>
+<button aria-controls="drawerPanel" aria-expanded="false" aria-label="IT 관리자 역할 체험" class="top-btn" id="adminBtn" onclick="openDrawer('admin')"><span class="desktop-label">관리자 체험</span><span class="mobile-label">관리자</span> </button>
 <button aria-label="체험 상태 초기화" class="top-btn secondary" id="resetBtn" onclick="resetDemo()">↺ <span class="desktop-label">체험 초기화</span><span class="mobile-label">초기화</span></button>
-<button aria-controls="moreMenu" aria-expanded="false" aria-haspopup="menu" aria-label="더보기" class="top-btn secondary more-btn" id="moreBtn" onclick="toggleMoreMenu(event)" type="button">⋯</button>
-<div class="more-menu" hidden="" id="moreMenu" role="menu">
-<button onclick="resetDemo();closeMoreMenu()" role="menuitem" type="button">↺ 체험 초기화</button>
+<button aria-controls="moreMenu" aria-expanded="false" aria-label="더보기" class="top-btn secondary more-btn" id="moreBtn" onclick="toggleMoreMenu(event)" type="button">⋯</button>
+<div class="more-menu" hidden="" id="moreMenu">
+<button onclick="resetDemo();closeMoreMenu()" type="button">↺ 체험 초기화</button>
 </div>
 </div>
 </div>
@@ -273,7 +273,7 @@
 <b>목록에 없는 라이선스가 있나요?</b><br/>
       IT 헬프데스크로 요청해 주세요.
       <br/>
-<a class="jsm-btn" href="#" onclick="showToast();return false;">🎫 IT 헬프데스크 문의하기</a>
+<button class="jsm-btn" onclick="openSupportRequest('other')" type="button">🎫 IT 헬프데스크 문의하기</button>
 </div>
 <div class="credit">기획·설계·프로토타입 구현 김도현</div>
 </footer>
