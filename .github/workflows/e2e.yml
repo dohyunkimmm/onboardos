@@ -8,9 +8,11 @@ on:
 
 permissions:
   contents: read
+  statuses: read
 
 jobs:
   playwright:
+    name: Chromium quality / functional / a11y / visual / domain
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,15 +31,97 @@ jobs:
           node --check js/events.js
           node --check scripts/quality-check.js
           node --check scripts/serve.js
+          node --check playwright.config.js
+          node --check playwright.cross-browser.config.js
+          node --check playwright.production.config.js
+          node --check lighthouserc.cjs
           python3 -m json.tool vercel.json >/dev/null
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Functional, accessibility and visual regression tests
+      - name: Functional, WCAG/keyboard/ARIA, domain and visual regression tests
         run: npm run test:e2e
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-chromium
           path: playwright-report/
+          retention-days: 7
+
+  cross-browser:
+    name: Firefox / WebKit functional smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps firefox webkit
+      - run: npm run test:cross-browser
+      - name: Upload cross-browser report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-cross-browser
+          path: playwright-report-cross-browser/
+          retention-days: 7
+
+  lighthouse:
+    name: Lighthouse performance budget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lighthouse CI · 3 runs + budgets
+        run: npm run test:lighthouse
+      - name: Upload Lighthouse reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouseci
+          path: .lighthouseci/
+          retention-days: 7
+
+  production-smoke:
+    name: Production smoke after Vercel deployment
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [playwright, cross-browser, lighthouse]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Wait for this commit's Vercel status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in {1..36}; do
+            state="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/status" --jq '[.statuses[] | select(.context == "Vercel")][0].state // ""')"
+            echo "Vercel status: ${state:-pending}"
+            if [ "$state" = "success" ]; then exit 0; fi
+            if [ "$state" = "failure" ] || [ "$state" = "error" ]; then exit 1; fi
+            sleep 5
+          done
+          echo 'Timed out waiting for Vercel deployment status' >&2
+          exit 1
+      - run: npx playwright install --with-deps chromium
+      - name: Production browser smoke
+        env:
+          PRODUCTION_URL: https://onboardos-rho.vercel.app
+        run: npm run test:production
+      - name: Upload Production smoke report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-production
+          path: playwright-report-production/
           retention-days: 7
