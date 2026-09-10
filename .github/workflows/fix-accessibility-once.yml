@@ -1,0 +1,30 @@
+name: Fix accessibility once
+
+on:
+  push:
+    branches: [feat/onboardos-hardening]
+    paths:
+      - ".github/workflows/fix-accessibility-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/onboardos-hardening
+      - run: python3 .github/scripts/fix_accessibility.py
+      - run: |
+          ! grep -q 'aria-haspopup="menu"' index.html
+          rm -f .github/scripts/fix_accessibility.py
+          rmdir .github/scripts 2>/dev/null || true
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: align overflow popover accessibility semantics"
+          git push origin HEAD:feat/onboardos-hardening
