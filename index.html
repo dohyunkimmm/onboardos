@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모 | 김도현</title>
+<meta content="신규입사자가 직무별 SaaS·업무 도구를 확인하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 인터랙티브 온보딩 포털 프로토타입입니다." name="description"/>
+<link href="https://onboardos-rho.vercel.app/" rel="canonical"/>
+<meta content="#0A0B0E" name="theme-color"/>
+<meta content="website" property="og:type"/>
+<meta content="직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모" property="og:title"/>
+<meta content="Google Workspace 조직·직무 정보를 기반으로 SaaS·업무 도구를 개인화하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 온보딩 포털 프로토타입입니다." property="og:description"/>
+<meta content="https://onboardos-rho.vercel.app/" property="og:url"/>
+<meta content="김도현 포트폴리오" property="og:site_name"/>
+<meta content="ko_KR" property="og:locale"/>
+<meta content="https://onboardos-rho.vercel.app/og-image.png" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="ONBOARD·OS 직무별 SaaS 라이선스 온보딩 포털 데모" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모" name="twitter:title"/>
+<meta content="직무별 SaaS·업무 도구 확인부터 라이선스 신청·검토·승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다." name="twitter:description"/>
+<meta content="https://onboardos-rho.vercel.app/og-image.png" name="twitter:image"/>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235B21B6'/%3E%3Ctext x='32' y='43' font-family='sans-serif' font-size='30' font-weight='700' fill='white' text-anchor='middle'%3EOB%3C/text%3E%3C/svg%3E" rel="icon"/>
+<link crossorigin="" href="https://cdn.jsdelivr.net" rel="preconnect"/>
+<link as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet"/>
+</head>
+<body class="login-open">
+<a class="skip-link" href="#mainContent" id="skipLink" inert="">본문으로 건너뛰기</a>
+<div class="bg-atmosphere">
+<div class="bg-grid"></div>
+
+
+
+</div>
+<div class="topbar" inert="">
+<div>
+<h1 class="logo"><span class="sr-only">직무별 라이선스 온보딩 포털 — </span>ONBOARD<span>·</span>OS</h1>
+<div class="sub">신규입사자 SaaS·업무 도구 가이드</div>
+</div>
+<div class="top-actions">
+<button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="statusBtn" onclick="openDrawer('user')">신청현황 <span class="notif-dot is-empty" id="requestCount">0</span></button>
+<button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="adminBtn" onclick="openDrawer('admin')"><span class="desktop-label">관리자 화면</span><span class="mobile-label">관리자</span> </button>
+<button aria-label="체험 상태 초기화" class="top-btn secondary" id="resetBtn" onclick="resetDemo()">↺ <span class="desktop-label">체험 초기화</span><span class="mobile-label">초기화</span></button>
+<button aria-controls="moreMenu" aria-expanded="false" aria-haspopup="menu" aria-label="더보기" class="top-btn secondary more-btn" id="moreBtn" onclick="toggleMoreMenu(event)" type="button">⋯</button>
+<div class="more-menu" hidden="" id="moreMenu" role="menu">
+<button onclick="resetDemo();closeMoreMenu()" role="menuitem" type="button">↺ 체험 초기화</button>
+</div>
+</div>
+</div>
+<!-- 가상 Google SSO 로그인 -->
+<div aria-hidden="false" aria-labelledby="loginTitle" aria-modal="true" class="login-screen" id="loginScreen" role="dialog">
+<div class="login-card" tabindex="-1">
+<div>
+<div class="login-brandline">
+<span class="login-brand">ONBOARD<span>·</span>OS</span>
+<span class="login-eyebrow">Interactive Prototype</span>
+</div>
+<div class="login-title" id="loginTitle">직무별 라이선스 온보딩 포털</div>
+<p>직무에 맞는 SaaS·업무 도구를 확인하고, 필요한 라이선스의 <b>신청 → <span class="keep-together">검토·승인</span> → 지급 완료</b> 흐름을 직접 체험해 보세요.</p>
+<div aria-label="체험 시나리오" class="scenario-list">
+<div class="scenario-item"><span class="scenario-check">✓</span><span><b>SSO 인증</b> 후 신규입사자 정보 확인</span></div>
+<div class="scenario-item"><span class="scenario-check">✓</span><span><b>직무별 라이선스</b> 자동 노출</span></div>
+<div class="scenario-item"><span class="scenario-check">✓</span><span><b>신청 · <span class="keep-together">검토·승인</span> · 지급 완료</b> 흐름 체험</span></div>
+</div>
+<div class="login-meta">약 2~3분 · PC/태블릿/모바일 지원</div>
+</div>
+<div class="login-panel">
+<div aria-label="연동될 회사 계정" class="login-account" role="note">
+<span class="login-account-label">연동될 계정</span>
+<span class="login-account-mail mono">hong.gildong@company.com</span>
+</div>
+<button class="google-btn" onclick="fakeLogin()"><span aria-hidden="true" class="google-g"><svg focusable="false" height="16" viewbox="0 0 48 48" width="16"><path d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z" fill="#4285F4"></path><path d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z" fill="#34A853"></path><path d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z" fill="#FBBC05"></path><path d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z" fill="#EA4335"></path></svg></span>Google SSO로 시작하기</button>
+<div class="login-loader" id="loginLoader">Google SSO 인증 중…
+        <div class="loader-bar"><span></span></div>
+</div>
+<div class="login-note">Google SSO 연동을 가정한 가상 데이터 기반 프로토타입입니다.</div>
+</div>
+</div>
+</div>
+<main id="mainContent" inert="" tabindex="-1">
+<div class="badge-wrap overview-panel">
+
+<div class="badge-top">
+<div class="avatar" id="avatarInitial">H</div>
+<div class="badge-id">
+<label>신규입사자</label>
+<div aria-label="사용자 이름" class="name-input" id="nameDisplay">홍길동</div>
+<div class="emp-meta">EMP ID <b class="mono">2026-0438</b> · 계정 <b class="mono">hong.gildong@company.com</b></div>
+<div class="role-meta-pill" id="userRoleMeta">경영지원·총무 직군</div>
+</div>
+</div>
+<hr class="badge-divider"/>
+<div class="role-picker">
+<label>직무 미리보기</label>
+<div aria-label="직무 미리보기" class="role-tabs" id="roleTabs" role="group"><button aria-pressed="false" class="role-tab" data-role="design" type="button">디자인</button><button aria-pressed="false" class="role-tab" data-role="dev" type="button">개발</button><button aria-pressed="false" class="role-tab" data-role="data" type="button">데이터</button><button aria-pressed="true" class="role-tab active" data-role="office" type="button">경영지원·총무</button><button aria-pressed="false" class="role-tab exception" data-role="unmapped" type="button">⚠ 직무 미매핑</button></div>
+<div class="demo-preview-note">실제 운영에서는 Google Workspace 조직·직무 정보에 따라 <b>본인 직무의 SaaS·업무 도구만</b> 자동 노출됩니다.</div>
+</div>
+<div class="progress-wrap">
+<div aria-label="온보딩 진행 상태" class="progress-bar" id="progressBar" role="list">
+<div class="progress-step done" role="listitem">
+<div class="step-circle">✓</div>
+<div class="step-label">계정 생성</div>
+</div>
+<div class="progress-step done" role="listitem">
+<div class="step-circle">✓</div>
+<div class="step-label">SSO 인증</div>
+</div>
+<div aria-current="step" class="progress-step current" role="listitem">
+<div class="step-circle">3</div>
+<div class="step-label">라이선스 신청</div>
+</div>
+<div class="progress-step" role="listitem">
+<div class="step-circle">4</div>
+<div class="step-label">검토·승인</div>
+</div>
+<div class="progress-step" role="listitem">
+<div class="step-circle">5</div>
+<div class="step-label">지급 완료</div>
+</div>
+</div>
+<div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div>
+</div></div>
+<!-- 진행 상태 트래커 (현재 단계 + 다음 할 일 안내) -->
+
+<div class="tools-bar">
+<div aria-label="현재 상태 필터" class="filter-tabs" id="filterTabs" role="group">
+<button aria-pressed="true" class="filter-chip active" data-filter="all" onclick="setFilter('all')" type="button">전체</button>
+<button aria-pressed="false" class="filter-chip" data-filter="todo" onclick="setFilter('todo')" type="button">해야 할 일</button>
+<button aria-pressed="false" class="filter-chip" data-filter="processing" onclick="setFilter('processing')" type="button">처리 중</button>
+<button aria-pressed="false" class="filter-chip" data-filter="done" onclick="setFilter('done')" type="button">완료</button>
+</div>
+</div>
+<section class="licenses common-first">
+<div class="section-head">
+<h2>전사 공통 라이선스</h2>
+<span class="count mono" data-base="6종 · 계정 생성 후 1시간 이내 자동 지급" id="commonCount">6종 · 계정 생성 후 1시간 이내 자동 지급</span>
+</div>
+<div class="card-grid" id="commonGrid">
+<div class="card" data-name="Google Workspace" data-status="auto">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/google-workspace.svg"/></div>
+<div>
+<div class="card-title">Google Workspace</div>
+<div class="card-cat">협업툴</div>
+</div>
+</div>
+<div class="card-bottom">
+<span class="status-pill status-auto">자동 지급</span>
+</div>
+</div>
+<div class="card" data-name="Slack" data-status="auto">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/slack.svg"/></div>
+<div>
+<div class="card-title">Slack</div>
+<div class="card-cat">협업툴</div>
+</div>
+</div>
+<div class="card-bottom">
+<span class="status-pill status-auto">자동 지급</span>
+</div>
+</div>
+<div class="card" data-name="Notion" data-status="auto">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/notion.svg"/></div>
+<div>
+<div class="card-title">Notion</div>
+<div class="card-cat">협업툴</div>
+</div>
+</div>
+<div class="card-bottom">
+<span class="status-pill status-auto">자동 지급</span>
+</div>
+</div>
+<div class="card" data-name="Confluence" data-status="auto">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/confluence.svg"/></div>
+<div>
+<div class="card-title">Confluence</div>
+<div class="card-cat">협업툴</div>
+</div>
+</div>
+<div class="card-bottom">
+<span class="status-pill status-auto">자동 지급</span>
+</div>
+</div>
+<div class="card" data-name="Jira" data-status="auto">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/jira.svg"/></div>
+<div>
+<div class="card-title">Jira</div>
+<div class="card-cat">협업툴</div>
+</div>
+</div>
+<div class="card-bottom">
+<span class="status-pill status-auto">자동 지급</span>
+</div>
+</div>
+<div class="card" data-name="Jira Service Management" data-status="auto">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/jsm.svg"/></div>
+<div>
+<div class="card-title">Jira Service Management</div>
+<div class="card-cat">IT 요청 포털</div>
+</div>
+</div>
+<div class="card-bottom">
+<span class="status-pill status-auto">자동 지급</span>
+</div>
+</div></div>
+<div class="empty-state no-result" hidden="" id="commonEmpty"><b>조건에 맞는 라이선스가 없습니다</b>상태 필터를 바꿔 다시 확인해 보세요.</div>
+</section>
+<section class="licenses role-secondary">
+<div class="section-head">
+<h2 id="roleHeading">경영지원·총무 추가 라이선스</h2>
+<span class="count mono" data-base="3종 · 직무별 추가 항목" id="roleCount">3종 · 직무별 추가 항목</span>
+</div>
+<div class="card-grid" id="roleGrid">
+<div class="card" data-name="한글(HWP)" data-status="request">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/hancom.svg"/></div>
+<div>
+<div class="card-title">한글(HWP)</div>
+<div class="card-cat">오피스·문서툴</div>
+</div>
+</div>
+<div class="card-owner">담당 · <b>IT팀</b></div>
+<div class="card-bottom">
+<div class="card-status-group"><span class="status-pill status-request">신청 필요</span><span class="sla-pill mono">SLA · D+1~2</span></div>
+<div style="display:flex;gap:8px;align-items:center;"><button class="cta" onclick="openLicenseAction('한글(HWP)')">신청하기</button></div>
+</div>
+</div>
+<div class="card" data-name="Microsoft Office" data-status="request">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/microsoft-office.svg"/></div>
+<div>
+<div class="card-title">Microsoft Office</div>
+<div class="card-cat">오피스·문서툴</div>
+</div>
+</div>
+<div class="card-owner">담당 · <b>IT팀</b></div>
+<div class="card-bottom">
+<div class="card-status-group"><span class="status-pill status-request">신청 필요</span><span class="sla-pill mono">SLA · D+1~2</span></div>
+<div style="display:flex;gap:8px;align-items:center;"><button class="cta" onclick="openLicenseAction('Microsoft Office')">신청하기</button></div>
+</div>
+</div>
+<div class="card" data-name="Adobe Acrobat Pro DC" data-status="request">
+<div class="card-top">
+<div aria-hidden="true" class="logo-chip"><img alt="" loading="lazy" src="icons/adobe-acrobat.svg"/></div>
+<div>
+<div class="card-title">Adobe Acrobat Pro DC</div>
+<div class="card-cat">오피스·문서툴</div>
+</div>
+</div>
+<div class="card-owner">담당 · <b>IT팀</b></div>
+<div class="card-bottom">
+<div class="card-status-group"><span class="status-pill status-request">신청 필요</span><span class="sla-pill mono">SLA · D+1~2</span></div>
+<div style="display:flex;gap:8px;align-items:center;"><button class="cta" onclick="openLicenseAction('Adobe Acrobat Pro DC')">신청하기</button></div>
+</div>
+</div></div>
+<div class="empty-state no-result" hidden="" id="roleEmpty"><b>조건에 맞는 라이선스가 없습니다</b>상태 필터를 바꿔 다시 확인해 보세요.</div>
+</section>
+<div class="empty-state no-result" hidden="" id="globalEmpty"><b>조건에 맞는 라이선스가 없습니다</b>현재 직무의 상태 필터를 바꿔 다시 확인해 보세요.</div>
+<section class="complete-box" id="demoComplete">
+<h3 id="demoCompleteTitle">기획 배경 · 운영 정책</h3>
+<p id="demoCompleteLead">프로토타입의 설계 기준과 운영 시나리오를 정리했습니다.</p>
+<a class="notion-cta" href="https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a" rel="noopener noreferrer" target="_blank">기획 배경 · 운영 정책 · 검증 지표 보기 ↗</a>
+</section>
+<footer>
+<div class="help">
+<b>목록에 없는 라이선스가 있나요?</b><br/>
+      IT 헬프데스크로 요청해 주세요.
+      <br/>
+<a class="jsm-btn" href="#" onclick="showToast();return false;">🎫 IT 헬프데스크 문의하기</a>
+</div>
+<div class="credit">기획·설계·프로토타입 구현 김도현</div>
+</footer>
+</main>
+<div aria-hidden="true" class="request-backdrop" id="requestBackdrop" inert="" onclick="backdropClose(event)">
+<div aria-labelledby="requestTitle" aria-modal="true" class="request-modal" role="dialog" tabindex="-1">
+<h3 id="requestTitle">라이선스 신청</h3>
+<p id="requestDesc">담당 부서와 SLA를 확인한 뒤 신청을 완료해 주세요.</p>
+<div class="detail-list" id="requestDetails"></div>
+<div class="modal-actions">
+<button class="btn-secondary" onclick="closeRequestModal()">취소</button>
+<button class="btn-primary" id="submitRequestBtn" onclick="submitRequest()">신청 완료</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="drawer-backdrop" id="drawerBackdrop" inert="" onclick="drawerBackdropClose(event)">
+<aside aria-labelledby="drawerTitle" aria-modal="true" class="drawer" id="drawerPanel" role="dialog" tabindex="-1">
+<div class="drawer-head">
+<h3 id="drawerTitle">신청현황</h3>
+<button aria-label="닫기" class="drawer-close" onclick="closeDrawer()">×</button>
+</div>
+<div id="drawerBody"></div>
+</aside>
+</div>
+<!-- 액션 모달 -->
+<div aria-hidden="true" class="action-modal-backdrop" id="actionModalBackdrop" inert="" onclick="closeActionModal(event)">
+<div aria-labelledby="actionModalTitle" aria-modal="true" class="action-modal" onclick="event.stopPropagation()" role="dialog" tabindex="-1">
+<div class="action-modal-head">
+<div>
+<div class="action-modal-eyebrow" id="actionModalEyebrow">LICENSE GUIDE</div>
+<h3 id="actionModalTitle">라이선스 안내</h3>
+</div>
+<button aria-label="닫기" class="action-modal-close" onclick="hideActionModal()">×</button>
+</div>
+<div id="actionModalBody"></div>
+<div class="action-modal-actions" id="actionModalActions"></div>
+</div>
+</div>
+<div aria-atomic="true" aria-live="polite" class="toast" id="toast" role="status">프로토타입 화면입니다 — 실제 운영에서는 JSM 문의 요청으로 접수됩니다</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+</script>
+<script defer="" src="/_vercel/insights/script.js"></script>
+<script defer="" src="/_vercel/speed-insights/script.js"></script>
+</body></html>
