@@ -13,11 +13,11 @@
     "test:keyboard": "playwright test tests/keyboard.spec.js --project=desktop-chromium",
     "test:cross-browser": "playwright test -c playwright.cross-browser.config.js",
     "test:production": "playwright test -c playwright.production.config.js",
-    "test:lighthouse": "lhci collect --config=./lighthouserc.cjs && lhci assert --config=./lighthouserc.cjs"
+    "test:lighthouse": "node scripts/lighthouse-run.js"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.55.0",
-    "@lhci/cli": "^0.15.1"
+    "lighthouse": "13.4.1"
   }
 }
