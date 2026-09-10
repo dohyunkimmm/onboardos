@@ -9,7 +9,6 @@ on:
 permissions:
   contents: read
   statuses: read
-  pull-requests: read
 
 jobs:
   playwright:
@@ -34,6 +33,7 @@ jobs:
           node --check scripts/quality-check.js
           node --check scripts/serve.js
           node --check scripts/asset-integrity.js
+          node --check scripts/dependency-review.js
           node --check scripts/verification-summary.js
           node --check scripts/lighthouse-run.js
           node --check playwright.config.js
@@ -106,11 +106,14 @@ jobs:
       - run: npm ci
       - name: npm audit · high+
         run: npm audit --audit-level=high
-      - name: Dependency review · high+
+      - name: Fetch PR base for dependency delta
         if: github.event_name == 'pull_request'
-        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
-        with:
-          fail-on-severity: high
+        run: git fetch --no-tags --depth=1 origin "${{ github.event.pull_request.base.sha }}"
+      - name: PR dependency delta + source integrity
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/dependency-review.js "$BASE_SHA"
 
   production-smoke:
     name: Production smoke + deployment integrity
