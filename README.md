@@ -90,9 +90,18 @@ stateDiagram-v2
 ├── tests/
 │   ├── onboard.spec.js
 │   ├── accessibility.spec.js
+│   ├── aria.spec.js
+│   ├── aria.spec.js-snapshots/
+│   ├── keyboard.spec.js
+│   ├── domain.spec.js
+│   ├── cross-browser.spec.js
+│   ├── production.spec.js
 │   ├── visual.spec.js
 │   └── visual.spec.js-snapshots/
 ├── playwright.config.js
+├── playwright.cross-browser.config.js
+├── playwright.production.config.js
+├── lighthouserc.cjs
 ├── package.json
 ├── package-lock.json
 ├── .github/workflows/e2e.yml
@@ -112,9 +121,11 @@ python3 -m http.server 8000
 
 ```bash
 npm ci
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 npm run quality
 npm run test:e2e
+npm run test:cross-browser
+npm run test:lighthouse
 ```
 
 Playwright는 Desktop Chromium과 Mobile Chromium에서 다음 핵심 Flow를 검증합니다.
