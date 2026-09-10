@@ -75,4 +75,4 @@ jobs:
           git commit -m "test: add production domain WCAG lighthouse and cross-browser gates"
           git push origin HEAD:feat/p4-verification-matrix
 
-# rerun: local HTTP CSP compatibility validation
+# rerun: desktop Lighthouse regression budget
