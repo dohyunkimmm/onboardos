@@ -1,4 +1,4 @@
-name: Apply P4 verification hardening once
+name: Materialize validated P4 files once
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  harden:
+  materialize:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,60 +22,19 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Apply P4 verification files
+      - name: Materialize previously validated P4 files
         run: |
           python3 .github/scripts/p4_refactor.py
           python3 .github/scripts/p4_webkit_fix.py
           python3 .github/scripts/p4_perf_fix.py
+          npm install
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Fast quality and syntax gate
-        run: |
-          npm run quality
-          node --check app.js
-          node --check js/a11y.js
-          node --check js/analytics.js
-          node --check js/events.js
-          node --check scripts/quality-check.js
-          node --check scripts/serve.js
-          node --check playwright.config.js
-          node --check playwright.cross-browser.config.js
-          node --check playwright.production.config.js
-          node --check lighthouserc.cjs
-          node --check tests/domain.spec.js
-          node --check tests/keyboard.spec.js
-          node --check tests/aria.spec.js
-          node --check tests/cross-browser.spec.js
-          node --check tests/production.spec.js
-          python3 -m json.tool vercel.json >/dev/null
-
-      - name: Install browsers
-        run: npx playwright install --with-deps chromium firefox webkit
-
-      - name: Generate ARIA snapshots
-        run: npx playwright test tests/aria.spec.js --project=desktop-chromium --update-snapshots
-
-      - name: Refresh intended visual baselines
-        run: npx playwright test tests/visual.spec.js --update-snapshots
-
-      - name: Chromium functional / WCAG / keyboard / ARIA / domain / visual
-        run: npm run test:e2e
-
-      - name: Firefox and WebKit smoke
-        run: npm run test:cross-browser
-
-      - name: Lighthouse CI budgets
-        run: npm run test:lighthouse
-
-      - name: Commit validated P4 changes
+      - name: Commit non-workflow P4 files
         run: |
           rm -f .github/scripts/p4_refactor.py .github/scripts/p4_webkit_fix.py .github/scripts/p4_perf_fix.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add . ':!.github/workflows/apply-p4-once.yml' ':!.github/workflows/lighthouse-diagnose-once.yml'
-          git commit -m "test: add production domain WCAG lighthouse and cross-browser gates"
+          git add . ':!.github/workflows/**'
+          git status --short
+          git commit -m "test: materialize validated P4 verification files"
           git push origin HEAD:feat/p4-verification-matrix
-
-# rerun: fixed commit staging after validated P4 pass
