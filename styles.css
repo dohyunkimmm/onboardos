@@ -740,3 +740,10 @@ footer{margin-top:var(--space-7);}
   .admin-demo-note{margin-top:-4px;}
   .support-request-lead{font-size:13px;}
 }
+
+
+/* ---- Content helpers: keep dynamic templates free of inline layout styles ---- */
+.span-full{grid-column:1/-1;}
+.action-guide-copy,.admin-review-copy{color:var(--slate);font-size:13.5px;line-height:1.7;}
+.action-guide-copy{margin:0 0 16px;}
+.admin-review-copy{margin:0 0 14px;}

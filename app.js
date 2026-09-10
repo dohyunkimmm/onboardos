@@ -1,48 +1,5 @@
 'use strict';
 
-let requestState = {};
-let cancelledHistory = {};  // 취소된 요청의 이력 보관(재신청 시 이어붙임)
-let cancelledTickets = {};  // 취소된 요청의 번호 보관
-let ticketSeq = 1041;       // JSM 연동을 가정한 요청번호(운영에서는 JSM이 발급)
-const nextTicket = () => `ITSM-${++ticketSeq}`;
-let selectedFilter = 'all';
-let selectedRequestItem = null;
-let drawerMode = 'user';
-let adminStatusFilter = 'all';
-let loggedIn = false;
-let supportRequestContext = null;
-const SESSION_KEY = 'onboard-os:v3';
-const FILTER_GROUPS = {
-  all:null,
-  todo:new Set(['request','approval','rejected']),
-  processing:new Set(['pending','approved']),
-  done:new Set(['auto','completed'])
-};
-const overlayReturnFocus = new Map();
-const focusableSelector = 'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])';
-
-function saveSession(){
-  try{
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({requestState,cancelledHistory,cancelledTickets,ticketSeq,selectedFilter,currentRole,loggedIn}));
-  }catch(_e){}
-}
-function restoreSession(){
-  try{
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if(!raw) return;
-    const saved = JSON.parse(raw);
-    if(saved && typeof saved === 'object'){
-      requestState = saved.requestState && typeof saved.requestState === 'object' ? saved.requestState : {};
-      cancelledHistory = saved.cancelledHistory && typeof saved.cancelledHistory === 'object' ? saved.cancelledHistory : {};
-      cancelledTickets = saved.cancelledTickets && typeof saved.cancelledTickets === 'object' ? saved.cancelledTickets : {};
-      ticketSeq = Number.isFinite(saved.ticketSeq) ? saved.ticketSeq : 1041;
-      selectedFilter = Object.prototype.hasOwnProperty.call(FILTER_GROUPS,saved.selectedFilter) ? saved.selectedFilter : 'all';
-      currentRole = roles[saved.currentRole] ? saved.currentRole : 'office';
-      loggedIn = saved.loggedIn === true;
-    }
-  }catch(_e){}
-}
-function clearSession(){ try{ sessionStorage.removeItem(SESSION_KEY); }catch(_e){} }
 function syncFilterUI(){
   document.querySelectorAll('.filter-chip').forEach(chip => {
     const active = chip.dataset.filter === selectedFilter;
@@ -50,118 +7,9 @@ function syncFilterUI(){
     chip.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
 }
-function toggleMoreMenu(event){
-  event?.stopPropagation();
-  const menu=document.getElementById('moreMenu');
-  const btn=document.getElementById('moreBtn');
-  if(!menu || !btn) return;
-  const opening=menu.hidden;
-  menu.hidden=!opening;
-  btn.setAttribute('aria-expanded',opening?'true':'false');
-  if(opening) requestAnimationFrame(()=>menu.querySelector('button,a')?.focus({preventScroll:true}));
-}
-function closeMoreMenu(){
-  const menu=document.getElementById('moreMenu');
-  const btn=document.getElementById('moreBtn');
-  if(menu) menu.hidden=true;
-  if(btn) btn.setAttribute('aria-expanded','false');
-}
-
-function overlayIsOpen(id){
-  const el = document.getElementById(id);
-  if(!el) return false;
-  if(id === 'loginScreen') return el.getAttribute('aria-hidden') !== 'true' && getComputedStyle(el).display !== 'none';
-  if(id === 'actionModalBackdrop') return el.style.display === 'flex';
-  return el.classList.contains('show');
-}
-
-function currentOverlay(){
-  for(const id of ['actionModalBackdrop','requestBackdrop','drawerBackdrop','loginScreen']){
-    if(overlayIsOpen(id)) return document.getElementById(id);
-  }
-  return null;
-}
-
-function visibleFocusables(root){
-  return [...root.querySelectorAll(focusableSelector)].filter(el => el.getClientRects().length && !el.closest('[inert]'));
-}
-
-function syncPageInert(){
-  const loginOpen = overlayIsOpen('loginScreen');
-  const requestOpen = overlayIsOpen('requestBackdrop');
-  const drawerOpen = overlayIsOpen('drawerBackdrop');
-  const actionOpen = overlayIsOpen('actionModalBackdrop');
-  const pageBlocked = loginOpen || requestOpen || drawerOpen || actionOpen;
-  document.body.classList.toggle('overlay-open',requestOpen || drawerOpen || actionOpen);
-  document.querySelector('.topbar').inert = pageBlocked;
-  document.getElementById('mainContent').inert = pageBlocked;
-  document.getElementById('skipLink').inert = pageBlocked;
-  document.getElementById('loginScreen').inert = !loginOpen;
-  document.getElementById('requestBackdrop').inert = !requestOpen || actionOpen;
-  document.getElementById('drawerBackdrop').inert = !drawerOpen || actionOpen;
-  document.getElementById('actionModalBackdrop').inert = !actionOpen;
-}
-
-function focusCurrentOverlay(preferredSelector){
-  const overlay = currentOverlay();
-  if(!overlay) return;
-  const dialog = overlay.matches('[role="dialog"]') ? overlay : overlay.querySelector('[role="dialog"]');
-  const preferred = preferredSelector ? overlay.querySelector(preferredSelector) : null;
-  const target = preferred || visibleFocusables(overlay)[0] || dialog;
-  target?.focus({preventScroll:true});
-}
-
-function activateOverlay(id, preferredSelector){
-  const overlay = document.getElementById(id);
-  if(!overlay) return;
-  overlayReturnFocus.set(id, document.activeElement);
-  overlay.setAttribute('aria-hidden','false');
-  syncPageInert();
-  requestAnimationFrame(() => focusCurrentOverlay(preferredSelector));
-}
-
-function deactivateOverlay(id){
-  const overlay = document.getElementById(id);
-  if(!overlay) return;
-  overlay.setAttribute('aria-hidden','true');
-  overlay.inert = true;
-  syncPageInert();
-  const returnTarget = overlayReturnFocus.get(id);
-  overlayReturnFocus.delete(id);
-  requestAnimationFrame(() => {
-    if(returnTarget?.isConnected && !returnTarget.closest('[inert]')) returnTarget.focus({preventScroll:true});
-    else focusCurrentOverlay();
-  });
-}
-
-function trapOverlayFocus(event){
-  if(event.key !== 'Tab') return;
-  const overlay = currentOverlay();
-  if(!overlay) return;
-  const focusable = visibleFocusables(overlay);
-  if(!focusable.length){
-    event.preventDefault();
-    focusCurrentOverlay();
-    return;
-  }
-  const first = focusable[0];
-  const last = focusable[focusable.length-1];
-  if(!overlay.contains(document.activeElement)){
-    event.preventDefault();
-    (event.shiftKey ? last : first).focus();
-  } else if(event.shiftKey && document.activeElement === first){
-    event.preventDefault();
-    last.focus();
-  } else if(!event.shiftKey && document.activeElement === last){
-    event.preventDefault();
-    first.focus();
-  }
-}
-
 function escapeHTML(value){
   return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 }
-let currentRole = 'office';
 
 function openLicenseAction(name){
   const item = findLicenseByName(name);
@@ -185,7 +33,7 @@ function showActionGuideModal(item){
   document.getElementById('actionModalEyebrow').textContent = isDone ? 'LICENSE READY' : 'LICENSE GUIDE';
   document.getElementById('actionModalTitle').textContent = `${item.name} ${isDone ? '지급 완료' : '안내'}`;
   document.getElementById('actionModalBody').innerHTML = `
-    <p style="color:var(--slate);font-size:13.5px;line-height:1.7;margin:0 0 16px;">${tooltipText[st] || ''}${isDone ? ' 아래 버튼은 실제 서비스로 연결되는 지점으로, 새 탭에서 열립니다.' : ''}</p>
+    <p class="action-guide-copy">${tooltipText[st] || ''}${isDone ? ' 아래 버튼은 실제 서비스로 연결되는 지점으로, 새 탭에서 열립니다.' : ''}</p>
     <div class="action-grid">
       <div class="action-info"><label>담당 부서</label><div>${item.owner}</div></div>
       <div class="action-info"><label>처리 안내</label><div>${sc.timing}</div></div>
@@ -355,7 +203,10 @@ function renderRoleTabs(){
     return `<button type="button" class="role-tab${key===currentRole?' active':''}${r.exception?' exception':''}" data-role="${key}" aria-pressed="${key===currentRole?'true':'false'}">${r.exception?'⚠ ':''}${r.label}</button>`;
   }).join('');
   wrap.querySelectorAll('.role-tab').forEach(btn=>{
-    btn.addEventListener('click', () => setRole(btn.dataset.role));
+    btn.addEventListener('click', () => {
+      trackEvent('Role Preview',{role:btn.dataset.role});
+      setRole(btn.dataset.role);
+    });
   });
 }
 
@@ -378,8 +229,8 @@ function setRole(key){
   grid.classList.toggle('balanced-four', r.cards.length === 4);
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
-      ? `<div class="empty-state" style="grid-column:1/-1;"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" onclick="openSupportRequest('role')">직무 정보 확인 요청</button></div>`
-      : `<div class="empty-state" style="grid-column:1/-1;"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 위의 전사 공통 라이선스만 확인하시면 됩니다.</div>`;
+      ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" onclick="openSupportRequest('role')">직무 정보 확인 요청</button></div>`
+      : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 위의 전사 공통 라이선스만 확인하시면 됩니다.</div>`;
   } else {
     grid.innerHTML = r.cards.map(item => renderCard(item, true)).join('');
   }
@@ -453,6 +304,7 @@ function submitSupportRequest(){
     history:[{actor:'홍길동',label:'IT 헬프데스크 요청 접수 · 사유 기재',at:timeLabel()}]
   };
   const ticket = requestState[name].ticket;
+  trackEvent('Fallback Request',{kind,role:currentRole});
   supportRequestContext = null;
   hideActionModal();
   renderCommon();
@@ -463,6 +315,7 @@ function submitSupportRequest(){
 }
 
 function resetDemo(){
+  trackEvent('Demo Reset',{role:currentRole});
   requestState = {};
   cancelledHistory = {};
   cancelledTickets = {};
@@ -515,6 +368,7 @@ function fakeLogin(){
     document.body.classList.remove('login-open');
     loggedIn = true;
     saveSession();
+    trackEvent('Demo Login',{role:currentRole});
     button.removeAttribute('aria-busy');
     syncPageInert();
     document.getElementById('mainContent').focus({preventScroll:true});
@@ -645,6 +499,7 @@ function submitRequest(){
     history:[...(previous?.history || cancelledHistory[item.name] || []),
              {actor:'홍길동',label:((previous || cancelledHistory[item.name]) ? '재신청 접수' : '신청 접수') + (note ? ' · 사유 기재' : ''), at:timeLabel()}]
   };
+  trackEvent(isResubmit ? 'License Resubmit' : 'License Request',{license:item.name,type:item.status});
   delete cancelledHistory[item.name];
   delete cancelledTickets[item.name];
   closeRequestModal();
@@ -660,6 +515,7 @@ function completeLicense(name){
   requestState[name].status = 'completed';
   requestState[name].completedAt = Date.now();
   requestState[name].history.push({actor:requestState[name].owner || 'IT팀',label:'라이선스 지급 완료',at:timeLabel()});
+  trackEvent('License Complete',{license:name,type:requestState[name].baseStatus});
   if(drawerMode === 'admin') adminStatusFilter = 'completed';
   renderCommon();
   setRole(currentRole);
@@ -674,6 +530,7 @@ function approveLicense(name){
     requestState[name].status = 'completed';
     requestState[name].completedAt = Date.now();
     requestState[name].history.push({actor:requestState[name].owner || 'IT팀',label:'요청 처리 완료',at:timeLabel()});
+    trackEvent('Fallback Complete',{request:name,role:requestState[name].roleLabel});
     if(drawerMode === 'admin') adminStatusFilter = 'completed';
     renderCommon();
     setRole(currentRole);
@@ -685,6 +542,7 @@ function approveLicense(name){
   requestState[name].status = 'approved';
   requestState[name].approvedAt = Date.now();
   requestState[name].history.push({actor:requestState[name].owner || 'IT팀',label:requestState[name].baseStatus === 'approval' ? '관리자 승인 완료' : 'IT 검토 완료',at:timeLabel()});
+  trackEvent('Admin Review',{type:requestState[name].baseStatus,decision:'approved'});
   if(drawerMode === 'admin') adminStatusFilter = 'approved';
   renderCommon();
   setRole(currentRole);
@@ -700,7 +558,7 @@ function rejectLicense(name){
   document.getElementById('actionModalEyebrow').textContent = 'ADMIN REVIEW';
   document.getElementById('actionModalTitle').textContent = `${name} 반려 사유 선택`;
   document.getElementById('actionModalBody').innerHTML =
-    `<p style="color:var(--slate);font-size:13.5px;line-height:1.7;margin:0 0 14px;">선택한 사유가 신청자에게 그대로 전달되며, 재신청 시 보완 기준이 됩니다.</p>
+    `<p class="admin-review-copy">선택한 사유가 신청자에게 그대로 전달되며, 재신청 시 보완 기준이 됩니다.</p>
      <div class="reason-list">` +
     REJECT_REASONS.map((r,i)=>`<label class="reason-item"><input type="radio" name="rejectReason" value="${i}"${i===0?' checked':''}><span>${r}</span></label>`).join('') +
     `</div>`;
@@ -719,6 +577,7 @@ function confirmReject(name){
   req.rejectionReason = REJECT_REASONS[picked ? Number(picked.value) : 0];
   req.rejectedAt = Date.now();
   req.history.push({actor:req.owner || 'IT팀',label:'요청 반려 · 사유 전달',at:timeLabel()});
+  trackEvent('Admin Review',{type:req.baseStatus,decision:'rejected'});
   if(drawerMode === 'admin') adminStatusFilter = 'all';
   hideActionModal();
   renderCommon();
@@ -948,6 +807,8 @@ document.addEventListener('keydown', e => {
   if(drawer && drawer.classList.contains('show')){ closeDrawer(); return; }
   if(!document.getElementById('moreMenu')?.hidden){ closeMoreMenu(); document.getElementById('moreBtn')?.focus(); }
 });
+
+document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEvent('Case Study CTA',{source:'footer'}));
 
 restoreSession();
 renderCommon();

@@ -60,6 +60,7 @@ stateDiagram-v2
 
 - HTML5 / CSS3 / Vanilla JavaScript
 - `sessionStorage`
+- Vercel Web Analytics custom events
 - Playwright E2E
 - GitHub Actions
 - GitHub → Vercel Production
@@ -73,6 +74,10 @@ stateDiagram-v2
 ├── index.html
 ├── styles.css
 ├── data.js
+├── js/
+│   ├── state.js
+│   ├── analytics.js
+│   └── a11y.js
 ├── app.js
 ├── og-image.png
 ├── icons/
@@ -111,6 +116,17 @@ Playwright는 Desktop Chromium과 Mobile Chromium에서 다음 핵심 Flow를 �
 - 목록 외 라이선스 → IT 헬프데스크 ITSM 요청 생성
 
 PR 및 `main` push에서 GitHub Actions E2E가 실행됩니다.
+
+## Observability & Security
+
+- **Product events** — `Demo Login`, `Role Preview`, `License Request`, `License Resubmit`, `Fallback Request`, `Admin Review`, `License Complete`, `Fallback Complete`, `Case Study CTA`
+- **Privacy boundary** — 이름·이메일·EMP ID·자유 입력 신청 사유는 Custom Event data에 넣지 않습니다.
+- **Security headers** — `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options`를 Vercel 응답에 적용합니다.
+- **Docs-only deploy skip** — Markdown/`docs/`만 변경된 commit은 Vercel Ignored Build Step으로 새 배포를 생성하지 않습니다.
+
+## Code Structure
+
+`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(세션·상태), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `app.js`(화면·업무 Flow)로 분리했습니다.
 
 ## Deployment
 
