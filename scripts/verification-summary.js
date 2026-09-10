@@ -8,8 +8,8 @@ const productionResult = process.env.PRODUCTION_RESULT || (isProductionRun ? 'un
 const gates = [
   {area:'Chromium regression', gate:'Playwright', result:process.env.CHROMIUM_RESULT || 'unknown', scope:'Quality + Functional + WCAG/Keyboard/ARIA + Domain/SLA + Role Isolation + Visual'},
   {area:'Cross-browser', gate:'Playwright', result:process.env.CROSS_BROWSER_RESULT || 'unknown', scope:'Firefox + WebKit core flow'},
-  {area:'Performance', gate:'Lighthouse CI', result:process.env.LIGHTHOUSE_RESULT || 'unknown', scope:'3-run budget'},
-  {area:'Supply chain', gate:'npm audit + Dependency Review', result:process.env.SUPPLY_CHAIN_RESULT || 'unknown', scope:'high+ advisories + SHA-pinned Actions'},
+  {area:'Performance', gate:'Lighthouse 13.4.1', result:process.env.LIGHTHOUSE_RESULT || 'unknown', scope:'3-run budget; every run must pass'},
+  {area:'Supply chain', gate:'npm audit + PR lockfile delta', result:process.env.SUPPLY_CHAIN_RESULT || 'unknown', scope:'high+ advisories + HTTPS/integrity metadata + SHA-pinned Actions'},
   {area:'Production smoke', gate:'Playwright + Vercel status', result:isProductionRun ? productionResult : 'not_applicable', scope:'live flow + CSP + assets + page/console errors'},
   {area:'Deployment integrity', gate:'SHA-256', result:isProductionRun ? productionResult : 'not_applicable', scope:'deployed core assets + vendored font assets'}
 ];
