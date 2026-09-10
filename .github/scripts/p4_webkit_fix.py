@@ -54,3 +54,19 @@ if old_cross not in cross:
 cross = cross.replace(old_cross, new_cross)
 cross = cross.replace("  expect(pageErrors).toEqual([]);\n", "  expect(pageErrors).toEqual([]);\n  expect(consoleErrors.filter(text => /TypeError|ReferenceError|Content Security Policy|Refused to/i.test(text))).toEqual([]);\n")
 (root/'tests/cross-browser.spec.js').write_text(cross, encoding='utf-8')
+
+# Lighthouse CI is a deterministic desktop regression budget here. Mobile interaction
+# is already covered by the Playwright mobile functional/a11y/visual matrix.
+lh = (root/'lighthouserc.cjs').read_text(encoding='utf-8')
+old_lh = """      settings: {
+        chromeFlags: '--headless --no-sandbox'
+      }
+"""
+new_lh = """      settings: {
+        chromeFlags: '--headless --no-sandbox',
+        preset: 'desktop'
+      }
+"""
+if old_lh not in lh:
+    raise SystemExit('Lighthouse settings anchor not found')
+(root/'lighthouserc.cjs').write_text(lh.replace(old_lh, new_lh), encoding='utf-8')
