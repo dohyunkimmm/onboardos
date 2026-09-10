@@ -1,6 +1,6 @@
 {
   "name": "onboardos",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "scripts": {
     "test:e2e": "playwright test",
@@ -8,10 +8,16 @@
     "quality": "node scripts/quality-check.js",
     "test:a11y": "playwright test tests/accessibility.spec.js",
     "test:visual": "playwright test tests/visual.spec.js",
-    "test:visual:update": "playwright test tests/visual.spec.js --update-snapshots"
+    "test:visual:update": "playwright test tests/visual.spec.js --update-snapshots",
+    "test:domain": "playwright test tests/domain.spec.js --project=desktop-chromium",
+    "test:keyboard": "playwright test tests/keyboard.spec.js --project=desktop-chromium",
+    "test:cross-browser": "playwright test -c playwright.cross-browser.config.js",
+    "test:production": "playwright test -c playwright.production.config.js",
+    "test:lighthouse": "lhci collect --config=./lighthouserc.cjs && lhci assert --config=./lighthouserc.cjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.55.0"
+    "@playwright/test": "^1.55.0",
+    "@lhci/cli": "^0.15.1"
   }
 }

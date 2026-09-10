@@ -61,7 +61,9 @@ stateDiagram-v2
 - HTML5 / CSS3 / Vanilla JavaScript
 - `sessionStorage`
 - Vercel Web Analytics custom events
-- Playwright E2E / axe accessibility / Visual Regression
+- Playwright E2E / axe WCAG A·AA / ARIA Snapshot / Visual Regression
+- Firefox·WebKit Cross-browser Smoke / Production Smoke
+- Lighthouse CI Performance Budget
 - GitHub Actions Quality Gate
 - GitHub → Vercel Production
 
@@ -88,9 +90,18 @@ stateDiagram-v2
 ├── tests/
 │   ├── onboard.spec.js
 │   ├── accessibility.spec.js
+│   ├── aria.spec.js
+│   ├── aria.spec.js-snapshots/
+│   ├── keyboard.spec.js
+│   ├── domain.spec.js
+│   ├── cross-browser.spec.js
+│   ├── production.spec.js
 │   ├── visual.spec.js
 │   └── visual.spec.js-snapshots/
 ├── playwright.config.js
+├── playwright.cross-browser.config.js
+├── playwright.production.config.js
+├── lighthouserc.cjs
 ├── package.json
 ├── package-lock.json
 ├── .github/workflows/e2e.yml
@@ -110,9 +121,11 @@ python3 -m http.server 8000
 
 ```bash
 npm ci
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 npm run quality
 npm run test:e2e
+npm run test:cross-browser
+npm run test:lighthouse
 ```
 
 Playwright는 Desktop Chromium과 Mobile Chromium에서 다음 핵심 Flow를 검증합니다.
@@ -122,7 +135,21 @@ Playwright는 Desktop Chromium과 Mobile Chromium에서 다음 핵심 Flow를 �
 - 직무 미매핑 → ITSM 요청 생성 → 관리자 처리 완료
 - 목록 외 라이선스 → IT 헬프데스크 ITSM 요청 생성
 
-PR 및 `main` push에서 GitHub Actions가 데이터·CSP·소스 Quality Gate를 먼저 실행하고, 이후 기능 E2E·axe 접근성 검사·Desktop/Mobile Visual Regression을 검증합니다.
+PR 및 `main` push에서 GitHub Actions가 데이터·CSP·소스 Quality Gate를 먼저 실행하고, 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Desktop/Mobile Visual Regression을 검증합니다. Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인하고, Lighthouse CI는 동일 화면을 3회 측정해 성능 Budget을 검사합니다.
+
+`main` push에서는 위 로컬/정적 검증이 모두 통과한 뒤 **해당 commit의 Vercel status가 success인지 확인하고 실제 Production URL을 Chromium으로 열어** 핵심 Flow, CSP, 주요 asset 200, page/console error를 다시 검증합니다. Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
+
+## Verification Matrix
+
+| 검증 영역 | 자동 Gate | 범위 |
+| --- | --- | --- |
+| Business Flow | Playwright | 신청·검토/승인·반려·재신청·Fallback·지급 완료 |
+| Domain Invariant | Playwright | 상태 전이·동일 ITSM 티켓·주말/월말/연말 SLA 경계 |
+| Accessibility | axe + Playwright | WCAG 2.x A/AA 자동 규칙·Keyboard/Focus·ARIA Snapshot |
+| Visual Regression | Playwright Screenshot | Desktop/Mobile 로그인·Dashboard·신청 Modal |
+| Cross-browser | Playwright | Firefox/WebKit 핵심 신청·관리자 Flow |
+| Performance | Lighthouse CI | 3회 측정·Performance/A11y/Best Practices/SEO·Web Vitals/byte budget |
+| Production | Playwright + Vercel status | 실제 Production Flow·CSP·asset 200·page/console error |
 
 ## Observability & Security
 

@@ -354,13 +354,46 @@ function resetDemo(){
   showToast('체험 상태가 초기화되었습니다. 경영지원·총무 직무부터 다시 시작할 수 있습니다.');
 }
 
+let dashboardHydrated = false;
+
+function hydrateDashboard(){
+  if(dashboardHydrated) return;
+  renderCommon();
+  renderRoleTabs();
+  syncFilterUI();
+  setRole(currentRole);
+  dashboardHydrated = true;
+}
+
+function loadBrandFont(){
+  const link = document.getElementById('brandFontStylesheet');
+  if(!link) return Promise.resolve();
+  link.media = 'all';
+  const stylesheetReady = link.sheet
+    ? Promise.resolve()
+    : new Promise(resolve => {
+        const done = () => resolve();
+        link.addEventListener('load', done, {once:true});
+        link.addEventListener('error', done, {once:true});
+      });
+  const fontReady = stylesheetReady.then(() => {
+    // Force a style pass so the newly active @font-face rules are discoverable.
+    void document.body.offsetWidth;
+    return document.fonts?.ready || Promise.resolve();
+  });
+  // Never make the prototype unusable because a third-party font CDN is slow.
+  return Promise.race([fontReady, new Promise(resolve => setTimeout(resolve, 1400))]);
+}
+
 function fakeLogin(){
   const button = document.querySelector('.google-btn');
   if(button.disabled) return;
   button.disabled = true;
   button.setAttribute('aria-busy','true');
   document.getElementById('loginLoader').classList.add('is-visible');
-  setTimeout(()=>{
+  hydrateDashboard();
+  const minimumDemoDelay = new Promise(resolve => setTimeout(resolve, 900));
+  Promise.all([minimumDemoDelay, loadBrandFont()]).then(()=>{
     const login = document.getElementById('loginScreen');
     login.hidden = true;
     login.setAttribute('aria-hidden','true');
@@ -373,7 +406,7 @@ function fakeLogin(){
     syncPageInert();
     document.getElementById('mainContent').focus({preventScroll:true});
     showToast('가상 SSO 로그인 완료 · 직무별 라이선스를 불러왔습니다.');
-  }, 1150);
+  });
 }
 
 function findLicenseByName(name){
@@ -811,12 +844,10 @@ document.addEventListener('keydown', e => {
 document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEvent('Case Study CTA',{source:'footer'}));
 
 restoreSession();
-renderCommon();
-renderRoleTabs();
-syncFilterUI();
-setRole(currentRole);
 const loginScreen = document.getElementById('loginScreen');
 if(loggedIn){
+  hydrateDashboard();
+  loadBrandFont();
   loginScreen.hidden = true;
   loginScreen.setAttribute('aria-hidden','true');
   loginScreen.inert = true;
