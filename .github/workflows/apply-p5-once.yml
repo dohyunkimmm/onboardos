@@ -1,0 +1,53 @@
+name: Apply P5 Once
+
+on:
+  push:
+    branches: [feat/p5-verifiable-hardening]
+    paths: [.github/workflows/apply-p5-once.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/p5-verifiable-hardening
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Vendor font and patch runtime
+        run: python3 scripts/p5_refactor.py
+      - name: Install dependencies
+        run: npm ci
+      - name: Supply-chain audit
+        run: npm audit --audit-level=high
+      - name: Fast quality and syntax gates
+        run: |
+          npm run quality
+          node --check app.js
+          node --check js/state.js
+          node --check scripts/asset-integrity.js
+          node --check scripts/verification-summary.js
+          node --check tests/role-isolation.spec.js
+          python3 -m json.tool vercel.json >/dev/null
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Chromium regression suite
+        run: npm run test:e2e
+      - name: Firefox / WebKit smoke
+        run: npm run test:cross-browser
+      - name: Lighthouse 3-run budget
+        run: npm run test:lighthouse
+      - name: Commit validated P5 runtime changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm scripts/p5_refactor.py
+          git add -A
+          git status --short
+          git commit -m "feat: add P5 verifiable hardening"
+          git push origin HEAD:feat/p5-verifiable-hardening
