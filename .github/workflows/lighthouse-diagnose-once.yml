@@ -24,6 +24,7 @@ jobs:
         run: |
           python3 .github/scripts/p4_refactor.py
           python3 .github/scripts/p4_webkit_fix.py
+          python3 .github/scripts/p4_perf_fix.py
       - name: Install dependencies
         run: npm install
       - name: Collect Lighthouse
@@ -49,12 +50,11 @@ jobs:
               tbt:metric('total-blocking-time'),
               cls:metric('cumulative-layout-shift'),
               interactive:metric('interactive'),
-              serverResponse:metric('server-response-time'),
               renderBlocking:metric('render-blocking-resources'),
-              unusedJs:metric('unused-javascript'),
-              unusedCss:metric('unused-css-rules'),
-              fontDisplay:metric('font-display'),
-              networkRequests:a['network-requests']?.details?.items?.map(x => ({url:x.url, resourceType:x.resourceType, transferSize:x.transferSize, startTime:x.startTime, endTime:x.endTime})).slice(0,30)
+              totalBytes:metric('total-byte-weight'),
+              networkRequests:a['network-requests']?.details?.items?.map(x => ({url:x.url, resourceType:x.resourceType, transferSize:x.transferSize})).slice(0,30)
             }, null, 2));
           }
           NODE
+      - name: Assert Lighthouse budgets
+        run: npx lhci assert --config=./lighthouserc.cjs
