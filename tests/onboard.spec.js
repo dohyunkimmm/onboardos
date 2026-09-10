@@ -104,3 +104,27 @@ test('목록에 없는 라이선스도 IT 헬프데스크 요청으로 추적된
   await expect(request).toContainText('Tableau Creator');
   await expect(request.locator('.ticket-key')).toHaveText(/ITSM-\d+/);
 });
+
+
+test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된다', async ({ page }) => {
+  await page.goto('/');
+  await login(page);
+  await page.locator('.role-tab[data-role="design"]').click();
+  const designCard = await card(page, 'Adobe Creative Cloud');
+  await designCard.getByRole('button', { name: '승인 요청하기' }).click();
+  await page.locator('#requestNote').fill('이 내용은 Analytics에 전송되면 안 됩니다');
+  await page.getByRole('button', { name: '신청 완료' }).click();
+
+  const events = await page.evaluate(() => (window.vaq || [])
+    .filter(entry => entry[0] === 'event')
+    .map(entry => entry[1]));
+  const names = events.map(event => event.name);
+  expect(names).toContain('Demo Login');
+  expect(names).toContain('Role Preview');
+  expect(names).toContain('License Request');
+
+  const serialized = JSON.stringify(events);
+  expect(serialized).not.toContain('hong.gildong@company.com');
+  expect(serialized).not.toContain('홍길동');
+  expect(serialized).not.toContain('이 내용은 Analytics에 전송되면 안 됩니다');
+});
