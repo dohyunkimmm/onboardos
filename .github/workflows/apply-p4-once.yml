@@ -75,8 +75,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add . ':!.github/workflows/apply-p4-once.yml' ':!.github/workflows/lighthouse-diagnose-once.yml'
-          git add -u .github/scripts/p4_refactor.py .github/scripts/p4_webkit_fix.py .github/scripts/p4_perf_fix.py
           git commit -m "test: add production domain WCAG lighthouse and cross-browser gates"
           git push origin HEAD:feat/p4-verification-matrix
 
-# rerun: full P4 after font/render performance hardening
+# rerun: fixed commit staging after validated P4 pass
