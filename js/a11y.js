@@ -24,7 +24,7 @@ function overlayIsOpen(id){
   const el = document.getElementById(id);
   if(!el) return false;
   if(id === 'loginScreen') return el.getAttribute('aria-hidden') !== 'true' && getComputedStyle(el).display !== 'none';
-  if(id === 'actionModalBackdrop') return el.style.display === 'flex';
+  if(id === 'actionModalBackdrop') return el.classList.contains('show');
   return el.classList.contains('show');
 }
 

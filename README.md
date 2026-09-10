@@ -21,7 +21,7 @@
 - **State Consistency** — 사용자/관리자에서 동일 요청 상태·티켓·이력 유지
 - **SLA 상태** — 정상 / 마감 임박 / 초과 / 완료 상태를 같은 기준으로 표시
 - **세션 상태 유지** — `sessionStorage` 기반 체험 상태 유지 및 명시적 초기화
-- **Responsive & Accessibility** — PC/태블릿/모바일, focus trap, `aria-*`, `inert`, ESC 닫기, skip link, reduced motion
+- **Responsive & Accessibility** — PC/태블릿/모바일, focus trap, `aria-*`, `inert`, ESC 닫기, skip link, reduced motion + axe 자동 검사
 
 ## Prototype Architecture
 
@@ -61,8 +61,8 @@ stateDiagram-v2
 - HTML5 / CSS3 / Vanilla JavaScript
 - `sessionStorage`
 - Vercel Web Analytics custom events
-- Playwright E2E
-- GitHub Actions
+- Playwright E2E / axe accessibility / Visual Regression
+- GitHub Actions Quality Gate
 - GitHub → Vercel Production
 
 프레임워크 없이 정적 웹 구조로 구현했으며, Vercel Production은 GitHub `main` 브랜치와 연결되어 있습니다.
@@ -82,8 +82,14 @@ stateDiagram-v2
 ├── og-image.png
 ├── icons/
 │   └── *.svg
+├── scripts/
+│   ├── quality-check.js
+│   └── serve.js
 ├── tests/
-│   └── onboard.spec.js
+│   ├── onboard.spec.js
+│   ├── accessibility.spec.js
+│   ├── visual.spec.js
+│   └── visual.spec.js-snapshots/
 ├── playwright.config.js
 ├── package.json
 ├── package-lock.json
@@ -105,6 +111,7 @@ python3 -m http.server 8000
 ```bash
 npm ci
 npx playwright install chromium
+npm run quality
 npm run test:e2e
 ```
 
@@ -115,13 +122,13 @@ Playwright는 Desktop Chromium과 Mobile Chromium에서 다음 핵심 Flow를 �
 - 직무 미매핑 → ITSM 요청 생성 → 관리자 처리 완료
 - 목록 외 라이선스 → IT 헬프데스크 ITSM 요청 생성
 
-PR 및 `main` push에서 GitHub Actions E2E가 실행됩니다.
+PR 및 `main` push에서 GitHub Actions가 데이터·CSP·소스 Quality Gate를 먼저 실행하고, 이후 기능 E2E·axe 접근성 검사·Desktop/Mobile Visual Regression을 검증합니다.
 
 ## Observability & Security
 
 - **Product events** — `Demo Login`, `Role Preview`, `License Request`, `License Resubmit`, `Fallback Request`, `Admin Review`, `License Complete`, `Fallback Complete`, `Case Study CTA`
 - **Privacy boundary** — 이름·이메일·EMP ID·자유 입력 신청 사유는 Custom Event data에 넣지 않습니다.
-- **Security headers** — `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options`를 Vercel 응답에 적용합니다.
+- **Security headers** — 기존 보안 Header와 함께 CSP를 적용하고 `script-src-attr`/`style-src-attr`을 `none`으로 제한해 inline handler·style attribute 실행을 차단합니다.
 - **Docs-only deploy skip** — Markdown 및 `docs/`만 변경된 commit은 Vercel Ignored Build Step에서 애플리케이션 배포를 건너뜁니다.
 
 ## Code Structure
