@@ -23,13 +23,17 @@ jobs:
       - name: Apply targeted hardening
         run: python3 .github/scripts/apply_hardening.py
 
-      - name: Remove migration and one-time automation artifacts
+      - name: Prepare clean commit
         run: |
           rm -f SNAPSHOT_META.md SNAPSHOT_SHA256SUMS.txt
-          rm -f .github/workflows/recover-vercel-snapshot.yml
-          rm -f .github/workflows/apply-hardening-once.yml
+          rm -f .github/workflows/e2e.yml
           rm -f .github/scripts/apply_hardening.py
           rmdir .github/scripts 2>/dev/null || true
+          cat > .gitignore <<'EOF'
+          node_modules/
+          playwright-report/
+          test-results/
+          EOF
 
       - name: Validate JavaScript syntax
         run: |
