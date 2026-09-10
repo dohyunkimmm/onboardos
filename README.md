@@ -19,6 +19,7 @@
 - **재신청 Flow** — 반려 사유 확인 → 보완 내용 입력 → 동일 요청 이력 기반 재접수
 - **Fallback Flow** — 직무 미매핑과 목록 외 라이선스도 데모 ITSM 요청번호를 발급해 사용자/관리자에서 동일하게 추적
 - **State Consistency** — 사용자/관리자에서 동일 요청 상태·티켓·이력 유지
+- **Role-isolated Scenario State** — 직무 Preview마다 신청·취소·이력을 독립 저장하고, 직무를 다시 선택해도 해당 시나리오 상태만 복원
 - **SLA 상태** — 정상 / 마감 임박 / 초과 / 완료 상태를 같은 기준으로 표시
 - **세션 상태 유지** — `sessionStorage` 기반 체험 상태 유지 및 명시적 초기화
 - **Responsive & Accessibility** — PC/태블릿/모바일, focus trap, `aria-*`, `inert`, ESC 닫기, skip link, reduced motion + axe 자동 검사
@@ -48,6 +49,8 @@ stateDiagram-v2
     처리중 --> 처리완료: Fallback/Helpdesk 요청
 ```
 
+각 직무 Preview는 위 상태 모델을 공유하지만 실제 요청 데이터는 **직무별 state bucket**으로 격리합니다. 기존 `onboard-os:v3` 세션은 `v4`로 읽을 때 당시 선택 직무의 상태로 1회 마이그레이션합니다.
+
 ## SLA 기준
 
 - 자동 지급: 계정 생성 후 **1시간 이내**
@@ -60,14 +63,17 @@ stateDiagram-v2
 
 - HTML5 / CSS3 / Vanilla JavaScript
 - `sessionStorage`
+- Pretendard Variable Dynamic Subset self-hosting (SIL Open Font License 1.1)
 - Vercel Web Analytics custom events
 - Playwright E2E / axe WCAG A·AA / ARIA Snapshot / Visual Regression
 - Firefox·WebKit Cross-browser Smoke / Production Smoke
-- Lighthouse CI Performance Budget
-- GitHub Actions Quality Gate
+- Lighthouse 13.4.1 · 3-run Performance Budget
+- SHA-256 Production Asset Integrity
+- npm audit / GitHub Dependency Review / Dependabot
+- GitHub Actions Quality Gate + Verification Evidence
 - GitHub → Vercel Production
 
-프레임워크 없이 정적 웹 구조로 구현했으며, Vercel Production은 GitHub `main` 브랜치와 연결되어 있습니다.
+프레임워크 없이 정적 웹 구조로 구현했으며, Vercel Production은 GitHub `main` 브랜치와 연결되어 있습니다. Pretendard는 런타임 CDN 호출 없이 저장소의 subset 파일을 직접 제공합니다.
 
 ## Project Structure
 
@@ -79,14 +85,23 @@ stateDiagram-v2
 ├── js/
 │   ├── state.js
 │   ├── analytics.js
-│   └── a11y.js
+│   ├── a11y.js
+│   └── events.js
 ├── app.js
 ├── og-image.png
 ├── icons/
 │   └── *.svg
+├── fonts/
+│   ├── pretendard.css
+│   ├── PRETENDARD-LICENSE.txt
+│   └── pretendard/
+│       └── *.woff2
 ├── scripts/
 │   ├── quality-check.js
-│   └── serve.js
+│   ├── serve.js
+│   ├── lighthouse-run.js
+│   ├── asset-integrity.js
+│   └── verification-summary.js
 ├── tests/
 │   ├── onboard.spec.js
 │   ├── accessibility.spec.js
@@ -94,6 +109,7 @@ stateDiagram-v2
 │   ├── aria.spec.js-snapshots/
 │   ├── keyboard.spec.js
 │   ├── domain.spec.js
+│   ├── role-isolation.spec.js
 │   ├── cross-browser.spec.js
 │   ├── production.spec.js
 │   ├── visual.spec.js
@@ -104,7 +120,9 @@ stateDiagram-v2
 ├── lighthouserc.cjs
 ├── package.json
 ├── package-lock.json
-├── .github/workflows/e2e.yml
+├── .github/
+│   ├── dependabot.yml
+│   └── workflows/e2e.yml
 ├── vercel.json
 └── README.md
 ```
@@ -121,6 +139,7 @@ python3 -m http.server 8000
 
 ```bash
 npm ci
+npm audit --audit-level=high
 npx playwright install chromium firefox webkit
 npm run quality
 npm run test:e2e
@@ -128,16 +147,21 @@ npm run test:cross-browser
 npm run test:lighthouse
 ```
 
-Playwright는 Desktop Chromium과 Mobile Chromium에서 다음 핵심 Flow를 검증합니다.
+Playwright는 Desktop Chromium과 Mobile Chromium에서 기능·접근성·상태 정책·직무 격리·Visual Regression을 포함한 **44개 회귀 테스트**를 실행합니다. 핵심 Business Flow는 다음과 같습니다.
 
 - 신청 → IT 검토 → 지급 완료 → reload 후 session 유지
 - 승인 필요 → 반려 → 보완 → 재신청 → 관리자 승인
 - 직무 미매핑 → ITSM 요청 생성 → 관리자 처리 완료
 - 목록 외 라이선스 → IT 헬프데스크 ITSM 요청 생성
+- 경영지원·총무에서 생성한 요청 → 디자인 직무에서 미노출 → reload → 경영지원·총무 복귀 시 동일 티켓 복원
 
-PR 및 `main` push에서 GitHub Actions가 데이터·CSP·소스 Quality Gate를 먼저 실행하고, 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Desktop/Mobile Visual Regression을 검증합니다. Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인하고, Lighthouse CI는 동일 화면을 3회 측정해 성능 Budget을 검사합니다.
+PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·workflow pinning을 포함한 Fast Quality Gate와 high 이상 npm advisory Gate를 먼저 실행합니다. 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Desktop/Mobile Visual Regression을 검증하고, Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인합니다. Lighthouse 13.4.1은 동일 화면을 3회 측정하며 **각 실행이 모두** 설정된 성능 Budget을 만족해야 통과합니다.
 
-`main` push에서는 위 로컬/정적 검증이 모두 통과한 뒤 **해당 commit의 Vercel status가 success인지 확인하고 실제 Production URL을 Chromium으로 열어** 핵심 Flow, CSP, 주요 asset 200, page/console error를 다시 검증합니다. Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
+PR에서는 GitHub Dependency Review가 high 이상 신규 취약 의존성을 차단합니다. npm과 GitHub Actions 업데이트는 Dependabot이 주 단위로 확인하고, workflow의 외부 GitHub Action은 mutable major tag 대신 검증한 **40자리 commit SHA**로 고정합니다.
+
+`main` push에서는 위 검증이 모두 통과한 뒤 **해당 commit의 Vercel status가 success인지 확인하고 실제 Production URL을 검증**합니다. 저장소 checkout과 Production의 핵심 HTML/CSS/JS 및 self-hosted font asset을 SHA-256으로 비교한 뒤, Chromium으로 핵심 Flow·CSP·주요 asset 200·page/console error를 다시 확인합니다. Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
+
+각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다.
 
 ## Verification Matrix
 
@@ -145,29 +169,37 @@ PR 및 `main` push에서 GitHub Actions가 데이터·CSP·소스 Quality Gate�
 | --- | --- | --- |
 | Business Flow | Playwright | 신청·검토/승인·반려·재신청·Fallback·지급 완료 |
 | Domain Invariant | Playwright | 상태 전이·동일 ITSM 티켓·주말/월말/연말 SLA 경계 |
+| Scenario Isolation | Playwright | 직무별 요청·취소·이력 격리·reload 복원·v3→v4 session migration contract |
 | Accessibility | axe + Playwright | WCAG 2.x A/AA 자동 규칙·Keyboard/Focus·ARIA Snapshot |
 | Visual Regression | Playwright Screenshot | Desktop/Mobile 로그인·Dashboard·신청 Modal |
 | Cross-browser | Playwright | Firefox/WebKit 핵심 신청·관리자 Flow |
-| Performance | Lighthouse CI | 3회 측정·Performance/A11y/Best Practices/SEO·Web Vitals/byte budget |
+| Performance | Lighthouse 13.4.1 | 3회 모두 Performance/A11y/Best Practices/SEO·Web Vitals/byte budget 통과 |
+| Supply Chain | npm audit + Dependency Review | high 이상 advisory 차단·GitHub Actions SHA pin·Dependabot |
 | Production | Playwright + Vercel status | 실제 Production Flow·CSP·asset 200·page/console error |
+| Deployment Integrity | SHA-256 | GitHub checkout과 Production의 핵심 static/font asset hash 일치 |
+| Evidence | GitHub Actions Summary + artifact | commit/run별 검증 결과 JSON·Markdown 및 Production integrity report |
 
 ## Observability & Security
 
 - **Product events** — `Demo Login`, `Role Preview`, `License Request`, `License Resubmit`, `Fallback Request`, `Admin Review`, `License Complete`, `Fallback Complete`, `Case Study CTA`
 - **Privacy boundary** — 이름·이메일·EMP ID·자유 입력 신청 사유는 Custom Event data에 넣지 않습니다.
 - **Security headers** — 기존 보안 Header와 함께 CSP를 적용하고 `script-src-attr`/`style-src-attr`을 `none`으로 제한해 inline handler·style attribute 실행을 차단합니다.
+- **Self-hosted font** — Pretendard Dynamic Subset과 OFL 라이선스를 저장소에 포함해 jsDelivr 런타임 의존성과 해당 CSP allowlist를 제거했습니다.
+- **Supply-chain guard** — high 이상 npm advisory와 PR dependency diff를 자동 차단하고, workflow Action은 full commit SHA로 pinning합니다.
 - **Docs-only deploy skip** — Markdown 및 `docs/`만 변경된 commit은 Vercel Ignored Build Step에서 애플리케이션 배포를 건너뜁니다.
 
 ## Code Structure
 
-`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(세션·상태), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `app.js`(화면·업무 Flow)로 분리했습니다.
+`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(직무별 세션·상태), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `js/events.js`(CSP-safe 이벤트 위임), `app.js`(화면·업무 Flow)로 분리했습니다.
 
 ## Deployment
 
 ```text
 Feature Branch
     ↓
-GitHub Pull Request + Playwright E2E
+GitHub Pull Request
+    ↓
+Quality / E2E / WCAG / Visual / Cross-browser / Lighthouse / Supply-chain
     ↓
 Vercel Preview
     ↓
@@ -175,7 +207,9 @@ Merge to main
     ↓
 Vercel Production
     ↓
-onboardos-rho.vercel.app
+SHA-256 Deployment Integrity + Production Browser Smoke
+    ↓
+Verification Evidence Artifact
 ```
 
 ## Prototype Scope
@@ -186,6 +220,7 @@ onboardos-rho.vercel.app
 - 자동 지급 / 신청 / 승인 필요 항목의 구분
 - Jira Service Management 요청번호 기반 Tracking 가정
 - 사용자와 관리자 사이의 상태 일관성
+- 직무별 Preview 상태 격리
 - 반려·재신청과 직무 미매핑·목록 외 요청 Fallback
 - SLA와 처리 이력의 가시성
 - 모바일 환경을 포함한 주요 Service Flow
