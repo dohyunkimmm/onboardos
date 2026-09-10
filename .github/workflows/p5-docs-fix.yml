@@ -1,0 +1,42 @@
+name: P5 Docs Fix Once
+
+on:
+  push:
+    branches: [feat/p5-verifiable-hardening]
+    paths: [.github/workflows/p5-docs-fix.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/p5-verifiable-hardening
+      - name: Align README supply-chain wording
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('README.md')
+          text = p.read_text()
+          replacements = {
+            'npm audit / GitHub Dependency Review / Dependabot': 'npm audit / PR Dependency Delta Review / Dependabot',
+            'PR에서는 GitHub Dependency Review가 high 이상 신규 취약 의존성을 차단합니다.': 'PR에서는 base/current `package-lock.json` delta를 비교하고 remote package의 HTTPS·integrity metadata를 검사하며, `npm audit --audit-level=high`로 현재 의존성 전체의 high 이상 advisory를 차단합니다.',
+            '| Supply Chain | npm audit + Dependency Review | high 이상 advisory 차단·GitHub Actions SHA pin·Dependabot |': '| Supply Chain | npm audit + PR Dependency Delta | high 이상 advisory·비HTTPS/무결성 누락 차단·GitHub Actions SHA pin·Dependabot |'
+          }
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f'missing expected README text: {old}')
+              text = text.replace(old, new)
+          p.write_text(text)
+          PY
+      - name: Commit docs cleanup
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/p5-docs-fix.yml
+          git add README.md
+          git commit -m "docs: align P5 supply-chain verification wording"
+          git push origin HEAD:feat/p5-verifiable-hardening
