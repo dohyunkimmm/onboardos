@@ -2,40 +2,25 @@ from pathlib import Path
 
 root = Path('.')
 
-events = (root/'js/events.js').read_text(encoding='utf-8')
-old = """document.addEventListener('click', event => {
-  const actionTarget = event.target.closest('[data-action]');
-  if(actionTarget){
-    const handler = actionHandlers[actionTarget.dataset.action];
-    if(handler) handler(event, actionTarget.dataset.value || '');
-  }
-
-  const filter = event.target.closest('#filterTabs .filter-chip[data-filter]');
-  if(filter) setFilter(filter.dataset.filter);
-});
-"""
-new = """function closestFromEvent(event, selector){
-  const direct = event.target && event.target.nodeType === 1 ? event.target : event.target?.parentElement;
-  if(direct?.closest) return direct.closest(selector);
-  const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
-  return path.find(node => node?.nodeType === 1 && node.matches?.(selector)) || null;
+# Production is HTTPS, so keep upgrade-insecure-requests there. The local QA server
+# is intentionally HTTP; WebKit upgrades localhost subresources under that directive
+# and then fails the TLS handshake. Remove only this directive from the local server.
+serve = (root/'scripts/serve.js').read_text(encoding='utf-8')
+old_headers = "const securityHeaders = Object.fromEntries((config.headers || []).flatMap(rule => rule.headers || []).map(h => [h.key, h.value]));\n"
+new_headers = """const securityHeaders = Object.fromEntries((config.headers || []).flatMap(rule => rule.headers || []).map(h => [h.key, h.value]));
+if(securityHeaders['Content-Security-Policy']){
+  securityHeaders['Content-Security-Policy'] = securityHeaders['Content-Security-Policy']
+    .replace(/;?\\s*upgrade-insecure-requests\\s*;?/g, ';')
+    .replace(/;;+/g, ';')
+    .replace(/^;|;$/g, '')
+    .trim();
 }
-
-document.addEventListener('click', event => {
-  const actionTarget = closestFromEvent(event, '[data-action]');
-  if(actionTarget){
-    const handler = actionHandlers[actionTarget.dataset.action];
-    if(handler) handler(event, actionTarget.dataset.value || '');
-  }
-
-  const filter = closestFromEvent(event, '#filterTabs .filter-chip[data-filter]');
-  if(filter) setFilter(filter.dataset.filter);
-});
 """
-if old not in events:
-    raise SystemExit('event delegation anchor not found')
-(root/'js/events.js').write_text(events.replace(old, new), encoding='utf-8')
+if old_headers not in serve:
+    raise SystemExit('local CSP header anchor not found')
+(root/'scripts/serve.js').write_text(serve.replace(old_headers, new_headers), encoding='utf-8')
 
+# Keep useful diagnostics in the cross-browser smoke without changing application code.
 cross = (root/'tests/cross-browser.spec.js').read_text(encoding='utf-8')
 old_cross = """  const pageErrors = [];
   page.on('pageerror', e => pageErrors.push(e.message));
