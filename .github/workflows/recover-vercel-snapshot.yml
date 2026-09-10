@@ -1,0 +1,113 @@
+name: Recover Vercel production snapshot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/recover-vercel-snapshot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_URL: https://onboardos-rho.vercel.app
+      SNAPSHOT_BRANCH: sync/vercel-production-2026-09-10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare snapshot branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout -B "$SNAPSHOT_BRANCH" origin/main
+          mkdir -p icons
+
+      - name: Recover deployed files
+        shell: bash
+        run: |
+          set -euo pipefail
+          fetch() {
+            local path="$1"
+            echo "Recovering $path"
+            curl --fail --silent --show-error --location --retry 3 \
+              "$SOURCE_URL/$path" -o "$path"
+            test -s "$path"
+          }
+
+          fetch index.html
+          fetch styles.css
+          fetch app.js
+          fetch data.js
+          fetch og-image.png
+
+          mapfile -t icons < <(
+            { grep -Eo 'icons/[A-Za-z0-9._-]+\.svg' index.html || true; \
+              grep -Eo 'icons/[A-Za-z0-9._-]+\.svg' data.js || true; } | sort -u
+          )
+
+          for icon in "${icons[@]}"; do
+            mkdir -p "$(dirname "$icon")"
+            fetch "$icon"
+          done
+
+          for optional in robots.txt sitemap.xml; do
+            if curl --fail --silent --show-error --location --retry 2 \
+              "$SOURCE_URL/$optional" -o "$optional.tmp"; then
+              if test -s "$optional.tmp"; then
+                mv "$optional.tmp" "$optional"
+              else
+                rm -f "$optional.tmp"
+              fi
+            else
+              rm -f "$optional.tmp"
+            fi
+          done
+
+      - name: Validate recovered snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q '<title>직무별 SaaS 라이선스 온보딩 포털' index.html
+          grep -q "const roles" data.js
+          grep -q "function fakeLogin" app.js
+          grep -q -- '--paper:#0A0B0E' styles.css
+          file og-image.png | grep -q 'PNG image data, 1200 x 630'
+
+          missing=0
+          while IFS= read -r asset; do
+            if [[ ! -f "$asset" ]]; then
+              echo "Missing referenced asset: $asset" >&2
+              missing=1
+            fi
+          done < <({ grep -Eo 'icons/[A-Za-z0-9._-]+\.svg' index.html || true; grep -Eo 'icons/[A-Za-z0-9._-]+\.svg' data.js || true; } | sort -u)
+          test "$missing" -eq 0
+
+          sha256sum index.html styles.css app.js data.js og-image.png icons/*.svg > SNAPSHOT_SHA256SUMS.txt
+          {
+            echo '# Vercel production snapshot'
+            echo
+            echo '- Source: `https://onboardos-rho.vercel.app`'
+            echo '- Recovered by GitHub Actions from the current public production deployment.'
+            echo '- Production deployment remains unchanged while this snapshot is validated.'
+          } > SNAPSHOT_META.md
+
+      - name: Commit snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html styles.css app.js data.js og-image.png icons SNAPSHOT_SHA256SUMS.txt SNAPSHOT_META.md
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+          else
+            git commit -m "chore: recover current Vercel production snapshot"
+          fi
+          git push --force-with-lease origin "$SNAPSHOT_BRANCH"
