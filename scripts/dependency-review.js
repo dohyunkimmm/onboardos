@@ -2,6 +2,7 @@
 const fs = require('fs');
 const { execFileSync } = require('child_process');
 
+// Repository-independent PR dependency review: compare lockfiles without relying on GitHub Dependency Graph.
 const baseSha = process.argv[2] || process.env.BASE_SHA;
 if(!baseSha){
   console.error('Usage: node scripts/dependency-review.js <base-sha>');
