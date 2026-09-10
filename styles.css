@@ -747,3 +747,9 @@ footer{margin-top:var(--space-7);}
 .action-guide-copy,.admin-review-copy{color:var(--slate);font-size:13.5px;line-height:1.7;}
 .action-guide-copy{margin:0 0 16px;}
 .admin-review-copy{margin:0 0 14px;}
+
+
+/* P3 CSP-safe runtime states */
+[hidden]{display:none!important;}
+.action-modal-backdrop.show{display:flex;}
+.login-loader.is-visible{display:block;}

@@ -40,12 +40,12 @@
 <div class="sub">신규입사자 SaaS·업무 도구 가이드</div>
 </div>
 <div class="top-actions">
-<button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="statusBtn" onclick="openDrawer('user')">신청현황 <span class="notif-dot is-empty" id="requestCount">0</span></button>
-<button aria-controls="drawerPanel" aria-expanded="false" aria-label="IT 관리자 역할 체험" class="top-btn" id="adminBtn" onclick="openDrawer('admin')"><span class="desktop-label">관리자 체험</span><span class="mobile-label">관리자</span> </button>
-<button aria-label="체험 상태 초기화" class="top-btn secondary" id="resetBtn" onclick="resetDemo()">↺ <span class="desktop-label">체험 초기화</span><span class="mobile-label">초기화</span></button>
-<button aria-controls="moreMenu" aria-expanded="false" aria-label="더보기" class="top-btn secondary more-btn" id="moreBtn" onclick="toggleMoreMenu(event)" type="button">⋯</button>
+<button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="statusBtn" data-action="open-user-drawer">신청현황 <span class="notif-dot is-empty" id="requestCount">0</span></button>
+<button aria-controls="drawerPanel" aria-expanded="false" aria-label="IT 관리자 역할 체험" class="top-btn" id="adminBtn" data-action="open-admin-drawer"><span class="desktop-label">관리자 체험</span><span class="mobile-label">관리자</span> </button>
+<button aria-label="체험 상태 초기화" class="top-btn secondary" id="resetBtn" data-action="reset-demo">↺ <span class="desktop-label">체험 초기화</span><span class="mobile-label">초기화</span></button>
+<button aria-controls="moreMenu" aria-expanded="false" aria-label="더보기" class="top-btn secondary more-btn" id="moreBtn" data-action="toggle-more" type="button">⋯</button>
 <div class="more-menu" hidden="" id="moreMenu">
-<button onclick="resetDemo();closeMoreMenu()" type="button">↺ 체험 초기화</button>
+<button data-action="reset-demo-close-more" type="button">↺ 체험 초기화</button>
 </div>
 </div>
 </div>
@@ -71,7 +71,7 @@
 <span class="login-account-label">연동될 계정</span>
 <span class="login-account-mail mono">hong.gildong@company.com</span>
 </div>
-<button class="google-btn" onclick="fakeLogin()"><span aria-hidden="true" class="google-g"><svg focusable="false" height="16" viewbox="0 0 48 48" width="16"><path d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z" fill="#4285F4"></path><path d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z" fill="#34A853"></path><path d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z" fill="#FBBC05"></path><path d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z" fill="#EA4335"></path></svg></span>Google SSO로 시작하기</button>
+<button class="google-btn" data-action="fake-login"><span aria-hidden="true" class="google-g"><svg focusable="false" height="16" viewbox="0 0 48 48" width="16"><path d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z" fill="#4285F4"></path><path d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z" fill="#34A853"></path><path d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z" fill="#FBBC05"></path><path d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z" fill="#EA4335"></path></svg></span>Google SSO로 시작하기</button>
 <div class="login-loader" id="loginLoader">Google SSO 인증 중…
         <div class="loader-bar"><span></span></div>
 </div>
@@ -126,10 +126,10 @@
 
 <div class="tools-bar">
 <div aria-label="현재 상태 필터" class="filter-tabs" id="filterTabs" role="group">
-<button aria-pressed="true" class="filter-chip active" data-filter="all" onclick="setFilter('all')" type="button">전체</button>
-<button aria-pressed="false" class="filter-chip" data-filter="todo" onclick="setFilter('todo')" type="button">해야 할 일</button>
-<button aria-pressed="false" class="filter-chip" data-filter="processing" onclick="setFilter('processing')" type="button">처리 중</button>
-<button aria-pressed="false" class="filter-chip" data-filter="done" onclick="setFilter('done')" type="button">완료</button>
+<button aria-pressed="true" class="filter-chip active" data-filter="all" type="button">전체</button>
+<button aria-pressed="false" class="filter-chip" data-filter="todo" type="button">해야 할 일</button>
+<button aria-pressed="false" class="filter-chip" data-filter="processing" type="button">처리 중</button>
+<button aria-pressed="false" class="filter-chip" data-filter="done" type="button">완료</button>
 </div>
 </div>
 <section class="licenses common-first">
@@ -159,55 +159,52 @@
 <b>목록에 없는 라이선스가 있나요?</b><br/>
       IT 헬프데스크로 요청해 주세요.
       <br/>
-<button class="jsm-btn" onclick="openSupportRequest('other')" type="button">🎫 IT 헬프데스크 문의하기</button>
+<button class="jsm-btn" data-action="support-other" type="button">🎫 IT 헬프데스크 문의하기</button>
 </div>
 <div class="credit">기획·설계·프로토타입 구현 김도현</div>
 </footer>
 </main>
-<div aria-hidden="true" class="request-backdrop" id="requestBackdrop" inert="" onclick="backdropClose(event)">
+<div aria-hidden="true" class="request-backdrop" id="requestBackdrop" inert="">
 <div aria-labelledby="requestTitle" aria-modal="true" class="request-modal" role="dialog" tabindex="-1">
 <h3 id="requestTitle">라이선스 신청</h3>
 <p id="requestDesc">담당 부서와 SLA를 확인한 뒤 신청을 완료해 주세요.</p>
 <div class="detail-list" id="requestDetails"></div>
 <div class="modal-actions">
-<button class="btn-secondary" onclick="closeRequestModal()">취소</button>
-<button class="btn-primary" id="submitRequestBtn" onclick="submitRequest()">신청 완료</button>
+<button class="btn-secondary" data-action="close-request">취소</button>
+<button class="btn-primary" id="submitRequestBtn" data-action="submit-request">신청 완료</button>
 </div>
 </div>
 </div>
-<div aria-hidden="true" class="drawer-backdrop" id="drawerBackdrop" inert="" onclick="drawerBackdropClose(event)">
+<div aria-hidden="true" class="drawer-backdrop" id="drawerBackdrop" inert="">
 <aside aria-labelledby="drawerTitle" aria-modal="true" class="drawer" id="drawerPanel" role="dialog" tabindex="-1">
 <div class="drawer-head">
 <h3 id="drawerTitle">신청현황</h3>
-<button aria-label="닫기" class="drawer-close" onclick="closeDrawer()">×</button>
+<button aria-label="닫기" class="drawer-close" data-action="close-drawer">×</button>
 </div>
 <div id="drawerBody"></div>
 </aside>
 </div>
 <!-- 액션 모달 -->
-<div aria-hidden="true" class="action-modal-backdrop" id="actionModalBackdrop" inert="" onclick="closeActionModal(event)">
-<div aria-labelledby="actionModalTitle" aria-modal="true" class="action-modal" onclick="event.stopPropagation()" role="dialog" tabindex="-1">
+<div aria-hidden="true" class="action-modal-backdrop" id="actionModalBackdrop" inert="">
+<div aria-labelledby="actionModalTitle" aria-modal="true" class="action-modal" role="dialog" tabindex="-1">
 <div class="action-modal-head">
 <div>
 <div class="action-modal-eyebrow" id="actionModalEyebrow">LICENSE GUIDE</div>
 <h3 id="actionModalTitle">라이선스 안내</h3>
 </div>
-<button aria-label="닫기" class="action-modal-close" onclick="hideActionModal()">×</button>
+<button aria-label="닫기" class="action-modal-close" data-action="hide-action">×</button>
 </div>
 <div id="actionModalBody"></div>
 <div class="action-modal-actions" id="actionModalActions"></div>
 </div>
 </div>
 <div aria-atomic="true" aria-live="polite" class="toast" id="toast" role="status">프로토타입 화면입니다 — 실제 운영에서는 JSM 문의 요청으로 접수됩니다</div>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
 <script src="data.js"></script>
 <script src="js/state.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/a11y.js"></script>
 <script src="app.js"></script>
+<script src="js/events.js"></script>
 <script defer="" src="/_vercel/insights/script.js"></script>
 <script defer="" src="/_vercel/speed-insights/script.js"></script>
 </body></html>

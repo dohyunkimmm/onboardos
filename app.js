@@ -38,13 +38,13 @@ function showActionGuideModal(item){
       <div class="action-info"><label>담당 부서</label><div>${item.owner}</div></div>
       <div class="action-info"><label>처리 안내</label><div>${sc.timing}</div></div>
     </div>`;
-  document.getElementById('actionModalActions').innerHTML = `<button class="ghost-btn" onclick="hideActionModal()">닫기</button><a class="ghost-btn service-link-btn" href="${item.url}" target="_blank" rel="noopener noreferrer">서비스 접속 ↗</a>`;
-  document.getElementById('actionModalBackdrop').style.display = 'flex';
+  document.getElementById('actionModalActions').innerHTML = `<button class="ghost-btn" data-action="hide-action">닫기</button><a class="ghost-btn service-link-btn" href="${item.url}" target="_blank" rel="noopener noreferrer">서비스 접속 ↗</a>`;
+  document.getElementById('actionModalBackdrop').classList.add('show');
   activateOverlay('actionModalBackdrop','.action-modal-close');
 }
 
 function hideActionModal(){
-  document.getElementById('actionModalBackdrop').style.display = 'none';
+  document.getElementById('actionModalBackdrop').classList.remove('show');
   deactivateOverlay('actionModalBackdrop');
 }
 
@@ -143,7 +143,7 @@ function renderAdminSummary(requests){
   const approved = requests.filter(req => req.status === 'approved').length;
   const rejected = requests.filter(req => req.status === 'rejected').length;
   const completed = requests.filter(req => req.status === 'completed').length;
-  const makeKpi = (status,label,count) => `<button type="button" class="admin-kpi ${status}${adminStatusFilter===status?' is-active':''}" aria-pressed="${adminStatusFilter===status?'true':'false'}" onclick="toggleAdminFilter('${status}')" title="${label} 요청만 보기 · 다시 누르면 전체 보기"><span class="admin-kpi-label">${label}</span><strong class="admin-kpi-value mono">${count}</strong></button>`;
+  const makeKpi = (status,label,count) => `<button type="button" class="admin-kpi ${status}${adminStatusFilter===status?' is-active':''}" aria-pressed="${adminStatusFilter===status?'true':'false'}" data-action="toggle-admin-filter" data-value="${status}" title="${label} 요청만 보기 · 다시 누르면 전체 보기"><span class="admin-kpi-label">${label}</span><strong class="admin-kpi-value mono">${count}</strong></button>`;
   return `<div class="admin-kpis" aria-label="요청 처리 현황 요약 및 상태 필터">
     ${makeKpi('pending','검토 대기',pending)}
     ${makeKpi('approved','지급 대기',approved)}
@@ -163,7 +163,7 @@ function renderCard(item, showCta){
   const sla = getSlaMeta(item.status);
   const isApplied = !!requestState[item.name];
   const isAuto = item.status === 'auto';
-  const ctaBtn = (!isAuto && showCta !== false) ? `<button class="cta" onclick="openLicenseAction('${item.name.replace(/'/g, "\\'")}')">${sc.cta}</button>` : '';
+  const ctaBtn = (!isAuto && showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${sc.cta}</button>` : '';
   const slaPill = isAuto ? '' : (isApplied
     ? slaHealthHTML(requestState[item.name])
     : `<span class="sla-pill mono" title="SLA ${sla.detail}">SLA · ${sla.short}</span>`);
@@ -229,7 +229,7 @@ function setRole(key){
   grid.classList.toggle('balanced-four', r.cards.length === 4);
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
-      ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" onclick="openSupportRequest('role')">직무 정보 확인 요청</button></div>`
+      ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`
       : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 위의 전사 공통 라이선스만 확인하시면 됩니다.</div>`;
   } else {
     grid.innerHTML = r.cards.map(item => renderCard(item, true)).join('');
@@ -271,9 +271,9 @@ function openSupportRequest(kind){
     <textarea id="supportRequestNote" class="request-note" rows="3" maxlength="200" placeholder="${roleRequest ? '예: 신규 입사자 직무 정보가 포털에 매핑되지 않습니다' : '예: Tableau Creator · 데이터 시각화 대시보드 제작 목적'}"></textarea>
     <div class="detail-hint">접수 시 데모 ITSM 요청번호가 발급되며 신청현황과 관리자 체험에서 동일하게 표시됩니다.</div>`;
   document.getElementById('actionModalActions').innerHTML =
-    `<button class="ghost-btn" onclick="hideActionModal()">취소</button>` +
-    `<button class="primary-btn" onclick="submitSupportRequest()">요청 접수</button>`;
-  document.getElementById('actionModalBackdrop').style.display = 'flex';
+    `<button class="ghost-btn" data-action="hide-action">취소</button>` +
+    `<button class="primary-btn" data-action="submit-support">요청 접수</button>`;
+  document.getElementById('actionModalBackdrop').classList.add('show');
   activateOverlay('actionModalBackdrop','#supportRequestNote');
 }
 
@@ -334,7 +334,7 @@ function resetDemo(){
   document.getElementById('requestBackdrop')?.classList.remove('show');
   document.getElementById('drawerBackdrop')?.classList.remove('show');
   const action = document.getElementById('actionModalBackdrop');
-  if(action) action.style.display = 'none';
+  if(action) action.classList.remove('show');
   ['requestBackdrop','drawerBackdrop','actionModalBackdrop'].forEach(id => {
     const overlay = document.getElementById(id);
     if(!overlay) return;
@@ -359,10 +359,10 @@ function fakeLogin(){
   if(button.disabled) return;
   button.disabled = true;
   button.setAttribute('aria-busy','true');
-  document.getElementById('loginLoader').style.display = 'block';
+  document.getElementById('loginLoader').classList.add('is-visible');
   setTimeout(()=>{
     const login = document.getElementById('loginScreen');
-    login.style.display = 'none';
+    login.hidden = true;
     login.setAttribute('aria-hidden','true');
     login.inert = true;
     document.body.classList.remove('login-open');
@@ -563,9 +563,9 @@ function rejectLicense(name){
     REJECT_REASONS.map((r,i)=>`<label class="reason-item"><input type="radio" name="rejectReason" value="${i}"${i===0?' checked':''}><span>${r}</span></label>`).join('') +
     `</div>`;
   document.getElementById('actionModalActions').innerHTML =
-    `<button class="ghost-btn" onclick="hideActionModal()">취소</button>` +
-    `<button class="primary-btn" onclick="confirmReject('${name.replace(/'/g,"\\'")}')">반려 처리</button>`;
-  document.getElementById('actionModalBackdrop').style.display = 'flex';
+    `<button class="ghost-btn" data-action="hide-action">취소</button>` +
+    `<button class="primary-btn" data-action="confirm-reject" data-value="${escapeHTML(name)}">반려 처리</button>`;
+  document.getElementById('actionModalBackdrop').classList.add('show');
   activateOverlay('actionModalBackdrop','.action-modal-close');
 }
 
@@ -666,13 +666,13 @@ function renderDrawer(){
     const sla = getSlaMeta(req.baseStatus);
     const reviewLabel = isSupportRequest ? '요청 처리 완료' : req.baseStatus === 'approval' ? '관리자 승인하기' : 'IT 검토 완료';
     const adminActions = drawerMode === 'admin' && req.status === 'pending'
-      ? `<div class="request-actions"><button class="btn-primary" onclick="approveLicense('${req.name}')">${reviewLabel}</button><button class="btn-secondary" onclick="rejectLicense('${req.name}')">반려</button></div>`
+      ? `<div class="request-actions"><button class="btn-primary" data-action="approve-license" data-value="${escapeHTML(req.name)}">${reviewLabel}</button><button class="btn-secondary" data-action="reject-license" data-value="${escapeHTML(req.name)}">반려</button></div>`
       : drawerMode === 'admin' && req.status === 'approved'
-      ? `<div class="request-actions"><button class="btn-primary" onclick="completeLicense('${req.name}')">지급 완료 처리</button></div>` : '';
+      ? `<div class="request-actions"><button class="btn-primary" data-action="complete-license" data-value="${escapeHTML(req.name)}">지급 완료 처리</button></div>` : '';
     const userActions = drawerMode !== 'admin' && req.status === 'pending'
-      ? `<div class="request-actions"><button class="btn-secondary" onclick="cancelRequest('${req.name}')">신청 취소</button></div>`
+      ? `<div class="request-actions"><button class="btn-secondary" data-action="cancel-request" data-value="${escapeHTML(req.name)}">신청 취소</button></div>`
       : drawerMode !== 'admin' && req.status === 'rejected'
-      ? `<div class="request-actions"><button class="btn-primary" onclick="resubmitRequest('${req.name}')">수정 후 재신청</button></div>` : '';
+      ? `<div class="request-actions"><button class="btn-primary" data-action="resubmit-request" data-value="${escapeHTML(req.name)}">수정 후 재신청</button></div>` : '';
     const reason = req.status === 'rejected' && req.rejectionReason ? `<div class="rejection-reason"><b>반려 사유</b><br>${escapeHTML(req.rejectionReason)}</div>` : '';
     const history = `<div class="request-history">${(req.history || []).map(h=>`<div class="history-row"><span class="history-dot"></span><span><b class="history-actor">${escapeHTML(historyActor(h,req))}</b> · ${escapeHTML(h.label)} · ${escapeHTML(h.at)}</span></div>`).join('')}</div>`;
     return `<div class="request-item">
@@ -802,7 +802,7 @@ document.addEventListener('keydown', e => {
   const action = document.getElementById('actionModalBackdrop');
   const request = document.getElementById('requestBackdrop');
   const drawer = document.getElementById('drawerBackdrop');
-  if(action && action.style.display === 'flex'){ hideActionModal(); return; }
+  if(action && action.classList.contains('show')){ hideActionModal(); return; }
   if(request && request.classList.contains('show')){ closeRequestModal(); return; }
   if(drawer && drawer.classList.contains('show')){ closeDrawer(); return; }
   if(!document.getElementById('moreMenu')?.hidden){ closeMoreMenu(); document.getElementById('moreBtn')?.focus(); }
@@ -817,12 +817,12 @@ syncFilterUI();
 setRole(currentRole);
 const loginScreen = document.getElementById('loginScreen');
 if(loggedIn){
-  loginScreen.style.display = 'none';
+  loginScreen.hidden = true;
   loginScreen.setAttribute('aria-hidden','true');
   loginScreen.inert = true;
   document.body.classList.remove('login-open');
 } else {
-  loginScreen.style.display = 'flex';
+  loginScreen.hidden = false;
   loginScreen.setAttribute('aria-hidden','false');
 }
 syncPageInert();
