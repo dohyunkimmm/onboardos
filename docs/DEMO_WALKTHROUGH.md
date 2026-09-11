@@ -2,6 +2,12 @@
 
 채용 담당자·리뷰어가 약 2–3분 안에 핵심 설계와 검증 포인트를 확인할 수 있는 데모 루트입니다.
 
+## 54초 Production Demo Video
+
+[**ONBOARD·OS v1.7.0 P6 Production Demo 보기 →**](https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4)
+
+GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고, `v1.7.0` GitHub Release asset으로 게시합니다. 녹화 중 Vercel Analytics·Speed Insights endpoint는 intercept하여 synthetic 데모 트래픽이 실제 사용 지표에 섞이지 않도록 합니다.
+
 ## 1. 로그인과 직무 개인화 — 20초
 1. 가상 Google SSO로 로그인합니다.
 2. 경영지원·총무 직무를 선택합니다.
@@ -30,6 +36,6 @@
 - 15–28초: 신청 Modal → 신청현황 ITSM/SLA
 - 28–42초: 관리자 체험 → 검토/승인 → 지급 완료
 - 42–50초: 사용자 지급 완료 상태
-- 50–60초: README Verification Matrix + green GitHub Actions
+- 50–60초: green GitHub Actions verification evidence
 
 실제 Google SSO·JSM·SaaS API와 연결된 운영 서비스가 아니라, 운영 정책과 사용자/관리자 Flow를 검증하는 가상 데이터 기반 인터랙티브 프로토타입이라는 점을 영상 설명이나 캡션에 명시합니다.

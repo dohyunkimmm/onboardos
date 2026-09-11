@@ -1,0 +1,74 @@
+name: Production Demo Video
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/demo-video-request.json'
+      - '.github/workflows/demo-video.yml'
+      - 'scripts/record-demo.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: production-demo-video
+  cancel-in-progress: false
+
+jobs:
+  record-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DEMO_URL: https://onboardos-rho.vercel.app/
+      EVIDENCE_URL: https://github.com/dohyunkimmm/onboardos/actions/runs/34608554610
+      VIDEO_NAME: ONBOARD_OS_v1.7.0_P6_production_demo.mp4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Record actual Production flow
+        run: node scripts/record-demo.mjs
+
+      - name: Convert to MP4
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -y \
+            -i demo-output/ONBOARD_OS_v1.7.0_P6_production_demo.webm \
+            -c:v libx264 -preset medium -crf 24 -pix_fmt yuv420p -movflags +faststart \
+            -an "demo-output/${VIDEO_NAME}"
+          test -s "demo-output/${VIDEO_NAME}"
+
+      - name: Publish v1.7.0 Release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload v1.7.0 "demo-output/${VIDEO_NAME}" --clobber
+          gh release view v1.7.0 --json assets --jq '.assets[] | select(.name == env.VIDEO_NAME) | {name, size, url}'
+
+      - name: Verification summary
+        run: |
+          {
+            echo '## Production Demo Video'
+            echo ''
+            echo '- Source: actual Vercel Production URL'
+            echo '- Flow: SSO mock → Microsoft Office request → ITSM/SLA → admin review → provision complete → user completion'
+            echo '- Analytics/Speed Insights endpoints: intercepted to avoid synthetic metric pollution'
+            echo "- Release asset: https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/${VIDEO_NAME}"
+          } >> "$GITHUB_STEP_SUMMARY"
