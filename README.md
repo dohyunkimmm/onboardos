@@ -2,13 +2,24 @@
 
 [![E2E Verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 
-[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
+[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) · [Release Notes](./CHANGELOG.md) · [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md)
 
 신규입사자가 직무에 맞는 SaaS·업무 도구를 확인하고, 라이선스 **신청 → 검토·승인 → 지급 완료**까지의 흐름을 직접 체험할 수 있도록 설계한 인터랙티브 온보딩 포털 프로토타입입니다.
+
+> **Portfolio freeze — v1.7.0 / P6 verified.** 현재 기술 범위는 P6에서 동결하며, 이후에는 기능 확장보다 실제 사용 피드백·버그 수정·문서 정확성 유지를 우선합니다. 최종 `main`은 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Production Desktop Chromium+iPhone WebKit smoke·SHA-256 deployment integrity까지 검증합니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
 ![ONBOARD·OS preview](./og-image.png)
+
+## 2–3분 Demo Route
+
+1. **로그인·직무 개인화** — 가상 Google SSO → 경영지원·총무 선택 → 전사 공통/직무별 라이선스와 자동 지급·신청·승인 필요 구분 확인
+2. **신청·처리** — Microsoft Office 신청 → 사용자 ITSM/SLA 확인 → 관리자 체험에서 동일 티켓 검토/승인 → 지급 완료
+3. **예외·상태 일관성** — 반려→보완 재신청, 직무 미매핑/목록 외 Fallback, 직무 전환 후 상태 격리·복원 확인
+4. **검증 Evidence** — README Verification Matrix와 최신 `main` GitHub Actions에서 54개 회귀·Desktop/Mobile Lighthouse·Production smoke·SHA-256 integrity 확인
+
+실제 45–60초 화면 녹화용 shot list와 설명 문구는 [`docs/DEMO_WALKTHROUGH.md`](./docs/DEMO_WALKTHROUGH.md)에 정리했습니다.
 
 ## 주요 기능
 
@@ -119,6 +130,8 @@ stateDiagram-v2
 │   ├── production.spec.js
 │   ├── visual.spec.js
 │   └── visual.spec.js-snapshots/
+├── docs/
+│   └── DEMO_WALKTHROUGH.md
 ├── playwright.config.js
 ├── playwright.cross-browser.config.js
 ├── playwright.production.config.js
@@ -126,6 +139,7 @@ stateDiagram-v2
 ├── lighthouserc.mobile.cjs
 ├── package.json
 ├── package-lock.json
+├── CHANGELOG.md
 ├── .github/
 │   ├── dependabot.yml
 │   └── workflows/e2e.yml
@@ -201,6 +215,14 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 - **Self-hosted font** — Pretendard Dynamic Subset과 OFL 라이선스를 저장소에 포함해 jsDelivr 런타임 의존성과 해당 CSP allowlist를 제거했습니다.
 - **Supply-chain guard** — high 이상 npm advisory와 PR dependency diff를 자동 차단하고, workflow Action은 full commit SHA로 pinning합니다.
 - **Docs-only deploy skip** — Markdown 및 `docs/`만 변경된 commit은 Vercel Ignored Build Step에서 애플리케이션 배포를 건너뜁니다.
+
+## Post-release Measurement
+
+P6 이후에는 synthetic 숫자를 만들지 않고 **실제 방문이 발생한 뒤** 아래 퍼널과 이탈 지점을 확인합니다.
+
+`Demo Login → License Request → Admin Review → License Complete`
+
+보조 지표는 `Role Preview`, `License Resubmit`, `Fallback Request`, `Case Study CTA`로 봅니다. QA/Production smoke는 Analytics endpoint를 intercept하므로 검증 트래픽을 실사용 지표로 섞지 않습니다. 현재 단계에서는 이벤트 스키마와 privacy boundary만 검증됐으며, 실제 Vercel Analytics dashboard ingestion·전환율은 충분한 실제 방문 데이터가 생긴 뒤 확인합니다.
 
 ## Code Structure
 
