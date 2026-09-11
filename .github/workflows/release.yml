@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   release:
-    name: Create tag and GitHub Release
+    name: Create or sync tag and GitHub Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -91,7 +91,7 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Create tag and release
+      - name: Create or sync tag and release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -102,18 +102,24 @@ jobs:
         run: |
           set -euo pipefail
 
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Release $TAG already exists; nothing to do."
-            exit 0
-          fi
-
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
             ACTUAL_TARGET="$(git rev-list -n 1 "$TAG")"
             if [ "$ACTUAL_TARGET" != "$TARGET" ]; then
               echo "Existing tag $TAG points to $ACTUAL_TARGET, expected $TARGET." >&2
               exit 1
             fi
+          fi
 
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" \
+              --notes-file "$NOTES_FILE"
+            echo "Release $TAG synchronized from $NOTES_FILE."
+            exit 0
+          fi
+
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
             gh release create "$TAG" \
               --repo "$GITHUB_REPOSITORY" \
               --verify-tag \
