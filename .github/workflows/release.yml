@@ -1,0 +1,128 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (for example v1.7.0)
+        required: true
+        type: string
+      target:
+        description: Exact 40-character commit SHA to tag
+        required: true
+        type: string
+      title:
+        description: Release title
+        required: true
+        type: string
+      notes_file:
+        description: Repository path to release notes
+        required: true
+        default: CHANGELOG.md
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/release-request.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create tag and GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release request
+        id: request
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_TARGET: ${{ inputs.target }}
+          INPUT_TITLE: ${{ inputs.title }}
+          INPUT_NOTES_FILE: ${{ inputs.notes_file }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            TAG="$INPUT_TAG"
+            TARGET="$INPUT_TARGET"
+            TITLE="$INPUT_TITLE"
+            NOTES_FILE="$INPUT_NOTES_FILE"
+          else
+            TAG="$(jq -er '.tag' .github/release-request.json)"
+            TARGET="$(jq -er '.target' .github/release-request.json)"
+            TITLE="$(jq -er '.title' .github/release-request.json)"
+            NOTES_FILE="$(jq -er '.notes_file' .github/release-request.json)"
+          fi
+
+          if ! [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release tag: $TAG" >&2
+            exit 1
+          fi
+
+          if ! [[ "$TARGET" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Target must be an exact 40-character commit SHA." >&2
+            exit 1
+          fi
+
+          if [ ! -f "$NOTES_FILE" ]; then
+            echo "Release notes file not found: $NOTES_FILE" >&2
+            exit 1
+          fi
+
+          git cat-file -e "${TARGET}^{commit}"
+
+          {
+            echo "tag=$TAG"
+            echo "target=$TARGET"
+            echo "notes_file=$NOTES_FILE"
+            echo "title<<EOF"
+            echo "$TITLE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create tag and release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.request.outputs.tag }}
+          TARGET: ${{ steps.request.outputs.target }}
+          TITLE: ${{ steps.request.outputs.title }}
+          NOTES_FILE: ${{ steps.request.outputs.notes_file }}
+        run: |
+          set -euo pipefail
+
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; nothing to do."
+            exit 0
+          fi
+
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            ACTUAL_TARGET="$(git rev-list -n 1 "$TAG")"
+            if [ "$ACTUAL_TARGET" != "$TARGET" ]; then
+              echo "Existing tag $TAG points to $ACTUAL_TARGET, expected $TARGET." >&2
+              exit 1
+            fi
+
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --verify-tag \
+              --title "$TITLE" \
+              --notes-file "$NOTES_FILE"
+          else
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$TARGET" \
+              --title "$TITLE" \
+              --notes-file "$NOTES_FILE"
+          fi
