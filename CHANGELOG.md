@@ -31,4 +31,9 @@ ONBOARD·OS의 포트폴리오용 기술 범위를 P6에서 동결합니다. 이
 ### Measurement policy
 실제 사용 데이터가 생긴 뒤에만 `Demo Login → License Request → Admin Review → License Complete` 퍼널을 확인합니다. Synthetic smoke/QA 트래픽은 Analytics endpoint를 intercept하며, 이름·이메일·EMP ID·자유 입력 신청 사유는 Custom Event data에 포함하지 않습니다.
 
-> GitHub Release/Tag는 저장소 UI 또는 Release API 권한이 있는 환경에서 이 freeze commit을 기준으로 `v1.7.0`을 생성하면 됩니다. 이 문서는 release note의 canonical source입니다.
+### Published release
+- GitHub Release: [v1.7.0 — P6 verified portfolio freeze](https://github.com/dohyunkimmm/onboardos/releases/tag/v1.7.0)
+- Tag: `v1.7.0`
+- Freeze commit: `b70537ef507443f0962b7d03a8f335ac7b6157f9`
+
+이 문서는 GitHub Release 본문과 함께 v1.7.0 release note의 canonical source입니다.
