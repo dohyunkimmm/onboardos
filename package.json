@@ -13,7 +13,8 @@
     "test:keyboard": "playwright test tests/keyboard.spec.js --project=desktop-chromium",
     "test:cross-browser": "playwright test -c playwright.cross-browser.config.js",
     "test:production": "playwright test -c playwright.production.config.js",
-    "test:lighthouse": "node scripts/lighthouse-run.js"
+    "test:lighthouse": "node scripts/lighthouse-run.js",
+    "test:lighthouse:mobile": "node scripts/lighthouse-run.js lighthouserc.mobile.cjs .lighthouseci-mobile"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
