@@ -2,5 +2,6 @@
   "tag": "v1.7.0",
   "target": "b70537ef507443f0962b7d03a8f335ac7b6157f9",
   "title": "v1.7.0 — P6 verified portfolio freeze",
-  "notes_file": "CHANGELOG.md"
+  "notes_file": "CHANGELOG.md",
+  "sync_revision": 1
 }
