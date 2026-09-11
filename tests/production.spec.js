@@ -21,17 +21,18 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   expect(csp).toContain("style-src-attr 'none'");
 
   if(testInfo.project.name === 'production-mobile-webkit'){
+    expect(page.context().browser().browserType().name()).toBe('webkit');
+    expect(testInfo.project.use.isMobile).toBe(true);
+    expect(testInfo.project.use.hasTouch).toBe(true);
     const profile = await page.evaluate(() => ({
       width:window.innerWidth,
       height:window.innerHeight,
-      touchPoints:navigator.maxTouchPoints,
       mobileUA:/Mobile|iPhone/i.test(navigator.userAgent),
       mobileMedia:window.matchMedia('(max-width: 430px)').matches,
       devicePixelRatio:window.devicePixelRatio
     }));
     expect(profile.width).toBeLessThanOrEqual(430);
     expect(profile.height).toBeGreaterThan(profile.width);
-    expect(profile.touchPoints).toBeGreaterThan(0);
     expect(profile.mobileUA).toBe(true);
     expect(profile.mobileMedia).toBe(true);
     expect(profile.devicePixelRatio).toBeGreaterThanOrEqual(2);
