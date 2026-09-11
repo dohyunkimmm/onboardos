@@ -23,12 +23,18 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   if(testInfo.project.name === 'production-mobile-webkit'){
     const profile = await page.evaluate(() => ({
       width:window.innerWidth,
+      height:window.innerHeight,
       touchPoints:navigator.maxTouchPoints,
-      mobileUA:/Mobile|iPhone/i.test(navigator.userAgent)
+      mobileUA:/Mobile|iPhone/i.test(navigator.userAgent),
+      mobileMedia:window.matchMedia('(max-width: 430px)').matches,
+      devicePixelRatio:window.devicePixelRatio
     }));
     expect(profile.width).toBeLessThanOrEqual(430);
+    expect(profile.height).toBeGreaterThan(profile.width);
     expect(profile.touchPoints).toBeGreaterThan(0);
     expect(profile.mobileUA).toBe(true);
+    expect(profile.mobileMedia).toBe(true);
+    expect(profile.devicePixelRatio).toBeGreaterThanOrEqual(2);
   }
 
   await expect(page.getByRole('button', {name:'Google SSO로 시작하기'})).toBeVisible();
