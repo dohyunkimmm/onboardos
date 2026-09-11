@@ -215,6 +215,7 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 ## Observability & Security
 
 - **Product events** — `Demo Login`, `Role Preview`, `License Request`, `License Resubmit`, `Fallback Request`, `Admin Review`, `License Complete`, `Fallback Complete`, `Case Study CTA`
+- **Production ingestion** — 실제 Production 세션에서 핵심 퍼널 `Demo Login → License Request → Admin Review → License Complete`가 Vercel Analytics dashboard에 수집되는 것을 확인했습니다 (2026-09-12).
 - **Privacy boundary** — 이름·이메일·EMP ID·자유 입력 신청 사유는 Custom Event data에 넣지 않습니다.
 - **Observability isolation** — Analytics·Speed Insights가 실패해도 핵심 신청 Flow가 영향을 받지 않는지 Fault Injection으로 검증합니다.
 - **Security headers** — 기존 보안 Header와 함께 CSP를 적용하고 `script-src-attr`/`style-src-attr`을 `none`으로 제한해 inline handler·style attribute 실행을 차단합니다.
@@ -228,7 +229,7 @@ P6 이후에는 synthetic 숫자를 만들지 않고 **실제 방문이 발생�
 
 `Demo Login → License Request → Admin Review → License Complete`
 
-보조 지표는 `Role Preview`, `License Resubmit`, `Fallback Request`, `Case Study CTA`로 봅니다. QA/Production smoke는 Analytics endpoint를 intercept하므로 검증 트래픽을 실사용 지표로 섞지 않습니다. 현재 단계에서는 이벤트 스키마와 privacy boundary만 검증됐으며, 실제 Vercel Analytics dashboard ingestion·전환율은 충분한 실제 방문 데이터가 생긴 뒤 확인합니다.
+보조 지표는 `Role Preview`, `License Resubmit`, `Fallback Request`, `Case Study CTA`로 봅니다. QA/Production smoke는 Analytics endpoint를 intercept하므로 검증 트래픽을 실사용 지표로 섞지 않습니다. 실제 Production 세션에서 핵심 퍼널 4개 이벤트의 Vercel Analytics dashboard ingestion을 확인했습니다. 전환율·이탈률은 표본이 충분히 쌓인 뒤 해석하며, 그 전에는 synthetic 숫자를 만들지 않습니다.
 
 ## Code Structure
 
