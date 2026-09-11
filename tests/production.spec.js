@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상이다', async ({ page }) => {
+test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상이다', async ({ page }, testInfo) => {
   const pageErrors = [];
   const consoleErrors = [];
   const assetStatus = new Map();
@@ -19,6 +19,18 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   const csp = response.headers()['content-security-policy'] || '';
   expect(csp).toContain("script-src-attr 'none'");
   expect(csp).toContain("style-src-attr 'none'");
+
+  if(testInfo.project.name === 'production-mobile-webkit'){
+    const profile = await page.evaluate(() => ({
+      width:window.innerWidth,
+      touchPoints:navigator.maxTouchPoints,
+      mobileUA:/Mobile|iPhone/i.test(navigator.userAgent)
+    }));
+    expect(profile.width).toBeLessThanOrEqual(430);
+    expect(profile.touchPoints).toBeGreaterThan(0);
+    expect(profile.mobileUA).toBe(true);
+  }
+
   await expect(page.getByRole('button', {name:'Google SSO로 시작하기'})).toBeVisible();
   for(const asset of ['/styles.css','/data.js','/js/state.js','/js/analytics.js','/js/a11y.js','/app.js','/js/events.js']) expect(assetStatus.get(asset), asset).toBe(200);
 
