@@ -60,7 +60,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload v1.7.0 "demo-output/${VIDEO_NAME}" --clobber
-          gh release view v1.7.0 --json assets --jq '.assets[] | select(.name == env.VIDEO_NAME) | {name, size, url}'
+          ASSET_NAME="$(gh release view v1.7.0 --json assets --jq ".assets[] | select(.name == \"${VIDEO_NAME}\") | .name")"
+          test "${ASSET_NAME}" = "${VIDEO_NAME}"
+          echo "Published ${ASSET_NAME}"
 
       - name: Verification summary
         run: |

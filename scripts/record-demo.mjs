@@ -18,6 +18,7 @@ const context = await browser.newContext({
 });
 const page = await context.newPage();
 const video = page.video();
+let recordingError;
 
 await page.route('**/vitals.vercel-analytics.com/**', route => route.fulfill({ status: 204, body: '' }));
 await page.route('**/_vercel/insights/event**', route => route.fulfill({ status: 204, body: '' }));
@@ -66,13 +67,19 @@ try {
 
   await page.goto(evidenceUrl, { waitUntil: 'domcontentloaded', timeout: 45_000 });
   await wait(8_000);
+} catch (error) {
+  recordingError = error;
 } finally {
+  // Playwright finalizes the video when the page closes. Keep the context/browser
+  // alive until saveAs has copied the finalized recording to the stable output path.
+  if (!page.isClosed()) await page.close();
+  if (video) await video.saveAs(webmPath);
   await context.close();
   await browser.close();
 }
 
+if (recordingError) throw recordingError;
 if (!video) throw new Error('Playwright video recording was not initialized.');
-await video.saveAs(webmPath);
 const stat = await fs.stat(webmPath);
 if (stat.size < 100_000) throw new Error(`Recorded video is unexpectedly small: ${stat.size} bytes`);
 console.log(`Recorded ${webmPath} (${stat.size} bytes)`);
