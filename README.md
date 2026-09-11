@@ -1,12 +1,14 @@
 # ONBOARD·OS
 
+[![E2E Verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
+
+[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
+
 신규입사자가 직무에 맞는 SaaS·업무 도구를 확인하고, 라이선스 **신청 → 검토·승인 → 지급 완료**까지의 흐름을 직접 체험할 수 있도록 설계한 인터랙티브 온보딩 포털 프로토타입입니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
 ![ONBOARD·OS preview](./og-image.png)
-
-[Live Demo](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
 
 ## 주요 기능
 
@@ -20,6 +22,7 @@
 - **Fallback Flow** — 직무 미매핑과 목록 외 라이선스도 데모 ITSM 요청번호를 발급해 사용자/관리자에서 동일하게 추적
 - **State Consistency** — 사용자/관리자에서 동일 요청 상태·티켓·이력 유지
 - **Role-isolated Scenario State** — 직무 Preview마다 신청·취소·이력을 독립 저장하고, 직무를 다시 선택해도 해당 시나리오 상태만 복원
+- **Fault-tolerant Session Recovery** — 손상된 세션·구버전 데이터·Storage 장애에서도 안전한 초기 상태 또는 유효 상태로 복구
 - **SLA 상태** — 정상 / 마감 임박 / 초과 / 완료 상태를 같은 기준으로 표시
 - **세션 상태 유지** — `sessionStorage` 기반 체험 상태 유지 및 명시적 초기화
 - **Responsive & Accessibility** — PC/태블릿/모바일, focus trap, `aria-*`, `inert`, ESC 닫기, skip link, reduced motion + axe 자동 검사
@@ -49,7 +52,7 @@ stateDiagram-v2
     처리중 --> 처리완료: Fallback/Helpdesk 요청
 ```
 
-각 직무 Preview는 위 상태 모델을 공유하지만 실제 요청 데이터는 **직무별 state bucket**으로 격리합니다. 기존 `onboard-os:v3` 세션은 `v4`로 읽을 때 당시 선택 직무의 상태로 1회 마이그레이션합니다.
+각 직무 Preview는 위 상태 모델을 공유하지만 실제 요청 데이터는 **직무별 state bucket**으로 격리합니다. 기존 `onboard-os:v3` 세션은 `v4`로 읽을 때 당시 선택 직무의 상태로 1회 마이그레이션하며, malformed session payload는 유효한 요청만 보존하고 복구 불가능한 데이터는 안전하게 폐기합니다.
 
 ## SLA 기준
 
@@ -66,11 +69,12 @@ stateDiagram-v2
 - Pretendard Variable Dynamic Subset self-hosting (SIL Open Font License 1.1)
 - Vercel Web Analytics custom events
 - Playwright E2E / axe WCAG A·AA / ARIA Snapshot / Visual Regression
-- Firefox·WebKit Cross-browser Smoke / Production Smoke
-- Lighthouse 13.4.1 · 3-run Performance Budget
+- Firefox·WebKit Cross-browser Smoke / Desktop Chromium·iPhone WebKit Production Smoke
+- Lighthouse 13.4.1 · Desktop + Mobile 각 3-run Performance Budget
+- Fault Injection & Recovery Contract
 - SHA-256 Production Asset Integrity
 - npm audit / PR Dependency Delta Review / Dependabot
-- GitHub Actions Quality Gate + Verification Evidence
+- GitHub Actions Quality Gate + Public Verification Evidence
 - GitHub → Vercel Production
 
 프레임워크 없이 정적 웹 구조로 구현했으며, Vercel Production은 GitHub `main` 브랜치와 연결되어 있습니다. Pretendard는 런타임 CDN 호출 없이 저장소의 subset 파일을 직접 제공합니다.
@@ -110,6 +114,7 @@ stateDiagram-v2
 │   ├── keyboard.spec.js
 │   ├── domain.spec.js
 │   ├── role-isolation.spec.js
+│   ├── recovery.spec.js
 │   ├── cross-browser.spec.js
 │   ├── production.spec.js
 │   ├── visual.spec.js
@@ -118,6 +123,7 @@ stateDiagram-v2
 ├── playwright.cross-browser.config.js
 ├── playwright.production.config.js
 ├── lighthouserc.cjs
+├── lighthouserc.mobile.cjs
 ├── package.json
 ├── package-lock.json
 ├── .github/
@@ -145,23 +151,28 @@ npm run quality
 npm run test:e2e
 npm run test:cross-browser
 npm run test:lighthouse
+npm run test:lighthouse:mobile
 ```
 
-Playwright는 Desktop Chromium과 Mobile Chromium에서 기능·접근성·상태 정책·직무 격리·Visual Regression을 포함한 **44개 회귀 테스트**를 실행합니다. 핵심 Business Flow는 다음과 같습니다.
+Playwright는 Desktop Chromium과 Mobile Chromium에서 기능·접근성·상태 정책·직무 격리·Fault Injection/Recovery·Visual Regression을 포함한 **54개 회귀 테스트**를 실행합니다. 핵심 Business/Recovery Flow는 다음과 같습니다.
 
 - 신청 → IT 검토 → 지급 완료 → reload 후 session 유지
 - 승인 필요 → 반려 → 보완 → 재신청 → 관리자 승인
 - 직무 미매핑 → ITSM 요청 생성 → 관리자 처리 완료
 - 목록 외 라이선스 → IT 헬프데스크 ITSM 요청 생성
 - 경영지원·총무에서 생성한 요청 → 디자인 직무에서 미노출 → reload → 경영지원·총무 복귀 시 동일 티켓 복원
+- corrupt v4 JSON → 안전한 초기화 → 새 정상 session 저장
+- malformed nested request / malformed v3 migration → 잘못된 상태 폐기 후 정상 dashboard 유지
+- `sessionStorage` read/write/remove 장애 → 핵심 신청 Flow 지속
+- Analytics / Speed Insights 장애 → 업무 Flow와 독립적으로 정상 동작
 
-PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·workflow pinning을 포함한 Fast Quality Gate와 high 이상 npm advisory Gate를 먼저 실행합니다. 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Desktop/Mobile Visual Regression을 검증하고, Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인합니다. Lighthouse 13.4.1은 동일 화면을 3회 측정하며 **각 실행이 모두** 설정된 성능 Budget을 만족해야 통과합니다.
+PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·workflow pinning을 포함한 Fast Quality Gate와 high 이상 npm advisory Gate를 먼저 실행합니다. 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Fault Injection/Recovery·Desktop/Mobile Visual Regression을 검증하고, Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인합니다. Lighthouse 13.4.1은 **Desktop과 Mobile profile을 각각 3회** 측정하며 각 실행이 모두 설정된 성능 Budget을 만족해야 통과합니다.
 
 PR에서는 base/current `package-lock.json` delta를 비교하고 remote package의 HTTPS·integrity metadata를 검사하며, `npm audit --audit-level=high`로 현재 의존성 전체의 high 이상 advisory를 차단합니다. npm과 GitHub Actions 업데이트는 Dependabot이 주 단위로 확인하고, workflow의 외부 GitHub Action은 mutable major tag 대신 검증한 **40자리 commit SHA**로 고정합니다.
 
-`main` push에서는 위 검증이 모두 통과한 뒤 **해당 commit의 Vercel status가 success인지 확인하고 실제 Production URL을 검증**합니다. 저장소 checkout과 Production의 핵심 HTML/CSS/JS 및 self-hosted font asset을 SHA-256으로 비교한 뒤, Chromium으로 핵심 Flow·CSP·주요 asset 200·page/console error를 다시 확인합니다. Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
+`main` push에서는 위 검증이 모두 통과한 뒤 **해당 commit의 Vercel status가 success인지 확인하고 실제 Production URL을 검증**합니다. 저장소 checkout과 Production의 핵심 HTML/CSS/JS 및 self-hosted font asset을 SHA-256으로 비교한 뒤, **Desktop Chromium과 iPhone WebKit emulation**으로 핵심 Flow·CSP·주요 asset 200·page/console error를 다시 확인합니다. Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
 
-각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다.
+각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다. README 상단의 **E2E Verification badge와 Latest main verification runs 링크**에서 `main`의 공개 검증 상태와 실행 이력을 바로 확인할 수 있습니다.
 
 ## Verification Matrix
 
@@ -170,19 +181,22 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 | Business Flow | Playwright | 신청·검토/승인·반려·재신청·Fallback·지급 완료 |
 | Domain Invariant | Playwright | 상태 전이·동일 ITSM 티켓·주말/월말/연말 SLA 경계 |
 | Scenario Isolation | Playwright | 직무별 요청·취소·이력 격리·reload 복원·v3→v4 session migration contract |
+| Recovery & Resilience | Playwright Fault Injection | corrupt JSON·malformed session·Storage 장애·Analytics/Speed Insights 장애에서 안전 복구 |
 | Accessibility | axe + Playwright | WCAG 2.x A/AA 자동 규칙·Keyboard/Focus·ARIA Snapshot |
 | Visual Regression | Playwright Screenshot | Desktop/Mobile 로그인·Dashboard·신청 Modal |
 | Cross-browser | Playwright | Firefox/WebKit 핵심 신청·관리자 Flow |
-| Performance | Lighthouse 13.4.1 | 3회 모두 Performance/A11y/Best Practices/SEO·Web Vitals/byte budget 통과 |
+| Desktop Performance | Lighthouse 13.4.1 | Desktop profile 3회 모두 Performance/A11y/Best Practices/SEO·Web Vitals/byte budget 통과 |
+| Mobile Performance | Lighthouse 13.4.1 | Mobile profile 3회 모두 동일 quality budget 통과 |
 | Supply Chain | npm audit + PR Dependency Delta | high 이상 advisory·비HTTPS/무결성 누락 차단·GitHub Actions SHA pin·Dependabot |
-| Production | Playwright + Vercel status | 실제 Production Flow·CSP·asset 200·page/console error |
+| Production | Playwright + Vercel status | Desktop Chromium + iPhone WebKit 실제 Production Flow·CSP·asset 200·page/console error |
 | Deployment Integrity | SHA-256 | GitHub checkout과 Production의 핵심 static/font asset hash 일치 |
-| Evidence | GitHub Actions Summary + artifact | commit/run별 검증 결과 JSON·Markdown 및 Production integrity report |
+| Evidence | GitHub Actions Summary + artifact + public workflow | commit/run별 JSON·Markdown·Production integrity report + 공개 main status/run 진입점 |
 
 ## Observability & Security
 
 - **Product events** — `Demo Login`, `Role Preview`, `License Request`, `License Resubmit`, `Fallback Request`, `Admin Review`, `License Complete`, `Fallback Complete`, `Case Study CTA`
 - **Privacy boundary** — 이름·이메일·EMP ID·자유 입력 신청 사유는 Custom Event data에 넣지 않습니다.
+- **Observability isolation** — Analytics·Speed Insights가 실패해도 핵심 신청 Flow가 영향을 받지 않는지 Fault Injection으로 검증합니다.
 - **Security headers** — 기존 보안 Header와 함께 CSP를 적용하고 `script-src-attr`/`style-src-attr`을 `none`으로 제한해 inline handler·style attribute 실행을 차단합니다.
 - **Self-hosted font** — Pretendard Dynamic Subset과 OFL 라이선스를 저장소에 포함해 jsDelivr 런타임 의존성과 해당 CSP allowlist를 제거했습니다.
 - **Supply-chain guard** — high 이상 npm advisory와 PR dependency diff를 자동 차단하고, workflow Action은 full commit SHA로 pinning합니다.
@@ -190,7 +204,7 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 
 ## Code Structure
 
-`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(직무별 세션·상태), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `js/events.js`(CSP-safe 이벤트 위임), `app.js`(화면·업무 Flow)로 분리했습니다.
+`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(직무별 세션·상태·복구), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `js/events.js`(CSP-safe 이벤트 위임), `app.js`(화면·업무 Flow)로 분리했습니다.
 
 ## Deployment
 
@@ -199,7 +213,7 @@ Feature Branch
     ↓
 GitHub Pull Request
     ↓
-Quality / E2E / WCAG / Visual / Cross-browser / Lighthouse / Supply-chain
+Quality / E2E / WCAG / Recovery / Visual / Cross-browser / Desktop+Mobile Lighthouse / Supply-chain
     ↓
 Vercel Preview
     ↓
@@ -207,9 +221,9 @@ Merge to main
     ↓
 Vercel Production
     ↓
-SHA-256 Deployment Integrity + Production Browser Smoke
+SHA-256 Deployment Integrity + Desktop Chromium / iPhone WebKit Production Smoke
     ↓
-Verification Evidence Artifact
+Verification Evidence Artifact + Public main Status
 ```
 
 ## Prototype Scope
@@ -223,7 +237,8 @@ Verification Evidence Artifact
 - 직무별 Preview 상태 격리
 - 반려·재신청과 직무 미매핑·목록 외 요청 Fallback
 - SLA와 처리 이력의 가시성
-- 모바일 환경을 포함한 주요 Service Flow
+- 손상 세션·Storage·Observability 장애에서의 복구 가능성
+- Desktop·모바일 환경을 포함한 주요 Service Flow
 
 ---
 

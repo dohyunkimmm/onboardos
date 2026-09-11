@@ -2,13 +2,14 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn, spawnSync } = require('child_process');
-const config = require('../lighthouserc.cjs');
 
+const configFile = process.argv[2] || 'lighthouserc.cjs';
+const reportDir = process.argv[3] || '.lighthouseci';
+const config = require(path.resolve(configFile));
 const collect = config.ci.collect;
 const assertions = config.ci.assert.assertions;
 const target = collect.url[0];
 const numberOfRuns = collect.numberOfRuns || 3;
-const reportDir = '.lighthouseci';
 fs.rmSync(reportDir, {recursive:true, force:true});
 fs.mkdirSync(reportDir, {recursive:true});
 
@@ -32,6 +33,9 @@ function metric(report, id){
 
 function checkReport(report, runNumber){
   const failures = [];
+  if(collect.expectedFormFactor && report.configSettings?.formFactor !== collect.expectedFormFactor){
+    failures.push(`run ${runNumber}: formFactor ${report.configSettings?.formFactor || 'missing'} != ${collect.expectedFormFactor}`);
+  }
   for(const [id, definition] of Object.entries(assertions)){
     const [, rule] = definition;
     const value = metric(report, id);
@@ -50,6 +54,7 @@ function printRun(report, runNumber){
   const audit = name => report.audits[name]?.numericValue ?? 0;
   console.log([
     `Lighthouse run ${runNumber}/${numberOfRuns}`,
+    `Form ${report.configSettings?.formFactor || 'unknown'}`,
     `Performance ${score('performance')}`,
     `Accessibility ${score('accessibility')}`,
     `Best Practices ${score('best-practices')}`,
@@ -75,10 +80,10 @@ function printRun(report, runNumber){
         '--no-install', 'lighthouse', target,
         '--output=json',
         `--output-path=${outputPath}`,
-        `--preset=${collect.settings?.preset || 'desktop'}`,
         `--chrome-flags=${collect.settings?.chromeFlags || '--headless --no-sandbox'}`,
         '--quiet'
       ];
+      if(collect.settings?.preset) args.push(`--preset=${collect.settings.preset}`);
       const result = spawnSync('npx', args, {stdio:'inherit'});
       if(result.status !== 0) throw new Error(`Lighthouse CLI failed on run ${i} with status ${result.status}`);
       const report = JSON.parse(fs.readFileSync(outputPath,'utf8'));

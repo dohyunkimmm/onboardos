@@ -13,6 +13,7 @@ module.exports = defineConfig({
     timezoneId: 'Asia/Seoul'
   },
   projects: [
-    { name: 'production-chromium', use: { ...devices['Desktop Chrome'] } }
+    { name: 'production-chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'production-mobile-webkit', use: { ...devices['iPhone 13'] } }
   ]
 });
