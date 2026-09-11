@@ -27,6 +27,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
       touchPoints:navigator.maxTouchPoints,
       mobileUA:/Mobile|iPhone/i.test(navigator.userAgent),
       mobileMedia:window.matchMedia('(max-width: 430px)').matches,
+      coarsePointer:window.matchMedia('(pointer: coarse)').matches,
       devicePixelRatio:window.devicePixelRatio
     }));
     expect(profile.width).toBeLessThanOrEqual(430);
@@ -34,6 +35,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
     expect(profile.touchPoints).toBeGreaterThan(0);
     expect(profile.mobileUA).toBe(true);
     expect(profile.mobileMedia).toBe(true);
+    expect(profile.coarsePointer).toBe(true);
     expect(profile.devicePixelRatio).toBeGreaterThanOrEqual(2);
   }
 
