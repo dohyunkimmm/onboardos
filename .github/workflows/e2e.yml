@@ -144,12 +144,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Classify deployable runtime changes
+        run: |
+          runtime_changed=false
+          echo 'Changed paths:'
+          while IFS= read -r file; do
+            echo "- ${file}"
+            case "$file" in
+              .github/*|*.md|docs/*|scripts/record-demo.mjs)
+                ;;
+              *)
+                runtime_changed=true
+                ;;
+            esac
+          done < <(git diff --name-only HEAD^ HEAD)
+          echo "RUNTIME_CHANGED=${runtime_changed}" >> "$GITHUB_ENV"
+          echo "Deployable runtime changed: ${runtime_changed}"
       - name: Wait for this commit's Vercel status
+        if: env.RUNTIME_CHANGED == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -162,6 +181,9 @@ jobs:
           done
           echo 'Timed out waiting for Vercel deployment status' >&2
           exit 1
+      - name: Record non-runtime deployment decision
+        if: env.RUNTIME_CHANGED != 'true'
+        run: echo 'No deployable runtime files changed; verify existing Production by source integrity and browser smoke instead of requiring a new Vercel build.'
       - name: Production source integrity
         env:
           PRODUCTION_URL: https://onboardos-rho.vercel.app
