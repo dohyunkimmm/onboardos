@@ -3,7 +3,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const productionUrl = process.env.DEMO_URL || 'https://onboardos-rho.vercel.app/';
-const evidenceUrl = process.env.EVIDENCE_URL || 'https://github.com/dohyunkimmm/onboardos/actions/runs/34608554610';
 const outputDir = path.resolve('demo-output');
 const rawDir = path.join(outputDir, 'raw');
 const webmPath = path.join(outputDir, 'ONBOARD_OS_v1.7.0_P6_production_demo.webm');
@@ -61,11 +60,8 @@ try {
   await page.getByRole('button', { name: '닫기' }).click();
   await page.locator('#statusBtn').click();
   await page.locator('.request-item').filter({ hasText: 'Microsoft Office' }).waitFor({ state: 'visible' });
-  await wait(4_000);
-  await page.getByRole('button', { name: '닫기' }).click();
-  await wait(1_000);
-
-  await page.goto(evidenceUrl, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+  // Keep the final user completion state on screen. The publishing workflow trims
+  // the release asset to exactly 36 seconds, excluding the former evidence tail.
   await wait(8_000);
 } catch (error) {
   recordingError = error;
