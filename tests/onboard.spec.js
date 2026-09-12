@@ -1,7 +1,25 @@
 const { test, expect } = require('@playwright/test');
 
 async function login(page) {
+  const fontLink = page.locator('#brandFontStylesheet');
+  await expect(fontLink).toHaveAttribute('media', 'print');
+  const title = page.locator('#loginTitle');
+  const before = await title.evaluate(el => {
+    const style = getComputedStyle(el);
+    return { fontFamily: style.fontFamily, fontSize: style.fontSize };
+  });
+
   await page.getByRole('button', { name: 'Google SSO로 시작하기' }).click();
+  await expect(page.locator('#loginLoader')).toBeVisible();
+  await expect(fontLink).toHaveAttribute('media', 'all');
+  await page.evaluate(() => document.fonts.ready);
+  await expect(page.locator('#loginLoader')).toBeVisible();
+  const during = await title.evaluate(el => {
+    const style = getComputedStyle(el);
+    return { fontFamily: style.fontFamily, fontSize: style.fontSize };
+  });
+  expect(during).toEqual(before);
+
   await expect(page.locator('#loginScreen')).toBeHidden();
   await expect(page.locator('#mainContent')).toBeFocused();
 }
