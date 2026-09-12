@@ -19,6 +19,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   const csp = response.headers()['content-security-policy'] || '';
   expect(csp).toContain("script-src-attr 'none'");
   expect(csp).toContain("style-src-attr 'none'");
+  expect(csp).toContain("media-src 'self' https://github.com https://release-assets.githubusercontent.com https://objects.githubusercontent.com");
 
   if(testInfo.project.name === 'production-mobile-webkit'){
     expect(page.context().browser().browserType().name()).toBe('webkit');
@@ -54,6 +55,23 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   await request.getByRole('button', {name:'IT 검토 완료'}).click();
   await page.getByRole('button', {name:'지급 완료 처리'}).click();
   await expect(page.locator('.request-item').filter({hasText:'Microsoft Office'})).toContainText('지급 완료');
+
+  const demoResponse = await page.goto('/production-demo', {waitUntil:'domcontentloaded'});
+  expect(demoResponse.status()).toBe(200);
+  await expect(page.getByRole('heading', {name:'ONBOARD·OS Production Demo'})).toBeVisible();
+  const video = page.locator('video');
+  await expect(video).toBeVisible();
+  await expect(video).toHaveAttribute('aria-label', /36초/);
+  await expect(video.locator('source')).toHaveAttribute('src', 'https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4');
+  const duration = await video.evaluate(el => new Promise((resolve, reject) => {
+    if(Number.isFinite(el.duration) && el.duration > 0) return resolve(el.duration);
+    const timer = setTimeout(() => reject(new Error('Timed out waiting for demo video metadata')), 15000);
+    el.addEventListener('loadedmetadata', () => { clearTimeout(timer); resolve(el.duration); }, {once:true});
+    el.addEventListener('error', () => { clearTimeout(timer); reject(new Error('Production demo video failed to load')); }, {once:true});
+  }));
+  expect(duration).toBeGreaterThanOrEqual(35.9);
+  expect(duration).toBeLessThanOrEqual(36.1);
+
   expect(pageErrors).toEqual([]);
   expect(consoleErrors.filter(text => /Content Security Policy|Refused to|TypeError|ReferenceError/i.test(text))).toEqual([]);
 });
