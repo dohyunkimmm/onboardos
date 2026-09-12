@@ -6,6 +6,12 @@
     }
   },
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':!*.md' ':!docs/**'",
+  "rewrites": [
+    {
+      "source": "/production-demo",
+      "destination": "/production-demo.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
