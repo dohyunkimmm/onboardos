@@ -10,6 +10,10 @@
     {
       "source": "/production-demo",
       "destination": "/production-demo.html"
+    },
+    {
+      "source": "/production-demo-viewer",
+      "destination": "/production-demo.html"
     }
   ],
   "headers": [
