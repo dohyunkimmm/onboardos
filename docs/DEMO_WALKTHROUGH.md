@@ -4,9 +4,9 @@
 
 ## 36초 Production Demo Video
 
-[**ONBOARD·OS v1.7.0 P6 Production Demo 보기 →**](https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4)
+[**ONBOARD·OS v1.7.0 P6 Production Demo 보기 →**](https://onboardos-rho.vercel.app/production-demo)
 
-GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고, `v1.7.0` GitHub Release asset으로 게시합니다. 녹화 중 Vercel Analytics·Speed Insights endpoint는 intercept하여 synthetic 데모 트래픽이 실제 사용 지표에 섞이지 않도록 합니다. Release asset은 FFmpeg로 **정확히 36초**까지만 유지하며, 제품 Flow 이후의 Verification Evidence 화면은 영상에서 제외합니다.
+Vercel의 웹 플레이어에서 바로 재생되며, 영상 원본은 `v1.7.0` GitHub Release asset으로 유지합니다. GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고, 녹화 중 Vercel Analytics·Speed Insights endpoint는 intercept하여 synthetic 데모 트래픽이 실제 사용 지표에 섞이지 않도록 합니다. Release asset은 FFmpeg로 **정확히 36초**까지만 유지하며, 제품 Flow 이후의 Verification Evidence 화면은 영상에서 제외합니다.
 
 ## 1. 로그인과 직무 개인화 — 20초
 1. 가상 Google SSO로 로그인합니다.
