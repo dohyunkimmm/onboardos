@@ -2,7 +2,7 @@
 
 [![E2E Verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 
-[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) · [Release Notes](./CHANGELOG.md) · [약 49초 Production Demo](https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4) · [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md)
+[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) · [Release Notes](./CHANGELOG.md) · [36초 Production Demo](https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4) · [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md)
 
 신규입사자가 직무에 맞는 SaaS·업무 도구를 확인하고, 라이선스 **신청 → 검토·승인 → 지급 완료**까지의 흐름을 직접 체험할 수 있도록 설계한 인터랙티브 온보딩 포털 프로토타입입니다.
 
@@ -19,7 +19,7 @@
 3. **예외·상태 일관성** — 반려→보완 재신청, 직무 미매핑/목록 외 Fallback, 직무 전환 후 상태 격리·복원 확인
 4. **검증 Evidence** — README Verification Matrix와 최신 `main` GitHub Actions에서 54개 회귀·Desktop/Mobile Lighthouse·Production smoke·SHA-256 integrity 확인
 
-[**약 49초 Production Demo**](https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4)는 GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고 `v1.7.0` Release asset으로 게시합니다. 게시된 MP4의 FFmpeg 검증 길이는 **48.56초**입니다. 녹화 중 Analytics·Speed Insights endpoint는 intercept하여 synthetic 트래픽이 실제 사용 지표에 섞이지 않도록 합니다. 화면 녹화용 shot list와 설명 문구는 [`docs/DEMO_WALKTHROUGH.md`](./docs/DEMO_WALKTHROUGH.md)에 정리했습니다.
+[**36초 Production Demo**](https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4)는 GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고 `v1.7.0` Release asset으로 게시합니다. Release asset은 FFmpeg/ffprobe로 **정확히 36초**인지 검증하며 제품 Flow 이후의 Verification Evidence 화면은 영상에서 제외합니다. 녹화 중 Analytics·Speed Insights endpoint는 intercept하여 synthetic 트래픽이 실제 사용 지표에 섞이지 않도록 합니다. 화면 녹화용 shot list와 설명 문구는 [`docs/DEMO_WALKTHROUGH.md`](./docs/DEMO_WALKTHROUGH.md)에 정리했습니다.
 
 ## 주요 기능
 
