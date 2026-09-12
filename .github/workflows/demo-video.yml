@@ -22,7 +22,6 @@ jobs:
     timeout-minutes: 15
     env:
       DEMO_URL: https://onboardos-rho.vercel.app/
-      EVIDENCE_URL: https://github.com/dohyunkimmm/onboardos/actions/runs/34608554610
       VIDEO_NAME: ONBOARD_OS_v1.7.0_P6_production_demo.mp4
     steps:
       - name: Checkout
@@ -43,7 +42,7 @@ jobs:
       - name: Record actual Production flow
         run: node scripts/record-demo.mjs
 
-      - name: Convert to MP4
+      - name: Convert to 36-second MP4
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1; then
             sudo apt-get update
@@ -51,9 +50,13 @@ jobs:
           fi
           ffmpeg -y \
             -i demo-output/ONBOARD_OS_v1.7.0_P6_production_demo.webm \
+            -t 36 \
             -c:v libx264 -preset medium -crf 24 -pix_fmt yuv420p -movflags +faststart \
             -an "demo-output/${VIDEO_NAME}"
           test -s "demo-output/${VIDEO_NAME}"
+          DURATION="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "demo-output/${VIDEO_NAME}")"
+          echo "Verified MP4 duration: ${DURATION}s"
+          awk -v d="${DURATION}" 'BEGIN { exit !(d >= 35.9 && d <= 36.1) }'
 
       - name: Publish v1.7.0 Release asset
         env:
@@ -70,6 +73,7 @@ jobs:
             echo '## Production Demo Video'
             echo ''
             echo '- Source: actual Vercel Production URL'
+            echo '- Duration: 36 seconds (FFmpeg/ffprobe verified)'
             echo '- Flow: SSO mock → Microsoft Office request → ITSM/SLA → admin review → provision complete → user completion'
             echo '- Analytics/Speed Insights endpoints: intercepted to avoid synthetic metric pollution'
             echo "- Release asset: https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/${VIDEO_NAME}"
