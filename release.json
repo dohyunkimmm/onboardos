@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "product": "ONBOARD·OS",
+  "version": "1.9.0",
+  "freeze": "P6",
+  "releaseClass": "verification-hardening",
+  "scope": "release-provenance",
+  "businessFlowChanged": false,
+  "verificationContract": [
+    "sha256-asset-integrity",
+    "desktop-chromium-smoke",
+    "iphone-webkit-smoke"
+  ]
+}
