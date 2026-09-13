@@ -8,7 +8,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   page.on('console', msg => { if(msg.type() === 'error') consoleErrors.push(msg.text()); });
   page.on('response', response => {
     const pathname = new URL(response.url()).pathname;
-    if(['/styles.css','/data.js','/js/state.js','/js/analytics.js','/js/a11y.js','/app.js','/js/events.js'].includes(pathname)) assetStatus.set(pathname, response.status());
+    if(['/styles.css','/login-font-lock.css','/data.js','/js/state.js','/js/analytics.js','/js/a11y.js','/app.js','/js/events.js'].includes(pathname)) assetStatus.set(pathname, response.status());
   });
   await page.route('**/vitals.vercel-analytics.com/**', route => route.fulfill({status:204, body:''}));
   await page.route('**/_vercel/insights/event**', route => route.fulfill({status:204, body:''}));
@@ -40,9 +40,32 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   }
 
   await expect(page.getByRole('button', {name:'Google SSO로 시작하기'})).toBeVisible();
-  for(const asset of ['/styles.css','/data.js','/js/state.js','/js/analytics.js','/js/a11y.js','/app.js','/js/events.js']) expect(assetStatus.get(asset), asset).toBe(200);
+  for(const asset of ['/styles.css','/login-font-lock.css','/data.js','/js/state.js','/js/analytics.js','/js/a11y.js','/app.js','/js/events.js']) expect(assetStatus.get(asset), asset).toBe(200);
+
+  const loginTitle = page.locator('#loginTitle');
+  const readLoginMetrics = () => loginTitle.evaluate(el => {
+    const style = getComputedStyle(el);
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const textRect = range.getBoundingClientRect();
+    const boxRect = el.getBoundingClientRect();
+    return {
+      fontFamily:style.fontFamily,
+      textWidth:textRect.width,
+      height:boxRect.height
+    };
+  });
+  const loginBeforeBrandFont = await readLoginMetrics();
+  expect(loginBeforeBrandFont.fontFamily.toLowerCase()).toContain('system-ui');
 
   await page.getByRole('button', {name:'Google SSO로 시작하기'}).click();
+  await page.waitForFunction(() => document.getElementById('brandFontStylesheet')?.media === 'all');
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const loginAfterBrandFontActivation = await readLoginMetrics();
+  expect(loginAfterBrandFontActivation.fontFamily).toBe(loginBeforeBrandFont.fontFamily);
+  expect(Math.abs(loginAfterBrandFontActivation.textWidth - loginBeforeBrandFont.textWidth)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(loginAfterBrandFontActivation.height - loginBeforeBrandFont.height)).toBeLessThanOrEqual(0.5);
+
   await expect(page.locator('#loginScreen')).toBeHidden();
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   await card.getByRole('button', {name:'신청하기'}).click();

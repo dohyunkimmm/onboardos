@@ -1,0 +1,57 @@
+name: Production Verify
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-verify:
+    name: Manual Production integrity + desktop/mobile smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Require main branch
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Manual Production verification must run from main; got ${GITHUB_REF}." >&2
+            exit 1
+          fi
+      - run: npm ci
+      - name: Fast verification syntax checks
+        run: |
+          npm run quality
+          node --check scripts/asset-integrity.js
+          node --check tests/production.spec.js
+          node --check playwright.production.config.js
+          python3 -m json.tool vercel.json >/dev/null
+      - name: Production source integrity
+        env:
+          PRODUCTION_URL: https://onboardos-rho.vercel.app
+        run: node scripts/asset-integrity.js "$PRODUCTION_URL"
+      - name: Install Chromium + WebKit
+        run: npx playwright install --with-deps chromium webkit
+      - name: Production Desktop Chromium + iPhone WebKit browser smoke
+        env:
+          PRODUCTION_URL: https://onboardos-rho.vercel.app
+        run: npm run test:production
+      - name: Upload Production integrity evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: manual-production-integrity-${{ github.sha }}
+          path: verification/asset-integrity.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Upload Production smoke report on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-production-manual
+          path: playwright-report-production/
+          retention-days: 7
