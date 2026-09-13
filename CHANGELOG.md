@@ -20,11 +20,15 @@ P6에서 동결한 제품 기능 범위는 그대로 유지하면서, v1.7.0 이
 
 ### Verification
 - PR #28 / E2E run #75: Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
-- `main` commit `60a9c6a20bf947e8c51a3ba6632325967bcbb40e`: 동일한 코드 품질 gate 모두 통과
-- Production promotion은 Vercel `build-rate-limit`으로 아직 실행되지 않아, 새 runtime에 대한 SHA-256 Production integrity와 Desktop Chromium+iPhone WebKit smoke는 **미검증**
+- Production commit `43aa4d2ed812ccc7c1319f8055255434784fd5d6` / E2E run #82: 전체 workflow `completed / success`
+- Vercel Production deployment `dpl_7jjnogGW7voYYhabhnqTULfa8F3W`: `READY`
+- Production source integrity: success
+- Production Desktop Chromium + iPhone WebKit browser smoke: success
+- Verification evidence artifact: `verification-evidence-43aa4d2ed812ccc7c1319f8055255434784fd5d6`
+- Production integrity artifact: `production-integrity-43aa4d2ed812ccc7c1319f8055255434784fd5d6`
 
 ### Release status
-v1.8.0의 소스 범위와 CI 검증은 확정했지만, GitHub Release/Tag의 최종 발행과 `Production verified` 표기는 새 Vercel Production 배포 및 integrity/smoke 통과 후 확정합니다.
+v1.8.0은 P6 기능 동결을 유지한 polish release이며, 새 Production 배포와 integrity/browser smoke까지 통과한 **Production verified** 상태입니다.
 
 ---
 
