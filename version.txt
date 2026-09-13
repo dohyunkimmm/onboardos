@@ -1,3 +1,4 @@
 ONBOARD·OS v1.8.0
 P6 feature freeze
 Reviewer/UX/accessibility/code-quality polish release
+Production candidate · verified merge path
