@@ -2,9 +2,17 @@
 
 [![E2E Verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 
-[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) · [Release Notes](./CHANGELOG.md) · [36초 Production Demo](https://onboardos-rho.vercel.app/production-demo) · [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md)
-
 신규입사자가 직무에 맞는 SaaS·업무 도구를 확인하고, 라이선스 **신청 → 검토·승인 → 지급 완료**까지의 흐름을 직접 체험할 수 있도록 설계한 인터랙티브 온보딩 포털 프로토타입입니다.
+
+## Start Here
+
+| 보고 싶은 것 | 바로 보기 | 핵심 확인 포인트 |
+| --- | --- | --- |
+| **36초 핵심 Flow** | [Production Demo →](https://onboardos-rho.vercel.app/production-demo) | 직무 선택 → 신청 → ITSM/SLA → 관리자 처리 → 지급 완료 |
+| **2–3분 직접 체험** | [Live Production →](https://onboardos-rho.vercel.app/) | 사용자/관리자 상태 일관성, 반려·재신청, 예외 Flow |
+| **설계·운영 근거** | [Case Study →](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) | 문제 정의, 운영 정책, QA·Production evidence |
+
+**추천 순서:** 36초 영상으로 핵심을 먼저 확인한 뒤 → Live Production에서 직접 체험 → 필요하면 Case Study와 검증 근거를 확인합니다. [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md) · [Latest main verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Release Notes](./CHANGELOG.md)
 
 > **Portfolio freeze — v1.7.0 / P6 verified.** 현재 기술 범위는 P6에서 동결하며, 이후에는 기능 확장보다 실제 사용 피드백·버그 수정·문서 정확성 유지를 우선합니다. 최종 `main`은 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Production Desktop Chromium+iPhone WebKit smoke·로그인 font metric 안정성·36초 Demo duration·103-asset SHA-256 deployment integrity까지 검증합니다.
 
