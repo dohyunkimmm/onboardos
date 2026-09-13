@@ -193,7 +193,7 @@ PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·wor
 
 PR에서는 base/current `package-lock.json` delta를 비교하고 remote package의 HTTPS·integrity metadata를 검사하며, `npm audit --audit-level=high`로 현재 의존성 전체의 high 이상 advisory를 차단합니다. npm과 GitHub Actions 업데이트는 Dependabot이 주 단위로 확인하고, workflow의 외부 GitHub Action은 mutable major tag 대신 검증한 **40자리 commit SHA**로 고정합니다.
 
-`main` push에서는 위 검증이 모두 통과한 뒤 먼저 **deployable runtime 변경 여부를 판별**합니다. HTML/CSS/JS·Vercel 설정처럼 실제 런타임에 영향을 주는 변경이면 해당 commit의 Vercel status가 `success`여야 다음 단계로 진행합니다. 반대로 `.github/**`, Markdown/`docs/**`, `tests/**`, 검증용 `scripts/**`, Playwright/Lighthouse 설정, `package*.json` 같은 non-runtime-only 변경이면 Vercel Ignored Build Step에서 불필요한 새 애플리케이션 build를 건너뛰고 현재 Production을 대상으로 SHA-256 source integrity와 **Desktop Chromium + iPhone WebKit** browser smoke를 실행합니다. Runtime 변경 여부와 무관하게 Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
+`main` push에서는 위 검증이 모두 통과한 뒤 먼저 **deployable runtime 변경 여부를 판별**합니다. HTML/CSS/JS·Vercel 설정처럼 실제 런타임에 영향을 주는 변경이면 해당 commit의 Vercel status가 `success`여야 다음 단계로 진행합니다. `.github/**`, Markdown/`docs/**`, `tests/**`, 검증용 `scripts/**`, Playwright/Lighthouse 설정, `package*.json` 같은 non-runtime-only 변경도 현재 Production을 대상으로 SHA-256 source integrity와 **Desktop Chromium + iPhone WebKit** browser smoke를 실행해 실제 서비스 상태를 재검증합니다. Runtime 변경 여부와 무관하게 Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
 
 Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Production만 다시 확인해야 할 때는 **Production Verify** workflow를 `main`에서 수동 실행해 새 commit 없이 SHA-256 integrity와 Desktop Chromium+iPhone WebKit smoke를 다시 검증할 수 있습니다.
 
@@ -226,7 +226,7 @@ Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Producti
 - **Security headers** — 기존 보안 Header와 함께 CSP를 적용하고 `script-src-attr`/`style-src-attr`을 `none`으로 제한해 inline handler·style attribute 실행을 차단합니다.
 - **Self-hosted font** — Pretendard Dynamic Subset과 OFL 라이선스를 저장소에 포함해 jsDelivr 런타임 의존성과 해당 CSP allowlist를 제거했습니다.
 - **Supply-chain guard** — high 이상 npm advisory와 PR dependency diff를 자동 차단하고, workflow Action은 full commit SHA로 pinning합니다.
-- **Non-runtime deploy skip** — `.github/**`, Markdown/`docs/**`, `tests/**`, 검증용 scripts·Playwright/Lighthouse 설정·`package*.json`만 바뀐 commit은 Vercel Ignored Build Step에서 애플리케이션 build를 건너뜁니다.
+- **Non-runtime Production verification** — `.github/**`, Markdown/`docs/**`, `tests/**`, 검증용 scripts·Playwright/Lighthouse 설정·`package*.json` 같은 non-runtime 변경에서도 현재 Production의 integrity와 browser smoke를 재검증합니다.
 
 ## Post-release Measurement
 
