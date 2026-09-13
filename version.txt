@@ -1,4 +1,4 @@
-ONBOARD·OS v1.9.0
+ONBOARD·OS v2.0.0
 P6 feature freeze
-Release provenance & Production verification hardening
-Machine-readable release manifest · Production-verifiable
+Canonical release contract & version source-of-truth unification
+release.json → version.txt / package.json consistency gate

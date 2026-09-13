@@ -1,12 +1,18 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "product": "ONBOARD·OS",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "freeze": "P6",
-  "releaseClass": "verification-hardening",
-  "scope": "release-provenance",
+  "releaseClass": "release-contract-unification",
+  "scope": "version-source-of-truth",
+  "canonicalVersionSource": "release.json",
+  "syncedArtifacts": [
+    "version.txt",
+    "package.json"
+  ],
   "businessFlowChanged": false,
   "verificationContract": [
+    "release-contract-consistency",
     "sha256-asset-integrity",
     "desktop-chromium-smoke",
     "iphone-webkit-smoke"

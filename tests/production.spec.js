@@ -1,4 +1,8 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
+
+const expectedRelease = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'release.json'), 'utf8'));
 
 test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·console 상태가 정상이다', async ({ page }, testInfo) => {
   const pageErrors = [];
@@ -25,26 +29,13 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   const versionResponse = await page.request.get(`${productionOrigin}/version.txt`, {headers:{'cache-control':'no-cache'}});
   expect(versionResponse.status()).toBe(200);
   const versionText = await versionResponse.text();
-  expect(versionText).toContain('ONBOARD·OS v1.9.0');
-  expect(versionText).toContain('P6 feature freeze');
-  expect(versionText).toContain('Release provenance & Production verification hardening');
+  expect(versionText).toContain(`ONBOARD·OS v${expectedRelease.version}`);
+  expect(versionText).toContain(`${expectedRelease.freeze} feature freeze`);
+  expect(versionText).toContain('Canonical release contract & version source-of-truth unification');
 
   const releaseResponse = await page.request.get(`${productionOrigin}/release.json`, {headers:{'cache-control':'no-cache'}});
   expect(releaseResponse.status()).toBe(200);
-  expect(await releaseResponse.json()).toMatchObject({
-    schemaVersion:1,
-    product:'ONBOARD·OS',
-    version:'1.9.0',
-    freeze:'P6',
-    releaseClass:'verification-hardening',
-    scope:'release-provenance',
-    businessFlowChanged:false,
-    verificationContract:[
-      'sha256-asset-integrity',
-      'desktop-chromium-smoke',
-      'iphone-webkit-smoke'
-    ]
-  });
+  expect(await releaseResponse.json()).toEqual(expectedRelease);
 
   if(testInfo.project.name === 'production-mobile-webkit'){
     expect(page.context().browser().browserType().name()).toBe('webkit');
