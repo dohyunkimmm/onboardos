@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { collectPublicAssets } = require('./public-assets');
 
 const baseUrl = process.argv[2] || process.env.PRODUCTION_URL;
 if(!baseUrl){
@@ -9,27 +10,7 @@ if(!baseUrl){
   process.exit(2);
 }
 
-const critical = [
-  'index.html',
-  'production-demo.html',
-  'version.txt',
-  'release.json',
-  'styles.css',
-  'login-font-lock.css',
-  'data.js',
-  'app.js',
-  'js/state.js',
-  'js/analytics.js',
-  'js/a11y.js',
-  'js/events.js',
-  'scripts/release-contract.js',
-  'fonts/pretendard.css'
-];
-const fontDir = path.join('fonts','pretendard');
-const fontAssets = fs.existsSync(fontDir)
-  ? fs.readdirSync(fontDir).filter(name => name.endsWith('.woff2')).sort().map(name => `fonts/pretendard/${name}`)
-  : [];
-const assets = [...critical, ...fontAssets];
+const assets = collectPublicAssets();
 const hash = buffer => crypto.createHash('sha256').update(buffer).digest('hex');
 const verificationDir = 'verification';
 fs.mkdirSync(verificationDir, {recursive:true});
@@ -67,7 +48,8 @@ async function fetchAsset(asset){
     results.push(...rows);
   }
   const report = {
-    schemaVersion:1,
+    schemaVersion:2,
+    manifest:'integrity-assets.json',
     generatedAt:new Date().toISOString(),
     commit:process.env.GITHUB_SHA || null,
     productionUrl:baseUrl,
@@ -81,7 +63,7 @@ async function fetchAsset(asset){
     for(const row of mismatches) console.error(`HASH MISMATCH ${row.asset}\n  local  ${row.localSha256}\n  remote ${row.remoteSha256}`);
     process.exit(1);
   }
-  console.log(`Production source integrity PASS: ${results.length}/${results.length} assets match SHA-256`);
+  console.log(`Production source integrity PASS: ${results.length}/${results.length} manifest assets match SHA-256`);
 })().catch(error => {
   console.error(`Production source integrity FAILED: ${error.message}`);
   process.exit(1);
