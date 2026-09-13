@@ -1,7 +1,7 @@
 {
-  "tag": "v1.8.0",
-  "target": "43aa4d2ed812ccc7c1319f8055255434784fd5d6",
-  "title": "v1.8.0 — Reviewer experience & quality polish",
+  "tag": "v1.9.0",
+  "target": "5eede6a3985a6a0b51ffadd97b9bfe644104032e",
+  "title": "v1.9.0 — Release provenance & Production verification hardening",
   "notes_file": "CHANGELOG.md",
   "sync_revision": 1
 }
