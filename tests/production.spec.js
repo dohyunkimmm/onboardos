@@ -64,7 +64,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
     const stylesheet = document.getElementById('brandFontStylesheet');
     if(stylesheet) stylesheet.media = 'all';
     if(document.fonts?.ready) await document.fonts.ready;
-    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   });
   const loginAfterBrandFontActivation = await readLoginMetrics();
   expect(loginAfterBrandFontActivation.fontFamily).toBe(loginBeforeBrandFont.fontFamily);
