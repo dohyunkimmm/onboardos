@@ -1,12 +1,13 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "product": "ONBOARD·OS",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "freeze": "P6",
-  "releaseClass": "release-contract-unification",
-  "scope": "version-source-of-truth",
+  "releaseClass": "integrity-manifest-hardening",
+  "scope": "deployable-asset-source-of-truth",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
+  "integrityManifest": "integrity-assets.json",
   "syncedArtifacts": [
     "version.txt",
     "package.json"
@@ -14,6 +15,7 @@
   "businessFlowChanged": false,
   "verificationContract": [
     "release-contract-consistency",
+    "integrity-manifest-consistency",
     "sha256-asset-integrity",
     "desktop-chromium-smoke",
     "iphone-webkit-smoke"
