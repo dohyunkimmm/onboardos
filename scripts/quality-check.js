@@ -19,6 +19,28 @@ if(/<script(?![^>]*\bsrc=)[^>]*>/i.test(html)) fail('index.html contains an inli
 if(/cdn\.jsdelivr\.net/i.test(html)) fail('index.html still has a jsDelivr runtime dependency');
 if(!/href="fonts\/pretendard\.css"/.test(html)) fail('self-hosted Pretendard stylesheet is not linked');
 
+const versionPath = 'version.txt';
+const releasePath = 'release.json';
+if(!fs.existsSync(versionPath)) fail('version.txt is missing');
+if(!fs.existsSync(releasePath)) fail('release.json is missing');
+const versionText = read(versionPath);
+const versionMatch = versionText.match(/^ONBOARD·OS v(\d+\.\d+\.\d+)$/m);
+if(!versionMatch) fail('version.txt must declare ONBOARD·OS semantic version');
+let release;
+try{
+  release = JSON.parse(read(releasePath));
+}catch(error){
+  fail(`release.json is invalid JSON: ${error.message}`);
+}
+if(release.schemaVersion !== 1) fail(`release.json schemaVersion must be 1, found ${release.schemaVersion}`);
+if(release.product !== 'ONBOARD·OS') fail(`release.json product mismatch: ${release.product}`);
+if(release.version !== versionMatch[1]) fail(`release version mismatch: version.txt=${versionMatch[1]} release.json=${release.version}`);
+if(release.freeze !== 'P6') fail(`release.json freeze must remain P6, found ${release.freeze}`);
+if(release.businessFlowChanged !== false) fail('P6 release must keep businessFlowChanged=false');
+for(const contract of ['sha256-asset-integrity','desktop-chromium-smoke','iphone-webkit-smoke']){
+  if(!Array.isArray(release.verificationContract) || !release.verificationContract.includes(contract)) fail(`release.json verificationContract missing ${contract}`);
+}
+
 const fontCssPath = path.join('fonts','pretendard.css');
 if(!fs.existsSync(fontCssPath)) fail('self-hosted Pretendard CSS is missing');
 if(!fs.existsSync(path.join('fonts','PRETENDARD-LICENSE.txt'))) fail('Pretendard license file is missing');
@@ -80,4 +102,4 @@ if(!/npm audit --audit-level=high/.test(e2eWorkflow)) fail('high+ npm audit gate
 if(!/scripts\/dependency-review\.js/.test(e2eWorkflow)) fail('PR dependency delta gate missing');
 if(!fs.existsSync(path.join('scripts','dependency-review.js'))) fail('dependency-review.js is missing');
 
-console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, role isolation, CSP + SHA-pinned workflows`);
+console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, release ${release.version} provenance, role isolation, CSP + SHA-pinned workflows`);

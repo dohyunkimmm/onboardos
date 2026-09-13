@@ -12,6 +12,8 @@ if(!baseUrl){
 const critical = [
   'index.html',
   'production-demo.html',
+  'version.txt',
+  'release.json',
   'styles.css',
   'login-font-lock.css',
   'data.js',
