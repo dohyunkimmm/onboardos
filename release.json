@@ -1,10 +1,10 @@
 {
   "schemaVersion": 3,
   "product": "ONBOARD·OS",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "freeze": "P6",
-  "releaseClass": "integrity-manifest-hardening",
-  "scope": "deployable-asset-source-of-truth",
+  "releaseClass": "operational-ux-polish",
+  "scope": "admin-reviewer-experience-hardening",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
