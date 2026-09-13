@@ -20,11 +20,17 @@ P6에서 동결한 제품 기능 범위와 사용자·관리자 Business Flow는
 - `release.json`에 `businessFlowChanged: false`를 명시해 P6 freeze contract를 자동 Gate에 포함
 
 ### Verification
-- PR CI 및 새 Production 배포 검증 진행 중
-- GitHub Release/Tag는 새 Production deployment의 integrity/browser smoke 통과 후 발행
+- PR #31 / E2E run #86 (`34764447191`): Fast Quality Gate의 release provenance contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
+- Production commit `5eede6a3985a6a0b51ffadd97b9bfe644104032e` / E2E run #87 (`34764568032`): 전체 workflow `completed / success`
+- Vercel Production deployment `dpl_D8XKCyy4QUhynqscG57zZqwy4vER`: `READY`, GitHub verified commit 기준 배포
+- Production source integrity: `version.txt`와 `release.json`을 포함한 **105/105 deployable asset** SHA-256 일치
+- Production Desktop Chromium + iPhone WebKit browser smoke: success
+- Production `/version.txt`와 `/release.json`: HTTP 200, v1.9.0 / P6 / `businessFlowChanged=false` / verification contract 확인
+- Production integrity artifact `10320320598` / `sha256:730fc856c4488ff6bcf51750e4df4ce5ed94f36487c4ac2ad8199f5b1530b794`
+- Verification evidence artifact `10320200393` / `sha256:5357d767dced34fd84aed60e2432bb4d1f1ee9ee3c305fa218c7e1066eebaa9e`
 
 ### Release status
-v1.9.0은 제품 기능 확장이 아닌 **release provenance & verification hardening** 릴리스이며, Production 검증 완료 전까지 release candidate로 관리합니다.
+v1.9.0은 제품 기능 확장이 아닌 **release provenance & verification hardening** 릴리스이며, 새 Production 배포와 integrity/browser smoke까지 통과한 **Production verified** 상태입니다.
 
 ---
 
