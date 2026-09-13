@@ -2,6 +2,7 @@
 
 const overlayReturnFocus = new Map();
 const focusableSelector = 'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])';
+const OVERLAY_PRIORITY = ['actionModalBackdrop','requestBackdrop','drawerBackdrop','loginScreen'];
 
 function toggleMoreMenu(event){
   event?.stopPropagation();
@@ -24,12 +25,11 @@ function overlayIsOpen(id){
   const el = document.getElementById(id);
   if(!el) return false;
   if(id === 'loginScreen') return el.getAttribute('aria-hidden') !== 'true' && getComputedStyle(el).display !== 'none';
-  if(id === 'actionModalBackdrop') return el.classList.contains('show');
   return el.classList.contains('show');
 }
 
 function currentOverlay(){
-  for(const id of ['actionModalBackdrop','requestBackdrop','drawerBackdrop','loginScreen']){
+  for(const id of OVERLAY_PRIORITY){
     if(overlayIsOpen(id)) return document.getElementById(id);
   }
   return null;
