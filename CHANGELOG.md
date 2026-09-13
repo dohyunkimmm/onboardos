@@ -1,5 +1,33 @@
 # Changelog
 
+## v1.9.0 — Release provenance & Production verification hardening — 2026-09-13
+
+P6에서 동결한 제품 기능 범위와 사용자·관리자 Business Flow는 그대로 유지하면서, 배포된 버전과 검증 근거를 Production에서 직접 확인할 수 있도록 release provenance를 강화합니다.
+
+### Release provenance
+- `version.txt`를 `v1.9.0`으로 갱신하고 동적 검증 상태 문구 대신 릴리스 성격만 기록해 stale-state 가능성을 제거
+- `release.json`을 추가해 version·P6 freeze·release class·Business Flow 변경 여부·Production verification contract를 machine-readable 형태로 제공
+- Fast Quality Gate에서 `version.txt`와 `release.json`의 버전 일치, P6 freeze, `businessFlowChanged=false`, verification contract를 정적 검증
+
+### Production verification
+- SHA-256 Production source integrity 대상에 `version.txt`와 `release.json`을 추가
+- Production Desktop Chromium + iPhone WebKit smoke에서 `/version.txt`와 `/release.json` HTTP 200 및 v1.9.0 provenance contract를 실제 Production 기준으로 검증한 뒤 기존 핵심 신청·관리자 Flow를 확인
+- 기존 36초 Production Demo, login font metric, CSP, 핵심 static/font asset 검증은 유지
+
+### Scope
+- 새 SaaS·직무·상태·승인 Flow 추가 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 로직 변경 없음
+- `release.json`에 `businessFlowChanged: false`를 명시해 P6 freeze contract를 자동 Gate에 포함
+
+### Verification
+- PR CI 및 새 Production 배포 검증 진행 중
+- GitHub Release/Tag는 새 Production deployment의 integrity/browser smoke 통과 후 발행
+
+### Release status
+v1.9.0은 제품 기능 확장이 아닌 **release provenance & verification hardening** 릴리스이며, Production 검증 완료 전까지 release candidate로 관리합니다.
+
+---
+
 ## v1.8.0 — Reviewer experience & quality polish — 2026-09-13
 
 P6에서 동결한 제품 기능 범위는 그대로 유지하면서, v1.7.0 이후 채용 리뷰어의 진입 경험과 UX·접근성·코드 품질을 고도화했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
