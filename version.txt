@@ -1,4 +1,4 @@
-ONBOARD·OS v3.0.0
+ONBOARD·OS v4.0.0
 P6 feature freeze
-Canonical Production integrity manifest & deployable asset source-of-truth
-release.json → integrity-assets.json → automatic asset discovery
+Operational UX & reviewer experience polish
+Admin queue scanability · SLA emphasis · mobile action ergonomics
