@@ -14,6 +14,7 @@ const critical = [
   'production-demo.html',
   'version.txt',
   'release.json',
+  'package.json',
   'styles.css',
   'login-font-lock.css',
   'data.js',
@@ -22,6 +23,7 @@ const critical = [
   'js/analytics.js',
   'js/a11y.js',
   'js/events.js',
+  'scripts/release-contract.js',
   'fonts/pretendard.css'
 ];
 const fontDir = path.join('fonts','pretendard');
