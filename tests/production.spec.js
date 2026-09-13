@@ -55,18 +55,17 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
       height:boxRect.height
     };
   });
-  const loginBeforeFontsReady = await readLoginMetrics();
-  await page.evaluate(async () => {
-    if(document.fonts?.ready) await document.fonts.ready;
-    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-  });
-  const loginAfterFontsReady = await readLoginMetrics();
-  expect(loginAfterFontsReady.fontFamily.toLowerCase()).toContain('system-ui');
-  expect(loginAfterFontsReady.fontFamily).toBe(loginBeforeFontsReady.fontFamily);
-  expect(Math.abs(loginAfterFontsReady.textWidth - loginBeforeFontsReady.textWidth)).toBeLessThanOrEqual(0.5);
-  expect(Math.abs(loginAfterFontsReady.height - loginBeforeFontsReady.height)).toBeLessThanOrEqual(0.5);
+  const loginBeforeBrandFont = await readLoginMetrics();
+  expect(loginBeforeBrandFont.fontFamily.toLowerCase()).toContain('system-ui');
 
   await page.getByRole('button', {name:'Google SSO로 시작하기'}).click();
+  await page.waitForFunction(() => document.getElementById('brandFontStylesheet')?.media === 'all');
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const loginAfterBrandFontActivation = await readLoginMetrics();
+  expect(loginAfterBrandFontActivation.fontFamily).toBe(loginBeforeBrandFont.fontFamily);
+  expect(Math.abs(loginAfterBrandFontActivation.textWidth - loginBeforeBrandFont.textWidth)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(loginAfterBrandFontActivation.height - loginBeforeBrandFont.height)).toBeLessThanOrEqual(0.5);
+
   await expect(page.locator('#loginScreen')).toBeHidden();
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   await card.getByRole('button', {name:'신청하기'}).click();
