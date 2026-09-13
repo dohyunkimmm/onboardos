@@ -2,18 +2,19 @@
 
 ## v2.0.0 — Canonical release contract & version source-of-truth unification — 2026-09-14
 
-P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 릴리스 버전과 검증 계약을 하나의 canonical source에서 관리하도록 구조를 정리합니다.
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 릴리스 버전과 검증 계약을 하나의 canonical source에서 관리하도록 구조를 정리했습니다.
 
 ### Canonical release contract
 - `release.json` schema를 v2로 올리고 `canonicalVersionSource: release.json`을 명시
 - `version.txt`와 `package.json`을 `release.json`의 동기화 대상(`syncedArtifacts`)으로 고정
 - 이전까지 `package.json`에 남아 있던 1.7.0 버전 drift를 제거하고 v2.0.0으로 정렬
 - `scripts/release-contract.js`를 추가해 semantic version·P6 freeze·`businessFlowChanged=false`·verification contract·동기화 artifact 일치를 한 곳에서 검증
+- `releaseChannel: production`을 canonical contract에 포함해 Production release 상태를 machine-readable 형태로 노출
 
 ### Verification hardening
 - Fast Quality Gate가 별도 중복 로직 대신 canonical release contract validator를 호출하도록 통합
-- Production smoke에서 1.9.0을 하드코딩하지 않고 checkout의 `release.json` 전체와 Production `/release.json`을 직접 비교
-- `package.json`과 `scripts/release-contract.js`를 SHA-256 Production source integrity 대상에 추가
+- Production smoke에서 특정 버전을 하드코딩하지 않고 checkout의 `release.json` 전체와 Production `/release.json`을 직접 비교
+- 공개되는 `release.json`·`version.txt`·`scripts/release-contract.js`를 Production SHA-256 integrity로 검증하고, 공개되지 않는 `package.json`은 CI release-contract consistency gate에서 검증
 - 기존 Desktop Chromium + iPhone WebKit Production smoke, CSP, login font metric, 36초 Demo, Business Flow 검증은 유지
 
 ### Scope
@@ -22,11 +23,17 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 - P6 feature freeze와 `businessFlowChanged: false` 유지
 
 ### Verification
-- PR CI 및 새 Production 배포 검증 진행 중
-- GitHub Release/Tag는 새 Production deployment의 integrity/browser smoke 통과 후 발행
+- PR #32 / E2E run #91 (`34765803300`): canonical release contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
+- Production runtime commit `aacd7fb9811d16f86b9bd4cd490019b4de1bf532` / Vercel deployment `dpl_4z8Jwvgf5aMJRqpSYuX242Q3scRr`: `READY`, GitHub verified commit 기준 배포
+- Verification-only main commit `edd8a5d6872006169c70cbc54b08b25019592b74` / E2E run #96 (`34782666105`): 전체 workflow `completed / success`
+- Production source integrity: **106/106 publicly served static/font/provenance assets** SHA-256 일치
+- Production Desktop Chromium + iPhone WebKit browser smoke: **2/2 passed**
+- Production `/version.txt`·`/release.json`: HTTP 200, `v2.0.0` / P6 / `releaseChannel=production` / `businessFlowChanged=false` 확인
+- Production integrity artifact `10325750830` / `sha256:0f8c7256eebf6491149ed0665765c088738423a06f77aa5fb708e52330e69edd`
+- Verification evidence artifact `10324933483` / `sha256:867510a06864e007d60e7dc5101b7d21b265d74fe1d10806115d7f54f120ee34`
 
 ### Release status
-v2.0.0은 제품 기능 확장이 아닌 **release contract unification / source-of-truth hardening** 릴리스이며, Production 검증 완료 전까지 release candidate로 관리합니다.
+v2.0.0은 제품 기능 확장이 아닌 **release contract unification / source-of-truth hardening** 릴리스이며, 새 Production 배포와 integrity/browser smoke까지 통과한 **Production verified** 상태입니다.
 
 ---
 
