@@ -43,6 +43,7 @@ jobs:
           node --check lighthouserc.mobile.cjs
           node --check tests/role-isolation.spec.js
           node --check tests/recovery.spec.js
+          node --check tests/production.spec.js
           python3 -m json.tool vercel.json >/dev/null
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
