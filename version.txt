@@ -1,4 +1,6 @@
 ONBOARD·OS v4.0.0
 P6 feature freeze
+release.json
+integrity-assets.json
 Operational UX & reviewer experience polish
 Admin queue scanability · SLA emphasis · mobile action ergonomics
