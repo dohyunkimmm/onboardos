@@ -5,6 +5,7 @@
   "freeze": "P6",
   "releaseClass": "release-contract-unification",
   "scope": "version-source-of-truth",
+  "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "syncedArtifacts": [
     "version.txt",
