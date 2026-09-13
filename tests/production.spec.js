@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상이다', async ({ page }, testInfo) => {
+test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·console 상태가 정상이다', async ({ page }, testInfo) => {
   const pageErrors = [];
   const consoleErrors = [];
   const assetStatus = new Map();
@@ -20,6 +20,31 @@ test('실제 Production에서 핵심 Flow·CSP·asset·console 상태가 정상�
   expect(csp).toContain("script-src-attr 'none'");
   expect(csp).toContain("style-src-attr 'none'");
   expect(csp).toContain("media-src 'self' https://github.com https://release-assets.githubusercontent.com https://objects.githubusercontent.com");
+
+  const productionOrigin = new URL(page.url()).origin;
+  const versionResponse = await page.request.get(`${productionOrigin}/version.txt`, {headers:{'cache-control':'no-cache'}});
+  expect(versionResponse.status()).toBe(200);
+  const versionText = await versionResponse.text();
+  expect(versionText).toContain('ONBOARD·OS v1.9.0');
+  expect(versionText).toContain('P6 feature freeze');
+  expect(versionText).toContain('Release provenance & Production verification hardening');
+
+  const releaseResponse = await page.request.get(`${productionOrigin}/release.json`, {headers:{'cache-control':'no-cache'}});
+  expect(releaseResponse.status()).toBe(200);
+  expect(await releaseResponse.json()).toMatchObject({
+    schemaVersion:1,
+    product:'ONBOARD·OS',
+    version:'1.9.0',
+    freeze:'P6',
+    releaseClass:'verification-hardening',
+    scope:'release-provenance',
+    businessFlowChanged:false,
+    verificationContract:[
+      'sha256-asset-integrity',
+      'desktop-chromium-smoke',
+      'iphone-webkit-smoke'
+    ]
+  });
 
   if(testInfo.project.name === 'production-mobile-webkit'){
     expect(page.context().browser().browserType().name()).toBe('webkit');
