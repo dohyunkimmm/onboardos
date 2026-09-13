@@ -1,1 +1,75 @@
 .login-card .login-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+
+/* Reviewer entry lives outside the visual-baseline login card so it can guide portfolio review without changing the product flow. */
+.reviewer-entry{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  z-index:3;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  max-width:calc(100vw - 32px);
+  padding:8px 12px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:999px;
+  background:rgba(10,11,14,.78);
+  box-shadow:0 12px 30px -22px rgba(0,0,0,.8);
+  backdrop-filter:blur(12px) saturate(120%);
+  -webkit-backdrop-filter:blur(12px) saturate(120%);
+  color:var(--slate);
+  font-size:11.5px;
+  line-height:1.4;
+  white-space:nowrap;
+}
+.reviewer-entry-label{color:var(--slate-light);font-weight:600;}
+.reviewer-entry a{
+  min-height:32px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 4px;
+  border-radius:8px;
+  color:var(--ink-soft);
+  font-weight:700;
+  text-decoration:none;
+  text-underline-offset:3px;
+}
+.reviewer-entry a:hover{color:#fff;text-decoration:underline;}
+.reviewer-entry a:focus-visible{outline:2px solid var(--indigo-soft);outline-offset:2px;}
+
+/* Admin-review states are part of the existing flow; improve scanability and touch behavior without changing behavior. */
+.drawer-head{
+  position:sticky;
+  top:-28px;
+  z-index:4;
+  margin:0 -24px 18px;
+  padding:28px 24px 14px;
+  border-bottom:1px solid rgba(255,255,255,.055);
+  background:linear-gradient(180deg,rgba(25,27,33,.995) 72%,rgba(25,27,33,.94));
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.drawer-close{min-width:40px;min-height:40px;}
+.request-item:focus-within{border-color:rgba(129,140,248,.30);box-shadow:0 0 0 2px rgba(129,140,248,.09);}
+.request-actions button,.admin-kpi{min-height:44px;}
+.admin-kpi:focus-visible,.request-actions button:focus-visible{outline:2px solid var(--indigo-soft);outline-offset:2px;}
+.complete-box.is-complete h3{letter-spacing:-.01em;}
+
+@media (max-width:560px){
+  .reviewer-entry{
+    bottom:10px;
+    gap:6px;
+    width:max-content;
+    max-width:calc(100vw - 20px);
+    padding:7px 10px;
+    font-size:10.5px;
+  }
+  .reviewer-entry-label{display:none;}
+  .reviewer-entry a{min-height:36px;padding:0 5px;}
+  .drawer{padding:22px 18px;}
+  .drawer-head{top:-22px;margin:0 -18px 16px;padding:22px 18px 12px;}
+  .drawer-close{width:44px;height:44px;min-width:44px;min-height:44px;}
+  .request-actions button{min-height:44px;padding-inline:12px;}
+}
