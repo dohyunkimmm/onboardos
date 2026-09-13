@@ -14,7 +14,7 @@
 
 **추천 순서:** 36초 영상으로 핵심을 먼저 확인한 뒤 → Live Production에서 직접 체험 → 필요하면 Case Study와 검증 근거를 확인합니다. [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md) · [Latest main verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Release Notes](./CHANGELOG.md)
 
-> **Portfolio release — v1.9.0 / P6 Production verified.** 제품 기능 범위는 P6에서 동결하며, v1.9.0은 release provenance·Production verification hardening만 반영했습니다. Production commit `5eede6a3985a6a0b51ffadd97b9bfe644104032e`은 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Production Desktop Chromium+iPhone WebKit smoke·105-asset SHA-256 deployment integrity·`version.txt`/`release.json` provenance contract를 모두 통과했습니다.
+> **Portfolio release — v2.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v2.0.0은 `release.json`을 canonical version source로 승격해 `version.txt`·`package.json` 버전 drift와 Production provenance 검증을 하나의 release contract로 통합했습니다. Production runtime commit `aacd7fb9811d16f86b9bd4cd490019b4de1bf532`은 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Production Desktop Chromium+iPhone WebKit smoke·**106/106 publicly served asset SHA-256 integrity**·canonical `release.json` contract를 모두 통과했습니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
@@ -92,7 +92,7 @@ stateDiagram-v2
 - Lighthouse 13.4.1 · Desktop + Mobile 각 3-run Performance Budget
 - Fault Injection & Recovery Contract
 - SHA-256 Production Asset Integrity
-- Machine-readable Release Provenance (`version.txt` + `release.json`)
+- Canonical Machine-readable Release Contract (`release.json` → `version.txt` / `package.json` consistency)
 - npm audit / PR Dependency Delta Review / Dependabot
 - GitHub Actions Quality Gate + Manual Production Verify + Public Verification Evidence
 - Playwright Production Demo Recorder + Vercel web player + GitHub Release asset
@@ -127,6 +127,7 @@ stateDiagram-v2
 │       └── *.woff2
 ├── scripts/
 │   ├── quality-check.js
+│   ├── release-contract.js
 │   ├── serve.js
 │   ├── lighthouse-run.js
 │   ├── asset-integrity.js
@@ -200,7 +201,7 @@ Playwright는 Desktop Chromium과 Mobile Chromium에서 기능·접근성·상�
 - `sessionStorage` read/write/remove 장애 → 핵심 신청 Flow 지속
 - Analytics / Speed Insights 장애 → 업무 Flow와 독립적으로 정상 동작
 
-PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·workflow pinning을 포함한 Fast Quality Gate와 high 이상 npm advisory Gate를 먼저 실행합니다. `version.txt`와 `release.json`의 버전 일치, P6 freeze, `businessFlowChanged=false`, Production verification contract도 같은 Fast Quality Gate에서 검증합니다. 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Fault Injection/Recovery·Desktop/Mobile Visual Regression을 검증하고, Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인합니다. Lighthouse 13.4.1은 **Desktop과 Mobile profile을 각각 3회** 측정하며 각 실행이 모두 설정된 성능 Budget을 만족해야 통과합니다.
+PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·workflow pinning을 포함한 Fast Quality Gate와 high 이상 npm advisory Gate를 먼저 실행합니다. `release.json`을 canonical version source로 사용해 `version.txt`·`package.json` 버전 일치, P6 freeze, `businessFlowChanged=false`, Production verification contract를 같은 Fast Quality Gate에서 검증합니다. 이후 기능 E2E·WCAG A/AA axe 검사·Keyboard/Focus Contract·ARIA Snapshot·Fault Injection/Recovery·Desktop/Mobile Visual Regression을 검증하고, Firefox와 WebKit에서는 핵심 신청/관리자 Flow를 별도 Smoke로 확인합니다. Lighthouse 13.4.1은 **Desktop과 Mobile profile을 각각 3회** 측정하며 각 실행이 모두 설정된 성능 Budget을 만족해야 통과합니다.
 
 PR에서는 base/current `package-lock.json` delta를 비교하고 remote package의 HTTPS·integrity metadata를 검사하며, `npm audit --audit-level=high`로 현재 의존성 전체의 high 이상 advisory를 차단합니다. npm과 GitHub Actions 업데이트는 Dependabot이 주 단위로 확인하고, workflow의 외부 GitHub Action은 mutable major tag 대신 검증한 **40자리 commit SHA**로 고정합니다.
 
@@ -208,7 +209,7 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 
 Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Production만 다시 확인해야 할 때는 **Production Verify** workflow를 `main`에서 수동 실행해 새 commit 없이 SHA-256 integrity와 Desktop Chromium+iPhone WebKit smoke를 다시 검증할 수 있습니다.
 
-각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다. 현재 Production integrity는 `version.txt`·`release.json`·`production-demo.html`·`login-font-lock.css`를 포함한 **105개 deployable asset**이 GitHub checkout과 Production에서 모두 일치하는지 검증합니다. README 상단의 **E2E Verification badge, Latest main verification runs, Manual Production Verify 링크**에서 `main`의 공개 검증 상태와 재검증 진입점을 바로 확인할 수 있습니다.
+각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다. 현재 Production integrity는 `version.txt`·`release.json`·`scripts/release-contract.js`·`production-demo.html`·`login-font-lock.css`를 포함한 **106개 publicly served static/font/provenance asset**이 GitHub checkout과 Production에서 모두 일치하는지 검증합니다. 공개되지 않는 `package.json`은 Production HTTP fetch 대상이 아니라 canonical release-contract CI gate에서 `release.json`과의 버전 일치를 검증합니다. README 상단의 **E2E Verification badge, Latest main verification runs, Manual Production Verify 링크**에서 `main`의 공개 검증 상태와 재검증 진입점을 바로 확인할 수 있습니다.
 
 ## Verification Matrix
 
@@ -224,8 +225,8 @@ Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Producti
 | Desktop Performance | Lighthouse 13.4.1 | Desktop profile 3회 모두 Performance/A11y/Best Practices/SEO·Web Vitals/byte budget 통과 |
 | Mobile Performance | Lighthouse 13.4.1 | Mobile profile 3회 모두 동일 quality budget 통과 |
 | Supply Chain | npm audit + PR Dependency Delta | high 이상 advisory·비HTTPS/무결성 누락 차단·GitHub Actions SHA pin·Dependabot |
-| Production | Playwright + runtime-aware Vercel status | Runtime 변경은 해당 commit 배포 success 강제, non-runtime 변경은 기존 Production 검증 · Desktop Chromium + iPhone WebKit 실제 Flow·CSP·asset·로그인 font metric 안정성·36초 Demo player/duration·release provenance contract |
-| Deployment Integrity | SHA-256 | `version.txt`·`release.json`·`production-demo.html`·`login-font-lock.css` 포함 105개 static/font/provenance asset의 GitHub checkout ↔ Production hash 일치 |
+| Production | Playwright + runtime-aware Vercel status | Runtime 변경은 해당 commit 배포 success 강제, non-runtime 변경은 기존 Production 검증 · Desktop Chromium + iPhone WebKit 실제 Flow·CSP·asset·로그인 font metric 안정성·36초 Demo player/duration·canonical release contract |
+| Deployment Integrity | SHA-256 | `version.txt`·`release.json`·`scripts/release-contract.js`·`production-demo.html`·`login-font-lock.css` 포함 **106개 publicly served static/font/provenance asset**의 GitHub checkout ↔ Production hash 일치 |
 | Evidence | GitHub Actions Summary + artifact + public/manual workflow | commit/run별 JSON·Markdown·Production integrity report + 공개 main status/run + 수동 Production 재검증 진입점 |
 
 ## Observability & Security
@@ -249,7 +250,7 @@ P6 이후에는 synthetic 숫자를 만들지 않고 **실제 방문이 발생�
 
 ## Code Structure
 
-`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(직무별 세션·상태·복구), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `js/events.js`(CSP-safe 이벤트 위임), `app.js`(화면·업무 Flow)로 분리했습니다.
+`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(직무별 세션·상태·복구), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `js/events.js`(CSP-safe 이벤트 위임), `app.js`(화면·업무 Flow)로 분리했습니다. 릴리스 메타데이터는 `release.json`을 canonical source로 두고 `scripts/release-contract.js`가 `version.txt`·`package.json`과의 일관성을 검증합니다.
 
 ## Deployment
 
