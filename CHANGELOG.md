@@ -1,5 +1,33 @@
 # Changelog
 
+## v1.8.0 — Reviewer experience & quality polish — 2026-09-13
+
+P6에서 동결한 제품 기능 범위는 그대로 유지하면서, v1.7.0 이후 채용 리뷰어의 진입 경험과 UX·접근성·코드 품질을 고도화했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
+
+### Reviewer experience
+- README 진입 동선을 **36초 Production Demo → 2–3분 Live Production → Case Study** 순으로 재구성
+- 로그인 화면 바깥에 36초 Demo와 Case Study 빠른 진입 링크를 추가해 기존 로그인 카드 visual baseline은 유지
+- `docs/DEMO_WALKTHROUGH.md`를 리뷰어의 사용 가능 시간과 확인 목적 기준으로 재구성
+
+### UX & accessibility
+- 로그인·신청 dialog에 설명 컨텍스트를 연결해 screen reader 문맥을 강화
+- 관리자 Drawer의 scanability, focus state, 모바일 touch target을 정리
+- 기존 사용자/관리자 상태 동기화, 신청·반려·재신청·Fallback Flow는 변경하지 않음
+
+### Code quality
+- overlay 접근성 helper의 중복 조건을 정리해 동작은 유지하면서 책임을 단순화
+- 기존 login/dashboard/request modal visual regression baseline을 그대로 유지
+
+### Verification
+- PR #28 / E2E run #75: Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
+- `main` commit `60a9c6a20bf947e8c51a3ba6632325967bcbb40e`: 동일한 코드 품질 gate 모두 통과
+- Production promotion은 Vercel `build-rate-limit`으로 아직 실행되지 않아, 새 runtime에 대한 SHA-256 Production integrity와 Desktop Chromium+iPhone WebKit smoke는 **미검증**
+
+### Release status
+v1.8.0의 소스 범위와 CI 검증은 확정했지만, GitHub Release/Tag의 최종 발행과 `Production verified` 표기는 새 Vercel Production 배포 및 integrity/smoke 통과 후 확정합니다.
+
+---
+
 ## v1.7.0 — P6 verified portfolio freeze — 2026-09-11
 
 ONBOARD·OS의 포트폴리오용 기술 범위를 P6에서 동결합니다. 이 시점 이후에는 기능 확장보다 실제 사용 피드백·버그 수정·문서 정확성 유지를 우선합니다.
@@ -36,4 +64,4 @@ ONBOARD·OS의 포트폴리오용 기술 범위를 P6에서 동결합니다. 이
 - Tag: `v1.7.0`
 - Freeze commit: `b70537ef507443f0962b7d03a8f335ac7b6157f9`
 
-이 문서는 GitHub Release와 함께 v1.7.0 release note의 canonical source입니다.
+이 문서는 GitHub Release와 함께 release note의 canonical source입니다.
