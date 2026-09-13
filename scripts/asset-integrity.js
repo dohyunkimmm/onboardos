@@ -14,7 +14,6 @@ const critical = [
   'production-demo.html',
   'version.txt',
   'release.json',
-  'package.json',
   'styles.css',
   'login-font-lock.css',
   'data.js',
