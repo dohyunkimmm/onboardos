@@ -1,5 +1,35 @@
 # Changelog
 
+## v2.0.0 — Canonical release contract & version source-of-truth unification — 2026-09-14
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 릴리스 버전과 검증 계약을 하나의 canonical source에서 관리하도록 구조를 정리합니다.
+
+### Canonical release contract
+- `release.json` schema를 v2로 올리고 `canonicalVersionSource: release.json`을 명시
+- `version.txt`와 `package.json`을 `release.json`의 동기화 대상(`syncedArtifacts`)으로 고정
+- 이전까지 `package.json`에 남아 있던 1.7.0 버전 drift를 제거하고 v2.0.0으로 정렬
+- `scripts/release-contract.js`를 추가해 semantic version·P6 freeze·`businessFlowChanged=false`·verification contract·동기화 artifact 일치를 한 곳에서 검증
+
+### Verification hardening
+- Fast Quality Gate가 별도 중복 로직 대신 canonical release contract validator를 호출하도록 통합
+- Production smoke에서 1.9.0을 하드코딩하지 않고 checkout의 `release.json` 전체와 Production `/release.json`을 직접 비교
+- `package.json`과 `scripts/release-contract.js`를 SHA-256 Production source integrity 대상에 추가
+- 기존 Desktop Chromium + iPhone WebKit Production smoke, CSP, login font metric, 36초 Demo, Business Flow 검증은 유지
+
+### Scope
+- 새 SaaS·직무·상태·승인 Flow 추가 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 로직 변경 없음
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Verification
+- PR CI 및 새 Production 배포 검증 진행 중
+- GitHub Release/Tag는 새 Production deployment의 integrity/browser smoke 통과 후 발행
+
+### Release status
+v2.0.0은 제품 기능 확장이 아닌 **release contract unification / source-of-truth hardening** 릴리스이며, Production 검증 완료 전까지 release candidate로 관리합니다.
+
+---
+
 ## v1.9.0 — Release provenance & Production verification hardening — 2026-09-13
 
 P6에서 동결한 제품 기능 범위와 사용자·관리자 Business Flow는 그대로 유지하면서, 배포된 버전과 검증 근거를 Production에서 직접 확인할 수 있도록 release provenance를 강화합니다.
