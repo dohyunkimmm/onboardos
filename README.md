@@ -2,11 +2,11 @@
 
 [![E2E Verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 
-[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) · [Release Notes](./CHANGELOG.md) · [36초 Production Demo](https://onboardos-rho.vercel.app/production-demo) · [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md)
+[Latest main verification runs](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Verification Matrix](#verification-matrix) · [Live Production](https://onboardos-rho.vercel.app/) · [Case Study / 운영 정책](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) · [Release Notes](./CHANGELOG.md) · [36초 Production Demo](https://onboardos-rho.vercel.app/production-demo) · [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md)
 
 신규입사자가 직무에 맞는 SaaS·업무 도구를 확인하고, 라이선스 **신청 → 검토·승인 → 지급 완료**까지의 흐름을 직접 체험할 수 있도록 설계한 인터랙티브 온보딩 포털 프로토타입입니다.
 
-> **Portfolio freeze — v1.7.0 / P6 verified.** 현재 기술 범위는 P6에서 동결하며, 이후에는 기능 확장보다 실제 사용 피드백·버그 수정·문서 정확성 유지를 우선합니다. 최종 `main`은 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Production Desktop Chromium+iPhone WebKit smoke·SHA-256 deployment integrity까지 검증합니다.
+> **Portfolio freeze — v1.7.0 / P6 verified.** 현재 기술 범위는 P6에서 동결하며, 이후에는 기능 확장보다 실제 사용 피드백·버그 수정·문서 정확성 유지를 우선합니다. 최종 `main`은 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Production Desktop Chromium+iPhone WebKit smoke·로그인 font metric 안정성·36초 Demo duration·103-asset SHA-256 deployment integrity까지 검증합니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
@@ -85,7 +85,7 @@ stateDiagram-v2
 - Fault Injection & Recovery Contract
 - SHA-256 Production Asset Integrity
 - npm audit / PR Dependency Delta Review / Dependabot
-- GitHub Actions Quality Gate + Public Verification Evidence
+- GitHub Actions Quality Gate + Manual Production Verify + Public Verification Evidence
 - Playwright Production Demo Recorder + Vercel web player + GitHub Release asset
 - GitHub → Vercel Production
 
@@ -98,6 +98,7 @@ stateDiagram-v2
 ├── index.html
 ├── production-demo.html
 ├── styles.css
+├── login-font-lock.css
 ├── data.js
 ├── js/
 │   ├── state.js
@@ -148,6 +149,7 @@ stateDiagram-v2
 │   ├── demo-video-request.json
 │   └── workflows/
 │       ├── e2e.yml
+│       ├── production-verify.yml
 │       ├── release.yml
 │       └── demo-video.yml
 ├── vercel.json
@@ -191,9 +193,11 @@ PR 및 `main` push에서 GitHub Actions가 데이터·CSP·self-hosted font·wor
 
 PR에서는 base/current `package-lock.json` delta를 비교하고 remote package의 HTTPS·integrity metadata를 검사하며, `npm audit --audit-level=high`로 현재 의존성 전체의 high 이상 advisory를 차단합니다. npm과 GitHub Actions 업데이트는 Dependabot이 주 단위로 확인하고, workflow의 외부 GitHub Action은 mutable major tag 대신 검증한 **40자리 commit SHA**로 고정합니다.
 
-`main` push에서는 위 검증이 모두 통과한 뒤 먼저 **deployable runtime 변경 여부를 판별**합니다. HTML/CSS/JS·Vercel 설정처럼 실제 런타임에 영향을 주는 변경이면 해당 commit의 Vercel status가 `success`여야 다음 단계로 진행합니다. 반대로 `.github/**`, Markdown/`docs/**`, Production demo recorder 같은 non-runtime-only 변경이면 불필요한 새 Vercel build를 요구하지 않고 현재 Production을 대상으로 SHA-256 source integrity와 **Desktop Chromium + iPhone WebKit** browser smoke를 실행합니다. Runtime 변경 여부와 무관하게 Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
+`main` push에서는 위 검증이 모두 통과한 뒤 먼저 **deployable runtime 변경 여부를 판별**합니다. HTML/CSS/JS·Vercel 설정처럼 실제 런타임에 영향을 주는 변경이면 해당 commit의 Vercel status가 `success`여야 다음 단계로 진행합니다. 반대로 `.github/**`, Markdown/`docs/**`, `tests/**`, 검증용 `scripts/**`, Playwright/Lighthouse 설정, `package*.json` 같은 non-runtime-only 변경이면 Vercel Ignored Build Step에서 불필요한 새 애플리케이션 build를 건너뛰고 현재 Production을 대상으로 SHA-256 source integrity와 **Desktop Chromium + iPhone WebKit** browser smoke를 실행합니다. Runtime 변경 여부와 무관하게 Production Smoke 중 Analytics 전송 endpoint는 intercept하여 검증 트래픽이 지표를 오염시키지 않도록 합니다.
 
-각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다. README 상단의 **E2E Verification badge와 Latest main verification runs 링크**에서 `main`의 공개 검증 상태와 실행 이력을 바로 확인할 수 있습니다.
+Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Production만 다시 확인해야 할 때는 **Production Verify** workflow를 `main`에서 수동 실행해 새 commit 없이 SHA-256 integrity와 Desktop Chromium+iPhone WebKit smoke를 다시 검증할 수 있습니다.
+
+각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다. 현재 Production integrity는 `production-demo.html`과 `login-font-lock.css`를 포함한 **103개 deployable asset**이 GitHub checkout과 Production에서 모두 일치하는지 검증합니다. README 상단의 **E2E Verification badge, Latest main verification runs, Manual Production Verify 링크**에서 `main`의 공개 검증 상태와 재검증 진입점을 바로 확인할 수 있습니다.
 
 ## Verification Matrix
 
@@ -209,9 +213,9 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 | Desktop Performance | Lighthouse 13.4.1 | Desktop profile 3회 모두 Performance/A11y/Best Practices/SEO·Web Vitals/byte budget 통과 |
 | Mobile Performance | Lighthouse 13.4.1 | Mobile profile 3회 모두 동일 quality budget 통과 |
 | Supply Chain | npm audit + PR Dependency Delta | high 이상 advisory·비HTTPS/무결성 누락 차단·GitHub Actions SHA pin·Dependabot |
-| Production | Playwright + runtime-aware Vercel status | Runtime 변경은 해당 commit 배포 success 강제, non-runtime 변경은 기존 Production 검증 · Desktop Chromium + iPhone WebKit 실제 Flow·CSP·asset·Demo player |
-| Deployment Integrity | SHA-256 | GitHub checkout과 Production의 핵심 static/font asset hash 일치 |
-| Evidence | GitHub Actions Summary + artifact + public workflow | commit/run별 JSON·Markdown·Production integrity report + 공개 main status/run 진입점 |
+| Production | Playwright + runtime-aware Vercel status | Runtime 변경은 해당 commit 배포 success 강제, non-runtime 변경은 기존 Production 검증 · Desktop Chromium + iPhone WebKit 실제 Flow·CSP·asset·로그인 font metric 안정성·36초 Demo player/duration |
+| Deployment Integrity | SHA-256 | `production-demo.html`·`login-font-lock.css` 포함 103개 핵심 static/font asset의 GitHub checkout ↔ Production hash 일치 |
+| Evidence | GitHub Actions Summary + artifact + public/manual workflow | commit/run별 JSON·Markdown·Production integrity report + 공개 main status/run + 수동 Production 재검증 진입점 |
 
 ## Observability & Security
 
@@ -222,7 +226,7 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 - **Security headers** — 기존 보안 Header와 함께 CSP를 적용하고 `script-src-attr`/`style-src-attr`을 `none`으로 제한해 inline handler·style attribute 실행을 차단합니다.
 - **Self-hosted font** — Pretendard Dynamic Subset과 OFL 라이선스를 저장소에 포함해 jsDelivr 런타임 의존성과 해당 CSP allowlist를 제거했습니다.
 - **Supply-chain guard** — high 이상 npm advisory와 PR dependency diff를 자동 차단하고, workflow Action은 full commit SHA로 pinning합니다.
-- **Docs-only deploy skip** — Markdown 및 `docs/`만 변경된 commit은 Vercel Ignored Build Step에서 애플리케이션 배포를 건너뜁니다.
+- **Non-runtime deploy skip** — `.github/**`, Markdown/`docs/**`, `tests/**`, 검증용 scripts·Playwright/Lighthouse 설정·`package*.json`만 바뀐 commit은 Vercel Ignored Build Step에서 애플리케이션 build를 건너뜁니다.
 
 ## Post-release Measurement
 
@@ -254,6 +258,8 @@ Vercel Production
 SHA-256 Deployment Integrity + Desktop Chromium / iPhone WebKit Production Smoke
     ↓
 Verification Evidence Artifact + Public main Status
+    ↘
+     Manual Production Verify (deploy 지연/재검증 시, 새 commit 없이 실행)
 ```
 
 ## Prototype Scope
