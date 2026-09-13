@@ -1,7 +1,7 @@
 {
-  "tag": "v1.7.0",
-  "target": "b70537ef507443f0962b7d03a8f335ac7b6157f9",
-  "title": "v1.7.0 — P6 verified portfolio freeze",
+  "tag": "v1.8.0",
+  "target": "43aa4d2ed812ccc7c1319f8055255434784fd5d6",
+  "title": "v1.8.0 — Reviewer experience & quality polish",
   "notes_file": "CHANGELOG.md",
   "sync_revision": 1
 }
