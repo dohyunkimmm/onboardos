@@ -50,7 +50,7 @@
 </div>
 </div>
 <!-- 가상 Google SSO 로그인 -->
-<div aria-hidden="false" aria-labelledby="loginTitle" aria-modal="true" class="login-screen" id="loginScreen" role="dialog">
+<div aria-describedby="loginIntro loginNote" aria-hidden="false" aria-labelledby="loginTitle" aria-modal="true" class="login-screen" id="loginScreen" role="dialog">
 <div class="login-card" tabindex="-1">
 <div>
 <div class="login-brandline">
@@ -58,7 +58,7 @@
 <span class="login-eyebrow">Interactive Prototype</span>
 </div>
 <div class="login-title" id="loginTitle">직무별 라이선스 온보딩 포털</div>
-<p>직무에 맞는 SaaS·업무 도구를 확인하고, 필요한 라이선스의 <b>신청 → <span class="keep-together">검토·승인</span> → 지급 완료</b> 흐름을 직접 체험해 보세요.</p>
+<p id="loginIntro">직무에 맞는 SaaS·업무 도구를 확인하고, 필요한 라이선스의 <b>신청 → <span class="keep-together">검토·승인</span> → 지급 완료</b> 흐름을 직접 체험해 보세요.</p>
 <div aria-label="체험 시나리오" class="scenario-list">
 <div class="scenario-item"><span class="scenario-check">✓</span><span><b>SSO 인증</b> 후 신규입사자 정보 확인</span></div>
 <div class="scenario-item"><span class="scenario-check">✓</span><span><b>직무별 라이선스</b> 자동 노출</span></div>
@@ -75,9 +75,15 @@
 <div class="login-loader" id="loginLoader">Google SSO 인증 중…
         <div class="loader-bar"><span></span></div>
 </div>
-<div class="login-note">Google SSO 연동을 가정한 가상 데이터 기반 프로토타입입니다.</div>
+<div class="login-note" id="loginNote">Google SSO 연동을 가정한 가상 데이터 기반 프로토타입입니다.</div>
 </div>
 </div>
+<nav aria-label="리뷰어 빠른 보기" class="reviewer-entry">
+<span class="reviewer-entry-label">빠르게 보기</span>
+<a href="/production-demo">36초 영상</a>
+<span aria-hidden="true">·</span>
+<a href="https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a" rel="noopener noreferrer" target="_blank">Case Study</a>
+</nav>
 </div>
 <main id="mainContent" inert="" tabindex="-1">
 <div class="badge-wrap overview-panel">
@@ -165,7 +171,7 @@
 </footer>
 </main>
 <div aria-hidden="true" class="request-backdrop" id="requestBackdrop" inert="">
-<div aria-labelledby="requestTitle" aria-modal="true" class="request-modal" role="dialog" tabindex="-1">
+<div aria-describedby="requestDesc" aria-labelledby="requestTitle" aria-modal="true" class="request-modal" role="dialog" tabindex="-1">
 <h3 id="requestTitle">라이선스 신청</h3>
 <p id="requestDesc">담당 부서와 SLA를 확인한 뒤 신청을 완료해 주세요.</p>
 <div class="detail-list" id="requestDetails"></div>
