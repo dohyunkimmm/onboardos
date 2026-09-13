@@ -1,5 +1,41 @@
 # Changelog
 
+## v3.0.0 — Canonical Production integrity manifest — 2026-09-14
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, Production SHA-256 검증 대상을 코드의 수동 목록이 아니라 하나의 canonical manifest에서 자동 발견하도록 구조를 강화했습니다.
+
+### Canonical integrity manifest
+- `release.json`을 schema v3 / v3.0.0으로 올리고 `integrityManifest: integrity-assets.json`을 canonical release contract에 연결
+- `integrity-assets.json`에 필수 공개 asset과 재귀 탐색 규칙을 선언해 Production integrity surface를 데이터로 관리
+- `scripts/public-assets.js`가 `js/**/*.js`, `icons/**/*.svg`, `fonts/pretendard/**/*.woff2`를 재귀 탐색하고 unsafe path·symlink·중복·필수 coverage를 차단
+- `scripts/asset-integrity.js`의 hand-maintained asset 배열을 제거하고 canonical manifest에서 검증 대상을 생성
+- Fast Quality Gate와 `scripts/release-contract.js`가 manifest 자체와 critical asset coverage를 함께 검증
+
+### Contract-driven Production verification
+- Production smoke가 사람용 버전 설명 문구에 의존하지 않고 checkout의 `release.json`·`integrity-assets.json`과 실제 Production 응답을 직접 비교
+- `version.txt`·`package.json`은 `release.json` v3.0.0과 일치하도록 유지하고, P6 `businessFlowChanged=false` contract를 그대로 보존
+- 기존 CSP, login font metric, 36초 Demo, 사용자/관리자 핵심 Business Flow, Desktop Chromium + iPhone WebKit smoke를 그대로 유지
+
+### Scope
+- 새 SaaS·직무·상태·승인 Flow 추가 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 로직 변경 없음
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Verification
+- PR #36 / E2E run #99 (`34783933711`): v3 release contract·integrity manifest, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
+- Production runtime commit `b684b8b33d53e40a7f533f7c1134e7788db61efa` / Vercel deployment `dpl_36518CCTM9ZhBg9fjTcoXrZpSFvK`: `READY`, GitHub verified commit 기준 배포
+- Verification-only main commit `1673b7e1f06911bc46b135e7fbc5c1a503bbc272` / E2E run #102 (`34784373623`): 전체 workflow `completed / success`
+- Production source integrity: **131/131 canonical manifest assets** SHA-256 일치
+- Production Desktop Chromium + iPhone WebKit browser smoke: **2/2 passed**
+- Production `/release.json`·`/integrity-assets.json`: HTTP 200, v3.0.0 / P6 / `releaseChannel=production` / `businessFlowChanged=false` / canonical manifest 확인
+- Production integrity artifact `10326162286` / `sha256:435d8801c642927fbfeea85934112aacb7e619eb4b78a611f5a9f34b28f5e7ca`
+- Verification evidence artifact `10326600262` / `sha256:f0d614daa71d75f4f80b64c7e2fcc9104db38d661a7fe2589241a6e5bf1391a8`
+
+### Release status
+v3.0.0은 제품 기능 확장이 아닌 **canonical Production integrity manifest / deployable asset source-of-truth hardening** 릴리스이며, 새 Production 배포와 131/131 integrity·2-browser smoke까지 통과한 **Production verified** 상태입니다.
+
+---
+
 ## v2.0.0 — Canonical release contract & version source-of-truth unification — 2026-09-14
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 릴리스 버전과 검증 계약을 하나의 canonical source에서 관리하도록 구조를 정리했습니다.
