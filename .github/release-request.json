@@ -1,7 +1,7 @@
 {
-  "tag": "v1.9.0",
-  "target": "5eede6a3985a6a0b51ffadd97b9bfe644104032e",
-  "title": "v1.9.0 — Release provenance & Production verification hardening",
+  "tag": "v2.0.0",
+  "target": "aacd7fb9811d16f86b9bd4cd490019b4de1bf532",
+  "title": "v2.0.0 — Canonical release contract & version source of truth",
   "notes_file": "CHANGELOG.md",
   "sync_revision": 1
 }
