@@ -1,4 +1,4 @@
-ONBOARD·OS v2.0.0
+ONBOARD·OS v3.0.0
 P6 feature freeze
-Canonical release contract & version source-of-truth unification
-release.json → version.txt / package.json consistency gate
+Canonical Production integrity manifest & deployable asset source-of-truth
+release.json → integrity-assets.json → automatic asset discovery

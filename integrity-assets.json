@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "profile": "production-critical-public-assets",
+  "requiredFiles": [
+    "index.html",
+    "production-demo.html",
+    "version.txt",
+    "release.json",
+    "integrity-assets.json",
+    "styles.css",
+    "login-font-lock.css",
+    "data.js",
+    "app.js",
+    "og-image.png",
+    "scripts/release-contract.js",
+    "scripts/public-assets.js",
+    "fonts/pretendard.css",
+    "fonts/PRETENDARD-LICENSE.txt"
+  ],
+  "recursiveSets": [
+    {
+      "root": "js",
+      "extensions": [".js"]
+    },
+    {
+      "root": "icons",
+      "extensions": [".svg"]
+    },
+    {
+      "root": "fonts/pretendard",
+      "extensions": [".woff2"]
+    }
+  ]
+}
