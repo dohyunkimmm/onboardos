@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const expectedRelease = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'release.json'), 'utf8'));
+const expectedIntegrityManifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', expectedRelease.integrityManifest), 'utf8'));
 
 test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·console 상태가 정상이다', async ({ page }, testInfo) => {
   const pageErrors = [];
@@ -31,11 +32,16 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   const versionText = await versionResponse.text();
   expect(versionText).toContain(`ONBOARD·OS v${expectedRelease.version}`);
   expect(versionText).toContain(`${expectedRelease.freeze} feature freeze`);
-  expect(versionText).toContain('Canonical release contract & version source-of-truth unification');
+  expect(versionText).toContain(expectedRelease.canonicalVersionSource);
+  expect(versionText).toContain(expectedRelease.integrityManifest);
 
   const releaseResponse = await page.request.get(`${productionOrigin}/release.json`, {headers:{'cache-control':'no-cache'}});
   expect(releaseResponse.status()).toBe(200);
   expect(await releaseResponse.json()).toEqual(expectedRelease);
+
+  const manifestResponse = await page.request.get(`${productionOrigin}/${expectedRelease.integrityManifest}`, {headers:{'cache-control':'no-cache'}});
+  expect(manifestResponse.status()).toBe(200);
+  expect(await manifestResponse.json()).toEqual(expectedIntegrityManifest);
 
   if(testInfo.project.name === 'production-mobile-webkit'){
     expect(page.context().browser().browserType().name()).toBe('webkit');
