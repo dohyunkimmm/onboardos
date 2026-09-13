@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { validateReleaseContract } = require('./release-contract');
+const { collectPublicAssets } = require('./public-assets');
 
 const read = p => fs.readFileSync(p, 'utf8');
 const fail = message => { console.error(`QUALITY GATE FAILED: ${message}`); process.exit(1); };
@@ -21,8 +22,10 @@ if(/cdn\.jsdelivr\.net/i.test(html)) fail('index.html still has a jsDelivr runti
 if(!/href="fonts\/pretendard\.css"/.test(html)) fail('self-hosted Pretendard stylesheet is not linked');
 
 let release;
+let publicAssets;
 try{
   release = validateReleaseContract();
+  publicAssets = collectPublicAssets();
 }catch(error){
   fail(error.message);
 }
@@ -88,4 +91,4 @@ if(!/npm audit --audit-level=high/.test(e2eWorkflow)) fail('high+ npm audit gate
 if(!/scripts\/dependency-review\.js/.test(e2eWorkflow)) fail('PR dependency delta gate missing');
 if(!fs.existsSync(path.join('scripts','dependency-review.js'))) fail('dependency-review.js is missing');
 
-console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, release ${release.version} canonical contract, role isolation, CSP + SHA-pinned workflows`);
+console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, ${publicAssets.length} manifest assets, release ${release.version} canonical contract, role isolation, CSP + SHA-pinned workflows`);
