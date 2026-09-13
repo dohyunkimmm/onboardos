@@ -158,7 +158,7 @@ jobs:
           while IFS= read -r file; do
             echo "- ${file}"
             case "$file" in
-              .github/*|*.md|docs/*|scripts/record-demo.mjs)
+              .github/*|*.md|docs/*|tests/*|scripts/*|playwright*.js|lighthouserc*.cjs|package*.json)
                 ;;
               *)
                 runtime_changed=true
