@@ -8,10 +8,12 @@ const isProductionRun = event === 'push' && process.env.GITHUB_REF === 'refs/hea
 const productionResult = process.env.PRODUCTION_RESULT || (isProductionRun ? 'unknown' : 'not_applicable');
 const resilienceResult = process.env.RESILIENCE_RESULT || 'unknown';
 const securityResult = process.env.SECURITY_RESULT || 'unknown';
+const uxResult = process.env.UX_RESULT || 'unknown';
 const gates = [
   {area:'Chromium regression', gate:'Playwright', result:process.env.CHROMIUM_RESULT || 'unknown', scope:'Quality + Functional + WCAG/Keyboard/ARIA + Domain/SLA + Role Isolation + Visual'},
   {area:'Resilience & recovery', gate:'Playwright fault injection + recovery evidence', result:resilienceResult, scope:'session schema guard + corrupt-state sanitization + migration + storage outage + analytics isolation + refresh continuity'},
   {area:'Security & containment', gate:'Playwright security contract + security evidence', result:securityResult, scope:'security headers + CSP + analytics allowlist + URL/storage/console privacy boundary + telemetry containment + unsafe DOM sinks'},
+  {area:'Interaction UX', gate:'Playwright U1-U8 + visual state evidence', result:uxResult, scope:'SSO loading geometry + reduced motion + modal/drawer focus + live status + responsive boundaries + rejection/resubmission continuity'},
   {area:'Cross-browser', gate:'Playwright', result:process.env.CROSS_BROWSER_RESULT || 'unknown', scope:'Firefox + WebKit core flow'},
   {area:'Desktop performance', gate:'Lighthouse 13.4.1', result:process.env.LIGHTHOUSE_RESULT || 'unknown', scope:'desktop 3-run budget; every run must pass'},
   {area:'Mobile performance', gate:'Lighthouse 13.4.1', result:process.env.MOBILE_LIGHTHOUSE_RESULT || 'unknown', scope:'mobile profile 3-run budget; every run must pass'},
@@ -22,7 +24,7 @@ const gates = [
 const repository = process.env.GITHUB_REPOSITORY || null;
 const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
 const report = {
-  schemaVersion:5,
+  schemaVersion:6,
   generatedAt:new Date().toISOString(),
   repository,
   commit:process.env.GITHUB_SHA || null,
@@ -43,6 +45,7 @@ const report = {
     verificationContract:release.verificationContract,
     resilienceContract:release.resilienceContract,
     securityContract:release.securityContract,
+    uxContract:release.uxContract,
     evidenceContract:release.evidenceContract
   },
   gates
