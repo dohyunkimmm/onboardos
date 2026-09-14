@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag (for example v1.7.0)
+        description: Release tag (for example v5.0.0)
         required: true
         type: string
       target:
-        description: Exact 40-character commit SHA to tag
+        description: Exact 40-character Production-verified commit SHA to tag
         required: true
         type: string
       title:
@@ -27,6 +27,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: release-${{ github.ref }}
@@ -34,12 +35,15 @@ concurrency:
 
 jobs:
   release:
-    name: Create or sync tag and GitHub Release
+    name: Verify evidence and create immutable GitHub Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
 
       - name: Resolve release request
         id: request
@@ -69,18 +73,21 @@ jobs:
             echo "Invalid release tag: $TAG" >&2
             exit 1
           fi
-
           if ! [[ "$TARGET" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Target must be an exact 40-character commit SHA." >&2
             exit 1
           fi
-
           if [ ! -f "$NOTES_FILE" ]; then
             echo "Release notes file not found: $NOTES_FILE" >&2
             exit 1
           fi
-
           git cat-file -e "${TARGET}^{commit}"
+
+          EXPECTED_TAG="v$(node -p "require('./release.json').version")"
+          if [ "$TAG" != "$EXPECTED_TAG" ]; then
+            echo "Release tag $TAG does not match canonical release.json $EXPECTED_TAG." >&2
+            exit 1
+          fi
 
           {
             echo "tag=$TAG"
@@ -91,7 +98,58 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Create or sync tag and release
+      - name: Resolve successful target verification run
+        id: evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ steps.request.outputs.target }}
+        run: |
+          set -euo pipefail
+          RUN_ID="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/e2e.yml/runs?head_sha=${TARGET}&event=push&status=success&per_page=20" --jq '.workflow_runs | map(select(.conclusion == "success" and .head_sha == env.TARGET)) | .[0].id // empty')"
+          if [ -z "$RUN_ID" ]; then
+            echo "No successful main E2E run found for target $TARGET." >&2
+            exit 1
+          fi
+          RUN_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" --jq '.head_sha')"
+          RUN_CONCLUSION="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" --jq '.conclusion')"
+          if [ "$RUN_SHA" != "$TARGET" ] || [ "$RUN_CONCLUSION" != "success" ]; then
+            echo "Target evidence mismatch: run=$RUN_ID sha=$RUN_SHA conclusion=$RUN_CONCLUSION target=$TARGET" >&2
+            exit 1
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "Verified target run: $RUN_ID / $RUN_SHA / $RUN_CONCLUSION"
+
+      - name: Download target verification evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ steps.request.outputs.target }}
+          RUN_ID: ${{ steps.evidence.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          rm -rf release-evidence
+          mkdir -p release-evidence/summary release-evidence/integrity
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "verification-evidence-${TARGET}" --dir release-evidence/summary
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "production-integrity-${TARGET}" --dir release-evidence/integrity
+          test -f release-evidence/summary/verification-summary.json
+          test -f release-evidence/summary/verification-summary.md
+          test -f release-evidence/integrity/asset-integrity.json
+
+      - name: Reject stale or mismatched release evidence
+        shell: bash
+        env:
+          TARGET: ${{ steps.request.outputs.target }}
+          TAG: ${{ steps.request.outputs.tag }}
+        run: |
+          set -euo pipefail
+          node scripts/release-evidence.js \
+            "$TARGET" \
+            "$TAG" \
+            release-evidence/summary/verification-summary.json \
+            release-evidence/integrity/asset-integrity.json
+
+      - name: Create evidence-backed immutable release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -111,22 +169,30 @@ jobs:
           fi
 
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release edit "$TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "$TITLE" \
-              --notes-file "$NOTES_FILE"
-            echo "Release $TAG synchronized from $NOTES_FILE."
+            for asset in verification-summary.json verification-summary.md asset-integrity.json; do
+              if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$asset"; then
+                echo "Existing immutable release $TAG is missing required evidence asset $asset." >&2
+                exit 1
+              fi
+            done
+            echo "Release $TAG already exists with required evidence assets."
             exit 0
           fi
 
+          ASSETS=(
+            release-evidence/summary/verification-summary.json
+            release-evidence/summary/verification-summary.md
+            release-evidence/integrity/asset-integrity.json
+          )
+
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            gh release create "$TAG" \
+            gh release create "$TAG" "${ASSETS[@]}" \
               --repo "$GITHUB_REPOSITORY" \
               --verify-tag \
               --title "$TITLE" \
               --notes-file "$NOTES_FILE"
           else
-            gh release create "$TAG" \
+            gh release create "$TAG" "${ASSETS[@]}" \
               --repo "$GITHUB_REPOSITORY" \
               --target "$TARGET" \
               --title "$TITLE" \
