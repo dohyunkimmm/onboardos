@@ -1,4 +1,6 @@
-.login-card .login-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+/* Keep every visible login-screen glyph on the same system-font metrics while Pretendard is enabled for the dashboard after SSO click. */
+.login-screen,
+.login-screen *{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 
 /* Reviewer entry lives outside the visual-baseline login card so it can guide portfolio review without changing the product flow. */
 .reviewer-entry{
