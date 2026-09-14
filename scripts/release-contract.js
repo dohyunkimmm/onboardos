@@ -22,7 +22,7 @@ function validateReleaseContract(){
   const versionText = fs.readFileSync('version.txt', 'utf8');
   const stateSource = fs.readFileSync('js/state.js', 'utf8');
 
-  if(release.schemaVersion !== 6) fail(`schemaVersion must be 6, found ${release.schemaVersion}`);
+  if(release.schemaVersion !== 7) fail(`schemaVersion must be 7, found ${release.schemaVersion}`);
   if(release.product !== 'ONBOARD·OS') fail(`product mismatch: ${release.product}`);
   if(!/^\d+\.\d+\.\d+$/.test(release.version || '')) fail(`invalid semantic version: ${release.version}`);
   if(release.freeze !== 'P6') fail(`freeze must remain P6, found ${release.freeze}`);
@@ -45,6 +45,7 @@ function validateReleaseContract(){
     'iphone-webkit-smoke',
     'resilience-recovery',
     'security-failure-containment',
+    'interaction-ux',
     'release-evidence-consistency'
   ];
   for(const contract of contracts){
@@ -57,8 +58,7 @@ function validateReleaseContract(){
   if(!resilience || resilience.schemaVersion !== 1) fail('resilienceContract.schemaVersion must be 1');
   if(resilience.sessionSchemaVersion !== 4) fail(`resilienceContract.sessionSchemaVersion must be 4, found ${resilience.sessionSchemaVersion}`);
   if(resilience.evidenceAsset !== 'resilience-summary.json') fail('resilienceContract.evidenceAsset must be resilience-summary.json');
-  const resilienceScenarios = ['R1','R2','R3','R4','R5','R6','R7','R8'];
-  for(const scenario of resilienceScenarios){
+  for(const scenario of ['R1','R2','R3','R4','R5','R6','R7','R8']){
     if(!Array.isArray(resilience.requiredScenarios) || !resilience.requiredScenarios.includes(scenario)){
       fail(`resilienceContract.requiredScenarios missing ${scenario}`);
     }
@@ -78,6 +78,20 @@ function validateReleaseContract(){
     }
   }
 
+  const ux = release.uxContract;
+  if(!ux || ux.schemaVersion !== 1) fail('uxContract.schemaVersion must be 1');
+  if(ux.evidenceAsset !== 'ux-summary.json') fail('uxContract.evidenceAsset must be ux-summary.json');
+  for(const scenario of ['U1','U2','U3','U4','U5','U6','U7','U8']){
+    if(!Array.isArray(ux.requiredScenarios) || !ux.requiredScenarios.includes(scenario)){
+      fail(`uxContract.requiredScenarios missing ${scenario}`);
+    }
+  }
+  for(const visual of ['U1-sso-loading.png','U3-request-modal.png','U4-admin-drawer.png','U8-resubmit-modal.png']){
+    if(!Array.isArray(ux.requiredVisualEvidence) || !ux.requiredVisualEvidence.includes(visual)){
+      fail(`uxContract.requiredVisualEvidence missing ${visual}`);
+    }
+  }
+
   try {
     validateEvidenceContract(release);
   } catch (error) {
@@ -89,6 +103,7 @@ function validateReleaseContract(){
   if(versionMatch[1] !== release.version) fail(`version.txt=${versionMatch[1]} release.json=${release.version}`);
   if(!/^releaseChannel=production$/m.test(versionText)) fail('version.txt must declare releaseChannel=production');
   if(!/^securityContract=S1-S8$/m.test(versionText)) fail('version.txt must declare securityContract=S1-S8');
+  if(!/^uxContract=U1-U8$/m.test(versionText)) fail('version.txt must declare uxContract=U1-U8');
   if(packageJson.version !== release.version) fail(`package.json=${packageJson.version} release.json=${release.version}`);
   if(packageLock.version !== release.version) fail(`package-lock.json=${packageLock.version} release.json=${release.version}`);
   if(packageLock.packages?.['']?.version !== release.version){
@@ -101,7 +116,7 @@ function validateReleaseContract(){
   } catch (error) {
     fail(error.message);
   }
-  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/public-assets.js']){
+  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/ux-summary.js','scripts/public-assets.js']){
     if(!manifestResult.assets.includes(critical)) fail(`integrity manifest missing critical asset ${critical}`);
   }
 
@@ -111,7 +126,7 @@ function validateReleaseContract(){
 if(require.main === module){
   try {
     const release = validateReleaseContract();
-    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} scenarios`);
+    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} · ux=${release.uxContract.requiredScenarios.length} scenarios`);
   } catch (error) {
     console.error(`RELEASE CONTRACT FAILED: ${error.message}`);
     process.exit(1);
