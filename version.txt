@@ -1,5 +1,6 @@
 ONBOARD·OS v4.0.0
 P6 feature freeze
+releaseChannel=production
 release.json
 integrity-assets.json
 Operational UX & reviewer experience polish
