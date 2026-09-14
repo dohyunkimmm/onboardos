@@ -1,7 +1,7 @@
 {
-  "tag": "v4.0.0",
-  "target": "492d66ed751af559d7d407951a7359a010e71b52",
-  "title": "v4.0.0 — Operational UX & reviewer experience polish",
+  "tag": "v5.0.0",
+  "target": "f595811cf0453ca4525d24924fa5d1dcaa36eaf7",
+  "title": "v5.0.0 — Production observability & release evidence automation",
   "notes_file": "CHANGELOG.md",
   "sync_revision": 1
 }
