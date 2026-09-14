@@ -48,6 +48,10 @@ async function visualState(locator){
   });
 }
 
+test.beforeEach(async ({}, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile-chromium','V8 owns the explicit narrow-mobile contract; avoid duplicating the desktop visual-system suite in the generic mobile project.');
+});
+
 test('[V1] keyboard focus ring is consistent on primary interactive controls', async ({page}) => {
   await stabilize(page);
   const button = page.getByRole('button',{name:'Google SSO로 시작하기'});
@@ -63,14 +67,14 @@ test('[V1] keyboard focus ring is consistent on primary interactive controls', a
 test('[V2] pressed controls provide feedback without moving their layout box', async ({page}) => {
   await stabilize(page);
   const button = page.getByRole('button',{name:'Google SSO로 시작하기'});
-  const before = await button.boundingBox();
-  await page.mouse.move(before.x + before.width / 2,before.y + before.height / 2);
+  const before = await button.evaluate(el => ({width:el.offsetWidth,height:el.offsetHeight,left:el.offsetLeft,top:el.offsetTop}));
+  const box = await button.boundingBox();
+  await page.mouse.move(box.x + box.width / 2,box.y + box.height / 2);
   await page.mouse.down();
   const active = await visualState(button);
-  const during = await button.boundingBox();
+  const during = await button.evaluate(el => ({width:el.offsetWidth,height:el.offsetHeight,left:el.offsetLeft,top:el.offsetTop}));
   expect(active.transform).not.toBe('none');
-  expect(Math.abs(before.x-during.x)).toBeLessThanOrEqual(1);
-  expect(Math.abs(before.y-during.y)).toBeLessThanOrEqual(1);
+  expect(during).toEqual(before);
   await page.mouse.up();
 });
 
