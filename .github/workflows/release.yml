@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag (for example v8.0.0)
+        description: Release tag (for example v9.0.0)
         required: true
         type: string
       target:
@@ -129,18 +129,20 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf release-evidence
-          mkdir -p release-evidence/summary release-evidence/integrity release-evidence/resilience release-evidence/security release-evidence/ux
+          mkdir -p release-evidence/summary release-evidence/integrity release-evidence/resilience release-evidence/security release-evidence/ux release-evidence/visual-system
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "verification-evidence-${TARGET}" --dir release-evidence/summary
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "production-integrity-${TARGET}" --dir release-evidence/integrity
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "resilience-evidence-${TARGET}" --dir release-evidence/resilience
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "security-evidence-${TARGET}" --dir release-evidence/security
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "ux-evidence-${TARGET}" --dir release-evidence/ux
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "visual-system-evidence-${TARGET}" --dir release-evidence/visual-system
           test -f release-evidence/summary/verification-summary.json
           test -f release-evidence/summary/verification-summary.md
           test -f release-evidence/integrity/asset-integrity.json
           test -f release-evidence/resilience/resilience-summary.json
           test -f release-evidence/security/security-summary.json
           test -f release-evidence/ux/ux-summary.json
+          test -f release-evidence/visual-system/visual-system-summary.json
 
       - name: Reject stale or mismatched release evidence
         shell: bash
@@ -156,7 +158,8 @@ jobs:
             release-evidence/integrity/asset-integrity.json \
             release-evidence/resilience/resilience-summary.json \
             release-evidence/security/security-summary.json \
-            release-evidence/ux/ux-summary.json
+            release-evidence/ux/ux-summary.json \
+            release-evidence/visual-system/visual-system-summary.json
 
       - name: Create evidence-backed immutable release
         shell: bash
@@ -178,7 +181,7 @@ jobs:
           fi
 
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            for asset in verification-summary.json verification-summary.md asset-integrity.json resilience-summary.json security-summary.json ux-summary.json; do
+            for asset in verification-summary.json verification-summary.md asset-integrity.json resilience-summary.json security-summary.json ux-summary.json visual-system-summary.json; do
               if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$asset"; then
                 echo "Existing immutable release $TAG is missing required evidence asset $asset." >&2
                 exit 1
@@ -195,6 +198,7 @@ jobs:
             release-evidence/resilience/resilience-summary.json
             release-evidence/security/security-summary.json
             release-evidence/ux/ux-summary.json
+            release-evidence/visual-system/visual-system-summary.json
           )
 
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
