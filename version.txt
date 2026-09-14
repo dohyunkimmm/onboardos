@@ -3,5 +3,6 @@ P6 feature freeze
 releaseChannel=production
 release.json
 integrity-assets.json
+resilienceContract=R1-R8
 Resilience & recovery hardening
 Session schema guard · fault injection · recovery evidence gate
