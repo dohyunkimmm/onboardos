@@ -1,1 +1,0 @@
-v8.0.0 candidate scope is intentionally limited to interaction-state UX/accessibility hardening and verification evidence. P6 Business Flow, R1–R8 resilience, and S1–S8 security behavior remain unchanged. Production deployment is intentionally deferred until this pull request is explicitly merged after review.
