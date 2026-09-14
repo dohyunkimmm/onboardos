@@ -290,3 +290,32 @@
     border-radius:inherit;
   }
 }
+
+/* v9 state precedence: keep focus and selection cues visible even where legacy component selectors are more specific. */
+.google-btn:focus-visible,
+.top-btn:focus-visible,
+.filter-chip:focus-visible,
+.role-tab:focus-visible,
+.cta:focus-visible,
+.primary-btn:focus-visible,
+.ghost-btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.jsm-btn:focus-visible,
+.drawer-close:focus-visible,
+.action-modal-close:focus-visible,
+.reviewer-entry a:focus-visible{
+  outline:2px solid var(--ui-focus);
+  outline-offset:3px;
+  box-shadow:0 0 0 4px var(--ui-focus-ring);
+}
+.role-tab.active{background-color:rgba(196,181,253,.12);}
+.request-modal .primary-btn:focus,
+.request-modal .ghost-btn:focus,
+.request-modal .btn-primary:focus,
+.request-modal .btn-secondary:focus,
+.request-actions button:focus{
+  outline:2px solid var(--ui-focus);
+  outline-offset:3px;
+  box-shadow:0 0 0 4px var(--ui-focus-ring);
+}
