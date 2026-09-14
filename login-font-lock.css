@@ -24,6 +24,11 @@
 .login-loader .loader-bar{height:5px;margin-top:5px;}
 .login-loader .loader-bar span{width:0;animation:none;}
 .login-loader.is-visible .loader-bar span{animation:loadbar 1.1s ease forwards;}
+/* The right panel starts on the platform fallback because the brand font is deferred. Keep that exact fallback while loading so activation cannot resize the mobile single-column card. */
+.login-panel:has(.login-loader.is-visible),
+.login-panel:has(.login-loader.is-visible) *{
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
 
 /* Reviewer entry lives outside the visual-baseline login card so it can guide portfolio review without changing the product flow. */
 .reviewer-entry{
@@ -182,13 +187,8 @@
 }
 .reviewer-entry a:first-of-type{color:#fff;}
 
-/* Mobile: keep all login-card metrics stable through deferred font activation and avoid vertical auto-margin recentering. */
+/* Mobile: reserve space for the fixed reviewer entry; the static login card itself stays on the approved baseline. */
 @media (max-width:768px){
-  #loginScreen .login-card,
-  #loginScreen .login-card *{
-    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  }
-  .login-card{margin:0 auto;}
   .login-screen{padding-bottom:84px;}
 }
 @media (max-width:560px){
