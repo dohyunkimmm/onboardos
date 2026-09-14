@@ -93,9 +93,14 @@ test('[U4] admin drawer keeps actionable focus, touch target and visual evidence
   const action = page.locator('.request-actions button').first();
   const actionBox = await rect(action);
   expect(actionBox.height).toBeGreaterThanOrEqual(44);
-  const drawerBox = await rect(page.locator('.drawer'));
+  const drawer = page.locator('.drawer');
+  await drawer.evaluate(async el => {
+    const animations = el.getAnimations();
+    await Promise.all(animations.map(animation => animation.finished.catch(() => {})));
+  });
+  const drawerBox = await rect(drawer);
   expect(drawerBox.right).toBeLessThanOrEqual(page.viewportSize().width + 1);
-  await capture(page.locator('.drawer'),'U4-admin-drawer.png');
+  await capture(drawer,'U4-admin-drawer.png');
 });
 
 test('[U5] dynamic completion and request messages are exposed through the live status region', async ({ page }) => {
