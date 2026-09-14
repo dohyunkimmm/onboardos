@@ -103,8 +103,12 @@ if(!/npm audit --audit-level=high/.test(e2eWorkflow)) fail('high+ npm audit gate
 if(!/scripts\/dependency-review\.js/.test(e2eWorkflow)) fail('PR dependency delta gate missing');
 if(!/Security \/ failure-containment gate/.test(e2eWorkflow)) fail('v7 security CI gate missing');
 if(!/npm run test:security/.test(e2eWorkflow)) fail('v7 security scenario command missing');
+if(!/Interaction UX \/ accessibility state gate/.test(e2eWorkflow)) fail('v8 interaction UX CI gate missing');
+if(!/npm run test:ux/.test(e2eWorkflow)) fail('v8 interaction UX scenario command missing');
 if(!fs.existsSync(path.join('scripts','dependency-review.js'))) fail('dependency-review.js is missing');
 if(!fs.existsSync(path.join('scripts','security-summary.js'))) fail('security-summary.js is missing');
+if(!fs.existsSync(path.join('scripts','ux-summary.js'))) fail('ux-summary.js is missing');
 if(!fs.existsSync(path.join('tests','security.spec.js'))) fail('security.spec.js is missing');
+if(!fs.existsSync(path.join('tests','ux-interaction.spec.js'))) fail('ux-interaction.spec.js is missing');
 
-console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, ${publicAssets.length} manifest assets, release ${release.version} canonical contract, role isolation, security headers + analytics privacy boundary + SHA-pinned workflows`);
+console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, ${publicAssets.length} manifest assets, release ${release.version} canonical contract, role isolation, R1-R8 resilience, S1-S8 security, U1-U8 interaction UX, security headers + analytics privacy boundary + SHA-pinned workflows`);
