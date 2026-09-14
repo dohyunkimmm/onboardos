@@ -14,6 +14,7 @@ for(const file of runtimeFiles){
   if(/\son[a-z]+\s*=/i.test(text)) fail(`${file} still contains an inline event handler`);
   if(/\sstyle\s*=/i.test(text)) fail(`${file} still contains an inline style attribute`);
   if(/\.style\s*[.=]/.test(text)) fail(`${file} still mutates inline style`);
+  if(/javascript\s*:/i.test(text)) fail(`${file} contains a javascript: URL`);
 }
 
 const html = read('index.html');
@@ -63,14 +64,25 @@ const stateSource = read('js/state.js');
 for(const token of ['requestStateByRole','cancelledHistoryByRole','cancelledTicketsByRole','activateRoleState','onboard-os:v4']){
   if(!stateSource.includes(token)) fail(`role-isolated state contract missing ${token}`);
 }
+const analyticsSource = read('js/analytics.js');
+for(const token of ['ANALYTICS_FIELD_ALLOWLIST','sanitizeAnalyticsData','isSafeAnalyticsValue']){
+  if(!analyticsSource.includes(token)) fail(`analytics privacy boundary missing ${token}`);
+}
 
 const config = JSON.parse(read('vercel.json'));
 const allHeaders = (config.headers || []).flatMap(rule => rule.headers || []);
-const csp = allHeaders.find(h => h.key.toLowerCase() === 'content-security-policy')?.value || '';
-for(const directive of ["script-src-attr 'none'", "style-src-attr 'none'", "object-src 'none'", "frame-ancestors 'none'"]){
+const headerMap = new Map(allHeaders.map(h => [h.key.toLowerCase(),h.value]));
+const csp = headerMap.get('content-security-policy') || '';
+for(const directive of ["default-src 'self'", "script-src-attr 'none'", "style-src-attr 'none'", "object-src 'none'", "base-uri 'self'", "frame-ancestors 'none'", "form-action 'self'", 'upgrade-insecure-requests']){
   if(!csp.includes(directive)) fail(`CSP missing ${directive}`);
 }
+if(csp.includes("'unsafe-eval'")) fail('CSP must not allow unsafe-eval');
 if(/cdn\.jsdelivr\.net/i.test(csp)) fail('CSP still allows the removed font CDN');
+if(headerMap.get('x-content-type-options') !== 'nosniff') fail('X-Content-Type-Options must be nosniff');
+if(headerMap.get('x-frame-options') !== 'DENY') fail('X-Frame-Options must be DENY');
+if(headerMap.get('referrer-policy') !== 'strict-origin-when-cross-origin') fail('Referrer-Policy mismatch');
+const permissionsPolicy = headerMap.get('permissions-policy') || '';
+for(const feature of ['camera=()','microphone=()','geolocation=()']) if(!permissionsPolicy.includes(feature)) fail(`Permissions-Policy missing ${feature}`);
 
 const workflowDir = path.join('.github','workflows');
 for(const name of fs.readdirSync(workflowDir).filter(name => /\.ya?ml$/i.test(name))){
@@ -89,6 +101,10 @@ if(!/package-ecosystem:\s*npm/.test(dependabot) || !/package-ecosystem:\s*github
 const e2eWorkflow = read(path.join('.github','workflows','e2e.yml'));
 if(!/npm audit --audit-level=high/.test(e2eWorkflow)) fail('high+ npm audit gate missing');
 if(!/scripts\/dependency-review\.js/.test(e2eWorkflow)) fail('PR dependency delta gate missing');
+if(!/Security \/ failure-containment gate/.test(e2eWorkflow)) fail('v7 security CI gate missing');
+if(!/npm run test:security/.test(e2eWorkflow)) fail('v7 security scenario command missing');
 if(!fs.existsSync(path.join('scripts','dependency-review.js'))) fail('dependency-review.js is missing');
+if(!fs.existsSync(path.join('scripts','security-summary.js'))) fail('security-summary.js is missing');
+if(!fs.existsSync(path.join('tests','security.spec.js'))) fail('security.spec.js is missing');
 
-console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, ${publicAssets.length} manifest assets, release ${release.version} canonical contract, role isolation, CSP + SHA-pinned workflows`);
+console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, ${publicAssets.length} manifest assets, release ${release.version} canonical contract, role isolation, security headers + analytics privacy boundary + SHA-pinned workflows`);

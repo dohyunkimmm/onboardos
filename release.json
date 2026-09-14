@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 5,
+  "schemaVersion": 6,
   "product": "ONBOARD·OS",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "freeze": "P6",
-  "releaseClass": "resilience-hardening",
-  "scope": "state-recovery-evidence",
+  "releaseClass": "security-hardening",
+  "scope": "browser-security-failure-containment",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -21,6 +21,7 @@
     "desktop-chromium-smoke",
     "iphone-webkit-smoke",
     "resilience-recovery",
+    "security-failure-containment",
     "release-evidence-consistency"
   ],
   "resilienceContract": {
@@ -38,18 +39,34 @@
       "R8"
     ]
   },
+  "securityContract": {
+    "schemaVersion": 1,
+    "evidenceAsset": "security-summary.json",
+    "requiredScenarios": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S7",
+      "S8"
+    ]
+  },
   "evidenceContract": {
-    "schemaVersion": 4,
+    "schemaVersion": 5,
     "releaseAssets": [
       "verification-summary.json",
       "verification-summary.md",
       "asset-integrity.json",
-      "resilience-summary.json"
+      "resilience-summary.json",
+      "security-summary.json"
     ],
     "requireSuccessfulTargetRun": true,
     "requiredGates": [
       "Chromium regression",
       "Resilience & recovery",
+      "Security & containment",
       "Cross-browser",
       "Desktop performance",
       "Mobile performance",

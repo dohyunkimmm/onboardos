@@ -1,8 +1,9 @@
-ONBOARD·OS v6.0.0
+ONBOARD·OS v7.0.0
 P6 feature freeze
 releaseChannel=production
 release.json
 integrity-assets.json
 resilienceContract=R1-R8
-Resilience & recovery hardening
-Session schema guard · fault injection · recovery evidence gate
+securityContract=S1-S8
+Security & failure-containment hardening
+CSP · telemetry allowlist · privacy boundary · security evidence gate
