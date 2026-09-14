@@ -1,0 +1,30 @@
+name: v8 lockfile metadata sync
+
+on:
+  push:
+    branches: [release/v8.0.0-interaction-ux]
+    paths:
+      - .github/workflows/v8-lockfile-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Sync package-lock project version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: release/v8.0.0-interaction-ux
+      - name: Update canonical package metadata only
+        run: npm version 8.0.0 --no-git-tag-version --allow-same-version
+      - name: Commit lockfile metadata and remove one-time workflow
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/v8-lockfile-sync.yml
+          git add package.json package-lock.json
+          git commit -m "Sync v8 package lock metadata"
+          git push origin HEAD:release/v8.0.0-interaction-ux
