@@ -79,7 +79,7 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 - Production source integrity: **133/133 canonical manifest assets** SHA-256 일치
 - Production Desktop Chromium + iPhone WebKit browser smoke: **2/2 PASS**
 - Production integrity artifact `10336140089` / `sha256:20a38325c8dfc77928a86c20e9f8e2187a72be41e5b93dc6ad0f5096121a42c6`
-- Verification evidence artifact `10335716195` / `sha256:a8e712a2c7ea6b9fd965c23d1e00043034335e3246c0eae0c52615fc04f`
+- Verification evidence artifact `10335716195` / `sha256:a8e712a2c7ea6b9f74686426492d365818defb69f74a64fe1ea9c16d807fbc82`
 - Resilience evidence artifact `10335054487` / `sha256:d11c70367e284c2beb791df9314f68eac8dafbb47785432502942276247565e9`
 
 ### Release status
@@ -109,7 +109,7 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 - P6 feature freeze와 `businessFlowChanged: false` 유지
 
 ### Verification
-- PR #44 / E2E run #116 (`34806249888`): v5 release/evidence contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
+- PR #44 / E2E run #116 (`34806249888`): v5 release/evidence contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse·Supply-chain gate 모두 통과
 - Production runtime commit `f595811cf0453ca4525d24924fa5d1dcaa36eaf7` / Vercel deployment `dpl_4tm1iiRxbfz2crW4CTe9yrJWFL2w`: `READY`, GitHub verified commit 기준 배포
 - Main E2E run #117 (`34806397415`): 전체 workflow `completed / success`
 - Production source integrity: **132/132 canonical manifest assets** SHA-256 일치
