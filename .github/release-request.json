@@ -1,7 +1,7 @@
 {
-  "tag": "v7.0.0",
-  "target": "6732047aed507e7d1f40c9635f7c4b7de3495472",
-  "title": "v7.0.0 — Security & failure-containment hardening",
-  "notes_file": "RELEASE-v7.0.0.md",
-  "sync_revision": 3
+  "tag": "v8.0.0",
+  "target": "2aaa29596a94a0678dcfd132c006813d64369979",
+  "title": "v8.0.0 — Interaction-state UX & accessibility hardening",
+  "notes_file": "RELEASE-v8.0.0.md",
+  "sync_revision": 4
 }
