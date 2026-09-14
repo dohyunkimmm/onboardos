@@ -13,6 +13,7 @@
     "app.js",
     "og-image.png",
     "scripts/release-contract.js",
+    "scripts/release-evidence.js",
     "scripts/public-assets.js",
     "fonts/pretendard.css",
     "fonts/PRETENDARD-LICENSE.txt"

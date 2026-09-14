@@ -1,7 +1,7 @@
-ONBOARD·OS v4.0.0
+ONBOARD·OS v5.0.0
 P6 feature freeze
 releaseChannel=production
 release.json
 integrity-assets.json
-Operational UX & reviewer experience polish
-Admin queue scanability · SLA emphasis · mobile action ergonomics
+Production observability & release evidence automation
+Verified target run · release evidence assets · stale evidence guard
