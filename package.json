@@ -1,6 +1,6 @@
 {
   "name": "onboardos",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "private": true,
   "scripts": {
     "release:check": "node scripts/release-contract.js",
@@ -9,6 +9,7 @@
     "test:e2e": "playwright test",
     "test:e2e:report": "playwright show-report",
     "test:resilience": "playwright test -c playwright.resilience.config.js",
+    "test:security": "playwright test -c playwright.security.config.js",
     "quality": "node scripts/quality-check.js",
     "test:a11y": "playwright test tests/accessibility.spec.js",
     "test:visual": "playwright test tests/visual.spec.js",
