@@ -1,9 +1,10 @@
-ONBOARD·OS v7.0.0
+ONBOARD·OS v8.0.0
 P6 feature freeze
 releaseChannel=production
 release.json
 integrity-assets.json
 resilienceContract=R1-R8
 securityContract=S1-S8
-Security & failure-containment hardening
-CSP · telemetry allowlist · privacy boundary · security evidence gate
+uxContract=U1-U8
+Interaction-state UX & accessibility hardening
+SSO transition · reduced motion · live status · focus return · responsive boundary · UX evidence gate
