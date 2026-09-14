@@ -1,5 +1,46 @@
 # Changelog
 
+## v4.0.0 — Operational UX & reviewer experience polish — 2026-09-14
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 관리자 운영 화면의 scanability·SLA 위험 인지·모바일 처리 ergonomics와 reviewer-facing 완성도를 강화했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
+
+### Operational UX polish
+- 관리자 Drawer의 KPI/요약 영역을 스크롤 중에도 빠르게 확인할 수 있도록 정리
+- SLA 위험도가 높은 요청을 카드 수준에서 더 빠르게 식별할 수 있도록 시각적 강조를 추가
+- 모바일 관리자 처리 버튼과 touch layout을 안정화해 승인·반려·지급 액션의 조작성을 개선
+- 기존 로그인/Dashboard/신청 Modal visual regression baseline은 유지
+
+### Accessibility & reviewer experience
+- 관리자 Drawer 접근성 트리 변경에 맞춰 ARIA snapshot contract를 갱신하고 기존 axe/keyboard/focus 기준은 유지
+- `version.txt`에 `releaseChannel=production`을 명시해 사람이 읽는 provenance와 canonical `release.json` contract를 일치시킴
+- 기존 36초 Demo → 2–3분 Live Production → Case Study reviewer route는 유지
+
+### Delivery hardening
+- Vercel 자동 배포를 `main` 중심으로 제한해 feature/PR Preview가 Hobby deployment quota를 소모하지 않도록 정리
+- build-rate-limit 이후 새 verified `main` commit으로 Production 재배포를 성공시키고 동일 runtime에 대해 integrity/browser smoke를 재검증
+
+### Scope
+- 새 SaaS·직무·상태·승인 Flow 추가 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 로직 변경 없음
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Verification
+- PR #39: v4 운영 UX polish, ARIA contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 통과
+- PR #40: non-main Vercel auto-deploy quota guard 검증 후 merge
+- PR #41: `version.txt`의 `release.json`·`integrity-assets.json` provenance marker 복구 후 전체 PR quality gate 통과
+- PR #42 / E2E run #112 (`34804713037`): `releaseChannel=production` marker 정렬 후 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Supply-chain gate 모두 통과
+- Production runtime commit `492d66ed751af559d7d407951a7359a010e71b52` / Vercel deployment `dpl_FSGMTfETJLyfC7rDrgvk5SEH5npe`: `READY`, GitHub verified commit 기준 배포
+- Main E2E run #113 (`34804837886`): 전체 workflow `completed / success`
+- Production source integrity: **131/131 canonical manifest assets** SHA-256 일치
+- Production Desktop Chromium + iPhone WebKit browser smoke: **2/2 passed**
+- Production integrity artifact `10332134155` / `sha256:3f2dd8edfb7dba700e5843cf421355682eb7a751f0a442b71a643b24266c17a7`
+- Verification evidence artifact `10333121933` / `sha256:14fff56a150752336158e4f94cdcb4fd5d0d6a97c3ba78c259908d1c2e19b381`
+
+### Release status
+v4.0.0은 P6 기능 동결을 유지하면서 **운영 UX·reviewer experience·deployment quota hygiene**를 강화한 major polish 릴리스이며, 새 Production 배포와 131/131 integrity·2-browser smoke까지 통과한 **Production verified** 상태입니다.
+
+---
+
 ## v3.0.0 — Canonical Production integrity manifest — 2026-09-14
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, Production SHA-256 검증 대상을 코드의 수동 목록이 아니라 하나의 canonical manifest에서 자동 발견하도록 구조를 강화했습니다.
