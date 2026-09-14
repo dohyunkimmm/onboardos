@@ -2,7 +2,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: 'production.spec.js',
+  testMatch: ['production.spec.js', 'login-font-stability.spec.js'],
   timeout: 45_000,
   expect: { timeout: 8_000 },
   retries: process.env.CI ? 2 : 0,
