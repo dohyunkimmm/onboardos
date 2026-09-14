@@ -109,7 +109,7 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 - P6 feature freeze와 `businessFlowChanged: false` 유지
 
 ### Verification
-- PR #44 / E2E run #116 (`34806249888`): v5 release/evidence contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse·Supply-chain gate 모두 통과
+- PR #44 / E2E run #116 (`34806249888`): v5 release/evidence contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
 - Production runtime commit `f595811cf0453ca4525d24924fa5d1dcaa36eaf7` / Vercel deployment `dpl_4tm1iiRxbfz2crW4CTe9yrJWFL2w`: `READY`, GitHub verified commit 기준 배포
 - Main E2E run #117 (`34806397415`): 전체 workflow `completed / success`
 - Production source integrity: **132/132 canonical manifest assets** SHA-256 일치
@@ -182,7 +182,7 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 
 ### Scope
 - 새 SaaS·직무·상태·승인 Flow 추가 없음
-- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 로직 변경 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 정책 변경 없음
 - P6 feature freeze와 `businessFlowChanged: false` 유지
 
 ### Verification
