@@ -218,3 +218,24 @@
   #commonGrid{grid-template-columns:1fr;}
   #commonGrid .card{min-height:0;}
 }
+
+/* v8 interaction-state UX hardening: honor reduced motion and keep overlays inside dynamic mobile viewports. */
+@media (prefers-reduced-motion:reduce){
+  html:focus-within{scroll-behavior:auto!important;}
+  *,*::before,*::after{
+    animation-duration:0s!important;
+    animation-delay:0s!important;
+    animation-iteration-count:1!important;
+    transition-duration:0s!important;
+    transition-delay:0s!important;
+  }
+  .login-loader.is-visible .loader-bar span{width:100%;animation:none!important;}
+}
+@media (max-width:360px){
+  .request-modal,.action-modal{
+    max-width:calc(100vw - 20px);
+    max-height:calc(100dvh - 20px);
+    overflow:auto;
+  }
+  .drawer{max-width:100vw;}
+}
