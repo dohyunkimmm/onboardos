@@ -6,6 +6,30 @@
 
 .login-card .login-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 
+/* Keep SSO feedback inside the existing note footprint so the login card never reflows on click. */
+.login-panel{position:relative;}
+.login-loader{
+  display:block;
+  visibility:hidden;
+  position:absolute;
+  left:20px;
+  right:20px;
+  bottom:16px;
+  margin:0;
+  font-size:12px;
+  line-height:1.4;
+}
+.login-loader.is-visible{visibility:visible;}
+.login-panel:has(.login-loader.is-visible) .login-note{visibility:hidden;}
+.login-loader .loader-bar{height:5px;margin-top:5px;}
+.login-loader .loader-bar span{width:0;animation:none;}
+.login-loader.is-visible .loader-bar span{animation:loadbar 1.1s ease forwards;}
+/* The right panel starts on the platform fallback because the brand font is deferred. Keep that exact fallback while loading so activation cannot resize the mobile single-column card. */
+.login-panel:has(.login-loader.is-visible),
+.login-panel:has(.login-loader.is-visible) *{
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
 /* Reviewer entry lives outside the visual-baseline login card so it can guide portfolio review without changing the product flow. */
 .reviewer-entry{
   position:fixed;
@@ -44,6 +68,22 @@
 }
 .reviewer-entry a:hover{color:#fff;text-decoration:underline;}
 .reviewer-entry a:focus-visible{outline:2px solid var(--indigo-soft);outline-offset:2px;}
+
+/* Keep the five-step business tracker as the progress model while retaining the existing hint-row geometry. */
+.demo-step-kicker{position:relative;color:transparent!important;}
+.demo-step-kicker::after{
+  content:"다음 행동";
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--indigo-soft);
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.045em;
+}
+.demo-step-kicker.is-done::after{content:"완료";color:var(--success);}
 
 /* Admin-review states are part of the existing flow; improve scanability and touch behavior without changing behavior. */
 .drawer-head{
@@ -147,7 +187,13 @@
 }
 .reviewer-entry a:first-of-type{color:#fff;}
 
+/* Mobile: reserve space for the fixed reviewer entry; the static login card itself stays on the approved baseline. */
+@media (max-width:768px){
+  .login-screen{padding-bottom:84px;}
+}
 @media (max-width:560px){
+  #resetBtn{display:none;}
+  .login-loader{left:14px;right:14px;bottom:12px;}
   .reviewer-entry{
     bottom:10px;
     gap:6px;
@@ -167,4 +213,8 @@
   .request-item{padding:14px 13px 13px;}
   .request-item-title{align-items:flex-start;}
   .request-actions{margin-inline:-6px;padding-inline:6px;}
+}
+@media (max-width:359px){
+  #commonGrid{grid-template-columns:1fr;}
+  #commonGrid .card{min-height:0;}
 }
