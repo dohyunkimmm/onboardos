@@ -1,7 +1,7 @@
-ONBOARD·OS v5.0.0
+ONBOARD·OS v6.0.0
 P6 feature freeze
 releaseChannel=production
 release.json
 integrity-assets.json
-Production observability & release evidence automation
-Verified target run · release evidence assets · stale evidence guard
+Resilience & recovery hardening
+Session schema guard · fault injection · recovery evidence gate

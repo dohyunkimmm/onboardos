@@ -16,6 +16,7 @@ let loggedIn = false;
 let supportRequestContext = null;
 const SESSION_KEY = 'onboard-os:v4';
 const LEGACY_SESSION_KEY = 'onboard-os:v3';
+const SESSION_SCHEMA_VERSION = 4;
 const FILTER_GROUPS = {
   all:null,
   todo:new Set(['request','approval','rejected']),
@@ -130,6 +131,7 @@ activateRoleState(currentRole);
 function saveSession(){
   try{
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+      schemaVersion:SESSION_SCHEMA_VERSION,
       requestStateByRole,
       cancelledHistoryByRole,
       cancelledTicketsByRole,
@@ -148,6 +150,10 @@ function restoreSession(){
     if(!raw) return;
     const saved = JSON.parse(raw);
     if(!isPlainObject(saved)) throw new Error('Invalid session payload');
+    if(saved.schemaVersion != null && !Number.isInteger(saved.schemaVersion)) throw new Error('Invalid session schema');
+    if(Number.isInteger(saved.schemaVersion) && saved.schemaVersion > SESSION_SCHEMA_VERSION){
+      throw new Error(`Unsupported future session schema ${saved.schemaVersion}`);
+    }
 
     currentRole = roles[saved.currentRole] ? saved.currentRole : 'office';
     if(saved.requestStateByRole && isPlainObject(saved.requestStateByRole)){

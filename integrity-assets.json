@@ -14,6 +14,7 @@
     "og-image.png",
     "scripts/release-contract.js",
     "scripts/release-evidence.js",
+    "scripts/resilience-summary.js",
     "scripts/public-assets.js",
     "fonts/pretendard.css",
     "fonts/PRETENDARD-LICENSE.txt"
