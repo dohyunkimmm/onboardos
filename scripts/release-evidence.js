@@ -17,10 +17,10 @@ const readJson = file => {
 function validateEvidenceContract(release){
   const contract = release.evidenceContract;
   if(!contract || typeof contract !== 'object') fail('evidenceContract is required');
-  if(contract.schemaVersion !== 5) fail(`evidenceContract.schemaVersion must be 5, found ${contract.schemaVersion}`);
+  if(contract.schemaVersion !== 6) fail(`evidenceContract.schemaVersion must be 6, found ${contract.schemaVersion}`);
   if(contract.requireSuccessfulTargetRun !== true) fail('requireSuccessfulTargetRun must be true');
 
-  const assets = ['verification-summary.json', 'verification-summary.md', 'asset-integrity.json', 'resilience-summary.json', 'security-summary.json'];
+  const assets = ['verification-summary.json', 'verification-summary.md', 'asset-integrity.json', 'resilience-summary.json', 'security-summary.json', 'ux-summary.json'];
   for(const asset of assets){
     if(!Array.isArray(contract.releaseAssets) || !contract.releaseAssets.includes(asset)){
       fail(`releaseAssets missing ${asset}`);
@@ -31,6 +31,7 @@ function validateEvidenceContract(release){
     'Chromium regression',
     'Resilience & recovery',
     'Security & containment',
+    'Interaction UX',
     'Cross-browser',
     'Desktop performance',
     'Mobile performance',
@@ -46,7 +47,7 @@ function validateEvidenceContract(release){
   return contract;
 }
 
-function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath}){
+function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath}){
   if(!/^[0-9a-f]{40}$/.test(target || '')) fail('target must be an exact 40-character commit SHA');
 
   const release = readJson('release.json');
@@ -132,7 +133,32 @@ function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resilie
     if(row.result !== 'success') fail(`security scenario ${id} result=${row.result}, expected success`);
   }
 
-  return {release, contract, summary, integrity, resilience, security};
+  const ux = readJson(uxPath);
+  const uxContract = release.uxContract;
+  if(!uxContract || uxContract.schemaVersion !== 1) fail('uxContract.schemaVersion must be 1');
+  if(ux.schemaVersion !== 1) fail(`UX evidence schema=${ux.schemaVersion}, expected 1`);
+  if(ux.commit !== target) fail(`UX evidence commit=${ux.commit} target=${target}`);
+  if(ux.release?.version !== release.version) fail(`UX evidence release=${ux.release?.version} expected=${release.version}`);
+  if(ux.release?.freeze !== release.freeze) fail(`UX evidence freeze=${ux.release?.freeze} expected=${release.freeze}`);
+  if(ux.release?.businessFlowChanged !== false) fail('UX evidence must preserve businessFlowChanged=false');
+  if(ux.allPassed !== true) fail('UX evidence must report allPassed=true');
+  if(!Array.isArray(ux.scenarios) || ux.scenarios.length !== ux.scenarioCount){
+    fail('UX scenarios length must match scenarioCount');
+  }
+  const uxById = new Map(ux.scenarios.map(row => [row.id,row]));
+  for(const id of uxContract.requiredScenarios){
+    const row = uxById.get(id);
+    if(!row) fail(`UX evidence missing scenario ${id}`);
+    if(row.result !== 'success') fail(`UX scenario ${id} result=${row.result}, expected success`);
+  }
+  for(const file of uxContract.requiredVisualEvidence || []){
+    const row = (ux.visualEvidence || []).find(item => item.file === file);
+    if(!row || !/^[0-9a-f]{64}$/.test(row.sha256 || '') || !(row.bytes > 0)){
+      fail(`UX visual evidence missing or invalid: ${file}`);
+    }
+  }
+
+  return {release, contract, summary, integrity, resilience, security, ux};
 }
 
 if(require.main === module){
@@ -140,17 +166,17 @@ if(require.main === module){
     if(process.argv.includes('--contract-only')){
       const release = readJson('release.json');
       validateEvidenceContract(release);
-      console.log(`Release evidence contract PASS: v${release.version} · schema 5 · ${release.evidenceContract.releaseAssets.length} release assets`);
+      console.log(`Release evidence contract PASS: v${release.version} · schema 6 · ${release.evidenceContract.releaseAssets.length} release assets`);
       process.exit(0);
     }
 
-    const [target, tag, summaryPath, integrityPath, resiliencePath, securityPath] = process.argv.slice(2);
-    if(!target || !tag || !summaryPath || !integrityPath || !resiliencePath || !securityPath){
-      console.error('Usage: node scripts/release-evidence.js <target-sha> <tag> <verification-summary.json> <asset-integrity.json> <resilience-summary.json> <security-summary.json>');
+    const [target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath] = process.argv.slice(2);
+    if(!target || !tag || !summaryPath || !integrityPath || !resiliencePath || !securityPath || !uxPath){
+      console.error('Usage: node scripts/release-evidence.js <target-sha> <tag> <verification-summary.json> <asset-integrity.json> <resilience-summary.json> <security-summary.json> <ux-summary.json>');
       process.exit(2);
     }
-    const result = verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath});
-    console.log(`Release evidence PASS: ${tag} · ${target} · ${result.integrity.assetCount}/${result.integrity.assetCount} assets · ${result.contract.requiredGates.length}/${result.contract.requiredGates.length} gates · ${result.resilience.passedCount}/${result.resilience.scenarioCount} resilience · ${result.security.passedCount}/${result.security.scenarioCount} security scenarios`);
+    const result = verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath});
+    console.log(`Release evidence PASS: ${tag} · ${target} · ${result.integrity.assetCount}/${result.integrity.assetCount} assets · ${result.contract.requiredGates.length}/${result.contract.requiredGates.length} gates · ${result.resilience.passedCount}/${result.resilience.scenarioCount} resilience · ${result.security.passedCount}/${result.security.scenarioCount} security · ${result.ux.passedCount}/${result.ux.scenarioCount} UX scenarios`);
   } catch (error) {
     console.error(`RELEASE EVIDENCE FAILED: ${error.message}`);
     process.exit(1);
