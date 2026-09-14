@@ -16,6 +16,7 @@
     "scripts/release-evidence.js",
     "scripts/resilience-summary.js",
     "scripts/security-summary.js",
+    "scripts/ux-summary.js",
     "scripts/public-assets.js",
     "fonts/pretendard.css",
     "fonts/PRETENDARD-LICENSE.txt"
