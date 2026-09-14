@@ -1,7 +1,7 @@
 {
-  "tag": "v6.0.0",
-  "target": "6185baa82aa7a1a6b11a6d067886b69f47248f31",
-  "title": "v6.0.0 — Resilience & recovery hardening",
-  "notes_file": "CHANGELOG.md",
-  "sync_revision": 2
+  "tag": "v7.0.0",
+  "target": "6732047aed507e7d1f40c9635f7c4b7de3495472",
+  "title": "v7.0.0 — Security & failure-containment hardening",
+  "notes_file": "RELEASE-v7.0.0.md",
+  "sync_revision": 3
 }
