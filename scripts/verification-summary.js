@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const release = JSON.parse(fs.readFileSync('release.json', 'utf8'));
 const event = process.env.GITHUB_EVENT_NAME || 'local';
 const isProductionRun = event === 'push' && process.env.GITHUB_REF === 'refs/heads/main';
 const productionResult = process.env.PRODUCTION_RESULT || (isProductionRun ? 'unknown' : 'not_applicable');
@@ -12,12 +13,12 @@ const gates = [
   {area:'Mobile performance', gate:'Lighthouse 13.4.1', result:process.env.MOBILE_LIGHTHOUSE_RESULT || 'unknown', scope:'mobile profile 3-run budget; every run must pass'},
   {area:'Supply chain', gate:'npm audit + PR lockfile delta', result:process.env.SUPPLY_CHAIN_RESULT || 'unknown', scope:'high+ advisories + HTTPS/integrity metadata + SHA-pinned Actions'},
   {area:'Production smoke', gate:'Playwright + Vercel status', result:isProductionRun ? productionResult : 'not_applicable', scope:'Desktop Chromium + iPhone WebKit live flow + CSP + assets + page/console errors'},
-  {area:'Deployment integrity', gate:'SHA-256', result:isProductionRun ? productionResult : 'not_applicable', scope:'deployed core assets + vendored font assets'}
+  {area:'Deployment integrity', gate:'SHA-256 + canonical manifest', result:isProductionRun ? productionResult : 'not_applicable', scope:'canonical public asset manifest · GitHub checkout ↔ Production'}
 ];
 const repository = process.env.GITHUB_REPOSITORY || null;
 const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
 const report = {
-  schemaVersion:2,
+  schemaVersion:3,
   generatedAt:new Date().toISOString(),
   repository,
   commit:process.env.GITHUB_SHA || null,
@@ -27,6 +28,17 @@ const report = {
   workflowUrl:repository ? `${serverUrl}/${repository}/actions/workflows/e2e.yml?query=branch%3Amain` : null,
   verificationMatrixUrl:repository ? `${serverUrl}/${repository}#verification-matrix` : null,
   productionUrl:'https://onboardos-rho.vercel.app/',
+  release:{
+    product:release.product,
+    version:release.version,
+    freeze:release.freeze,
+    releaseClass:release.releaseClass,
+    releaseChannel:release.releaseChannel,
+    businessFlowChanged:release.businessFlowChanged,
+    integrityManifest:release.integrityManifest,
+    verificationContract:release.verificationContract,
+    evidenceContract:release.evidenceContract
+  },
   gates
 };
 const dir = 'verification';
@@ -36,6 +48,9 @@ const status = value => value === 'success' ? 'PASS' : (value === 'not_applicabl
 const lines = [
   '# Verification Evidence',
   '',
+  `- Release: **${report.release.product} v${report.release.version} / ${report.release.freeze}**`,
+  `- Release channel: \`${report.release.releaseChannel}\``,
+  `- Business flow changed: \`${report.release.businessFlowChanged}\``,
   `- Commit: \`${report.commit || 'local'}\``,
   `- Event: \`${event}\``,
   report.runUrl ? `- Run: ${report.runUrl}` : null,
