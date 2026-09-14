@@ -1,1 +1,0 @@
-Security hardening v7 implementation branch.
