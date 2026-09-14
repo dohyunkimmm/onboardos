@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   playwright:
-    name: Chromium quality / functional / a11y / recovery / visual / domain
+    name: Chromium quality / functional / a11y / visual / domain
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -35,11 +35,13 @@ jobs:
           node --check scripts/asset-integrity.js
           node --check scripts/release-contract.js
           node --check scripts/release-evidence.js
+          node --check scripts/resilience-summary.js
           node --check scripts/public-assets.js
           node --check scripts/dependency-review.js
           node --check scripts/verification-summary.js
           node --check scripts/lighthouse-run.js
           node --check playwright.config.js
+          node --check playwright.resilience.config.js
           node --check playwright.cross-browser.config.js
           node --check playwright.production.config.js
           node --check lighthouserc.cjs
@@ -50,7 +52,7 @@ jobs:
           python3 -m json.tool vercel.json >/dev/null
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Functional, WCAG/keyboard/ARIA, domain, role isolation, recovery and visual regression tests
+      - name: Functional, WCAG/keyboard/ARIA, domain, role isolation and visual regression tests
         run: npm run test:e2e
       - name: Upload Playwright report on failure
         if: failure()
@@ -59,6 +61,34 @@ jobs:
           name: playwright-report-chromium
           path: playwright-report/
           retention-days: 7
+
+  resilience:
+    name: Resilience / recovery fault-injection gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run required resilience scenarios R1-R8
+        run: |
+          mkdir -p verification
+          npm run test:resilience
+      - name: Build machine-readable resilience evidence
+        run: node scripts/resilience-summary.js verification/resilience-playwright.json
+      - name: Upload resilience evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: resilience-evidence-${{ github.sha }}
+          path: |
+            verification/resilience-summary.json
+            verification/resilience-playwright.json
+          if-no-files-found: error
+          retention-days: 30
 
   cross-browser:
     name: Firefox / WebKit functional smoke
@@ -144,7 +174,7 @@ jobs:
   production-smoke:
     name: Production desktop/mobile smoke + deployment integrity
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [playwright, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
+    needs: [playwright, resilience, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -216,10 +246,11 @@ jobs:
 
   evidence:
     name: Verification evidence
-    needs: [playwright, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
+    needs: [playwright, resilience, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
     if: >-
       always() &&
       needs.playwright.result == 'success' &&
+      needs.resilience.result == 'success' &&
       needs.cross-browser.result == 'success' &&
       needs.lighthouse.result == 'success' &&
       needs.lighthouse-mobile.result == 'success' &&
@@ -234,6 +265,7 @@ jobs:
       - name: Build verification summary
         env:
           CHROMIUM_RESULT: ${{ needs.playwright.result }}
+          RESILIENCE_RESULT: ${{ needs.resilience.result }}
           CROSS_BROWSER_RESULT: ${{ needs.cross-browser.result }}
           LIGHTHOUSE_RESULT: ${{ needs.lighthouse.result }}
           MOBILE_LIGHTHOUSE_RESULT: ${{ needs.lighthouse-mobile.result }}
