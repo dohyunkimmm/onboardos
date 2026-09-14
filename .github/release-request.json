@@ -1,7 +1,7 @@
 {
-  "tag": "v3.0.0",
-  "target": "b684b8b33d53e40a7f533f7c1134e7788db61efa",
-  "title": "v3.0.0 — Canonical Production integrity manifest",
+  "tag": "v4.0.0",
+  "target": "492d66ed751af559d7d407951a7359a010e71b52",
+  "title": "v4.0.0 — Operational UX & reviewer experience polish",
   "notes_file": "CHANGELOG.md",
   "sync_revision": 1
 }
