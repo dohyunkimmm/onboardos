@@ -15,10 +15,12 @@ async function rect(locator){
 test('SSO 인증 중에도 로그인 카드 geometry가 변하지 않는다', async ({ page }) => {
   await page.goto('/');
   const card = page.locator('.login-card');
+  const note = page.locator('.login-note');
   const before = await rect(card);
 
   await page.getByRole('button', { name: 'Google SSO로 시작하기' }).click();
   await expect(page.locator('#loginLoader')).toBeVisible();
+  await expect(note).toBeHidden();
   await page.evaluate(() => document.fonts.ready);
   await expect(page.locator('#loginLoader')).toBeVisible();
 
@@ -52,13 +54,14 @@ test('모바일 상단은 초기화 액션을 중복 노출하지 않는다', as
   await expect(page.locator('#moreBtn')).toBeVisible();
 });
 
-test('진행 안내는 5단계 tracker와 경쟁하는 1/3 카운트를 노출하지 않는다', async ({ page }) => {
+test('진행 안내는 5단계 tracker를 단일 진행 기준으로 유지한다', async ({ page }) => {
   await page.goto('/');
   await login(page);
 
   await expect(page.locator('.demo-step-kicker')).toBeHidden();
   await expect(page.locator('.progress-hint .hint-arrow')).toBeHidden();
   await expect(page.locator('.progress-bar .progress-step')).toHaveCount(5);
+  await expect(page.locator('#progressHint')).toContainText('전사 공통 항목');
 });
 
 test('초소형 모바일에서는 전사 공통 라이선스를 1열로 표시한다', async ({ page }) => {
