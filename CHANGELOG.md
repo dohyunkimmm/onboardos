@@ -1,5 +1,53 @@
 # Changelog
 
+## v7.0.0 — Security & failure-containment hardening — 2026-09-15
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 브라우저 보안 경계와 장애 격리를 S1–S8 전용 gate로 검증하고 machine-readable security evidence까지 immutable Release에 연결하도록 강화했습니다. 로그인 SSO 전환과 모바일 반응형 UX의 회귀도 별도 자동 검증으로 고정했습니다.
+
+### Security & failure containment
+- 전용 Playwright Security profile로 S1–S8 security/failure-containment scenario를 기존 Chromium·R1–R8 gate와 독립적으로 운영
+- Analytics event/field allowlist와 identifier-like value rejection을 적용해 telemetry payload 경계를 강화
+- CSP/security headers, URL·Storage·Console·Telemetry·unsafe DOM boundary의 실패 격리를 검증
+- 기존 R1–R8 Resilience/Recovery contract와 P6 Business Flow는 변경하지 않음
+
+### UI/UX regression hardening
+- Google SSO 인증 피드백을 기존 note 영역에 overlay해 로그인 카드가 로딩 중 resize/recenter되지 않도록 고정
+- 5단계 tracker를 주 진행 모델로 유지하고 별도 숫자 mini-counter를 `다음 행동` / `완료` 안내로 정리
+- 모바일 reviewer safe-area, 중복 reset 노출 제거, 360px 미만 공통 라이선스 1열, Drawer 44px touch target을 회귀 테스트로 고정
+
+### Release evidence
+- `security-summary.json`을 machine-readable evidence로 추가하고 S1–S8 결과를 기록
+- `release.json` schema v6 / `evidenceContract` schema v5로 올려 Security & containment를 필수 release gate에 포함
+- immutable GitHub Release asset에 `verification-summary.json`, `verification-summary.md`, `asset-integrity.json`, `resilience-summary.json`, `security-summary.json` 5종을 요구
+
+### Scope
+- 새 SaaS·직무·상태·승인 Flow 추가 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 정책 변경 없음
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Verification
+- PR #49: v7 security/failure-containment contract와 S1–S8 gate 도입
+- PR #52: SSO geometry·font stability·responsive UI/UX 회귀 보강, PR E2E 전체 통과
+- PR #53 / Production target `6732047aed507e7d1f40c9635f7c4b7de3495472` / Vercel deployment `dpl_89ZLDRTJX1qPbpgV6QdoFNigoHvn`: READY, GitHub verified commit 기준 배포
+- Main E2E run #149 (`34903477287`): 전체 workflow `completed / success`
+- Chromium 기능·WCAG/Keyboard/ARIA·Domain·Visual Regression: PASS
+- Resilience scenarios: **R1–R8 8/8 PASS**
+- Security scenarios: **S1–S8 8/8 PASS**
+- Firefox/WebKit functional smoke, Desktop/Mobile Lighthouse, Supply-chain gate: PASS
+- Production source integrity: PASS
+- Production Desktop Chromium + iPhone WebKit browser smoke: PASS
+- Production integrity artifact `10372385230` / `sha256:f1447d540324c455d179da74b4f07b00c7ae8bb08109bb0610f6866e2b964ae9`
+- Verification evidence artifact `10371796562` / `sha256:2d29ba74a5672a946309c6943a1f909abfe7d116df0f33d0b5d032acf29d55ea`
+- Resilience evidence artifact `10371394270` / `sha256:05b6b1bc4ad807b162598445ccc1920655b52136acf34762911af0709edf308c`
+- Security evidence artifact `10371434392` / `sha256:fcd5c6bf52994d1f98a44965d93c5c64df8f404225296334245339f685459b3a`
+- PR #54: evidence-backed release request closeout
+- Immutable GitHub Release: `v7.0.0`, target `6732047aed507e7d1f40c9635f7c4b7de3495472`, required evidence assets 5종 포함
+
+### Release status
+v7.0.0은 기능 확장이 아닌 **Security / Failure-containment / evidence gating + UI/UX regression hardening** 릴리스이며, P6 Business Flow를 유지한 상태로 Production 검증과 immutable Release 발행을 완료했습니다.
+
+---
+
 ## v6.0.0 — Resilience & recovery hardening — 2026-09-14
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 손상·구버전·저장장애·새로고침·stale client 상황에서 상태를 안전하게 복구할 수 있는지 별도 Resilience gate와 machine-readable evidence로 검증하도록 강화했습니다.
