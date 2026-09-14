@@ -54,12 +54,13 @@ test('모바일 상단은 초기화 액션을 중복 노출하지 않는다', as
   await expect(page.locator('#moreBtn')).toBeVisible();
 });
 
-test('진행 안내는 5단계 tracker를 단일 진행 기준으로 유지한다', async ({ page }) => {
+test('진행 안내는 5단계 tracker를 유지하고 별도 숫자 카운트 대신 다음 행동으로 보인다', async ({ page }) => {
   await page.goto('/');
   await login(page);
 
-  await expect(page.locator('.demo-step-kicker')).toBeHidden();
-  await expect(page.locator('.progress-hint .hint-arrow')).toBeHidden();
+  await expect(page.locator('.demo-step-kicker')).toBeVisible();
+  const pseudoContent = await page.locator('.demo-step-kicker').evaluate(el => getComputedStyle(el, '::after').content);
+  expect(pseudoContent).toContain('다음 행동');
   await expect(page.locator('.progress-bar .progress-step')).toHaveCount(5);
   await expect(page.locator('#progressHint')).toContainText('전사 공통 항목');
 });
