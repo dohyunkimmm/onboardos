@@ -14,7 +14,7 @@
 
 **추천 순서:** 36초 영상으로 핵심을 먼저 확인한 뒤 → Live Production에서 직접 체험 → 필요하면 Case Study와 검증 근거를 확인합니다. [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md) · [Latest main verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Release Notes](./CHANGELOG.md)
 
-> **Portfolio release — v5.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v5.0.0은 Production observability와 release evidence automation을 강화했습니다. Production runtime commit `f595811cf0453ca4525d24924fa5d1dcaa36eaf7` / deployment `dpl_4tm1iiRxbfz2crW4CTe9yrJWFL2w`는 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·**132/132 canonical manifest asset SHA-256 integrity**·Desktop Chromium+iPhone WebKit Production smoke를 모두 통과했습니다. Release workflow는 성공한 target main E2E run의 verification summary와 asset integrity를 재검증한 뒤 GitHub Release asset으로 자동 첨부하며, stale evidence나 version/commit mismatch가 있으면 Release를 차단합니다.
+> **Portfolio release — v6.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v6.0.0은 **Resilience & Recovery hardening**을 추가했습니다. Production runtime commit `6185baa82aa7a1a6b11a6d067886b69f47248f31` / deployment `dpl_6W2VSgXmCiDchPpC9SQeFuMc9pM9`는 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·**133/133 canonical manifest asset SHA-256 integrity**·Desktop Chromium+iPhone WebKit Production smoke **2/2**를 모두 통과했습니다. 별도 Resilience gate에서 손상 JSON, malformed nested state, v3 migration, Storage 장애, Analytics 장애, valid+corrupt 혼합 상태, reload continuity, future schema stale-client 방어까지 **R1–R8 8/8**을 검증하고 `resilience-summary.json`으로 증거를 생성합니다. GitHub Release는 이 resilience evidence까지 target commit과 일치해야 발행됩니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
@@ -135,6 +135,7 @@ stateDiagram-v2
 │   ├── asset-integrity.js
 │   ├── verification-summary.js
 │   ├── release-evidence.js
+│   ├── resilience-summary.js
 │   └── record-demo.mjs
 ├── tests/
 │   ├── onboard.spec.js
@@ -152,6 +153,7 @@ stateDiagram-v2
 ├── docs/
 │   └── DEMO_WALKTHROUGH.md
 ├── playwright.config.js
+├── playwright.resilience.config.js
 ├── playwright.cross-browser.config.js
 ├── playwright.production.config.js
 ├── lighthouserc.cjs
@@ -187,6 +189,7 @@ npm audit --audit-level=high
 npx playwright install chromium firefox webkit
 npm run quality
 npm run test:e2e
+npm run test:resilience
 npm run test:cross-browser
 npm run test:lighthouse
 npm run test:lighthouse:mobile
