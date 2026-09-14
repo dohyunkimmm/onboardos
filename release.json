@@ -1,16 +1,17 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "product": "ONBOARD·OS",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "freeze": "P6",
-  "releaseClass": "operational-ux-polish",
-  "scope": "admin-reviewer-experience-hardening",
+  "releaseClass": "production-observability",
+  "scope": "release-evidence-automation",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
   "syncedArtifacts": [
     "version.txt",
-    "package.json"
+    "package.json",
+    "package-lock.json"
   ],
   "businessFlowChanged": false,
   "verificationContract": [
@@ -18,6 +19,25 @@
     "integrity-manifest-consistency",
     "sha256-asset-integrity",
     "desktop-chromium-smoke",
-    "iphone-webkit-smoke"
-  ]
+    "iphone-webkit-smoke",
+    "release-evidence-consistency"
+  ],
+  "evidenceContract": {
+    "schemaVersion": 3,
+    "releaseAssets": [
+      "verification-summary.json",
+      "verification-summary.md",
+      "asset-integrity.json"
+    ],
+    "requireSuccessfulTargetRun": true,
+    "requiredGates": [
+      "Chromium regression",
+      "Cross-browser",
+      "Desktop performance",
+      "Mobile performance",
+      "Supply chain",
+      "Production smoke",
+      "Deployment integrity"
+    ]
+  }
 }
