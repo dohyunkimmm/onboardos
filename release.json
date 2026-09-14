@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 6,
+  "schemaVersion": 7,
   "product": "ONBOARD·OS",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "freeze": "P6",
-  "releaseClass": "security-hardening",
-  "scope": "browser-security-failure-containment",
+  "releaseClass": "interaction-ux-hardening",
+  "scope": "interaction-state-accessibility",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -22,6 +22,7 @@
     "iphone-webkit-smoke",
     "resilience-recovery",
     "security-failure-containment",
+    "interaction-ux",
     "release-evidence-consistency"
   ],
   "resilienceContract": {
@@ -53,20 +54,42 @@
       "S8"
     ]
   },
+  "uxContract": {
+    "schemaVersion": 1,
+    "evidenceAsset": "ux-summary.json",
+    "requiredScenarios": [
+      "U1",
+      "U2",
+      "U3",
+      "U4",
+      "U5",
+      "U6",
+      "U7",
+      "U8"
+    ],
+    "requiredVisualEvidence": [
+      "U1-sso-loading.png",
+      "U3-request-modal.png",
+      "U4-admin-drawer.png",
+      "U8-resubmit-modal.png"
+    ]
+  },
   "evidenceContract": {
-    "schemaVersion": 5,
+    "schemaVersion": 6,
     "releaseAssets": [
       "verification-summary.json",
       "verification-summary.md",
       "asset-integrity.json",
       "resilience-summary.json",
-      "security-summary.json"
+      "security-summary.json",
+      "ux-summary.json"
     ],
     "requireSuccessfulTargetRun": true,
     "requiredGates": [
       "Chromium regression",
       "Resilience & recovery",
       "Security & containment",
+      "Interaction UX",
       "Cross-browser",
       "Desktop performance",
       "Mobile performance",
@@ -76,4 +99,3 @@
     ]
   }
 }
-
