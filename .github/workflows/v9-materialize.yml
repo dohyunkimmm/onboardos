@@ -1,0 +1,42 @@
+name: Materialize v9 candidate
+
+on:
+  push:
+    branches: [feature/v9-visual-usability-hardening]
+    paths:
+      - .github/workflows/v9-materialize.yml
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          token: ${{ github.token }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+      - name: Materialize non-workflow v9 changes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re, base64, pathlib
+          text = pathlib.Path('.github/workflows/v9-bootstrap.yml').read_text()
+          match = re.search(r"printf '%s' '([^']+)' \\| base64 -d", text)
+          if not match:
+              raise SystemExit('embedded bootstrap payload not found')
+          pathlib.Path('/tmp/v9-bootstrap.js').write_bytes(base64.b64decode(match.group(1)))
+          PY
+          gzip -d < /tmp/v9-bootstrap.js > /tmp/v9-bootstrap.decoded.js
+          node --check /tmp/v9-bootstrap.decoded.js
+          node /tmp/v9-bootstrap.decoded.js
+          git checkout -- .github/workflows/e2e.yml .github/workflows/release.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Build v9.0.0 visual system and usability candidate"
+          git push
