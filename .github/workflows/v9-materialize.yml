@@ -25,14 +25,14 @@ jobs:
           python3 - <<'PY'
           import re, base64, pathlib
           text = pathlib.Path('.github/workflows/v9-bootstrap.yml').read_text()
-          match = re.search(r"printf '%s' '([^']+)' \\| base64 -d", text)
+          match = re.search(r"printf '%s' '([^']+)'", text)
           if not match:
               raise SystemExit('embedded bootstrap payload not found')
-          pathlib.Path('/tmp/v9-bootstrap.js').write_bytes(base64.b64decode(match.group(1)))
+          pathlib.Path('/tmp/v9-bootstrap.gz').write_bytes(base64.b64decode(match.group(1)))
           PY
-          gzip -d < /tmp/v9-bootstrap.js > /tmp/v9-bootstrap.decoded.js
-          node --check /tmp/v9-bootstrap.decoded.js
-          node /tmp/v9-bootstrap.decoded.js
+          gzip -d < /tmp/v9-bootstrap.gz > /tmp/v9-bootstrap.js
+          node --check /tmp/v9-bootstrap.js
+          node /tmp/v9-bootstrap.js
           git checkout -- .github/workflows/e2e.yml .github/workflows/release.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
