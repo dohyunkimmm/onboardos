@@ -6,6 +6,22 @@
 
 .login-card .login-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
 
+/* Keep SSO feedback inside the existing note footprint so the login card never reflows on click. */
+.login-panel{position:relative;}
+.login-loader{
+  display:block;
+  visibility:hidden;
+  position:absolute;
+  left:20px;
+  right:20px;
+  bottom:20px;
+  margin:0;
+}
+.login-loader.is-visible{visibility:visible;}
+.login-panel:has(.login-loader.is-visible) .login-note{visibility:hidden;}
+.login-loader .loader-bar span{width:0;animation:none;}
+.login-loader.is-visible .loader-bar span{animation:loadbar 1.1s ease forwards;}
+
 /* Reviewer entry lives outside the visual-baseline login card so it can guide portfolio review without changing the product flow. */
 .reviewer-entry{
   position:fixed;
@@ -44,6 +60,10 @@
 }
 .reviewer-entry a:hover{color:#fff;text-decoration:underline;}
 .reviewer-entry a:focus-visible{outline:2px solid var(--indigo-soft);outline-offset:2px;}
+
+/* The five-step business tracker is the single visible progress scale; the row below is guidance only. */
+.demo-step-kicker,
+.progress-hint .hint-arrow{display:none;}
 
 /* Admin-review states are part of the existing flow; improve scanability and touch behavior without changing behavior. */
 .drawer-head{
@@ -147,7 +167,13 @@
 }
 .reviewer-entry a:first-of-type{color:#fff;}
 
+/* Mobile: keep the fixed reviewer affordance clear of scrollable content, remove duplicate reset, and relax ultra-narrow card density. */
+@media (max-width:768px){
+  .login-screen{padding-bottom:84px;}
+}
 @media (max-width:560px){
+  #resetBtn{display:none;}
+  .login-loader{left:14px;right:14px;bottom:14px;}
   .reviewer-entry{
     bottom:10px;
     gap:6px;
@@ -167,4 +193,8 @@
   .request-item{padding:14px 13px 13px;}
   .request-item-title{align-items:flex-start;}
   .request-actions{margin-inline:-6px;padding-inline:6px;}
+}
+@media (max-width:359px){
+  #commonGrid{grid-template-columns:1fr;}
+  #commonGrid .card{min-height:0;}
 }
