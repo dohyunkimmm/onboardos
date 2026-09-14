@@ -14,7 +14,7 @@
 
 **추천 순서:** 36초 영상으로 핵심을 먼저 확인한 뒤 → Live Production에서 직접 체험 → 필요하면 Case Study와 검증 근거를 확인합니다. [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md) · [Latest main verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Release Notes](./CHANGELOG.md)
 
-> **Portfolio release — v4.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v4.0.0은 관리자 요청 Queue의 scanability·SLA 위험 강조·모바일 처리 ergonomics와 reviewer-facing 운영 완성도를 강화했습니다. Production runtime commit `492d66ed751af559d7d407951a7359a010e71b52` / deployment `dpl_FSGMTfETJLyfC7rDrgvk5SEH5npe`는 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·Production Desktop Chromium+iPhone WebKit smoke·**131/131 canonical manifest asset SHA-256 integrity**·`release.json`/`integrity-assets.json` contract를 모두 통과했습니다.
+> **Portfolio release — v5.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v5.0.0은 Production observability와 release evidence automation을 강화했습니다. Production runtime commit `f595811cf0453ca4525d24924fa5d1dcaa36eaf7` / deployment `dpl_4tm1iiRxbfz2crW4CTe9yrJWFL2w`는 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·**132/132 canonical manifest asset SHA-256 integrity**·Desktop Chromium+iPhone WebKit Production smoke를 모두 통과했습니다. Release workflow는 성공한 target main E2E run의 verification summary와 asset integrity를 재검증한 뒤 GitHub Release asset으로 자동 첨부하며, stale evidence나 version/commit mismatch가 있으면 Release를 차단합니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
@@ -134,6 +134,7 @@ stateDiagram-v2
 │   ├── lighthouse-run.js
 │   ├── asset-integrity.js
 │   ├── verification-summary.js
+│   ├── release-evidence.js
 │   └── record-demo.mjs
 ├── tests/
 │   ├── onboard.spec.js

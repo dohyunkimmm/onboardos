@@ -1,5 +1,41 @@
 # Changelog
 
+## v5.0.0 — Production observability & release evidence automation — 2026-09-14
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, Production 검증 evidence를 사람이 수동으로 옮기지 않아도 Release가 성공한 target run과 검증 artifact를 직접 확인하고 함께 발행하도록 릴리스 파이프라인을 강화했습니다.
+
+### Release evidence automation
+- `release.json`을 schema v4 / v5.0.0으로 올리고 `evidenceContract`를 canonical release contract에 추가
+- Release workflow가 지정 target SHA의 성공한 `main` E2E run을 자동 탐색하고, 해당 run의 `verification-evidence-*`와 `production-integrity-*` artifact를 다운로드
+- `scripts/release-evidence.js`가 verification summary schema/version/commit/run/gate 결과와 Production asset integrity의 commit/allMatch를 교차 검증
+- 검증을 통과한 `verification-summary.json`, `verification-summary.md`, `asset-integrity.json` 3개 파일을 GitHub Release asset으로 자동 첨부
+- 성공한 target evidence가 없거나 stale/mismatch면 tag/Release 생성 전에 실패하도록 release gate 강화
+
+### Canonical version consistency
+- `package-lock.json`의 오래된 1.7.0 프로젝트 metadata를 v5.0.0으로 재생성
+- `release.json`의 `syncedArtifacts`에 `package-lock.json`을 추가하고 Fast Quality Gate에서 `release.json` ↔ `version.txt` ↔ `package.json` ↔ `package-lock.json` 일치를 강제
+- `scripts/release-evidence.js` 자체도 canonical Production integrity manifest에 포함
+
+### Scope
+- 새 SaaS·직무·상태·승인 Flow 추가 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 로직 변경 없음
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Verification
+- PR #44 / E2E run #116 (`34806249888`): v5 release/evidence contract, Chromium 기능·WCAG/Keyboard/ARIA·Domain·Recovery·Visual Regression, Firefox/WebKit smoke, Desktop/Mobile Lighthouse, Supply-chain gate 모두 통과
+- Production runtime commit `f595811cf0453ca4525d24924fa5d1dcaa36eaf7` / Vercel deployment `dpl_4tm1iiRxbfz2crW4CTe9yrJWFL2w`: `READY`, GitHub verified commit 기준 배포
+- Main E2E run #117 (`34806397415`): 전체 workflow `completed / success`
+- Production source integrity: **132/132 canonical manifest assets** SHA-256 일치
+- Production Desktop Chromium + iPhone WebKit browser smoke: **2/2 passed**
+- Production `/release.json`·`/version.txt`: HTTP 200, v5.0.0 / P6 / `releaseChannel=production` / `businessFlowChanged=false` / evidence contract 확인
+- Production integrity artifact `10333261437` / `sha256:b1e61b1accaabbf990d610535d65186f85f68a96960c079f3dc573bcc2285155`
+- Verification evidence artifact `10333490774` / `sha256:0cd2434324a2c751606a6184bc0cbc357016b8b79045270fb3fb17e66ed5a73c`
+
+### Release status
+v5.0.0은 제품 기능 확장이 아닌 **Production observability / release evidence automation / stale-evidence release gating** 릴리스이며, 새 Production 배포와 132/132 integrity·2-browser smoke까지 통과한 **Production verified** 상태입니다.
+
+---
+
 ## v4.0.0 — Operational UX & reviewer experience polish — 2026-09-14
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 관리자 운영 화면의 scanability·SLA 위험 인지·모바일 처리 ergonomics와 reviewer-facing 완성도를 강화했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
