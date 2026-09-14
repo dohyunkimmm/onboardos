@@ -22,7 +22,7 @@ function validateReleaseContract(){
   const versionText = fs.readFileSync('version.txt', 'utf8');
   const stateSource = fs.readFileSync('js/state.js', 'utf8');
 
-  if(release.schemaVersion !== 5) fail(`schemaVersion must be 5, found ${release.schemaVersion}`);
+  if(release.schemaVersion !== 6) fail(`schemaVersion must be 6, found ${release.schemaVersion}`);
   if(release.product !== 'ONBOARD·OS') fail(`product mismatch: ${release.product}`);
   if(!/^\d+\.\d+\.\d+$/.test(release.version || '')) fail(`invalid semantic version: ${release.version}`);
   if(release.freeze !== 'P6') fail(`freeze must remain P6, found ${release.freeze}`);
@@ -44,6 +44,7 @@ function validateReleaseContract(){
     'desktop-chromium-smoke',
     'iphone-webkit-smoke',
     'resilience-recovery',
+    'security-failure-containment',
     'release-evidence-consistency'
   ];
   for(const contract of contracts){
@@ -68,6 +69,15 @@ function validateReleaseContract(){
     fail(`js/state.js session schema=${stateSchemaMatch[1]} release resilience schema=${resilience.sessionSchemaVersion}`);
   }
 
+  const security = release.securityContract;
+  if(!security || security.schemaVersion !== 1) fail('securityContract.schemaVersion must be 1');
+  if(security.evidenceAsset !== 'security-summary.json') fail('securityContract.evidenceAsset must be security-summary.json');
+  for(const scenario of ['S1','S2','S3','S4','S5','S6','S7','S8']){
+    if(!Array.isArray(security.requiredScenarios) || !security.requiredScenarios.includes(scenario)){
+      fail(`securityContract.requiredScenarios missing ${scenario}`);
+    }
+  }
+
   try {
     validateEvidenceContract(release);
   } catch (error) {
@@ -78,6 +88,7 @@ function validateReleaseContract(){
   if(!versionMatch) fail('version.txt must declare ONBOARD·OS semantic version');
   if(versionMatch[1] !== release.version) fail(`version.txt=${versionMatch[1]} release.json=${release.version}`);
   if(!/^releaseChannel=production$/m.test(versionText)) fail('version.txt must declare releaseChannel=production');
+  if(!/^securityContract=S1-S8$/m.test(versionText)) fail('version.txt must declare securityContract=S1-S8');
   if(packageJson.version !== release.version) fail(`package.json=${packageJson.version} release.json=${release.version}`);
   if(packageLock.version !== release.version) fail(`package-lock.json=${packageLock.version} release.json=${release.version}`);
   if(packageLock.packages?.['']?.version !== release.version){
@@ -90,7 +101,7 @@ function validateReleaseContract(){
   } catch (error) {
     fail(error.message);
   }
-  for(const critical of ['release.json', 'version.txt', 'integrity-assets.json', 'scripts/release-contract.js', 'scripts/release-evidence.js', 'scripts/resilience-summary.js', 'scripts/public-assets.js']){
+  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/public-assets.js']){
     if(!manifestResult.assets.includes(critical)) fail(`integrity manifest missing critical asset ${critical}`);
   }
 
@@ -100,7 +111,7 @@ function validateReleaseContract(){
 if(require.main === module){
   try {
     const release = validateReleaseContract();
-    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} scenarios`);
+    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} scenarios`);
   } catch (error) {
     console.error(`RELEASE CONTRACT FAILED: ${error.message}`);
     process.exit(1);
