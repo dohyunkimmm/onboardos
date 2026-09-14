@@ -36,18 +36,21 @@ jobs:
           node --check scripts/release-contract.js
           node --check scripts/release-evidence.js
           node --check scripts/resilience-summary.js
+          node --check scripts/security-summary.js
           node --check scripts/public-assets.js
           node --check scripts/dependency-review.js
           node --check scripts/verification-summary.js
           node --check scripts/lighthouse-run.js
           node --check playwright.config.js
           node --check playwright.resilience.config.js
+          node --check playwright.security.config.js
           node --check playwright.cross-browser.config.js
           node --check playwright.production.config.js
           node --check lighthouserc.cjs
           node --check lighthouserc.mobile.cjs
           node --check tests/role-isolation.spec.js
           node --check tests/recovery.spec.js
+          node --check tests/security.spec.js
           node --check tests/production.spec.js
           python3 -m json.tool vercel.json >/dev/null
       - name: Install Chromium
@@ -87,6 +90,34 @@ jobs:
           path: |
             verification/resilience-summary.json
             verification/resilience-playwright.json
+          if-no-files-found: error
+          retention-days: 30
+
+  security:
+    name: Security / failure-containment gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run required security scenarios S1-S8
+        run: |
+          mkdir -p verification
+          npm run test:security
+      - name: Build machine-readable security evidence
+        run: node scripts/security-summary.js verification/security-playwright.json
+      - name: Upload security evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: security-evidence-${{ github.sha }}
+          path: |
+            verification/security-summary.json
+            verification/security-playwright.json
           if-no-files-found: error
           retention-days: 30
 
@@ -174,7 +205,7 @@ jobs:
   production-smoke:
     name: Production desktop/mobile smoke + deployment integrity
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [playwright, resilience, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
+    needs: [playwright, resilience, security, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -246,11 +277,12 @@ jobs:
 
   evidence:
     name: Verification evidence
-    needs: [playwright, resilience, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
+    needs: [playwright, resilience, security, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
     if: >-
       always() &&
       needs.playwright.result == 'success' &&
       needs.resilience.result == 'success' &&
+      needs.security.result == 'success' &&
       needs.cross-browser.result == 'success' &&
       needs.lighthouse.result == 'success' &&
       needs.lighthouse-mobile.result == 'success' &&
@@ -266,6 +298,7 @@ jobs:
         env:
           CHROMIUM_RESULT: ${{ needs.playwright.result }}
           RESILIENCE_RESULT: ${{ needs.resilience.result }}
+          SECURITY_RESULT: ${{ needs.security.result }}
           CROSS_BROWSER_RESULT: ${{ needs.cross-browser.result }}
           LIGHTHOUSE_RESULT: ${{ needs.lighthouse.result }}
           MOBILE_LIGHTHOUSE_RESULT: ${{ needs.lighthouse-mobile.result }}
