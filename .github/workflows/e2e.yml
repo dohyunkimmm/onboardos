@@ -33,6 +33,9 @@ jobs:
           node --check scripts/quality-check.js
           node --check scripts/serve.js
           node --check scripts/asset-integrity.js
+          node --check scripts/release-contract.js
+          node --check scripts/release-evidence.js
+          node --check scripts/public-assets.js
           node --check scripts/dependency-review.js
           node --check scripts/verification-summary.js
           node --check scripts/lighthouse-run.js
