@@ -182,7 +182,7 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 
 ### Scope
 - 새 SaaS·직무·상태·승인 Flow 추가 없음
-- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 정책 변경 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 로직 변경 없음
 - P6 feature freeze와 `businessFlowChanged: false` 유지
 
 ### Verification
