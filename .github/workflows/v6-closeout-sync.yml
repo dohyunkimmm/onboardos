@@ -2,7 +2,8 @@ name: v6 closeout sync
 
 on:
   push:
-    branches: [release/v6.0.0-closeout]
+    branches:
+      - release/v6.0.0-closeout
     paths:
       - .github/workflows/v6-closeout-sync.yml
 
@@ -11,107 +12,18 @@ permissions:
 
 jobs:
   sync:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: release/v6.0.0-closeout
       - name: Sync verified v6 close-out metadata
+        run: python3 scripts/v6-closeout-sync.py
+      - name: Commit close-out files and remove temporary helpers
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import json, re
-
-          runtime='6185baa82aa7a1a6b11a6d067886b69f47248f31'
-          deployment='dpl_6W2VSgXmCiDchPpC9SQeFuMc9pM9'
-          run_id='34812936803'
-          integrity_id='10336140089'
-          integrity_digest='sha256:20a38325c8dfc77928a86c20e9f8e2187a72be41e5b93dc6ad0f5096121a42c6'
-          verification_id='10335716195'
-          verification_digest='sha256:a8e712a2c7ea6b9f74686426492d365818defb69f74a64fe1ea9c16d807fbc82'
-          resilience_id='10335054487'
-          resilience_digest='sha256:d11c70367e284c2beb791df9314f68eac8dafbb47785432502942276247565e9'
-
-          p=Path('README.md')
-          s=p.read_text()
-          replacement=(
-            '> **Portfolio release — v6.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v6.0.0은 **Resilience & Recovery hardening**을 추가했습니다. '
-            f'Production runtime commit `{runtime}` / deployment `{deployment}`는 Chromium 회귀·Firefox/WebKit·Desktop/Mobile Lighthouse·**133/133 canonical manifest asset SHA-256 integrity**·Desktop Chromium+iPhone WebKit Production smoke **2/2**를 모두 통과했습니다. '
-            '별도 Resilience gate에서 손상 JSON, malformed nested state, v3 migration, Storage 장애, Analytics 장애, valid+corrupt 혼합 상태, reload continuity, future schema stale-client 방어까지 **R1–R8 8/8**을 검증하고 `resilience-summary.json`으로 증거를 생성합니다. GitHub Release는 이 resilience evidence까지 target commit과 일치해야 발행됩니다.'
-          )
-          pattern=r'> \*\*Portfolio release — v5\.0\.0 / P6 Production verified\.\*\*.*?(?=\n\n> 포트폴리오용)'
-          s2,n=re.subn(pattern,replacement,s,count=1,flags=re.S)
-          if n!=1: raise SystemExit(f'README release block replace count={n}')
-          s=s2
-          if 'scripts/resilience-summary.js' not in s:
-            s=s.replace('│   ├── release-evidence.js\n', '│   ├── release-evidence.js\n│   ├── resilience-summary.js\n',1)
-          if 'playwright.resilience.config.js' not in s:
-            s=s.replace('├── playwright.config.js\n', '├── playwright.config.js\n├── playwright.resilience.config.js\n',1)
-          if 'npm run test:resilience' not in s:
-            s=s.replace('npm run test:e2e\n', 'npm run test:e2e\nnpm run test:resilience\n',1)
-          p.write_text(s)
-
-          p=Path('CHANGELOG.md')
-          s=p.read_text()
-          marker='# Changelog\n\n'
-          if not s.startswith(marker): raise SystemExit('CHANGELOG header mismatch')
-          section=f'''## v6.0.0 — Resilience & recovery hardening — 2026-09-14
-
-P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 손상·구버전·저장장애·새로고침·stale client 상황에서 상태를 안전하게 복구할 수 있는지 별도 Resilience gate와 machine-readable evidence로 검증하도록 강화했습니다.
-
-### Resilience & recovery
-- `SESSION_SCHEMA_VERSION=4`를 명시하고 저장 payload에 schema marker를 기록해 future schema를 구버전 client가 잘못 읽지 않도록 safe reset 처리
-- malformed current/legacy payload에서 유효 request만 보존하고 손상 record는 선택적으로 폐기
-- Storage read/write/remove 장애와 Analytics/Speed Insights 장애를 핵심 신청 Flow에서 격리
-- 신청 직후 reload에서도 로그인·request·ticket 연속성을 보존
-- 전용 Playwright profile로 R1–R8 fault-injection scenario를 일반 Chromium 회귀와 독립된 CI gate로 운영
-
-### Release evidence
-- `resilience-summary.json`을 machine-readable evidence로 생성
-- `release.json` schema v5 / `evidenceContract` schema v4로 올리고 `Resilience & recovery`를 필수 release gate에 추가
-- Release workflow가 target run의 verification/integrity/resilience evidence를 함께 다운로드하고 commit/version/schema/scenario 결과를 교차 검증
-- immutable GitHub Release asset에 `verification-summary.json`, `verification-summary.md`, `asset-integrity.json`, `resilience-summary.json` 4종을 요구
-
-### Scope
-- 새 SaaS·직무·상태·승인 Flow 추가 없음
-- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 정책 변경 없음
-- P6 feature freeze와 `businessFlowChanged: false` 유지
-
-### Verification
-- PR #46 / E2E run #120 (`34812233707`): Chromium·R1–R8 Resilience·Firefox/WebKit·Desktop/Mobile Lighthouse·Supply-chain·verification evidence 모두 통과
-- PR #47 / E2E run #122 (`34812727820`): public resilience provenance 정렬 후 전체 gate 재통과
-- Production runtime commit `{runtime}` / Vercel deployment `{deployment}`: READY, GitHub verified commit 기준 배포
-- Main E2E run #123 (`{run_id}`): 전체 workflow `completed / success`
-- Resilience scenarios: **R1–R8 8/8 PASS**
-- Production source integrity: **133/133 canonical manifest assets** SHA-256 일치
-- Production Desktop Chromium + iPhone WebKit browser smoke: **2/2 PASS**
-- Production integrity artifact `{integrity_id}` / `{integrity_digest}`
-- Verification evidence artifact `{verification_id}` / `{verification_digest}`
-- Resilience evidence artifact `{resilience_id}` / `{resilience_digest}`
-
-### Release status
-v6.0.0은 기능 확장이 아닌 **Resilience & Recovery / fault-injection / recovery evidence gating** 릴리스이며, P6 Business Flow를 유지한 상태로 Production 검증을 완료했습니다.
-
----
-
-'''
-          if '## v6.0.0 — Resilience & recovery hardening' not in s:
-            s=marker+section+s[len(marker):]
-          p.write_text(s)
-
-          req={
-            'tag':'v6.0.0',
-            'target':runtime,
-            'title':'v6.0.0 — Resilience & recovery hardening',
-            'notes_file':'CHANGELOG.md',
-            'sync_revision':2
-          }
-          Path('.github/release-request.json').write_text(json.dumps(req,ensure_ascii=False,indent=2)+'\n')
-          PY
-          git rm .github/workflows/v6-closeout-sync.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/v6-closeout-sync.yml scripts/v6-closeout-sync.py
           git add README.md CHANGELOG.md .github/release-request.json
           git commit -m 'Close out verified v6.0.0 release'
           git push origin HEAD:release/v6.0.0-closeout
