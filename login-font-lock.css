@@ -64,9 +64,21 @@
 .reviewer-entry a:hover{color:#fff;text-decoration:underline;}
 .reviewer-entry a:focus-visible{outline:2px solid var(--indigo-soft);outline-offset:2px;}
 
-/* The five-step business tracker is the single visible progress scale; the row below is guidance only. */
-.demo-step-kicker,
-.progress-hint .hint-arrow{display:none;}
+/* Keep the five-step business tracker as the progress model while retaining the existing hint-row geometry. */
+.demo-step-kicker{position:relative;color:transparent!important;}
+.demo-step-kicker::after{
+  content:"다음 행동";
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--indigo-soft);
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.045em;
+}
+.demo-step-kicker.is-done::after{content:"완료";color:var(--success);}
 
 /* Admin-review states are part of the existing flow; improve scanability and touch behavior without changing behavior. */
 .drawer-head{
@@ -170,8 +182,13 @@
 }
 .reviewer-entry a:first-of-type{color:#fff;}
 
-/* Mobile: keep the fixed reviewer affordance clear of scrollable content, remove duplicate reset, and relax ultra-narrow card density. */
+/* Mobile: keep all login-card metrics stable through deferred font activation and avoid vertical auto-margin recentering. */
 @media (max-width:768px){
+  #loginScreen .login-card,
+  #loginScreen .login-card *{
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  .login-card{margin:0 auto;}
   .login-screen{padding-bottom:84px;}
 }
 @media (max-width:560px){
