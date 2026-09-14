@@ -17,10 +17,10 @@ const readJson = file => {
 function validateEvidenceContract(release){
   const contract = release.evidenceContract;
   if(!contract || typeof contract !== 'object') fail('evidenceContract is required');
-  if(contract.schemaVersion !== 4) fail(`evidenceContract.schemaVersion must be 4, found ${contract.schemaVersion}`);
+  if(contract.schemaVersion !== 5) fail(`evidenceContract.schemaVersion must be 5, found ${contract.schemaVersion}`);
   if(contract.requireSuccessfulTargetRun !== true) fail('requireSuccessfulTargetRun must be true');
 
-  const assets = ['verification-summary.json', 'verification-summary.md', 'asset-integrity.json', 'resilience-summary.json'];
+  const assets = ['verification-summary.json', 'verification-summary.md', 'asset-integrity.json', 'resilience-summary.json', 'security-summary.json'];
   for(const asset of assets){
     if(!Array.isArray(contract.releaseAssets) || !contract.releaseAssets.includes(asset)){
       fail(`releaseAssets missing ${asset}`);
@@ -30,6 +30,7 @@ function validateEvidenceContract(release){
   const gates = [
     'Chromium regression',
     'Resilience & recovery',
+    'Security & containment',
     'Cross-browser',
     'Desktop performance',
     'Mobile performance',
@@ -45,7 +46,7 @@ function validateEvidenceContract(release){
   return contract;
 }
 
-function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath}){
+function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath}){
   if(!/^[0-9a-f]{40}$/.test(target || '')) fail('target must be an exact 40-character commit SHA');
 
   const release = readJson('release.json');
@@ -112,7 +113,26 @@ function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resilie
     if(row.result !== 'success') fail(`resilience scenario ${id} result=${row.result}, expected success`);
   }
 
-  return {release, contract, summary, integrity, resilience};
+  const security = readJson(securityPath);
+  const securityContract = release.securityContract;
+  if(!securityContract || securityContract.schemaVersion !== 1) fail('securityContract.schemaVersion must be 1');
+  if(security.schemaVersion !== 1) fail(`security evidence schema=${security.schemaVersion}, expected 1`);
+  if(security.commit !== target) fail(`security evidence commit=${security.commit} target=${target}`);
+  if(security.release?.version !== release.version) fail(`security evidence release=${security.release?.version} expected=${release.version}`);
+  if(security.release?.freeze !== release.freeze) fail(`security evidence freeze=${security.release?.freeze} expected=${release.freeze}`);
+  if(security.release?.businessFlowChanged !== false) fail('security evidence must preserve businessFlowChanged=false');
+  if(security.allPassed !== true) fail('security evidence must report allPassed=true');
+  if(!Array.isArray(security.scenarios) || security.scenarios.length !== security.scenarioCount){
+    fail('security scenarios length must match scenarioCount');
+  }
+  const securityById = new Map(security.scenarios.map(row => [row.id,row]));
+  for(const id of securityContract.requiredScenarios){
+    const row = securityById.get(id);
+    if(!row) fail(`security evidence missing scenario ${id}`);
+    if(row.result !== 'success') fail(`security scenario ${id} result=${row.result}, expected success`);
+  }
+
+  return {release, contract, summary, integrity, resilience, security};
 }
 
 if(require.main === module){
@@ -120,17 +140,17 @@ if(require.main === module){
     if(process.argv.includes('--contract-only')){
       const release = readJson('release.json');
       validateEvidenceContract(release);
-      console.log(`Release evidence contract PASS: v${release.version} · schema 4 · ${release.evidenceContract.releaseAssets.length} release assets`);
+      console.log(`Release evidence contract PASS: v${release.version} · schema 5 · ${release.evidenceContract.releaseAssets.length} release assets`);
       process.exit(0);
     }
 
-    const [target, tag, summaryPath, integrityPath, resiliencePath] = process.argv.slice(2);
-    if(!target || !tag || !summaryPath || !integrityPath || !resiliencePath){
-      console.error('Usage: node scripts/release-evidence.js <target-sha> <tag> <verification-summary.json> <asset-integrity.json> <resilience-summary.json>');
+    const [target, tag, summaryPath, integrityPath, resiliencePath, securityPath] = process.argv.slice(2);
+    if(!target || !tag || !summaryPath || !integrityPath || !resiliencePath || !securityPath){
+      console.error('Usage: node scripts/release-evidence.js <target-sha> <tag> <verification-summary.json> <asset-integrity.json> <resilience-summary.json> <security-summary.json>');
       process.exit(2);
     }
-    const result = verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath});
-    console.log(`Release evidence PASS: ${tag} · ${target} · ${result.integrity.assetCount}/${result.integrity.assetCount} assets · ${result.contract.requiredGates.length}/${result.contract.requiredGates.length} gates · ${result.resilience.passedCount}/${result.resilience.scenarioCount} resilience scenarios`);
+    const result = verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath});
+    console.log(`Release evidence PASS: ${tag} · ${target} · ${result.integrity.assetCount}/${result.integrity.assetCount} assets · ${result.contract.requiredGates.length}/${result.contract.requiredGates.length} gates · ${result.resilience.passedCount}/${result.resilience.scenarioCount} resilience · ${result.security.passedCount}/${result.security.scenarioCount} security scenarios`);
   } catch (error) {
     console.error(`RELEASE EVIDENCE FAILED: ${error.message}`);
     process.exit(1);
