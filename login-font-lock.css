@@ -239,3 +239,54 @@
   }
   .drawer{max-width:100vw;}
 }
+
+/* v9 visual system & usability hardening: interaction-state clarity without changing the frozen P6 business flow. */
+:root{
+  --ui-focus:#C4B5FD;
+  --ui-focus-ring:rgba(196,181,253,.24);
+  --ui-press-scale:.985;
+}
+:where(.google-btn,.top-btn,.filter-chip,.role-tab,.cta,.primary-btn,.ghost-btn,.btn-primary,.btn-secondary,.jsm-btn,.request-actions button,.drawer-close,.action-modal-close,.reviewer-entry a){
+  -webkit-tap-highlight-color:transparent;
+}
+:where(.google-btn,.top-btn,.filter-chip,.role-tab,.cta,.primary-btn,.ghost-btn,.btn-primary,.btn-secondary,.jsm-btn,.request-actions button,.drawer-close,.action-modal-close,.reviewer-entry a):focus-visible{
+  outline:2px solid var(--ui-focus);
+  outline-offset:3px;
+  box-shadow:0 0 0 4px var(--ui-focus-ring);
+}
+.card:focus-within{
+  border-color:rgba(129,140,248,.36);
+  box-shadow:0 0 0 3px rgba(129,140,248,.10),var(--shadow-soft);
+}
+@media (hover:hover) and (pointer:fine){
+  .card:has(.cta:hover){border-color:rgba(129,140,248,.34);}
+  .request-item:has(button:hover){border-color:rgba(129,140,248,.26);}
+}
+:where(.google-btn,.top-btn,.filter-chip,.role-tab,.primary-btn,.ghost-btn,.btn-primary,.btn-secondary,.jsm-btn,.request-actions button):active:not(:disabled){
+  transform:translateY(0) scale(var(--ui-press-scale));
+}
+.google-btn[aria-busy="true"],button[aria-busy="true"]{cursor:progress;}
+@media (hover:none){
+  .card:hover,.request-item:hover,.top-btn:hover,.filter-chip:hover,.role-tab:hover,.google-btn:hover,.primary-btn:hover,.ghost-btn:hover,.btn-primary:hover,.jsm-btn:hover{
+    transform:none;
+  }
+}
+@media (forced-colors:active){
+  .status-pill,.role-tab,.filter-chip,.top-btn,.google-btn,.primary-btn,.ghost-btn,.btn-primary,.btn-secondary,.request-actions button{
+    border:1px solid ButtonText;
+  }
+  .role-tab.active,.filter-chip.active,.top-btn.active{
+    outline:2px solid Highlight;
+    outline-offset:2px;
+  }
+  .card:focus-within,.request-item:focus-within{outline:2px solid Highlight;outline-offset:2px;}
+}
+@media (max-width:560px){
+  :where(.role-tab,.filter-chip,.top-btn,.cta,.reviewer-entry a){position:relative;}
+  :where(.role-tab,.filter-chip,.top-btn,.cta,.reviewer-entry a)::after{
+    content:"";
+    position:absolute;
+    inset:-6px;
+    border-radius:inherit;
+  }
+}

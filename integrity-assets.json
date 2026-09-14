@@ -17,6 +17,7 @@
     "scripts/resilience-summary.js",
     "scripts/security-summary.js",
     "scripts/ux-summary.js",
+    "scripts/visual-system-summary.js",
     "scripts/public-assets.js",
     "fonts/pretendard.css",
     "fonts/PRETENDARD-LICENSE.txt"
@@ -24,15 +25,21 @@
   "recursiveSets": [
     {
       "root": "js",
-      "extensions": [".js"]
+      "extensions": [
+        ".js"
+      ]
     },
     {
       "root": "icons",
-      "extensions": [".svg"]
+      "extensions": [
+        ".svg"
+      ]
     },
     {
       "root": "fonts/pretendard",
-      "extensions": [".woff2"]
+      "extensions": [
+        ".woff2"
+      ]
     }
   ]
 }
