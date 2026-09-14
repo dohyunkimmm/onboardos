@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
+// Covers the full left login copy surface because the deferred brand-font activation happens before the login screen exits.
 const selectors = [
   '.login-brand',
   '.login-eyebrow',
