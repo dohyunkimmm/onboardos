@@ -14,11 +14,14 @@
   position:absolute;
   left:20px;
   right:20px;
-  bottom:20px;
+  bottom:16px;
   margin:0;
+  font-size:12px;
+  line-height:1.4;
 }
 .login-loader.is-visible{visibility:visible;}
 .login-panel:has(.login-loader.is-visible) .login-note{visibility:hidden;}
+.login-loader .loader-bar{height:5px;margin-top:5px;}
 .login-loader .loader-bar span{width:0;animation:none;}
 .login-loader.is-visible .loader-bar span{animation:loadbar 1.1s ease forwards;}
 
@@ -173,7 +176,7 @@
 }
 @media (max-width:560px){
   #resetBtn{display:none;}
-  .login-loader{left:14px;right:14px;bottom:14px;}
+  .login-loader{left:14px;right:14px;bottom:12px;}
   .reviewer-entry{
     bottom:10px;
     gap:6px;
