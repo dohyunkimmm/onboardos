@@ -1,5 +1,44 @@
 # Changelog
 
+## v6.0.0 — Resilience & recovery hardening — 2026-09-14
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 손상·구버전·저장장애·새로고침·stale client 상황에서 상태를 안전하게 복구할 수 있는지 별도 Resilience gate와 machine-readable evidence로 검증하도록 강화했습니다.
+
+### Resilience & recovery
+- `SESSION_SCHEMA_VERSION=4`를 명시하고 저장 payload에 schema marker를 기록해 future schema를 구버전 client가 잘못 읽지 않도록 safe reset 처리
+- malformed current/legacy payload에서 유효 request만 보존하고 손상 record는 선택적으로 폐기
+- Storage read/write/remove 장애와 Analytics/Speed Insights 장애를 핵심 신청 Flow에서 격리
+- 신청 직후 reload에서도 로그인·request·ticket 연속성을 보존
+- 전용 Playwright profile로 R1–R8 fault-injection scenario를 일반 Chromium 회귀와 독립된 CI gate로 운영
+
+### Release evidence
+- `resilience-summary.json`을 machine-readable evidence로 생성
+- `release.json` schema v5 / `evidenceContract` schema v4로 올리고 `Resilience & recovery`를 필수 release gate에 추가
+- Release workflow가 target run의 verification/integrity/resilience evidence를 함께 다운로드하고 commit/version/schema/scenario 결과를 교차 검증
+- immutable GitHub Release asset에 `verification-summary.json`, `verification-summary.md`, `asset-integrity.json`, `resilience-summary.json` 4종을 요구
+
+### Scope
+- 새 SaaS·직무·상태·승인 Flow 추가 없음
+- 신청·반려·보완 재신청·Fallback·SLA·상태 격리 정책 변경 없음
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Verification
+- PR #46 / E2E run #120 (`34812233707`): Chromium·R1–R8 Resilience·Firefox/WebKit·Desktop/Mobile Lighthouse·Supply-chain·verification evidence 모두 통과
+- PR #47 / E2E run #122 (`34812727820`): public resilience provenance 정렬 후 전체 gate 재통과
+- Production runtime commit `6185baa82aa7a1a6b11a6d067886b69f47248f31` / Vercel deployment `dpl_6W2VSgXmCiDchPpC9SQeFuMc9pM9`: READY, GitHub verified commit 기준 배포
+- Main E2E run #123 (`34812936803`): 전체 workflow `completed / success`
+- Resilience scenarios: **R1–R8 8/8 PASS**
+- Production source integrity: **133/133 canonical manifest assets** SHA-256 일치
+- Production Desktop Chromium + iPhone WebKit browser smoke: **2/2 PASS**
+- Production integrity artifact `10336140089` / `sha256:20a38325c8dfc77928a86c20e9f8e2187a72be41e5b93dc6ad0f5096121a42c6`
+- Verification evidence artifact `10335716195` / `sha256:a8e712a2c7ea6b9f74686426492d365818defb69f74a64fe1ea9c16d807fbc82`
+- Resilience evidence artifact `10335054487` / `sha256:d11c70367e284c2beb791df9314f68eac8dafbb47785432502942276247565e9`
+
+### Release status
+v6.0.0은 기능 확장이 아닌 **Resilience & Recovery / fault-injection / recovery evidence gating** 릴리스이며, P6 Business Flow를 유지한 상태로 Production 검증을 완료했습니다.
+
+---
+
 ## v5.0.0 — Production observability & release evidence automation — 2026-09-14
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, Production 검증 evidence를 사람이 수동으로 옮기지 않아도 Release가 성공한 target run과 검증 artifact를 직접 확인하고 함께 발행하도록 릴리스 파이프라인을 강화했습니다.
