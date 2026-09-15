@@ -36,7 +36,8 @@ jobs:
               'experience-refinement.css', 'package-lock.json', 'package.json',
               'production-demo.html', 'release.json', 'version.txt'
           }
-          changed = set(subprocess.check_output(['git','diff','--name-only'], text=True).splitlines())
+          rows = subprocess.check_output(['git','status','--porcelain'], text=True).splitlines()
+          changed = {row[3:] for row in rows if len(row) >= 4}
           if changed != allowed:
               raise SystemExit(f'Unexpected release-sync diff: {sorted(changed)}')
           PY
