@@ -1,4 +1,6 @@
 ONBOARD·OS v11.0.0
+P6 feature freeze
+canonicalVersionSource=release.json
 releaseChannel=production
 releaseClass=interaction-clarity-product-refinement
 scope=post-login-interaction-clarity-product-refinement
