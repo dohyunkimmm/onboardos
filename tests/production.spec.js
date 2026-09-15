@@ -4,6 +4,10 @@ const path = require('path');
 
 const expectedRelease = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'release.json'), 'utf8'));
 const expectedIntegrityManifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', expectedRelease.integrityManifest), 'utf8'));
+const expectedReleaseTag = `v${expectedRelease.version}`;
+const expectedDemoFile = `ONBOARD_OS_${expectedReleaseTag}_P6_production_demo.mp4`;
+const expectedDemoUrl = `https://github.com/dohyunkimmm/onboardos/releases/download/${expectedReleaseTag}/${expectedDemoFile}`;
+const expectedReleaseUrl = `https://github.com/dohyunkimmm/onboardos/releases/tag/${expectedReleaseTag}`;
 
 test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·console 상태가 정상이다', async ({ page }, testInfo) => {
   const pageErrors = [];
@@ -112,16 +116,13 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   await expect(page.getByRole('heading', {name:'ONBOARD·OS Production Demo'})).toBeVisible();
   const video = page.locator('video');
   await expect(video).toBeVisible();
-  await expect(video).toHaveAttribute('aria-label', /36초/);
-  await expect(video.locator('source')).toHaveAttribute('src', 'https://github.com/dohyunkimmm/onboardos/releases/download/v1.7.0/ONBOARD_OS_v1.7.0_P6_production_demo.mp4');
-  const duration = await video.evaluate(el => new Promise((resolve, reject) => {
-    if(Number.isFinite(el.duration) && el.duration > 0) return resolve(el.duration);
-    const timer = setTimeout(() => reject(new Error('Timed out waiting for demo video metadata')), 15000);
-    el.addEventListener('loadedmetadata', () => { clearTimeout(timer); resolve(el.duration); }, {once:true});
-    el.addEventListener('error', () => { clearTimeout(timer); reject(new Error('Production demo video failed to load')); }, {once:true});
-  }));
-  expect(duration).toBeGreaterThanOrEqual(35.9);
-  expect(duration).toBeLessThanOrEqual(36.1);
+  await expect(video).toHaveAttribute('aria-label', new RegExp(`${expectedReleaseTag}.*36초`));
+  await expect(video.locator('source')).toHaveAttribute('src', expectedDemoUrl);
+  await expect(page.getByRole('link', {name:`GitHub Release ${expectedReleaseTag}`})).toHaveAttribute('href', expectedReleaseUrl);
+
+  // Production may point at the canonical release URL immediately before the immutable
+  // GitHub Release is published. The release workflow owns post-publication availability
+  // and exact 36-second remote-asset verification, avoiding a release/evidence cycle here.
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors.filter(text => /Content Security Policy|Refused to|TypeError|ReferenceError/i.test(text))).toEqual([]);
