@@ -4,10 +4,9 @@
 
 - Version: `11.0.0`
 - Freeze: `P6`
-- Target SHA: `cbda92a11bb30c2662217f50731b7d6693613374`
-- Vercel Production deployment: `dpl_Hm8SX3QHee3VgfwpQVgcd9mZrUaj`
-- Main E2E run: `35011025287` (`#199`)
-- Experience Refinement run: `35011025049` (`#22`)
+- Release target SHA: `c7c74db05e1ae98fd40edfff42d72b960c1a46a1`
+- Production runtime deployment: `dpl_Hm8SX3QHee3VgfwpQVgcd9mZrUaj` (runtime unchanged by the release-evidence wiring closeout)
+- Canonical main E2E run: `35018261437` (`#213`)
 - Production URL: `https://onboardos-rho.vercel.app/`
 - `businessFlowChanged`: `false`
 
@@ -31,7 +30,7 @@ A dedicated E1–E8 Experience Refinement contract verifies navigation hierarchy
 
 ## Verification
 
-Main E2E run `35011025287` completed successfully for target `cbda92a11bb30c2662217f50731b7d6693613374` with:
+Canonical main E2E run `35018261437` completed successfully for release target `c7c74db05e1ae98fd40edfff42d72b960c1a46a1` with:
 
 - Chromium quality / functional / accessibility / visual / domain regression — PASS
 - R1–R8 resilience / recovery — PASS
@@ -39,6 +38,7 @@ Main E2E run `35011025287` completed successfully for target `cbda92a11bb30c2662
 - U1–U8 Interaction UX / accessibility state gate — PASS
 - V1–V8 Visual system / usability state gate — PASS
 - D1–D8 Design polish / responsive hierarchy gate — PASS
+- E1–E8 Experience refinement / interaction clarity gate — PASS
 - Firefox / WebKit functional smoke — PASS
 - Lighthouse desktop performance budget — PASS
 - Lighthouse mobile performance budget — PASS
@@ -47,7 +47,7 @@ Main E2E run `35011025287` completed successfully for target `cbda92a11bb30c2662
 - Production Desktop Chromium + iPhone WebKit browser smoke — PASS
 - Verification evidence generation — PASS
 
-Experience Refinement run `35011025049` completed successfully for the same target with E1–E8 — PASS.
+The release target changes only GitHub Actions verification wiring. The canonical Production smoke classified it as a non-runtime change, then re-verified the existing v11 Production through source integrity plus Desktop Chromium and iPhone WebKit browser smoke.
 
 The live Production `version.txt` returns `ONBOARD·OS v11.0.0`, `releaseChannel=production`, `releaseClass=interaction-clarity-product-refinement`, `scope=post-login-interaction-clarity-product-refinement`, `freeze=P6`, `businessFlowChanged=false`, and `experienceRefinementContract=E1-E8`.
 
@@ -55,13 +55,13 @@ The canonical `release.json` is version `11.0.0`, schema version `10`, evidence 
 
 ## Evidence artifacts
 
-- `verification-evidence-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:f16150d3321d530b278c888dfbe765c9a4fe6160f1e5343bbf4cc1ba6b6c3c56`
-- `production-integrity-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:e548fba6ebed85712c9e0eefc8ad17aa3716439fcac2adbc3b40896e0a077135`
-- `resilience-evidence-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:34f787e2ccb8ccd196a31783951170f1eaa095ac9513d137a7258bb12dfdaffd`
-- `security-evidence-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:d50fab357291649cd936e48b16ed58f62de7c3f27783a2389fb32acfce0f5112`
-- `ux-evidence-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:63a271061f59e8172197aa4846981c8d27889950f0c441b9fa9b09f0653e82b2`
-- `visual-system-evidence-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:8d49889d8bb57f26092dba43146939bd2c591fe1be45a76ed1d9c0304fa21fbe`
-- `design-polish-evidence-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:8b47a6ac9b89fd9a89c48db1be0f42ec20fd6e06c203f5a6e2c848e1b50b0ed8`
-- `experience-refinement-evidence-cbda92a11bb30c2662217f50731b7d6693613374` — `sha256:3fc3b95c106378f0c4b512293e99474d6dd8fe351825163ac3c83fe8fecef654`
+- `verification-evidence-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:d5be245b857f5d649d8b48498d66bae45419f7ac1934b5d6cbb0108a857e363e`
+- `production-integrity-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:442aaae946bd3e44fd029eb3f47d09c3478d2c8eb3932bf55a183e1d9f692a90`
+- `resilience-evidence-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:02618be9d9d37d2b5a56fe69ae83b0b712b09abcd45ad7934b37fc78c48df966`
+- `security-evidence-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:ef64d9cf242f17cadcb6697ebb9b80b9a99513aded06dddbcbedc87aa0b1bdac`
+- `ux-evidence-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:587d32a9eca1a4c36d8e36ea53238886f4d65156455c625d986c809b01191b11`
+- `visual-system-evidence-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:4dc15c8b21bcdbdb1df469afe662ae8be0dfb82ceb79988a5c2694186ab857fd`
+- `design-polish-evidence-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:f3a3bf3b6262d4b07e2ee9d741b16788ddecfeace8f1357e04f0d1132ad4bb9b`
+- `experience-refinement-evidence-c7c74db05e1ae98fd40edfff42d72b960c1a46a1` — `sha256:d8e9b3e4eed000888fca5a06d29ec97f6abc61eaab7b5276def6343d0414dbc5`
 
 The immutable GitHub Release attaches the seven contract assets required by `release.json`: `verification-summary.json`, `verification-summary.md`, `asset-integrity.json`, `resilience-summary.json`, `security-summary.json`, `ux-summary.json`, and `visual-system-summary.json`. D1–D8 and E1–E8 status are included in verification evidence; their raw screenshot evidence remains in the corresponding target workflow artifacts.
