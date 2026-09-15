@@ -22,7 +22,7 @@ function validateReleaseContract(){
   const versionText = fs.readFileSync('version.txt', 'utf8');
   const stateSource = fs.readFileSync('js/state.js', 'utf8');
 
-  if(release.schemaVersion !== 7) fail(`schemaVersion must be 7, found ${release.schemaVersion}`);
+  if(release.schemaVersion !== 8) fail(`schemaVersion must be 8, found ${release.schemaVersion}`);
   if(release.product !== 'ONBOARD·OS') fail(`product mismatch: ${release.product}`);
   if(!/^\d+\.\d+\.\d+$/.test(release.version || '')) fail(`invalid semantic version: ${release.version}`);
   if(release.freeze !== 'P6') fail(`freeze must remain P6, found ${release.freeze}`);
@@ -46,6 +46,7 @@ function validateReleaseContract(){
     'resilience-recovery',
     'security-failure-containment',
     'interaction-ux',
+    'visual-system-usability',
     'release-evidence-consistency'
   ];
   for(const contract of contracts){
@@ -92,6 +93,20 @@ function validateReleaseContract(){
     }
   }
 
+  const designSystem = release.designSystemContract;
+  if(!designSystem || designSystem.schemaVersion !== 1) fail('designSystemContract.schemaVersion must be 1');
+  if(designSystem.evidenceAsset !== 'visual-system-summary.json') fail('designSystemContract.evidenceAsset must be visual-system-summary.json');
+  for(const scenario of ['V1','V2','V3','V4','V5','V6','V7','V8']){
+    if(!Array.isArray(designSystem.requiredScenarios) || !designSystem.requiredScenarios.includes(scenario)){
+      fail(`designSystemContract.requiredScenarios missing ${scenario}`);
+    }
+  }
+  for(const visual of ['V1-keyboard-focus.png','V3-card-focus.png','V5-modal-hierarchy.png','V6-drawer-hierarchy.png']){
+    if(!Array.isArray(designSystem.requiredVisualEvidence) || !designSystem.requiredVisualEvidence.includes(visual)){
+      fail(`designSystemContract.requiredVisualEvidence missing ${visual}`);
+    }
+  }
+
   try {
     validateEvidenceContract(release);
   } catch (error) {
@@ -104,6 +119,7 @@ function validateReleaseContract(){
   if(!/^releaseChannel=production$/m.test(versionText)) fail('version.txt must declare releaseChannel=production');
   if(!/^securityContract=S1-S8$/m.test(versionText)) fail('version.txt must declare securityContract=S1-S8');
   if(!/^uxContract=U1-U8$/m.test(versionText)) fail('version.txt must declare uxContract=U1-U8');
+  if(!/^designSystemContract=V1-V8$/m.test(versionText)) fail('version.txt must declare designSystemContract=V1-V8');
   if(packageJson.version !== release.version) fail(`package.json=${packageJson.version} release.json=${release.version}`);
   if(packageLock.version !== release.version) fail(`package-lock.json=${packageLock.version} release.json=${release.version}`);
   if(packageLock.packages?.['']?.version !== release.version){
@@ -116,7 +132,7 @@ function validateReleaseContract(){
   } catch (error) {
     fail(error.message);
   }
-  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/ux-summary.js','scripts/public-assets.js']){
+  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/ux-summary.js','scripts/visual-system-summary.js','scripts/public-assets.js']){
     if(!manifestResult.assets.includes(critical)) fail(`integrity manifest missing critical asset ${critical}`);
   }
 
@@ -126,7 +142,7 @@ function validateReleaseContract(){
 if(require.main === module){
   try {
     const release = validateReleaseContract();
-    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} · ux=${release.uxContract.requiredScenarios.length} scenarios`);
+    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} · ux=${release.uxContract.requiredScenarios.length} · visual=${release.designSystemContract.requiredScenarios.length} scenarios`);
   } catch (error) {
     console.error(`RELEASE CONTRACT FAILED: ${error.message}`);
     process.exit(1);

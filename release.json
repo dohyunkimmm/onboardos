@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 7,
+  "schemaVersion": 8,
   "product": "ONBOARD·OS",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "freeze": "P6",
-  "releaseClass": "interaction-ux-hardening",
-  "scope": "interaction-state-accessibility",
+  "releaseClass": "visual-usability-hardening",
+  "scope": "design-system-interaction-states",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -23,6 +23,7 @@
     "resilience-recovery",
     "security-failure-containment",
     "interaction-ux",
+    "visual-system-usability",
     "release-evidence-consistency"
   ],
   "resilienceContract": {
@@ -74,15 +75,36 @@
       "U8-resubmit-modal.png"
     ]
   },
+  "designSystemContract": {
+    "schemaVersion": 1,
+    "evidenceAsset": "visual-system-summary.json",
+    "requiredScenarios": [
+      "V1",
+      "V2",
+      "V3",
+      "V4",
+      "V5",
+      "V6",
+      "V7",
+      "V8"
+    ],
+    "requiredVisualEvidence": [
+      "V1-keyboard-focus.png",
+      "V3-card-focus.png",
+      "V5-modal-hierarchy.png",
+      "V6-drawer-hierarchy.png"
+    ]
+  },
   "evidenceContract": {
-    "schemaVersion": 6,
+    "schemaVersion": 7,
     "releaseAssets": [
       "verification-summary.json",
       "verification-summary.md",
       "asset-integrity.json",
       "resilience-summary.json",
       "security-summary.json",
-      "ux-summary.json"
+      "ux-summary.json",
+      "visual-system-summary.json"
     ],
     "requireSuccessfulTargetRun": true,
     "requiredGates": [
@@ -90,6 +112,7 @@
       "Resilience & recovery",
       "Security & containment",
       "Interaction UX",
+      "Visual system & usability",
       "Cross-browser",
       "Desktop performance",
       "Mobile performance",

@@ -17,10 +17,10 @@ const readJson = file => {
 function validateEvidenceContract(release){
   const contract = release.evidenceContract;
   if(!contract || typeof contract !== 'object') fail('evidenceContract is required');
-  if(contract.schemaVersion !== 6) fail(`evidenceContract.schemaVersion must be 6, found ${contract.schemaVersion}`);
+  if(contract.schemaVersion !== 7) fail(`evidenceContract.schemaVersion must be 7, found ${contract.schemaVersion}`);
   if(contract.requireSuccessfulTargetRun !== true) fail('requireSuccessfulTargetRun must be true');
 
-  const assets = ['verification-summary.json', 'verification-summary.md', 'asset-integrity.json', 'resilience-summary.json', 'security-summary.json', 'ux-summary.json'];
+  const assets = ['verification-summary.json', 'verification-summary.md', 'asset-integrity.json', 'resilience-summary.json', 'security-summary.json', 'ux-summary.json', 'visual-system-summary.json'];
   for(const asset of assets){
     if(!Array.isArray(contract.releaseAssets) || !contract.releaseAssets.includes(asset)){
       fail(`releaseAssets missing ${asset}`);
@@ -32,6 +32,7 @@ function validateEvidenceContract(release){
     'Resilience & recovery',
     'Security & containment',
     'Interaction UX',
+    'Visual system & usability',
     'Cross-browser',
     'Desktop performance',
     'Mobile performance',
@@ -47,7 +48,7 @@ function validateEvidenceContract(release){
   return contract;
 }
 
-function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath}){
+function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath, visualSystemPath}){
   if(!/^[0-9a-f]{40}$/.test(target || '')) fail('target must be an exact 40-character commit SHA');
 
   const release = readJson('release.json');
@@ -158,7 +159,32 @@ function verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resilie
     }
   }
 
-  return {release, contract, summary, integrity, resilience, security, ux};
+  const visualSystem = readJson(visualSystemPath);
+  const designSystemContract = release.designSystemContract;
+  if(!designSystemContract || designSystemContract.schemaVersion !== 1) fail('designSystemContract.schemaVersion must be 1');
+  if(visualSystem.schemaVersion !== 1) fail(`visual system evidence schema=${visualSystem.schemaVersion}, expected 1`);
+  if(visualSystem.commit !== target) fail(`visual system evidence commit=${visualSystem.commit} target=${target}`);
+  if(visualSystem.release?.version !== release.version) fail(`visual system evidence release=${visualSystem.release?.version} expected=${release.version}`);
+  if(visualSystem.release?.freeze !== release.freeze) fail(`visual system evidence freeze=${visualSystem.release?.freeze} expected=${release.freeze}`);
+  if(visualSystem.release?.businessFlowChanged !== false) fail('visual system evidence must preserve businessFlowChanged=false');
+  if(visualSystem.allPassed !== true) fail('visual system evidence must report allPassed=true');
+  if(!Array.isArray(visualSystem.scenarios) || visualSystem.scenarios.length !== visualSystem.scenarioCount){
+    fail('visual system scenarios length must match scenarioCount');
+  }
+  const visualById = new Map(visualSystem.scenarios.map(row => [row.id,row]));
+  for(const id of designSystemContract.requiredScenarios){
+    const row = visualById.get(id);
+    if(!row) fail(`visual system evidence missing scenario ${id}`);
+    if(row.result !== 'success') fail(`visual system scenario ${id} result=${row.result}, expected success`);
+  }
+  for(const file of designSystemContract.requiredVisualEvidence || []){
+    const row = (visualSystem.visualEvidence || []).find(item => item.file === file);
+    if(!row || !/^[0-9a-f]{64}$/.test(row.sha256 || '') || !(row.bytes > 0)){
+      fail(`visual system evidence missing or invalid: ${file}`);
+    }
+  }
+
+  return {release, contract, summary, integrity, resilience, security, ux, visualSystem};
 }
 
 if(require.main === module){
@@ -166,17 +192,17 @@ if(require.main === module){
     if(process.argv.includes('--contract-only')){
       const release = readJson('release.json');
       validateEvidenceContract(release);
-      console.log(`Release evidence contract PASS: v${release.version} · schema 6 · ${release.evidenceContract.releaseAssets.length} release assets`);
+      console.log(`Release evidence contract PASS: v${release.version} · schema 7 · ${release.evidenceContract.releaseAssets.length} release assets`);
       process.exit(0);
     }
 
-    const [target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath] = process.argv.slice(2);
-    if(!target || !tag || !summaryPath || !integrityPath || !resiliencePath || !securityPath || !uxPath){
-      console.error('Usage: node scripts/release-evidence.js <target-sha> <tag> <verification-summary.json> <asset-integrity.json> <resilience-summary.json> <security-summary.json> <ux-summary.json>');
+    const [target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath, visualSystemPath] = process.argv.slice(2);
+    if(!target || !tag || !summaryPath || !integrityPath || !resiliencePath || !securityPath || !uxPath || !visualSystemPath){
+      console.error('Usage: node scripts/release-evidence.js <target-sha> <tag> <verification-summary.json> <asset-integrity.json> <resilience-summary.json> <security-summary.json> <ux-summary.json> <visual-system-summary.json>');
       process.exit(2);
     }
-    const result = verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath});
-    console.log(`Release evidence PASS: ${tag} · ${target} · ${result.integrity.assetCount}/${result.integrity.assetCount} assets · ${result.contract.requiredGates.length}/${result.contract.requiredGates.length} gates · ${result.resilience.passedCount}/${result.resilience.scenarioCount} resilience · ${result.security.passedCount}/${result.security.scenarioCount} security · ${result.ux.passedCount}/${result.ux.scenarioCount} UX scenarios`);
+    const result = verifyReleaseEvidence({target, tag, summaryPath, integrityPath, resiliencePath, securityPath, uxPath, visualSystemPath});
+    console.log(`Release evidence PASS: ${tag} · ${target} · ${result.integrity.assetCount}/${result.integrity.assetCount} assets · ${result.contract.requiredGates.length}/${result.contract.requiredGates.length} gates · ${result.resilience.passedCount}/${result.resilience.scenarioCount} resilience · ${result.security.passedCount}/${result.security.scenarioCount} security · ${result.ux.passedCount}/${result.ux.scenarioCount} UX · ${result.visualSystem.passedCount}/${result.visualSystem.scenarioCount} visual system scenarios`);
   } catch (error) {
     console.error(`RELEASE EVIDENCE FAILED: ${error.message}`);
     process.exit(1);
