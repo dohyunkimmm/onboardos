@@ -1,0 +1,48 @@
+name: V13 Snapshot Refresh
+
+on:
+  push:
+    branches:
+      - feat/v13-product-visual-system
+    paths:
+      - .github/workflows/v13-snapshot-refresh.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Refresh only intended v13 visual baselines
+        run: npx playwright test tests/visual.spec.js --grep "기본 대시보드 visual baseline|신청 모달 visual baseline" --update-snapshots
+      - name: Verify snapshot-only output
+        run: |
+          git diff --name-only | sort > /tmp/actual.txt
+          cat > /tmp/expected.txt <<'EOF'
+          tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png
+          tests/visual.spec.js-snapshots/office-dashboard-mobile-chromium-linux.png
+          tests/visual.spec.js-snapshots/request-modal-desktop-chromium-linux.png
+          tests/visual.spec.js-snapshots/request-modal-mobile-chromium-linux.png
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          echo 'Changed files:'
+          cat /tmp/actual.txt
+          diff -u /tmp/expected.txt /tmp/actual.txt
+      - name: Commit refreshed baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png \
+                  tests/visual.spec.js-snapshots/office-dashboard-mobile-chromium-linux.png \
+                  tests/visual.spec.js-snapshots/request-modal-desktop-chromium-linux.png \
+                  tests/visual.spec.js-snapshots/request-modal-mobile-chromium-linux.png
+          git commit -m "test(v13): refresh approved visual baselines"
+          git push origin HEAD:feat/v13-product-visual-system
