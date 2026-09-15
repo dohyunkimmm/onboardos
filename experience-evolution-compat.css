@@ -1,0 +1,8 @@
+/* v12 compatibility refinements for previously approved UX/visual contracts. */
+body:not(.login-open) .request-actions button{min-height:44px;}
+body:not(.login-open) .request-item::before{width:3px;}
+
+/* Existing narrow-grid contract: 320–359px uses one common-license column; 360px+ returns to two. */
+@media (max-width:359px){
+  body:not(.login-open) #commonGrid{grid-template-columns:1fr;}
+}
