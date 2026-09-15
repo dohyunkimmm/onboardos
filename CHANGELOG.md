@@ -1,5 +1,24 @@
 # Changelog
 
+## v13.0.0 — Product-grade visual system — 2026-09-16
+
+P6에서 동결한 Business Flow와 상태 모델은 유지하면서, Production에서 검증한 v13 post-login visual layer를 정식 릴리즈 계약으로 승격했습니다. 화면을 하나의 product workspace로 재구성하고 identity/role selection, operational progress rail, filter command surface, license section/card hierarchy, modal·admin drawer execution surface, responsive ergonomics를 정교화했습니다. JavaScript business logic, catalog data, request-state machine, role isolation은 변경하지 않았습니다.
+
+### Release/link synchronization
+- `release.json`, `version.txt`, `package.json`, `package-lock.json`을 v13.0.0으로 동기화
+- `README.md`, `production-demo.html`, release notes와 GitHub Release 링크를 v13.0.0으로 동기화
+- release evidence의 36초 Production Demo asset 이름을 `ONBOARD_OS_v13.0.0_P6_production_demo.mp4`로 동기화
+- canonical `release.json`과 Production provenance가 일치하지 않으면 release contract가 차단하도록 기존 규칙 유지
+
+### Preserved contracts
+- P6 feature freeze / `businessFlowChanged: false`
+- R1–R8 Resilience/Recovery
+- S1–S8 Security/Failure-containment
+- U1–U8 Interaction UX/Accessibility
+- V1–V8 Visual System/Usability
+- D1–D8 Design Polish/Responsive Hierarchy
+- E1–E8 Experience Refinement
+
 ## v12.0.0 — Action-first UI/UX refinement — 2026-09-16
 
 P6에서 동결한 Business Flow와 상태 모델은 유지하면서, v11 후보로 Production 검증한 action-first UI/UX 레이어를 정식 v12 릴리즈 계약으로 승격했습니다. 현재 단계와 다음 행동의 우선순위, 카드 스캔성, semantic 상태 단서, CTA 계층, 모바일 조작성, focus-visible/reduced-motion/WCAG AA 대비를 정리했으며 JavaScript·data·request-state·role logic은 변경하지 않았습니다.
