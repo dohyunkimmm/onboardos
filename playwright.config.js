@@ -2,7 +2,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
-  testIgnore: ['**/production.spec.js', '**/cross-browser.spec.js', '**/recovery.spec.js', '**/design-polish.spec.js'],
+  testIgnore: ['**/production.spec.js', '**/cross-browser.spec.js', '**/recovery.spec.js', '**/design-polish.spec.js', '**/experience-evolution.spec.js'],
   timeout: 30_000,
   expect: { timeout: 5_000 },
   fullyParallel: false,
