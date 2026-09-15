@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 9,
+  "schemaVersion": 10,
   "product": "ONBOARD·OS",
-  "version": "10.0.0",
+  "version": "11.0.0",
   "freeze": "P6",
-  "releaseClass": "visual-hierarchy-responsive-polish",
-  "scope": "post-login-visual-hierarchy-responsive-polish",
+  "releaseClass": "interaction-clarity-product-refinement",
+  "scope": "post-login-interaction-clarity-product-refinement",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -25,6 +25,7 @@
     "interaction-ux",
     "visual-system-usability",
     "design-polish",
+    "experience-refinement",
     "release-evidence-consistency"
   ],
   "resilienceContract": {
@@ -115,6 +116,7 @@
       "Interaction UX",
       "Visual system & usability",
       "Design polish",
+      "Experience refinement",
       "Cross-browser",
       "Desktop performance",
       "Mobile performance",
@@ -140,6 +142,28 @@
       "D4-role-card-system.png",
       "D6-request-modal-polish.png",
       "D7-mobile-dashboard.png"
+    ]
+  },
+  "experienceRefinementContract": {
+    "schemaVersion": 1,
+    "requiredScenarios": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6",
+      "E7",
+      "E8"
+    ],
+    "requiredVisualEvidence": [
+      "E1-navigation-hierarchy.png",
+      "E2-overview-composition.png",
+      "E4-filter-command-surface.png",
+      "E5-card-scanability.png",
+      "E6-modal-action-zone.png",
+      "E7-tablet-density.png",
+      "E8-empty-state.png"
     ]
   }
 }

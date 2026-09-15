@@ -34,6 +34,7 @@ function validateEvidenceContract(release){
     'Interaction UX',
     'Visual system & usability',
     'Design polish',
+    'Experience refinement',
     'Cross-browser',
     'Desktop performance',
     'Mobile performance',

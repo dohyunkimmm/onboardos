@@ -1,12 +1,12 @@
-ONBOARD·OS v10.0.0
-P6 feature freeze
+ONBOARD·OS v11.0.0
 releaseChannel=production
-release.json
-integrity-assets.json
-resilienceContract=R1-R8
+releaseClass=interaction-clarity-product-refinement
+scope=post-login-interaction-clarity-product-refinement
+freeze=P6
+businessFlowChanged=false
 securityContract=S1-S8
 uxContract=U1-U8
 designSystemContract=V1-V8
 designPolishContract=D1-D8
-Visual hierarchy & responsive polish
-Typography hierarchy · spacing rhythm · card surfaces · status badges · CTA priority · modal/drawer polish · tablet/mobile density
+experienceRefinementContract=E1-E8
+integrityManifest=integrity-assets.json
