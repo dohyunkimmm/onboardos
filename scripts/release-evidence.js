@@ -17,7 +17,7 @@ const readJson = file => {
 function validateEvidenceContract(release){
   const contract = release.evidenceContract;
   if(!contract || typeof contract !== 'object') fail('evidenceContract is required');
-  if(contract.schemaVersion !== 7) fail(`evidenceContract.schemaVersion must be 7, found ${contract.schemaVersion}`);
+  if(contract.schemaVersion !== 8) fail(`evidenceContract.schemaVersion must be 8, found ${contract.schemaVersion}`);
   if(contract.requireSuccessfulTargetRun !== true) fail('requireSuccessfulTargetRun must be true');
 
   const assets = ['verification-summary.json', 'verification-summary.md', 'asset-integrity.json', 'resilience-summary.json', 'security-summary.json', 'ux-summary.json', 'visual-system-summary.json'];
@@ -33,6 +33,7 @@ function validateEvidenceContract(release){
     'Security & containment',
     'Interaction UX',
     'Visual system & usability',
+    'Design polish',
     'Cross-browser',
     'Desktop performance',
     'Mobile performance',
@@ -192,7 +193,7 @@ if(require.main === module){
     if(process.argv.includes('--contract-only')){
       const release = readJson('release.json');
       validateEvidenceContract(release);
-      console.log(`Release evidence contract PASS: v${release.version} · schema 7 · ${release.evidenceContract.releaseAssets.length} release assets`);
+      console.log(`Release evidence contract PASS: v${release.version} · schema 8 · ${release.evidenceContract.releaseAssets.length} release assets`);
       process.exit(0);
     }
 

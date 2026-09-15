@@ -1,6 +1,6 @@
 {
   "name": "onboardos",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "private": true,
   "scripts": {
     "release:check": "node scripts/release-contract.js",
@@ -21,7 +21,8 @@
     "test:production": "playwright test -c playwright.production.config.js",
     "test:lighthouse": "node scripts/lighthouse-run.js",
     "test:lighthouse:mobile": "node scripts/lighthouse-run.js lighthouserc.mobile.cjs .lighthouseci-mobile",
-    "test:visual-system": "playwright test -c playwright.visual-system.config.js"
+    "test:visual-system": "playwright test -c playwright.visual-system.config.js",
+    "test:design-polish": "playwright test -c playwright.design-polish.config.js"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

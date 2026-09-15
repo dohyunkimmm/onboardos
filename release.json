@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 8,
+  "schemaVersion": 9,
   "product": "ONBOARD·OS",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "freeze": "P6",
-  "releaseClass": "visual-usability-hardening",
-  "scope": "design-system-interaction-states",
+  "releaseClass": "visual-hierarchy-responsive-polish",
+  "scope": "post-login-visual-hierarchy-responsive-polish",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -24,6 +24,7 @@
     "security-failure-containment",
     "interaction-ux",
     "visual-system-usability",
+    "design-polish",
     "release-evidence-consistency"
   ],
   "resilienceContract": {
@@ -96,7 +97,7 @@
     ]
   },
   "evidenceContract": {
-    "schemaVersion": 7,
+    "schemaVersion": 8,
     "releaseAssets": [
       "verification-summary.json",
       "verification-summary.md",
@@ -113,6 +114,7 @@
       "Security & containment",
       "Interaction UX",
       "Visual system & usability",
+      "Design polish",
       "Cross-browser",
       "Desktop performance",
       "Mobile performance",
@@ -120,6 +122,24 @@
       "Production smoke",
       "Deployment integrity"
     ]
+  },
+  "designPolishContract": {
+    "schemaVersion": 1,
+    "requiredScenarios": [
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7",
+      "D8"
+    ],
+    "requiredVisualEvidence": [
+      "D1-dashboard-hierarchy.png",
+      "D4-role-card-system.png",
+      "D6-request-modal-polish.png",
+      "D7-mobile-dashboard.png"
+    ]
   }
 }
-

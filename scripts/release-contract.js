@@ -22,7 +22,7 @@ function validateReleaseContract(){
   const versionText = fs.readFileSync('version.txt', 'utf8');
   const stateSource = fs.readFileSync('js/state.js', 'utf8');
 
-  if(release.schemaVersion !== 8) fail(`schemaVersion must be 8, found ${release.schemaVersion}`);
+  if(release.schemaVersion !== 9) fail(`schemaVersion must be 9, found ${release.schemaVersion}`);
   if(release.product !== 'ONBOARD·OS') fail(`product mismatch: ${release.product}`);
   if(!/^\d+\.\d+\.\d+$/.test(release.version || '')) fail(`invalid semantic version: ${release.version}`);
   if(release.freeze !== 'P6') fail(`freeze must remain P6, found ${release.freeze}`);
@@ -47,6 +47,7 @@ function validateReleaseContract(){
     'security-failure-containment',
     'interaction-ux',
     'visual-system-usability',
+    'design-polish',
     'release-evidence-consistency'
   ];
   for(const contract of contracts){
@@ -107,6 +108,19 @@ function validateReleaseContract(){
     }
   }
 
+  const designPolish = release.designPolishContract;
+  if(!designPolish || designPolish.schemaVersion !== 1) fail('designPolishContract.schemaVersion must be 1');
+  for(const scenario of ['D1','D2','D3','D4','D5','D6','D7','D8']){
+    if(!Array.isArray(designPolish.requiredScenarios) || !designPolish.requiredScenarios.includes(scenario)){
+      fail(`designPolishContract.requiredScenarios missing ${scenario}`);
+    }
+  }
+  for(const visual of ['D1-dashboard-hierarchy.png','D4-role-card-system.png','D6-request-modal-polish.png','D7-mobile-dashboard.png']){
+    if(!Array.isArray(designPolish.requiredVisualEvidence) || !designPolish.requiredVisualEvidence.includes(visual)){
+      fail(`designPolishContract.requiredVisualEvidence missing ${visual}`);
+    }
+  }
+
   try {
     validateEvidenceContract(release);
   } catch (error) {
@@ -120,6 +134,7 @@ function validateReleaseContract(){
   if(!/^securityContract=S1-S8$/m.test(versionText)) fail('version.txt must declare securityContract=S1-S8');
   if(!/^uxContract=U1-U8$/m.test(versionText)) fail('version.txt must declare uxContract=U1-U8');
   if(!/^designSystemContract=V1-V8$/m.test(versionText)) fail('version.txt must declare designSystemContract=V1-V8');
+  if(!/^designPolishContract=D1-D8$/m.test(versionText)) fail('version.txt must declare designPolishContract=D1-D8');
   if(packageJson.version !== release.version) fail(`package.json=${packageJson.version} release.json=${release.version}`);
   if(packageLock.version !== release.version) fail(`package-lock.json=${packageLock.version} release.json=${release.version}`);
   if(packageLock.packages?.['']?.version !== release.version){
@@ -142,7 +157,7 @@ function validateReleaseContract(){
 if(require.main === module){
   try {
     const release = validateReleaseContract();
-    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} · ux=${release.uxContract.requiredScenarios.length} · visual=${release.designSystemContract.requiredScenarios.length} scenarios`);
+    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} · ux=${release.uxContract.requiredScenarios.length} · visual=${release.designSystemContract.requiredScenarios.length} · design=${release.designPolishContract.requiredScenarios.length} scenarios`);
   } catch (error) {
     console.error(`RELEASE CONTRACT FAILED: ${error.message}`);
     process.exit(1);
