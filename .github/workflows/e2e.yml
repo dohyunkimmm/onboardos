@@ -59,6 +59,7 @@ jobs:
           node --check tests/ux-interaction.spec.js
           node --check tests/visual-system.spec.js
           node --check tests/design-polish.spec.js
+          node --check tests/experience-refinement.spec.js
           node --check tests/production.spec.js
           python3 -m json.tool vercel.json >/dev/null
       - name: Install Chromium
@@ -213,6 +214,32 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  experience-refinement:
+    name: Experience refinement / interaction clarity gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run required experience refinement scenarios E1-E8
+        run: |
+          mkdir -p verification/experience-refinement-screenshots
+          npm run test:experience
+      - name: Upload experience refinement evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: experience-refinement-evidence-${{ github.sha }}
+          path: |
+            verification/experience-refinement-playwright.json
+            verification/experience-refinement-screenshots/
+          if-no-files-found: error
+          retention-days: 30
+
   cross-browser:
     name: Firefox / WebKit functional smoke
     runs-on: ubuntu-latest
@@ -297,7 +324,7 @@ jobs:
   production-smoke:
     name: Production desktop/mobile smoke + deployment integrity
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [playwright, resilience, security, ux, visual-system, design-polish, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
+    needs: [playwright, resilience, security, ux, visual-system, design-polish, experience-refinement, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -369,7 +396,7 @@ jobs:
 
   evidence:
     name: Verification evidence
-    needs: [playwright, resilience, security, ux, visual-system, design-polish, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
+    needs: [playwright, resilience, security, ux, visual-system, design-polish, experience-refinement, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
     if: >-
       always() &&
       needs.playwright.result == 'success' &&
@@ -378,6 +405,7 @@ jobs:
       needs.ux.result == 'success' &&
       needs.visual-system.result == 'success' &&
       needs.design-polish.result == 'success' &&
+      needs.experience-refinement.result == 'success' &&
       needs.cross-browser.result == 'success' &&
       needs.lighthouse.result == 'success' &&
       needs.lighthouse-mobile.result == 'success' &&
@@ -397,6 +425,7 @@ jobs:
           UX_RESULT: ${{ needs.ux.result }}
           VISUAL_SYSTEM_RESULT: ${{ needs.visual-system.result }}
           DESIGN_POLISH_RESULT: ${{ needs.design-polish.result }}
+          EXPERIENCE_REFINEMENT_RESULT: ${{ needs.experience-refinement.result }}
           CROSS_BROWSER_RESULT: ${{ needs.cross-browser.result }}
           LIGHTHOUSE_RESULT: ${{ needs.lighthouse.result }}
           MOBILE_LIGHTHOUSE_RESULT: ${{ needs.lighthouse-mobile.result }}
