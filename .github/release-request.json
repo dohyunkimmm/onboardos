@@ -1,7 +1,7 @@
 {
-  "tag": "v11.0.0",
-  "target": "c7c74db05e1ae98fd40edfff42d72b960c1a46a1",
-  "title": "v11.0.0 — Interaction clarity & product refinement",
-  "notes_file": "RELEASE-v11.0.0.md",
-  "sync_revision": 8
+  "tag": "v12.0.0",
+  "target": "e3fca04b1ee68657ca44e314869db69b74e5ce97",
+  "title": "v12.0.0 — Action-first UI/UX refinement",
+  "notes_file": "RELEASE-v12.0.0.md",
+  "sync_revision": 9
 }
