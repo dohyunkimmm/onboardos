@@ -8,6 +8,13 @@ function installV12Experience(){
     link.href='experience-evolution.css';
     document.head.appendChild(link);
   }
+  if(!document.getElementById('v12CompatibilityStylesheet')){
+    const link=document.createElement('link');
+    link.id='v12CompatibilityStylesheet';
+    link.rel='stylesheet';
+    link.href='experience-evolution-compat.css';
+    document.head.appendChild(link);
+  }
 
   const overview=document.querySelector('.overview-panel');
   if(!overview || document.getElementById('v12FocusPanel')) return;
