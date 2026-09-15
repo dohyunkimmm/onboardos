@@ -1090,7 +1090,7 @@ body:not(.login-open) #roleGrid .cta:hover{transform:translateY(-1px);filter:bri
 body:not(.login-open) .request-modal,
 body:not(.login-open) .action-modal{
   border:1px solid rgba(255,255,255,.09);
-  border-radius:22px;
+  border-radius:26px;
   background:
     radial-gradient(76% 110% at 100% 0%,rgba(124,58,237,.11),transparent 62%),
     linear-gradient(165deg,rgba(28,31,40,.99),rgba(14,16,22,.99));
@@ -1172,7 +1172,7 @@ body:not(.login-open) .complete-box.is-complete{
   body:not(.login-open) #roleGrid .card-action{width:100%;}
   body:not(.login-open) #roleGrid .cta{width:100%;min-height:44px;}
   body:not(.login-open) .request-modal,
-  body:not(.login-open) .action-modal{border-radius:19px;}
+  body:not(.login-open) .action-modal{border-radius:24px;}
 }
 @media (min-width:360px) and (max-width:768px){
   body:not(.login-open) #commonGrid{grid-template-columns:repeat(2,minmax(0,1fr));}
