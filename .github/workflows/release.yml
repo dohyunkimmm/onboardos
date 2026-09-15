@@ -20,6 +20,10 @@ on:
         required: true
         default: CHANGELOG.md
         type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/release-request.json
 
 permissions:
   contents: write
