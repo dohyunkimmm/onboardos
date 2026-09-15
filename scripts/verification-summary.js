@@ -11,6 +11,7 @@ const securityResult = process.env.SECURITY_RESULT || 'unknown';
 const uxResult = process.env.UX_RESULT || 'unknown';
 const visualSystemResult = process.env.VISUAL_SYSTEM_RESULT || 'unknown';
 const designPolishResult = process.env.DESIGN_POLISH_RESULT || 'unknown';
+const experienceRefinementResult = process.env.EXPERIENCE_REFINEMENT_RESULT || 'unknown';
 const gates = [
   {area:'Chromium regression', gate:'Playwright', result:process.env.CHROMIUM_RESULT || 'unknown', scope:'Quality + Functional + WCAG/Keyboard/ARIA + Domain/SLA + Role Isolation + Visual'},
   {area:'Resilience & recovery', gate:'Playwright fault injection + recovery evidence', result:resilienceResult, scope:'session schema guard + corrupt-state sanitization + migration + storage outage + analytics isolation + refresh continuity'},
@@ -18,6 +19,7 @@ const gates = [
   {area:'Interaction UX', gate:'Playwright U1-U8 + visual state evidence', result:uxResult, scope:'SSO loading geometry + reduced motion + modal/drawer focus + live status + responsive boundaries + rejection/resubmission continuity'},
   {area:'Visual system & usability', gate:'Playwright V1-V8 + visual state evidence', result:visualSystemResult, scope:'focus ring + press feedback + card focus parity + selection clarity + modal/drawer hierarchy + forced-colors + mobile touch halo'},
   {area:'Design polish', gate:'Playwright D1-D8 + visual evidence', result:designPolishResult, scope:'post-login hierarchy + spacing rhythm + grid density + card surfaces + semantic status + modal polish + tablet/mobile responsiveness + login baseline scope'},
+  {area:'Experience refinement', gate:'Playwright E1-E8 + responsive visual evidence', result:experienceRefinementResult, scope:'navigation hierarchy + overview composition + progress clarity + filter command surface + card scanability + modal action zone + tablet density + empty/motion states'},
   {area:'Cross-browser', gate:'Playwright', result:process.env.CROSS_BROWSER_RESULT || 'unknown', scope:'Firefox + WebKit core flow'},
   {area:'Desktop performance', gate:'Lighthouse 13.4.1', result:process.env.LIGHTHOUSE_RESULT || 'unknown', scope:'desktop 3-run budget; every run must pass'},
   {area:'Mobile performance', gate:'Lighthouse 13.4.1', result:process.env.MOBILE_LIGHTHOUSE_RESULT || 'unknown', scope:'mobile profile 3-run budget; every run must pass'},
@@ -52,6 +54,7 @@ const report = {
     uxContract:release.uxContract,
     designSystemContract:release.designSystemContract,
     designPolishContract:release.designPolishContract,
+    experienceRefinementContract:release.experienceRefinementContract,
     evidenceContract:release.evidenceContract
   },
   gates

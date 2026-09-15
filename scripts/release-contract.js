@@ -22,7 +22,7 @@ function validateReleaseContract(){
   const versionText = fs.readFileSync('version.txt', 'utf8');
   const stateSource = fs.readFileSync('js/state.js', 'utf8');
 
-  if(release.schemaVersion !== 9) fail(`schemaVersion must be 9, found ${release.schemaVersion}`);
+  if(release.schemaVersion !== 10) fail(`schemaVersion must be 10, found ${release.schemaVersion}`);
   if(release.product !== 'ONBOARD·OS') fail(`product mismatch: ${release.product}`);
   if(!/^\d+\.\d+\.\d+$/.test(release.version || '')) fail(`invalid semantic version: ${release.version}`);
   if(release.freeze !== 'P6') fail(`freeze must remain P6, found ${release.freeze}`);
@@ -48,6 +48,7 @@ function validateReleaseContract(){
     'interaction-ux',
     'visual-system-usability',
     'design-polish',
+    'experience-refinement',
     'release-evidence-consistency'
   ];
   for(const contract of contracts){
@@ -121,6 +122,19 @@ function validateReleaseContract(){
     }
   }
 
+  const experienceRefinement = release.experienceRefinementContract;
+  if(!experienceRefinement || experienceRefinement.schemaVersion !== 1) fail('experienceRefinementContract.schemaVersion must be 1');
+  for(const scenario of ['E1','E2','E3','E4','E5','E6','E7','E8']){
+    if(!Array.isArray(experienceRefinement.requiredScenarios) || !experienceRefinement.requiredScenarios.includes(scenario)){
+      fail(`experienceRefinementContract.requiredScenarios missing ${scenario}`);
+    }
+  }
+  for(const visual of ['E1-navigation-hierarchy.png','E2-overview-composition.png','E4-filter-command-surface.png','E5-card-scanability.png','E6-modal-action-zone.png','E7-tablet-density.png','E8-empty-state.png']){
+    if(!Array.isArray(experienceRefinement.requiredVisualEvidence) || !experienceRefinement.requiredVisualEvidence.includes(visual)){
+      fail(`experienceRefinementContract.requiredVisualEvidence missing ${visual}`);
+    }
+  }
+
   try {
     validateEvidenceContract(release);
   } catch (error) {
@@ -135,6 +149,7 @@ function validateReleaseContract(){
   if(!/^uxContract=U1-U8$/m.test(versionText)) fail('version.txt must declare uxContract=U1-U8');
   if(!/^designSystemContract=V1-V8$/m.test(versionText)) fail('version.txt must declare designSystemContract=V1-V8');
   if(!/^designPolishContract=D1-D8$/m.test(versionText)) fail('version.txt must declare designPolishContract=D1-D8');
+  if(!/^experienceRefinementContract=E1-E8$/m.test(versionText)) fail('version.txt must declare experienceRefinementContract=E1-E8');
   if(packageJson.version !== release.version) fail(`package.json=${packageJson.version} release.json=${release.version}`);
   if(packageLock.version !== release.version) fail(`package-lock.json=${packageLock.version} release.json=${release.version}`);
   if(packageLock.packages?.['']?.version !== release.version){
@@ -147,7 +162,7 @@ function validateReleaseContract(){
   } catch (error) {
     fail(error.message);
   }
-  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/ux-summary.js','scripts/visual-system-summary.js','scripts/public-assets.js']){
+  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/ux-summary.js','scripts/visual-system-summary.js','scripts/public-assets.js','experience-refinement.css']){
     if(!manifestResult.assets.includes(critical)) fail(`integrity manifest missing critical asset ${critical}`);
   }
 
@@ -157,7 +172,7 @@ function validateReleaseContract(){
 if(require.main === module){
   try {
     const release = validateReleaseContract();
-    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} · ux=${release.uxContract.requiredScenarios.length} · visual=${release.designSystemContract.requiredScenarios.length} · design=${release.designPolishContract.requiredScenarios.length} scenarios`);
+    console.log(`Release contract PASS: ${release.product} v${release.version} · ${release.freeze} · canonical=${release.canonicalVersionSource} · integrity=${release.integrityManifest} · evidence=v${release.evidenceContract.schemaVersion} · resilience=${release.resilienceContract.requiredScenarios.length} · security=${release.securityContract.requiredScenarios.length} · ux=${release.uxContract.requiredScenarios.length} · visual=${release.designSystemContract.requiredScenarios.length} · design=${release.designPolishContract.requiredScenarios.length} · experience=${release.experienceRefinementContract.requiredScenarios.length} scenarios`);
   } catch (error) {
     console.error(`RELEASE CONTRACT FAILED: ${error.message}`);
     process.exit(1);
