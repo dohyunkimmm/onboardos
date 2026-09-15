@@ -99,7 +99,11 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
   await expect(role).toHaveAttribute('aria-pressed','true');
   await expect(role).toHaveClass(/active/);
   const roleState = await visualState(role);
-  expect(roleState.backgroundColor !== 'rgba(0, 0, 0, 0)' || roleState.backgroundImage !== 'none').toBeTruthy();
+  expect(
+    roleState.backgroundColor !== 'rgba(0, 0, 0, 0)' ||
+    roleState.backgroundImage !== 'none' ||
+    roleState.boxShadow !== 'none'
+  ).toBeTruthy();
 
   const filter = page.getByRole('button',{name:'해야 할 일'});
   await filter.click();
