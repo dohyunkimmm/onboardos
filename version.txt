@@ -1,9 +1,9 @@
-ONBOARD·OS v13.0.0
+ONBOARD·OS v14.0.0
 P6 feature freeze
 canonicalVersionSource=release.json
 releaseChannel=production
-releaseClass=product-grade-visual-system
-scope=post-login-product-grade-visual-system
+releaseClass=operational-command-center
+scope=post-login-operational-command-center
 freeze=P6
 businessFlowChanged=false
 securityContract=S1-S8

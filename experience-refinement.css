@@ -1,5 +1,5 @@
-/* ONBOARD·OS v12 production — action-first experience refinement.
-   Scope: post-login visual/UX refinement only. P6 behavior and login baseline stay unchanged. */
+/* ONBOARD·OS post-login experience refinement layers — production through v14.
+   Scope: visual/UX refinement only. P6 behavior and login baseline stay unchanged. */
 :root{
   --v11-panel:rgba(23,26,33,.94);
   --v11-panel-soft:rgba(255,255,255,.028);
@@ -799,9 +799,9 @@ body:not(.login-open) .request-actions button{min-height:44px;border-radius:11px
   body:not(.login-open) .filter-chip.active{border:1px solid CanvasText;}
 }
 
-/* ONBOARD·OS v14 candidate — operational command center.
+/* ONBOARD·OS v14 production — operational command center.
    Scope: post-login information architecture, task priority, state legibility, execution surfaces, and mobile ergonomics.
-   Business logic, login baseline, P6 state machine, role isolation, request semantics, and canonical v13 release provenance remain unchanged. */
+   Business logic, login baseline, P6 state machine, role isolation, and request semantics remain unchanged. */
 :root{
   --v14-canvas:#090b10;
   --v14-panel:rgba(17,20,27,.965);

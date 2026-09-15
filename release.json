@@ -1,10 +1,10 @@
 {
   "schemaVersion": 10,
   "product": "ONBOARD·OS",
-  "version": "13.0.0",
+  "version": "14.0.0",
   "freeze": "P6",
-  "releaseClass": "product-grade-visual-system",
-  "scope": "post-login-product-grade-visual-system",
+  "releaseClass": "operational-command-center",
+  "scope": "post-login-operational-command-center",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -15,7 +15,7 @@
     "production-demo.html",
     "README.md",
     "CHANGELOG.md",
-    "RELEASE-v13.0.0.md"
+    "RELEASE-v14.0.0.md"
   ],
   "businessFlowChanged": false,
   "verificationContract": [
@@ -111,7 +111,7 @@
       "security-summary.json",
       "ux-summary.json",
       "visual-system-summary.json",
-      "ONBOARD_OS_v13.0.0_P6_production_demo.mp4"
+      "ONBOARD_OS_v14.0.0_P6_production_demo.mp4"
     ],
     "requireSuccessfulTargetRun": true,
     "requiredGates": [
