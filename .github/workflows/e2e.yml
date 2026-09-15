@@ -48,6 +48,7 @@ jobs:
           node --check playwright.security.config.js
           node --check playwright.ux.config.js
           node --check playwright.visual-system.config.js
+          node --check playwright.design-polish.config.js
           node --check playwright.cross-browser.config.js
           node --check playwright.production.config.js
           node --check lighthouserc.cjs
@@ -57,6 +58,7 @@ jobs:
           node --check tests/security.spec.js
           node --check tests/ux-interaction.spec.js
           node --check tests/visual-system.spec.js
+          node --check tests/design-polish.spec.js
           node --check tests/production.spec.js
           python3 -m json.tool vercel.json >/dev/null
       - name: Install Chromium
@@ -185,6 +187,32 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  design-polish:
+    name: Design polish / responsive hierarchy gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run required design polish scenarios D1-D8
+        run: |
+          mkdir -p verification/design-polish-screenshots
+          npm run test:design-polish
+      - name: Upload design polish evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: design-polish-evidence-${{ github.sha }}
+          path: |
+            verification/design-polish-playwright.json
+            verification/design-polish-screenshots/
+          if-no-files-found: error
+          retention-days: 30
+
   cross-browser:
     name: Firefox / WebKit functional smoke
     runs-on: ubuntu-latest
@@ -269,7 +297,7 @@ jobs:
   production-smoke:
     name: Production desktop/mobile smoke + deployment integrity
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [playwright, resilience, security, ux, visual-system, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
+    needs: [playwright, resilience, security, ux, visual-system, design-polish, cross-browser, lighthouse, lighthouse-mobile, supply-chain]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -341,7 +369,7 @@ jobs:
 
   evidence:
     name: Verification evidence
-    needs: [playwright, resilience, security, ux, visual-system, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
+    needs: [playwright, resilience, security, ux, visual-system, design-polish, cross-browser, lighthouse, lighthouse-mobile, supply-chain, production-smoke]
     if: >-
       always() &&
       needs.playwright.result == 'success' &&
@@ -349,6 +377,7 @@ jobs:
       needs.security.result == 'success' &&
       needs.ux.result == 'success' &&
       needs.visual-system.result == 'success' &&
+      needs.design-polish.result == 'success' &&
       needs.cross-browser.result == 'success' &&
       needs.lighthouse.result == 'success' &&
       needs.lighthouse-mobile.result == 'success' &&
@@ -367,6 +396,7 @@ jobs:
           SECURITY_RESULT: ${{ needs.security.result }}
           UX_RESULT: ${{ needs.ux.result }}
           VISUAL_SYSTEM_RESULT: ${{ needs.visual-system.result }}
+          DESIGN_POLISH_RESULT: ${{ needs.design-polish.result }}
           CROSS_BROWSER_RESULT: ${{ needs.cross-browser.result }}
           LIGHTHOUSE_RESULT: ${{ needs.lighthouse.result }}
           MOBILE_LIGHTHOUSE_RESULT: ${{ needs.lighthouse-mobile.result }}
