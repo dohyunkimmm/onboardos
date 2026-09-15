@@ -40,7 +40,9 @@ async function css(locator,pseudo=null){
       gridTemplateColumns:s.gridTemplateColumns,
       overflowX:s.overflowX,
       transitionDuration:s.transitionDuration,
-      position:s.position
+      position:s.position,
+      opacity:s.opacity,
+      transform:s.transform
     };
   },pseudo);
 }
@@ -131,7 +133,7 @@ test('[X7] mobile keeps one dominant next action, two-column common licenses and
   await shot(page,'X7-mobile-action-economy.png');
 });
 
-test('[X8] v12 styling remains post-login scoped and reduced-motion disables interaction transitions',async({page})=>{
+test('[X8] v12 styling remains post-login scoped and reduced-motion disables motion without hiding content',async({page})=>{
   await stabilize(page);
   await expect(page.locator('body')).toHaveClass(/login-open/);
   const loginCard=await css(page.locator('.login-card'));
@@ -139,6 +141,12 @@ test('[X8] v12 styling remains post-login scoped and reduced-motion disables int
   await login(page);
   const duration=await page.locator('#v12FocusAction').evaluate(el=>getComputedStyle(el).transitionDuration);
   expect(duration.split(',').every(value=>parseFloat(value)===0)).toBeTruthy();
+  const overview=await css(page.locator('.overview-panel'));
+  const roleCard=await css(page.locator('#roleGrid .card').first());
+  expect(parseFloat(overview.opacity)).toBe(1);
+  expect(parseFloat(roleCard.opacity)).toBe(1);
+  expect(overview.transform).toBe('none');
+  expect(roleCard.transform).toBe('none');
   await page.locator('#v12FocusAction').focus();
   await expect(page.locator('#v12FocusAction')).toBeFocused();
   await shot(page.locator('#v12FocusPanel'),'X8-reduced-motion-focus.png');
