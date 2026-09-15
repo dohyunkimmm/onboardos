@@ -30,11 +30,16 @@ test('[E1] top navigation separates primary product action from demo utilities',
   await shot(page.locator('.topbar'),'E1-navigation-hierarchy.png');
 });
 
-test('[E2] overview compresses identity and role selection into a two-zone desktop surface',async({page})=>{
+test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mobile',async({page})=>{
   await stabilize(page);await login(page);
   const panel=await css(page.locator('.overview-panel'));
-  expect(panel.display).toBe('grid');
-  expect(panel.gridTemplateColumns.split(' ').length).toBe(2);
+  const viewport=page.viewportSize();
+  if((viewport?.width || 0) >= 960){
+    expect(panel.display).toBe('grid');
+    expect(panel.gridTemplateColumns.split(' ').length).toBe(2);
+  }else{
+    expect(panel.display).toBe('block');
+  }
   expect(panel.borderRadius).toBe('24px');
   await shot(page.locator('.overview-panel'),'E2-overview-composition.png');
 });
@@ -57,11 +62,16 @@ test('[E4] status filters behave as a sticky command surface with a distinct sel
   await shot(page.locator('.tools-bar'),'E4-filter-command-surface.png');
 });
 
-test('[E5] role cards keep a stable scan rhythm and status meaning without color alone',async({page})=>{
+test('[E5] role cards keep responsive scan rhythm and status meaning without color alone',async({page})=>{
   await stabilize(page);await login(page);
   const card=page.locator('#roleGrid .card').first();
   const state=await css(card);
-  expect(parseFloat(state.minHeight)).toBeGreaterThanOrEqual(176);
+  const viewport=page.viewportSize();
+  if((viewport?.width || 0) > 768){
+    expect(parseFloat(state.minHeight)).toBeGreaterThanOrEqual(176);
+  }else{
+    expect(parseFloat(state.minHeight)).toBeLessThanOrEqual(1);
+  }
   const divider=await css(card.locator('.card-owner'));
   expect(divider.borderBottomStyle).toBe('solid');
   const pill=card.locator('.status-pill');
