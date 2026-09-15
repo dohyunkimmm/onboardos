@@ -63,14 +63,13 @@ jobs:
           )
 
           demo_path = Path('production-demo.html')
-          demo = demo_path.read_text()
-          demo = demo.replace('v1.7.0', tag)
-          demo_path.write_text(demo)
+          demo_path.write_text(demo_path.read_text().replace('v1.7.0', tag))
 
           css_path = Path('experience-refinement.css')
-          css = css_path.read_text()
-          css = css.replace('/* ONBOARD·OS v11 candidate — experience refinement.', '/* ONBOARD·OS v12 production — action-first experience refinement.')
-          css_path.write_text(css)
+          css_path.write_text(css_path.read_text().replace(
+              '/* ONBOARD·OS v11 candidate — experience refinement.',
+              '/* ONBOARD·OS v12 production — action-first experience refinement.'
+          ))
 
           readme_path = Path('README.md')
           readme = readme_path.read_text()
@@ -171,16 +170,22 @@ The release is created only for an exact Production-verified commit with a succe
               raise SystemExit('release workflow setup-node anchor not found')
           if 'Install release/demo dependencies' not in workflow:
               workflow = workflow.replace(setup_anchor, install)
+
+          tag_expr = '$' + '{{ steps.request.outputs.tag }}'
+          notes_expr = '$' + '{{ steps.request.outputs.notes_file }}'
+          video_expr = '$' + '{{ steps.demo.outputs.video_name }}'
           create_anchor = '      - name: Create evidence-backed immutable release\n'
-          demo_step = """      - name: Record version-aligned Production demo\n        id: demo\n        shell: bash\n        env:\n          TAG: ${{ steps.request.outputs.tag }}\n          DEMO_URL: https://onboardos-rho.vercel.app/\n        run: |\n          set -euo pipefail\n          VERSION=\"${TAG#v}\"\n          VIDEO_NAME=\"ONBOARD_OS_v${VERSION}_P6_production_demo.mp4\"\n          WEBM_NAME=\"ONBOARD_OS_v${VERSION}_P6_production_demo.webm\"\n          DEMO_WEBM_NAME=\"$WEBM_NAME\" node scripts/record-demo.mjs\n          if ! command -v ffmpeg >/dev/null 2>&1; then\n            sudo apt-get update\n            sudo apt-get install -y ffmpeg\n          fi\n          ffmpeg -y -i \"demo-output/${WEBM_NAME}\" -t 36 -c:v libx264 -preset medium -crf 24 -pix_fmt yuv420p -movflags +faststart -an \"demo-output/${VIDEO_NAME}\"\n          test -s \"demo-output/${VIDEO_NAME}\"\n          DURATION=\"$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"demo-output/${VIDEO_NAME}\")\"\n          awk -v d=\"${DURATION}\" 'BEGIN { exit !(d >= 35.9 && d <= 36.1) }'\n          echo \"video_name=$VIDEO_NAME\" >> \"$GITHUB_OUTPUT\"\n\n"""
+          demo_step = f"""      - name: Record version-aligned Production demo\n        id: demo\n        shell: bash\n        env:\n          TAG: {tag_expr}\n          DEMO_URL: https://onboardos-rho.vercel.app/\n        run: |\n          set -euo pipefail\n          VERSION=\"${{TAG#v}}\"\n          VIDEO_NAME=\"ONBOARD_OS_v${{VERSION}}_P6_production_demo.mp4\"\n          WEBM_NAME=\"ONBOARD_OS_v${{VERSION}}_P6_production_demo.webm\"\n          DEMO_WEBM_NAME=\"$WEBM_NAME\" node scripts/record-demo.mjs\n          if ! command -v ffmpeg >/dev/null 2>&1; then\n            sudo apt-get update\n            sudo apt-get install -y ffmpeg\n          fi\n          ffmpeg -y -i \"demo-output/${{WEBM_NAME}}\" -t 36 -c:v libx264 -preset medium -crf 24 -pix_fmt yuv420p -movflags +faststart -an \"demo-output/${{VIDEO_NAME}}\"\n          test -s \"demo-output/${{VIDEO_NAME}}\"\n          DURATION=\"$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"demo-output/${{VIDEO_NAME}}\")\"\n          awk -v d=\"${{DURATION}}\" 'BEGIN {{ exit !(d >= 35.9 && d <= 36.1) }}'\n          echo \"video_name=$VIDEO_NAME\" >> \"$GITHUB_OUTPUT\"\n\n"""
           if create_anchor not in workflow:
               raise SystemExit('release workflow create-release anchor not found')
           if 'Record version-aligned Production demo' not in workflow:
               workflow = workflow.replace(create_anchor, demo_step + create_anchor)
-          expr = '$' + '{{ steps.demo.outputs.video_name }}'
-          env_anchor = '          NOTES_FILE: ${{ steps.request.outputs.notes_file }}\n'
+
+          env_anchor = f'          NOTES_FILE: {notes_expr}\n'
           if '          VIDEO_NAME:' not in workflow:
-              workflow = workflow.replace(env_anchor, env_anchor + f'          VIDEO_NAME: {expr}\n')
+              if env_anchor not in workflow:
+                  raise SystemExit('release workflow env anchor not found')
+              workflow = workflow.replace(env_anchor, env_anchor + f'          VIDEO_NAME: {video_expr}\n')
           old_loop = '            for asset in verification-summary.json verification-summary.md asset-integrity.json resilience-summary.json security-summary.json ux-summary.json visual-system-summary.json; do'
           new_loop = '            for asset in verification-summary.json verification-summary.md asset-integrity.json resilience-summary.json security-summary.json ux-summary.json visual-system-summary.json "$VIDEO_NAME"; do'
           if old_loop not in workflow:
@@ -196,6 +201,7 @@ The release is created only for an exact Production-verified commit with a succe
 
           git rm -f .github/demo-video-request.json .github/workflows/demo-video.yml
           git rm -f .github/workflows/v12-release-materialize.yml
+          git checkout origin/main -- .github/workflows/v11-materialize.yml
           git diff --check
           npm run quality
           npm run release:check
