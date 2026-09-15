@@ -2,21 +2,20 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
-  testIgnore: ['**/production.spec.js', '**/cross-browser.spec.js', '**/recovery.spec.js', '**/design-polish.spec.js'],
-  timeout: 30_000,
-  expect: { timeout: 5_000 },
+  testMatch: ['**/design-polish.spec.js'],
+  timeout: 45_000,
+  expect: { timeout: 7_000 },
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
+  reporter: [['list'], ['json', { outputFile: 'verification/design-polish-playwright.json' }]],
   use: {
+    ...devices['Desktop Chrome'],
     baseURL: 'http://127.0.0.1:4173',
+    viewport: { width: 1440, height: 1000 },
     trace: 'retain-on-failure',
     timezoneId: 'Asia/Seoul'
   },
-  projects: [
-    { name: 'desktop-chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile-chromium', use: { ...devices['Pixel 7'] } }
-  ],
+  projects: [{ name: 'design-polish-chromium' }],
   webServer: {
     command: 'node scripts/serve.js',
     url: 'http://127.0.0.1:4173',

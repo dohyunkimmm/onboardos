@@ -1,4 +1,4 @@
-ONBOARD·OS v9.0.0
+ONBOARD·OS v10.0.0
 P6 feature freeze
 releaseChannel=production
 release.json
@@ -7,5 +7,6 @@ resilienceContract=R1-R8
 securityContract=S1-S8
 uxContract=U1-U8
 designSystemContract=V1-V8
-Visual system & usability hardening
-Keyboard focus · press feedback · card focus parity · selection clarity · modal/drawer hierarchy · forced colors · mobile touch halo
+designPolishContract=D1-D8
+Visual hierarchy & responsive polish
+Typography hierarchy · spacing rhythm · card surfaces · status badges · CTA priority · modal/drawer polish · tablet/mobile density
