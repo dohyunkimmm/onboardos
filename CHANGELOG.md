@@ -1,5 +1,56 @@
 # Changelog
 
+## v10.0.0 — Visual hierarchy & responsive polish — 2026-09-15
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 로그인 이후 화면의 정보 위계·타이포그래피·간격·카드·상태·CTA·Modal/Drawer·반응형 밀도를 리파인하고 D1–D8 Design Polish / Responsive Hierarchy gate로 검증했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
+
+### Visual hierarchy & responsive polish
+- 승인된 로그인 surface는 유지하고 v10 polish를 post-login 화면에 한정
+- typography와 spacing rhythm을 정리해 제목·설명·상태·액션의 우선순위를 선명하게 조정
+- 카드 surface, status pill, CTA hierarchy, request modal과 admin drawer의 시각 위계를 정교화
+- Desktop/Tablet/Mobile에서 dashboard 밀도와 grid를 조정하고 작은 화면의 정보 스캔성과 조작성을 개선
+- v9의 V1–V8 focus/pressed/selected-state contract를 유지하면서 D1–D8 전용 Playwright gate와 새 visual baseline을 추가
+
+### Preserved contracts
+- R1–R8 Resilience/Recovery contract 유지
+- S1–S8 Security/Failure-containment contract 유지
+- U1–U8 Interaction UX/Accessibility contract 유지
+- V1–V8 Visual System/Usability contract 유지
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Release evidence
+- `release.json` schema v9 / `evidenceContract` schema v8로 올려 Design polish를 필수 release gate에 포함
+- D1–D8 raw screenshot evidence는 target E2E design-polish artifact에 보존하고, 결과는 `verification-summary`에 포함
+- immutable GitHub Release asset 7종 요구는 유지: `verification-summary.json`, `verification-summary.md`, `asset-integrity.json`, `resilience-summary.json`, `security-summary.json`, `ux-summary.json`, `visual-system-summary.json`
+
+### Verification
+- PR #62: v10 visual hierarchy/responsive polish와 D1–D8 gate 도입, 최종 PR E2E #179 전체 gate 통과
+- Production runtime commit `35dfc0d36e0269936301d07f418535224914ccf1` / Vercel deployment `dpl_AHfPmXt1FEd9BBXBXFnRZM92qZVS`: READY, GitHub verified commit 기준 배포
+- Main E2E run #180 (`34939680319`): 전체 workflow `completed / success`
+- Resilience scenarios: **R1–R8 8/8 PASS**
+- Security scenarios: **S1–S8 8/8 PASS**
+- Interaction UX scenarios: **U1–U8 8/8 PASS**
+- Visual System / Usability scenarios: **V1–V8 8/8 PASS**
+- Design Polish / Responsive Hierarchy scenarios: **D1–D8 8/8 PASS**
+- Firefox/WebKit functional smoke, Desktop/Mobile Lighthouse, Supply-chain gate: PASS
+- Production source integrity: PASS
+- Production Desktop Chromium + iPhone WebKit browser smoke: PASS
+- Production integrity artifact `10384594716` / `sha256:a269d9f297a14a6d1ff64cc732b3623559c0d758e44b18c3a2819d3ac8f28940`
+- Verification evidence artifact `10385051188` / `sha256:2f9cdac087a21a4828c99eb5b497ccbca62eb1025bd578ad3a2e880ee5a03b6f`
+- Resilience evidence artifact `10385020834` / `sha256:924c0cc74f253ea9272e3f32c7f76f57d0f5bfb1e66ee7f3f96621c453131202`
+- Security evidence artifact `10384463222` / `sha256:2f0891f48420b1972144e9306f054a02ba5a2a3e147a8a44b83de4a618513c56`
+- UX evidence artifact `10384559558` / `sha256:9c75416ab79e62b4b3fb17ded9f0de8ff1b244ac6f8921a2abf30d2863baf5a3`
+- Visual-system evidence artifact `10385005852` / `sha256:045b542f499f22cccf739a1d18892ab33325ddcd0554f040410e34df6aa7b2ab`
+- Design-polish evidence artifact `10384318377` / `sha256:79f9ba570d9e185fdc4ca35dd7148b456722a5369f5388782c3ffa1c3d930762`
+- PR #63: Production-verified SHA를 고정한 evidence-backed v10 release request closeout
+- Release workflow #13 (`34940510998`): target evidence 검증 및 immutable GitHub Release 생성 PASS
+- Immutable GitHub Release: `v10.0.0`, target `35dfc0d36e0269936301d07f418535224914ccf1`, required evidence assets 7종 포함
+
+### Release status
+v10.0.0은 기능 확장이 아닌 **Visual hierarchy / responsive polish / design-system refinement** 릴리스이며, P6 Business Flow를 유지한 상태로 Production 검증과 immutable Release 발행을 완료했습니다.
+
+---
+
 ## v9.0.0 — Visual system & usability hardening — 2026-09-15
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 기존 화면의 keyboard focus·pressed·selected state·modal/drawer hierarchy·forced-colors·mobile touch affordance를 V1–V8 Visual System / Usability gate로 별도 검증하도록 강화했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
