@@ -1,0 +1,146 @@
+name: V13 Release Sync
+
+on:
+  push:
+    branches: [release/v13.0.0-sync]
+    paths:
+      - .github/workflows/v13-release-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+      - name: Synchronize canonical v13 release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          version = '13.0.0'
+          tag = f'v{version}'
+
+          release_path = Path('release.json')
+          release = json.loads(release_path.read_text())
+          release['version'] = version
+          release['releaseClass'] = 'product-grade-visual-system'
+          release['scope'] = 'post-login-product-grade-visual-system'
+          release['syncedArtifacts'] = [
+              'version.txt',
+              'package.json',
+              'package-lock.json',
+              'production-demo.html',
+              'README.md',
+              'CHANGELOG.md',
+              'RELEASE-v13.0.0.md'
+          ]
+          assets = release['evidenceContract']['releaseAssets']
+          release['evidenceContract']['releaseAssets'] = [
+              'ONBOARD_OS_v13.0.0_P6_production_demo.mp4'
+              if item.startswith('ONBOARD_OS_v') and item.endswith('_P6_production_demo.mp4')
+              else item
+              for item in assets
+          ]
+          release_path.write_text(json.dumps(release, ensure_ascii=False, indent=2) + '\n')
+
+          version_path = Path('version.txt')
+          text = version_path.read_text()
+          text = text.replace('ONBOARD·OS v12.0.0', 'ONBOARD·OS v13.0.0')
+          text = text.replace('releaseClass=action-first-ui-ux-refinement', 'releaseClass=product-grade-visual-system')
+          text = text.replace('scope=post-login-action-first-ui-ux-refinement', 'scope=post-login-product-grade-visual-system')
+          version_path.write_text(text)
+
+          for package_file in ['package.json', 'package-lock.json']:
+              path = Path(package_file)
+              data = json.loads(path.read_text())
+              data['version'] = version
+              if package_file == 'package-lock.json':
+                  data.setdefault('packages', {}).setdefault('', {})['version'] = version
+              path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+          demo_path = Path('production-demo.html')
+          demo_path.write_text(demo_path.read_text().replace('v12.0.0', 'v13.0.0'))
+
+          readme_path = Path('README.md')
+          readme = readme_path.read_text()
+          old_release = '> **Portfolio release — v12.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v12.0.0은 로그인 이후 경험을 action-first 구조로 고도화했습니다. 현재 단계·다음 행동, 필터 command surface, 카드 scanability, semantic state cue, CTA hierarchy, 모바일 조작성과 WCAG AA 대비를 개선했으며 R/S/U/V/D/E 1–8 계약과 Production integrity/smoke를 유지합니다. [GitHub Release v12.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v12.0.0) · [Live Production](https://onboardos-rho.vercel.app/)'
+          new_release = '> **Portfolio release — v13.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v13.0.0은 로그인 이후 화면을 product-grade workspace visual system으로 고도화했습니다. identity/role hierarchy, operational progress rail, full-width filter command surface, section/card/state/CTA hierarchy, modal·drawer execution surface와 responsive ergonomics를 정리했으며 R/S/U/V/D/E 1–8 계약과 Production integrity/smoke를 유지합니다. [GitHub Release v13.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v13.0.0) · [Live Production](https://onboardos-rho.vercel.app/)'
+          if old_release not in readme:
+              raise SystemExit('README current release block not found')
+          readme = readme.replace(old_release, new_release, 1)
+          readme = readme.replace('영상 원본은 `v12.0.0` GitHub Release asset으로 유지합니다.', '영상 원본은 `v13.0.0` GitHub Release asset으로 유지합니다.', 1)
+          readme_path.write_text(readme)
+
+          changelog_path = Path('CHANGELOG.md')
+          changelog = changelog_path.read_text()
+          v13_section = '''## v13.0.0 — Product-grade visual system — 2026-09-16
+
+P6에서 동결한 Business Flow와 상태 모델은 유지하면서, Production에서 검증한 v13 post-login visual layer를 정식 릴리즈 계약으로 승격했습니다. 화면을 하나의 product workspace로 재구성하고 identity/role selection, operational progress rail, filter command surface, license section/card hierarchy, modal·admin drawer execution surface, responsive ergonomics를 정교화했습니다. JavaScript business logic, catalog data, request-state machine, role isolation은 변경하지 않았습니다.
+
+### Release/link synchronization
+- `release.json`, `version.txt`, `package.json`, `package-lock.json`을 v13.0.0으로 동기화
+- `README.md`, `production-demo.html`, release notes와 GitHub Release 링크를 v13.0.0으로 동기화
+- release evidence의 36초 Production Demo asset 이름을 `ONBOARD_OS_v13.0.0_P6_production_demo.mp4`로 동기화
+- canonical `release.json`과 Production provenance가 일치하지 않으면 release contract가 차단하도록 기존 규칙 유지
+
+### Preserved contracts
+- P6 feature freeze / `businessFlowChanged: false`
+- R1–R8 Resilience/Recovery
+- S1–S8 Security/Failure-containment
+- U1–U8 Interaction UX/Accessibility
+- V1–V8 Visual System/Usability
+- D1–D8 Design Polish/Responsive Hierarchy
+- E1–E8 Experience Refinement
+
+'''
+          if '## v13.0.0 — Product-grade visual system' not in changelog:
+              changelog = changelog.replace('# Changelog\n\n', '# Changelog\n\n' + v13_section, 1)
+          changelog_path.write_text(changelog)
+
+          Path('RELEASE-v13.0.0.md').write_text('''# ONBOARD·OS v13.0.0
+
+## Scope
+
+v13.0.0 formalizes the product-grade post-login visual system already validated in Production while preserving the P6 business-flow freeze. No JavaScript business logic, catalog data, request-state machine, role-isolation behavior, or login baseline is changed by this release promotion.
+
+## Experience changes
+
+- Product workspace composition with stronger identity and role-selection hierarchy
+- Operational five-step progress rail with clearer current-state emphasis
+- Full-width filter command surface and more coherent license-group sections
+- Denser card, semantic state, SLA, and CTA hierarchy for faster scanning
+- Unified request modal and admin drawer execution surfaces
+- Responsive/mobile ergonomics while preserving verified density and touch contracts
+- Focus-within, reduced-motion, forced-colors, and existing accessibility contracts retained
+
+## Release integrity
+
+The release is created only for an exact Production-verified commit with a successful main E2E run. Required evidence assets and the version-aligned 36-second Production Demo are attached to the same immutable GitHub Release. Production source integrity and Desktop Chromium + iPhone WebKit smoke remain mandatory release gates.
+
+## Canonical links
+
+- Live Production: https://onboardos-rho.vercel.app/
+- Production Demo: https://onboardos-rho.vercel.app/production-demo
+- GitHub Release: https://github.com/dohyunkimmm/onboardos/releases/tag/v13.0.0
+''')
+          PY
+
+          git rm .github/workflows/v13-release-sync.yml
+          npm run release:check
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release.json version.txt package.json package-lock.json production-demo.html README.md CHANGELOG.md RELEASE-v13.0.0.md .github/workflows/v13-release-sync.yml
+          git diff --cached --check
+          git commit -m 'chore: synchronize v13 release provenance'
+          git push origin HEAD:release/v13.0.0-sync
