@@ -1,7 +1,7 @@
 {
-  "tag": "v8.0.0",
-  "target": "2aaa29596a94a0678dcfd132c006813d64369979",
-  "title": "v8.0.0 — Interaction-state UX & accessibility hardening",
-  "notes_file": "RELEASE-v8.0.0.md",
-  "sync_revision": 4
+  "tag": "v9.0.0",
+  "target": "5412930f98d7c33fcdc1c2c3289c8e179d7f394a",
+  "title": "v9.0.0 — Visual system & usability hardening",
+  "notes_file": "RELEASE-v9.0.0.md",
+  "sync_revision": 5
 }
