@@ -1,7 +1,7 @@
 {
-  "tag": "v9.0.0",
-  "target": "5412930f98d7c33fcdc1c2c3289c8e179d7f394a",
-  "title": "v9.0.0 — Visual system & usability hardening",
-  "notes_file": "RELEASE-v9.0.0.md",
-  "sync_revision": 5
+  "tag": "v10.0.0",
+  "target": "35dfc0d36e0269936301d07f418535224914ccf1",
+  "title": "v10.0.0 — Visual hierarchy & responsive polish",
+  "notes_file": "RELEASE-v10.0.0.md",
+  "sync_revision": 6
 }
