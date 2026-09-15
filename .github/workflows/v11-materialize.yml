@@ -1,0 +1,53 @@
+name: V11 Materialize
+
+on:
+  push:
+    branches: [feature/v11-experience-refinement]
+    paths: [.github/workflows/v11-materialize.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Materialize canonical v11 contract
+        run: |
+          git show 2006d50ad52612dbae7c64d03c74f7db0eab1b59:scripts/apply-v11-release-candidate.js > /tmp/apply-v11.js
+          cp /tmp/apply-v11.js scripts/apply-v11-release-candidate.js
+          node scripts/apply-v11-release-candidate.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/quality-check.js')
+          s = p.read_text()
+          s = s.replace("if(!/Experience refinement / interaction clarity gate/.test(e2eWorkflow))", "if(!e2eWorkflow.includes('Experience refinement / interaction clarity gate'))")
+          p.write_text(s)
+          PY
+          npm run quality
+          npm run release:check
+      - run: npx playwright install --with-deps chromium
+      - name: Verify E1-E8
+        run: npm run test:experience
+      - name: Collect materialized files
+        run: |
+          mkdir -p v11-materialized
+          git diff --name-only | while IFS= read -r f; do
+            [ -f "$f" ] || continue
+            mkdir -p "v11-materialized/$(dirname "$f")"
+            cp "$f" "v11-materialized/$f"
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: v11-materialized
+          path: v11-materialized/
+          if-no-files-found: error
+          retention-days: 1
