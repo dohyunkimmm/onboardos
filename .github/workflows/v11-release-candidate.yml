@@ -1,0 +1,43 @@
+name: V11 Release Candidate Integration
+
+on:
+  push:
+    branches: [feature/v11-experience-refinement]
+    paths:
+      - scripts/apply-v11-release-candidate.js
+      - .github/workflows/v11-release-candidate.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/v11-experience-refinement
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Apply v11 canonical release contract
+        run: node scripts/apply-v11-release-candidate.js
+      - name: Validate candidate contract
+        run: |
+          npm run quality
+          npm run release:check
+          node --check playwright.experience-refinement.config.js
+          node --check tests/experience-refinement.spec.js
+      - run: npx playwright install --with-deps chromium
+      - name: Verify E1-E8 after canonical integration
+        run: npm run test:experience
+      - name: Commit canonical v11 candidate
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Promote experience refinement to v11.0.0 candidate'
+          git push origin HEAD:feature/v11-experience-refinement
