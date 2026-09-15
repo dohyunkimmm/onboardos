@@ -2,8 +2,7 @@ name: V14 Release Sync
 
 on:
   push:
-    branches:
-      - release/v14-sync
+    branches: [release/v14-sync]
 
 permissions:
   contents: write
@@ -20,152 +19,29 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm ci
-      - name: Materialize v14 canonical release sync
-        shell: bash
+      - name: Materialize canonical v14 sync
         run: |
-          set -euo pipefail
           npm version 14.0.0 --no-git-tag-version
-          python3 - <<'PY'
-          from pathlib import Path
-          import json
-
-          release_path = Path('release.json')
-          release = json.loads(release_path.read_text())
-          release['version'] = '14.0.0'
-          release['releaseClass'] = 'operational-command-center'
-          release['scope'] = 'post-login-operational-command-center'
-          release['syncedArtifacts'] = [
-              'version.txt',
-              'package.json',
-              'package-lock.json',
-              'production-demo.html',
-              'README.md',
-              'CHANGELOG.md',
-              'RELEASE-v14.0.0.md',
-          ]
-          assets = release['evidenceContract']['releaseAssets']
-          release['evidenceContract']['releaseAssets'] = [
-              a.replace('ONBOARD_OS_v13.0.0_P6_production_demo.mp4', 'ONBOARD_OS_v14.0.0_P6_production_demo.mp4')
-              for a in assets
-          ]
-          release_path.write_text(json.dumps(release, ensure_ascii=False, indent=2) + '\n')
-
-          Path('version.txt').write_text('''ONBOARD·OS v14.0.0
-          P6 feature freeze
-          canonicalVersionSource=release.json
-          releaseChannel=production
-          releaseClass=operational-command-center
-          scope=post-login-operational-command-center
-          freeze=P6
-          businessFlowChanged=false
-          securityContract=S1-S8
-          uxContract=U1-U8
-          designSystemContract=V1-V8
-          designPolishContract=D1-D8
-          experienceRefinementContract=E1-E8
-          integrityManifest=integrity-assets.json
-          '''.replace('          ', ''))
-
-          demo = Path('production-demo.html')
-          demo.write_text(demo.read_text().replace('v13.0.0', 'v14.0.0'))
-
-          readme = Path('README.md')
-          text = readme.read_text()
-          old = '> **Portfolio release — v13.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v13.0.0은 로그인 이후 화면을 product-grade workspace visual system으로 고도화했습니다. identity/role hierarchy, operational progress rail, full-width filter command surface, section/card/state/CTA hierarchy, modal·drawer execution surface와 responsive ergonomics를 정리했으며 R/S/U/V/D/E 1–8 계약과 Production integrity/smoke를 유지합니다. [GitHub Release v13.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v13.0.0) · [Live Production](https://onboardos-rho.vercel.app/)'
-          new = '> **Portfolio release — v14.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v14.0.0은 로그인 이후 화면을 Operational Command Center로 고도화했습니다. identity/role/progress hierarchy, full-width filter command shelf, work-zone section surfaces, card state rail·CTA lane, modal·drawer execution surface와 mobile task prioritization을 정리했으며 R/S/U/V/D/E 1–8 계약과 Production integrity/smoke를 유지합니다. [GitHub Release v14.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v14.0.0) · [Live Production](https://onboardos-rho.vercel.app/)'
-          if old not in text:
-              raise SystemExit('README current release block did not match expected v13 text')
-          text = text.replace(old, new, 1)
-          text = text.replace('영상 원본은 `v13.0.0` GitHub Release asset으로 유지합니다.', '영상 원본은 `v14.0.0` GitHub Release asset으로 유지합니다.', 1)
-          readme.write_text(text)
-
-          changelog = Path('CHANGELOG.md')
-          current = changelog.read_text()
-          header = '# Changelog\n\n'
-          if not current.startswith(header):
-              raise SystemExit('Unexpected CHANGELOG header')
-          section = '''## v14.0.0 — Operational Command Center — 2026-09-16
-
-P6에서 동결한 Business Flow와 상태 모델은 유지하면서, Production에서 검증한 v14 post-login design layer를 정식 릴리즈 계약으로 승격했습니다. 기존 product workspace를 Operational Command Center로 정리해 identity/role/progress hierarchy, filter command shelf, work-zone sections, card state rail과 CTA lane, modal·drawer execution surface, mobile task prioritization을 강화했습니다. JavaScript business logic, catalog data, request-state machine, role isolation과 login baseline은 변경하지 않았습니다.
-
-### Release/link synchronization
-- `release.json`, `version.txt`, `package.json`, `package-lock.json`을 v14.0.0으로 동기화
-- `README.md`, `production-demo.html`, release notes와 GitHub Release 링크를 v14.0.0으로 동기화
-- release evidence의 36초 Production Demo asset 이름을 `ONBOARD_OS_v14.0.0_P6_production_demo.mp4`로 동기화
-- canonical release contract와 Production provenance가 일치하지 않으면 release workflow가 발행을 차단하는 규칙 유지
-
-### Preserved contracts
-- P6 feature freeze / `businessFlowChanged: false`
-- R1–R8 Resilience/Recovery
-- S1–S8 Security/Failure-containment
-- U1–U8 Interaction UX/Accessibility
-- V1–V8 Visual System/Usability
-- D1–D8 Design Polish/Responsive Hierarchy
-- E1–E8 Experience Refinement
-
-'''
-          changelog.write_text(header + section + current[len(header):])
-
-          Path('RELEASE-v14.0.0.md').write_text('''# ONBOARD·OS v14.0.0
-
-## Scope
-
-v14.0.0 formalizes the Operational Command Center post-login design already validated on main while preserving the P6 business-flow freeze. No JavaScript business logic, catalog data, request-state machine, role-isolation behavior, request semantics, or login baseline is changed by this release promotion.
-
-## Experience changes
-
-- Operational command-header composition with clearer identity and role hierarchy
-- Five-step progress rail with stronger current-task emphasis
-- Full-width filter command shelf connecting overview and content
-- Work-zone section surfaces with consistent scanning rhythm
-- Card status rails and stable CTA action lanes for faster state recognition
-- Cohesive request modal and admin drawer execution surfaces
-- Mobile-first task prioritization while preserving grid, touch-target, and no-overflow contracts
-- Focus-visible, reduced-motion, forced-colors, and existing accessibility contracts retained
-
-## Release integrity
-
-The release is created only for an exact Production-verified commit with a successful main E2E run. Required evidence assets and the version-aligned 36-second Production Demo are attached to the same immutable GitHub Release. Production source integrity and Desktop Chromium + iPhone WebKit smoke remain mandatory release gates.
-
-## Canonical links
-
-- Live Production: https://onboardos-rho.vercel.app/
-- Production Demo: https://onboardos-rho.vercel.app/production-demo
-- GitHub Release: https://github.com/dohyunkimmm/onboardos/releases/tag/v14.0.0
-''')
-
-          css = Path('experience-refinement.css')
-          css_text = css.read_text()
-          css_text = css_text.replace('/* ONBOARD·OS v12 production — action-first experience refinement.\n   Scope: post-login visual/UX refinement only. P6 behavior and login baseline stay unchanged. */', '/* ONBOARD·OS post-login experience refinement layers — production through v14.\n   Scope: visual/UX refinement only. P6 behavior and login baseline stay unchanged. */', 1)
-          css_text = css_text.replace('/* ONBOARD·OS v14 candidate — operational command center.\n   Scope: post-login information architecture, task priority, state legibility, execution surfaces, and mobile ergonomics.\n   Business logic, login baseline, P6 state machine, role isolation, request semantics, and canonical v13 release provenance remain unchanged. */', '/* ONBOARD·OS v14 production — operational command center.\n   Scope: post-login information architecture, task priority, state legibility, execution surfaces, and mobile ergonomics.\n   Business logic, login baseline, P6 state machine, role isolation, and request semantics remain unchanged. */', 1)
-          css.write_text(css_text)
-          PY
-      - name: Validate canonical release sync
+          python3 .github/v14-sync.py
+      - name: Validate canonical v14 sync
         run: |
           npm run quality
           npm run release:check
-      - name: Verify isolated release-sync scope
-        shell: bash
+      - name: Verify isolated scope
         run: |
-          set -euo pipefail
-          git diff --name-only | sort > /tmp/changed.txt
-          cat > /tmp/allowed.txt <<'EOF'
-          CHANGELOG.md
-          README.md
-          RELEASE-v14.0.0.md
-          experience-refinement.css
-          package-lock.json
-          package.json
-          production-demo.html
-          release.json
-          version.txt
-          EOF
-          sort -o /tmp/allowed.txt /tmp/allowed.txt
-          diff -u /tmp/allowed.txt /tmp/changed.txt
+          python3 - <<'PY'
+          import subprocess
+          allowed = {
+              'CHANGELOG.md', 'README.md', 'RELEASE-v14.0.0.md',
+              'experience-refinement.css', 'package-lock.json', 'package.json',
+              'production-demo.html', 'release.json', 'version.txt'
+          }
+          changed = set(subprocess.check_output(['git','diff','--name-only'], text=True).splitlines())
+          if changed != allowed:
+              raise SystemExit(f'Unexpected release-sync diff: {sorted(changed)}')
+          PY
       - name: Commit canonical v14 sync
-        shell: bash
         run: |
-          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add CHANGELOG.md README.md RELEASE-v14.0.0.md experience-refinement.css package.json package-lock.json production-demo.html release.json version.txt
