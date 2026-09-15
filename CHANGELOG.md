@@ -1,5 +1,54 @@
 # Changelog
 
+## v9.0.0 — Visual system & usability hardening — 2026-09-15
+
+P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 기존 화면의 keyboard focus·pressed·selected state·modal/drawer hierarchy·forced-colors·mobile touch affordance를 V1–V8 Visual System / Usability gate로 별도 검증하도록 강화했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
+
+### Visual system & usability hardening
+- 기존 승인된 visual baseline을 유지하면서 keyboard focus와 focus-within 상태의 식별성을 강화
+- 버튼 pressed feedback, 역할/필터 selected-state signaling, 카드 focus parity를 interaction-state contract로 고정
+- request modal과 admin drawer의 action hierarchy 및 모바일 touch affordance를 보강
+- forced-colors 환경과 hover-none 환경에서 상태 신호가 유지되도록 보완
+- 전용 Playwright Visual System profile로 V1–V8 scenario와 필수 screenshot evidence를 자동 검증
+
+### Preserved contracts
+- R1–R8 Resilience/Recovery contract 유지
+- S1–S8 Security/Failure-containment contract 유지
+- U1–U8 Interaction UX/Accessibility contract 유지
+- P6 feature freeze와 `businessFlowChanged: false` 유지
+
+### Release evidence
+- `visual-system-summary.json`을 machine-readable evidence로 추가
+- `release.json` schema v8 / `evidenceContract` schema v7로 올려 Visual system & usability를 필수 release gate에 포함
+- immutable GitHub Release asset에 `verification-summary.json`, `verification-summary.md`, `asset-integrity.json`, `resilience-summary.json`, `security-summary.json`, `ux-summary.json`, `visual-system-summary.json` 7종을 요구
+
+### Verification
+- PR #58: v9 visual-system/usability hardening과 V1–V8 gate 도입, 최종 PR E2E #167 전체 통과
+- PR #59: Vercel Hobby quota reset 이후 semantic no-op 재배포 trigger를 검증 후 merge
+- Production runtime commit `5412930f98d7c33fcdc1c2c3289c8e179d7f394a` / Vercel deployment `dpl_BCLBcWdYaGYZJEyDBRFN67oRV1je`: READY, GitHub verified commit 기준 배포
+- Main E2E run #170 (`34927827432`): 전체 workflow `completed / success`
+- Resilience scenarios: **R1–R8 8/8 PASS**
+- Security scenarios: **S1–S8 8/8 PASS**
+- Interaction UX scenarios: **U1–U8 8/8 PASS**
+- Visual System / Usability scenarios: **V1–V8 8/8 PASS**
+- Firefox/WebKit functional smoke, Desktop/Mobile Lighthouse, Supply-chain gate: PASS
+- Production source integrity: PASS
+- Production Desktop Chromium + iPhone WebKit browser smoke: PASS
+- Production integrity artifact `10381190248` / `sha256:a3cb2349122ebadac5869cd5e53f0b91d2bef6ae99b65b64cb3c703c4a739d20`
+- Verification evidence artifact `10381100473` / `sha256:84d82a0649c4c00871ef74d39bbc8f1536b619148da1e49f6a8f1e4cb3898c4b`
+- Resilience evidence artifact `10380690921` / `sha256:f40e9a3f433a9131530287baf3597c8df9cb306505a39a47af7b9ca3261cf698`
+- Security evidence artifact `10380442125` / `sha256:8def9262778f32e69f6d13991e8963bd3aebd5f1252fc25010adf9e8076a0405`
+- UX evidence artifact `10381005311` / `sha256:361b788bf188ae99aef763fbf93732d1e06de86ca589cf25a8f50fc6ca36cbcb`
+- Visual-system evidence artifact `10379639314` / `sha256:ac1e471d332b7c5749537dccd753096e50ec8b2ae5f745b13f04477696336ef7`
+- PR #60: Production-verified SHA를 고정한 evidence-backed v9 release request closeout
+- Release workflow #12 (`34928474036`): evidence 검증 및 immutable GitHub Release 생성 PASS
+- Immutable GitHub Release: `v9.0.0`, target `5412930f98d7c33fcdc1c2c3289c8e179d7f394a`, required evidence assets 7종 포함
+
+### Release status
+v9.0.0은 기능 확장이 아닌 **Visual System / Usability / interaction-state hardening** 릴리스이며, P6 Business Flow를 유지한 상태로 Production 검증과 immutable Release 발행을 완료했습니다.
+
+---
+
 ## v7.0.0 — Security & failure-containment hardening — 2026-09-15
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 브라우저 보안 경계와 장애 격리를 S1–S8 전용 gate로 검증하고 machine-readable security evidence까지 immutable Release에 연결하도록 강화했습니다. 로그인 SSO 전환과 모바일 반응형 UX의 회귀도 별도 자동 검증으로 고정했습니다.
