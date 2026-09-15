@@ -1,0 +1,42 @@
+name: V12 Release Apply
+
+on:
+  push:
+    branches: [release/v12-link-sync]
+    paths: [.github/workflows/v12-release-apply.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: release/v12-link-sync
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - name: Apply v12 release sync
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm version 12.0.0 --no-git-tag-version
+          python3 scripts/apply-v12-release.py
+          git rm -f .github/demo-video-request.json .github/workflows/demo-video.yml
+          git rm -f .github/workflows/v12-release-materialize.yml .github/workflows/v12-release-apply.yml scripts/apply-v12-release.py
+          git checkout origin/main -- .github/workflows/v11-materialize.yml
+          git diff --check
+          npm run quality
+          npm run release:check
+      - name: Commit release sync
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'release: align v12 metadata, links, and demo asset'
+          git push origin HEAD:release/v12-link-sync
