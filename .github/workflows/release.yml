@@ -45,6 +45,12 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install release/demo dependencies
+        run: npm ci
+
+      - name: Install Chromium for release demo
+        run: npx playwright install --with-deps chromium
+
       - name: Resolve release request
         id: request
         shell: bash
@@ -161,6 +167,28 @@ jobs:
             release-evidence/ux/ux-summary.json \
             release-evidence/visual-system/visual-system-summary.json
 
+      - name: Record version-aligned Production demo
+        id: demo
+        shell: bash
+        env:
+          TAG: ${{ steps.request.outputs.tag }}
+          DEMO_URL: https://onboardos-rho.vercel.app/
+        run: |
+          set -euo pipefail
+          VERSION="${TAG#v}"
+          VIDEO_NAME="ONBOARD_OS_v${VERSION}_P6_production_demo.mp4"
+          WEBM_NAME="ONBOARD_OS_v${VERSION}_P6_production_demo.webm"
+          DEMO_WEBM_NAME="$WEBM_NAME" node scripts/record-demo.mjs
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -y -i "demo-output/${WEBM_NAME}" -t 36 -c:v libx264 -preset medium -crf 24 -pix_fmt yuv420p -movflags +faststart -an "demo-output/${VIDEO_NAME}"
+          test -s "demo-output/${VIDEO_NAME}"
+          DURATION="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "demo-output/${VIDEO_NAME}")"
+          awk -v d="${DURATION}" 'BEGIN { exit !(d >= 35.9 && d <= 36.1) }'
+          echo "video_name=$VIDEO_NAME" >> "$GITHUB_OUTPUT"
+
       - name: Create evidence-backed immutable release
         shell: bash
         env:
@@ -169,6 +197,7 @@ jobs:
           TARGET: ${{ steps.request.outputs.target }}
           TITLE: ${{ steps.request.outputs.title }}
           NOTES_FILE: ${{ steps.request.outputs.notes_file }}
+          VIDEO_NAME: ${{ steps.demo.outputs.video_name }}
         run: |
           set -euo pipefail
 
@@ -181,7 +210,7 @@ jobs:
           fi
 
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            for asset in verification-summary.json verification-summary.md asset-integrity.json resilience-summary.json security-summary.json ux-summary.json visual-system-summary.json; do
+            for asset in verification-summary.json verification-summary.md asset-integrity.json resilience-summary.json security-summary.json ux-summary.json visual-system-summary.json "$VIDEO_NAME"; do
               if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$asset"; then
                 echo "Existing immutable release $TAG is missing required evidence asset $asset." >&2
                 exit 1
@@ -199,6 +228,7 @@ jobs:
             release-evidence/security/security-summary.json
             release-evidence/ux/ux-summary.json
             release-evidence/visual-system/visual-system-summary.json
+            "demo-output/${VIDEO_NAME}"
           )
 
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then

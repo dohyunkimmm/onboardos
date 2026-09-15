@@ -1,17 +1,20 @@
 {
   "schemaVersion": 10,
   "product": "ONBOARD·OS",
-  "version": "11.0.0",
+  "version": "12.0.0",
   "freeze": "P6",
-  "releaseClass": "interaction-clarity-product-refinement",
-  "scope": "post-login-interaction-clarity-product-refinement",
+  "releaseClass": "action-first-ui-ux-refinement",
+  "scope": "post-login-action-first-ui-ux-refinement",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
   "syncedArtifacts": [
     "version.txt",
     "package.json",
-    "package-lock.json"
+    "package-lock.json",
+    "production-demo.html",
+    "README.md",
+    "RELEASE-v12.0.0.md"
   ],
   "businessFlowChanged": false,
   "verificationContract": [
@@ -106,7 +109,8 @@
       "resilience-summary.json",
       "security-summary.json",
       "ux-summary.json",
-      "visual-system-summary.json"
+      "visual-system-summary.json",
+      "ONBOARD_OS_v12.0.0_P6_production_demo.mp4"
     ],
     "requireSuccessfulTargetRun": true,
     "requiredGates": [
