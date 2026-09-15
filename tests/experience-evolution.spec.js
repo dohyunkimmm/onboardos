@@ -49,7 +49,7 @@ test('[X1] next-action brief makes the current task explicit without altering th
   await stabilize(page);await login(page);
   await expect(page.locator('.progress-step')).toHaveCount(5);
   await expect(page.locator('#v12FocusStep')).toContainText('체험 1/3');
-  await expect(page.locator('#v12FocusTitle')).toContainText('라이선스');
+  await expect(page.locator('#v12FocusTitle')).toContainText('신청');
   await expect(page.locator('#v12FocusRequests')).toHaveText('열린 요청 0건');
   const panel=await css(page.locator('#v12FocusPanel'));
   expect(panel.display).toBe('grid');
