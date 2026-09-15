@@ -10,6 +10,7 @@ const collect = config.ci.collect;
 const assertions = config.ci.assert.assertions;
 const target = collect.url[0];
 const numberOfRuns = collect.numberOfRuns || 3;
+const warmupRuns = collect.warmupRuns || 0;
 fs.rmSync(reportDir, {recursive:true, force:true});
 fs.mkdirSync(reportDir, {recursive:true});
 
@@ -67,26 +68,38 @@ function printRun(report, runNumber){
   ].join(' · '));
 }
 
+function runLighthouse(outputPath, label){
+  const args = [
+    '--no-install', 'lighthouse', target,
+    '--output=json',
+    `--output-path=${outputPath}`,
+    `--chrome-flags=${collect.settings?.chromeFlags || '--headless --no-sandbox'}`,
+    '--quiet'
+  ];
+  if(collect.settings?.preset) args.push(`--preset=${collect.settings.preset}`);
+  const result = spawnSync('npx', args, {stdio:'inherit'});
+  if(result.status !== 0) throw new Error(`Lighthouse CLI failed on ${label} with status ${result.status}`);
+  return JSON.parse(fs.readFileSync(outputPath,'utf8'));
+}
+
 (async()=>{
   const server = spawn(process.execPath, ['scripts/serve.js'], {stdio:['ignore','pipe','pipe']});
   server.stdout.on('data', chunk => process.stdout.write(chunk));
   server.stderr.on('data', chunk => process.stderr.write(chunk));
   try{
     await waitForServer();
+
+    for(let i=1; i<=warmupRuns; i++){
+      const outputPath = path.join(reportDir, `warmup-${i}.json`);
+      runLighthouse(outputPath, `warm-up ${i}`);
+      fs.rmSync(outputPath, {force:true});
+      console.log(`Lighthouse warm-up ${i}/${warmupRuns} complete; thresholds are evaluated only on the ${numberOfRuns} measured runs`);
+    }
+
     const failures = [];
     for(let i=1; i<=numberOfRuns; i++){
       const outputPath = path.join(reportDir, `lhr-${i}.json`);
-      const args = [
-        '--no-install', 'lighthouse', target,
-        '--output=json',
-        `--output-path=${outputPath}`,
-        `--chrome-flags=${collect.settings?.chromeFlags || '--headless --no-sandbox'}`,
-        '--quiet'
-      ];
-      if(collect.settings?.preset) args.push(`--preset=${collect.settings.preset}`);
-      const result = spawnSync('npx', args, {stdio:'inherit'});
-      if(result.status !== 0) throw new Error(`Lighthouse CLI failed on run ${i} with status ${result.status}`);
-      const report = JSON.parse(fs.readFileSync(outputPath,'utf8'));
+      const report = runLighthouse(outputPath, `run ${i}`);
       printRun(report, i);
       failures.push(...checkReport(report, i));
     }
