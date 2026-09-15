@@ -24,7 +24,15 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Apply v11 canonical release contract
-        run: node scripts/apply-v11-release-candidate.js
+        run: |
+          node scripts/apply-v11-release-candidate.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/quality-check.js')
+          s = p.read_text()
+          s = s.replace("if(!/Experience refinement / interaction clarity gate/.test(e2eWorkflow))", "if(!e2eWorkflow.includes('Experience refinement / interaction clarity gate'))")
+          p.write_text(s)
+          PY
       - name: Validate candidate contract
         run: |
           npm run quality
