@@ -22,7 +22,8 @@
     "test:lighthouse": "node scripts/lighthouse-run.js",
     "test:lighthouse:mobile": "node scripts/lighthouse-run.js lighthouserc.mobile.cjs .lighthouseci-mobile",
     "test:visual-system": "playwright test -c playwright.visual-system.config.js",
-    "test:design-polish": "playwright test -c playwright.design-polish.config.js"
+    "test:design-polish": "playwright test -c playwright.design-polish.config.js",
+    "test:experience": "playwright test -c playwright.experience-refinement.config.js"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

@@ -1,0 +1,408 @@
+{
+  "config": {
+    "argv": [
+      "/opt/hostedtoolcache/node/22.23.2/x64/bin/node",
+      "/home/runner/work/onboardos/onboardos/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "playwright.design-polish.config.js"
+    ],
+    "configFile": "/home/runner/work/onboardos/onboardos/playwright.design-polish.config.js",
+    "rootDir": "/home/runner/work/onboardos/onboardos/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "ci": {
+        "commitHref": "https://github.com/dohyunkimmm/onboardos/commit/036b80dcc34875572585f95899434ad32a169dd1",
+        "commitHash": "036b80dcc34875572585f95899434ad32a169dd1",
+        "buildHref": "https://github.com/dohyunkimmm/onboardos/actions/runs/34944174180"
+      },
+      "gitCommit": {
+        "shortHash": "036b80d",
+        "hash": "036b80dcc34875572585f95899434ad32a169dd1",
+        "subject": "Add v11 experience refinement gate",
+        "body": "Add v11 experience refinement gate",
+        "author": {
+          "name": "dohyunkimmm",
+          "email": "wsg9505@naver.com",
+          "time": 1789458911000
+        },
+        "committer": {
+          "name": "dohyunkimmm",
+          "email": "wsg9505@naver.com",
+          "time": 1789458911000
+        },
+        "branch": "feature/v11-experience-refinement"
+      },
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/runner/work/onboardos/onboardos/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "ci": {
+            "commitHref": "https://github.com/dohyunkimmm/onboardos/commit/036b80dcc34875572585f95899434ad32a169dd1",
+            "commitHash": "036b80dcc34875572585f95899434ad32a169dd1",
+            "buildHref": "https://github.com/dohyunkimmm/onboardos/actions/runs/34944174180"
+          },
+          "gitCommit": {
+            "shortHash": "036b80d",
+            "hash": "036b80dcc34875572585f95899434ad32a169dd1",
+            "subject": "Add v11 experience refinement gate",
+            "body": "Add v11 experience refinement gate",
+            "author": {
+              "name": "dohyunkimmm",
+              "email": "wsg9505@naver.com",
+              "time": 1789458911000
+            },
+            "committer": {
+              "name": "dohyunkimmm",
+              "email": "wsg9505@naver.com",
+              "time": 1789458911000
+            },
+            "branch": "feature/v11-experience-refinement"
+          },
+          "actualWorkers": 1
+        },
+        "id": "design-polish-chromium",
+        "name": "design-polish-chromium",
+        "testDir": "/home/runner/work/onboardos/onboardos/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/design-polish.spec.js"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "verification/design-polish-playwright.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 2,
+    "webServer": {
+      "command": "node scripts/serve.js",
+      "url": "http://127.0.0.1:4173",
+      "reuseExistingServer": false,
+      "timeout": 15000
+    }
+  },
+  "suites": [
+    {
+      "title": "design-polish.spec.js",
+      "file": "design-polish.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[D1] dashboard hierarchy increases readable width and headline contrast after login",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1688,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:13.879Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-ef86a1735143475e5a0a",
+          "file": "design-polish.spec.js",
+          "line": 27,
+          "column": 1
+        },
+        {
+          "title": "[D2] overview panel uses layered surface and tighter information hierarchy",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1336,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:15.697Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-2893810e9f7460c78af0",
+          "file": "design-polish.spec.js",
+          "line": 37,
+          "column": 1
+        },
+        {
+          "title": "[D3] desktop content density uses three-column license grids where space allows",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1315,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:17.046Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-ecf0a4e43827d99e0d0c",
+          "file": "design-polish.spec.js",
+          "line": 47,
+          "column": 1
+        },
+        {
+          "title": "[D4] role cards use consistent elevated surfaces and stronger primary CTA",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1394,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:18.374Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-69d0d1b7f4e443c1260e",
+          "file": "design-polish.spec.js",
+          "line": 55,
+          "column": 1
+        },
+        {
+          "title": "[D5] status pills retain semantic color while gaining a visible boundary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1392,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:19.783Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-b60be04703226e3c6edd",
+          "file": "design-polish.spec.js",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "[D6] request modal has stronger hierarchy without changing the request flow",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1764,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:21.188Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-8d838e8eca62b9f9a688",
+          "file": "design-polish.spec.js",
+          "line": 77,
+          "column": 1
+        },
+        {
+          "title": "[D7] mobile density keeps two-column common cards, single-column role cards and no overflow",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1331,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:22.967Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-14f792a38b114ae3f032",
+          "file": "design-polish.spec.js",
+          "line": 91,
+          "column": 1
+        },
+        {
+          "title": "[D8] v10 polish is scoped after login so the approved login surface is not restyled",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "design-polish-chromium",
+              "projectName": "design-polish-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1296,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-15T07:56:24.311Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "25ddb5e26851b04de8e1-5e747f5a524b14beeed6",
+          "file": "design-polish.spec.js",
+          "line": 103,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-15T07:56:13.225Z",
+    "duration": 12454.826000000001,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
