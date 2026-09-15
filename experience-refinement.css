@@ -164,3 +164,206 @@ body:not(.login-open) .complete-box.is-complete{box-shadow:0 22px 56px -38px rgb
 @media (prefers-reduced-motion:reduce){
   body:not(.login-open) .card,body:not(.login-open) :where(.top-btn,.filter-chip,.role-tab,.cta,.request-actions button,.modal-actions button){transition-duration:0s!important;}
 }
+
+/* ONBOARD·OS v12 candidate — action-first experience system.
+   Scope: visual hierarchy, scanability, responsive ergonomics, and state clarity.
+   Business logic, login baseline, request state machine, and role behavior remain unchanged. */
+:root{
+  --v12-surface:rgba(18,20,26,.92);
+  --v12-surface-raised:rgba(27,30,38,.97);
+  --v12-line:rgba(255,255,255,.095);
+  --v12-line-active:rgba(167,139,250,.34);
+  --v12-copy:rgba(244,244,247,.96);
+  --v12-muted:rgba(218,219,225,.62);
+  --v12-dim:rgba(218,219,225,.44);
+  --v12-accent:#A78BFA;
+  --v12-accent-strong:#8B5CF6;
+  --v12-positive:#6EE7B7;
+  --v12-warning:#FCD34D;
+  --v12-danger:#FDA4AF;
+  --v12-radius-lg:22px;
+  --v12-radius-md:14px;
+  --v12-focus:0 0 0 3px rgba(167,139,250,.28);
+  --v12-ease:cubic-bezier(.2,.75,.2,1);
+}
+
+/* V12-1: make current work and next action visually dominant. */
+body:not(.login-open) .overview-panel{
+  border:1px solid rgba(255,255,255,.075);
+  background:
+    radial-gradient(82% 130% at 88% -10%,rgba(139,92,246,.14),transparent 58%),
+    radial-gradient(62% 90% at 0% 100%,rgba(59,130,246,.055),transparent 64%),
+    linear-gradient(150deg,rgba(27,30,38,.98),rgba(14,16,21,.955));
+}
+body:not(.login-open) .overview-panel .badge-top{position:relative;}
+body:not(.login-open) .overview-panel .badge-top::after{
+  content:"현재 사용자";
+  position:absolute;top:18px;right:22px;
+  font-size:10px;font-weight:760;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--v12-dim);
+}
+body:not(.login-open) .role-meta-pill{border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.055);}
+body:not(.login-open) .role-picker{position:relative;}
+body:not(.login-open) .role-tabs{gap:6px;}
+body:not(.login-open) .role-tab{min-height:38px;border-radius:11px;}
+body:not(.login-open) .role-tab.active{
+  border-color:rgba(167,139,250,.30);
+  background:rgba(139,92,246,.14);
+  box-shadow:inset 0 0 0 1px rgba(167,139,250,.05);
+}
+
+/* V12-2: progress reads as a task rail rather than decoration. */
+body:not(.login-open) .progress-wrap{border-top:1px solid rgba(255,255,255,.055);}
+body:not(.login-open) .progress-bar{position:relative;}
+body:not(.login-open) .progress-step{position:relative;}
+body:not(.login-open) .progress-step.done{opacity:.48;}
+body:not(.login-open) .progress-step.current{opacity:1;transform:translateY(-1px);}
+body:not(.login-open) .progress-step.current .step-circle{
+  color:#fff;border-color:rgba(196,181,253,.42);
+  background:linear-gradient(145deg,rgba(124,58,237,.95),rgba(79,70,229,.92));
+  box-shadow:0 0 0 5px rgba(139,92,246,.105),0 12px 28px -16px rgba(139,92,246,.95);
+}
+body:not(.login-open) .progress-step.current .step-label{font-size:11.5px;}
+body:not(.login-open) .progress-hint{
+  margin-top:11px;padding:9px 12px;border-radius:12px;
+  background:rgba(167,139,250,.045);border:1px solid rgba(167,139,250,.09);
+}
+body:not(.login-open) .progress-hint .hint-arrow{color:var(--v12-accent);}
+body:not(.login-open) .demo-step-kicker{color:rgba(216,205,255,.88);font-weight:760;}
+
+/* V12-3: sticky filters behave like a small command palette. */
+body:not(.login-open) .tools-bar{
+  margin-top:22px;
+  border-color:rgba(255,255,255,.085);
+  background:rgba(12,14,18,.88);
+  box-shadow:0 18px 40px -28px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.025);
+}
+body:not(.login-open) .filter-chip{font-weight:690;color:rgba(220,221,227,.62);}
+body:not(.login-open) .filter-chip.active{
+  color:#fff;
+  background:linear-gradient(140deg,rgba(109,40,217,.40),rgba(79,70,229,.24));
+  border-color:rgba(196,181,253,.24);
+}
+body:not(.login-open) .filter-chip:focus-visible,
+body:not(.login-open) .role-tab:focus-visible,
+body:not(.login-open) .top-btn:focus-visible,
+body:not(.login-open) .cta:focus-visible,
+body:not(.login-open) .request-actions button:focus-visible,
+body:not(.login-open) .modal-actions button:focus-visible,
+body:not(.login-open) .jsm-btn:focus-visible{
+  outline:none;box-shadow:var(--v12-focus);
+}
+
+/* V12-4: card IA prioritizes name → state/SLA → action. */
+body:not(.login-open) .licenses{scroll-margin-top:132px;}
+body:not(.login-open) .section-head{align-items:flex-end;gap:16px;}
+body:not(.login-open) .section-head h2{color:var(--v12-copy);}
+body:not(.login-open) .section-head .count{color:var(--v12-dim);line-height:1.45;text-align:right;}
+body:not(.login-open) .card{
+  position:relative;overflow:hidden;
+  border-radius:var(--v12-radius-lg);
+  border-color:var(--v12-line);
+  background:linear-gradient(160deg,rgba(29,32,40,.97),rgba(17,19,24,.95));
+}
+body:not(.login-open) .card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  border-radius:inherit;
+  background:linear-gradient(125deg,rgba(255,255,255,.025),transparent 36%);
+  opacity:.7;
+}
+body:not(.login-open) .card[data-status="request"],
+body:not(.login-open) .card[data-status="approval"]{
+  border-color:rgba(167,139,250,.22);
+  box-shadow:0 22px 54px -44px rgba(139,92,246,.72),inset 3px 0 0 rgba(139,92,246,.48);
+}
+body:not(.login-open) .card[data-status="pending"],
+body:not(.login-open) .card[data-status="approved"]{
+  border-color:rgba(96,165,250,.16);
+  box-shadow:inset 3px 0 0 rgba(96,165,250,.34);
+}
+body:not(.login-open) .card[data-status="rejected"]{
+  border-color:rgba(253,164,175,.20);
+  box-shadow:inset 3px 0 0 rgba(251,113,133,.40);
+}
+body:not(.login-open) .card[data-status="completed"]{box-shadow:inset 3px 0 0 rgba(110,231,183,.28);}
+body:not(.login-open) .card-top{position:relative;z-index:1;align-items:center;}
+body:not(.login-open) .card-title{font-weight:760;letter-spacing:-.018em;color:var(--v12-copy);}
+body:not(.login-open) .card-cat{margin-top:3px;color:var(--v12-dim);}
+body:not(.login-open) .logo-chip{border-color:rgba(255,255,255,.075);background:rgba(255,255,255,.035);}
+body:not(.login-open) .card-owner{position:relative;z-index:1;color:var(--v12-dim);}
+body:not(.login-open) .card-owner b{color:rgba(230,231,235,.76);font-weight:640;}
+body:not(.login-open) .card-bottom{position:relative;z-index:1;}
+body:not(.login-open) .status-pill{font-weight:730;letter-spacing:-.005em;}
+body:not(.login-open) .sla-pill,body:not(.login-open) .sla-health{opacity:1;color:rgba(220,221,227,.66);}
+body:not(.login-open) #roleGrid .cta{
+  min-height:38px;padding-inline:15px;border-radius:11px;font-weight:760;
+  background:linear-gradient(135deg,rgba(124,58,237,.98),rgba(79,70,229,.95));
+  box-shadow:0 14px 30px -18px rgba(124,58,237,.95),inset 0 1px 0 rgba(255,255,255,.10);
+}
+body:not(.login-open) #roleGrid .cta:hover{transform:translateY(-1px);filter:brightness(1.07);}
+body:not(.login-open) .card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(196,181,253,.23);
+  box-shadow:0 26px 60px -42px rgba(109,40,217,.42),inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+/* V12-5: completed/empty states should close the loop, not look disabled. */
+body:not(.login-open) .empty-state{border-radius:18px;line-height:1.65;color:var(--v12-muted);}
+body:not(.login-open) .empty-state b{display:block;margin-bottom:5px;color:var(--v12-copy);}
+body:not(.login-open) .complete-box.is-complete{
+  border-color:rgba(110,231,183,.17);
+  background:radial-gradient(70% 130% at 50% 0%,rgba(110,231,183,.08),transparent 62%),rgba(255,255,255,.014);
+}
+
+/* V12-6: drawers and modals keep the primary action anchored and legible. */
+body:not(.login-open) .drawer-head{background:rgba(15,17,22,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+body:not(.login-open) .request-actions button,
+body:not(.login-open) .modal-actions button,
+body:not(.login-open) .modal-actions a{min-height:40px;}
+body:not(.login-open) .modal-actions{box-shadow:0 -18px 36px -34px rgba(0,0,0,.95);}
+
+/* V12-7: mobile is treated as a first-class task flow. */
+@media (max-width:768px){
+  body:not(.login-open) main{padding-inline:14px;}
+  body:not(.login-open) .overview-panel{border-radius:20px;}
+  body:not(.login-open) .overview-panel .badge-top::after{display:none;}
+  body:not(.login-open) .role-tabs{display:flex;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:3px;scrollbar-width:none;}
+  body:not(.login-open) .role-tabs::-webkit-scrollbar{display:none;}
+  body:not(.login-open) .role-tab{flex:0 0 auto;scroll-snap-align:start;min-height:40px;}
+  body:not(.login-open) .progress-bar{overflow-x:auto;justify-content:flex-start;scrollbar-width:none;padding-bottom:3px;}
+  body:not(.login-open) .progress-bar::-webkit-scrollbar{display:none;}
+  body:not(.login-open) .progress-step{flex:0 0 78px;}
+  body:not(.login-open) .progress-hint{align-items:flex-start;}
+  body:not(.login-open) .section-head{align-items:flex-start;flex-direction:column;gap:5px;}
+  body:not(.login-open) .section-head .count{text-align:left;}
+  body:not(.login-open) #commonGrid,
+  body:not(.login-open) #roleGrid,
+  body:not(.login-open) #roleGrid.balanced-four{grid-template-columns:1fr;}
+  body:not(.login-open) #roleGrid .card{padding:18px 17px 15px;border-radius:18px;}
+  body:not(.login-open) #roleGrid .card-bottom{align-items:stretch;flex-direction:column;}
+  body:not(.login-open) #roleGrid .card-action{width:100%;}
+  body:not(.login-open) #roleGrid .cta{width:100%;min-height:44px;}
+}
+@media (max-width:560px){
+  body:not(.login-open) .tools-bar{margin-inline:-2px;width:calc(100% + 4px);}
+  body:not(.login-open) .filter-chip{min-height:40px;}
+  body:not(.login-open) .progress-hint{font-size:12px;padding:10px 11px;}
+  body:not(.login-open) .card-status-group{gap:5px;}
+}
+
+/* V12-8: motion communicates affordance without becoming decoration. */
+@media (hover:hover) and (pointer:fine){
+  body:not(.login-open) .card,
+  body:not(.login-open) .cta,
+  body:not(.login-open) .filter-chip,
+  body:not(.login-open) .role-tab{
+    transition-property:transform,border-color,background-color,box-shadow,filter,color;
+    transition-duration:180ms;
+    transition-timing-function:var(--v12-ease);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  body:not(.login-open) .progress-step.current{transform:none;}
+  body:not(.login-open) .card:hover,
+  body:not(.login-open) #roleGrid .cta:hover{transform:none;}
+}
