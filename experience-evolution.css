@@ -1,0 +1,428 @@
+/* ONBOARD·OS v12 candidate — experience evolution.
+   Scope: post-login design/UI/UX only. Existing business flow, P6 behavior, login baseline and role isolation stay unchanged. */
+:root{
+  --v12-surface:#151820;
+  --v12-surface-soft:rgba(255,255,255,.035);
+  --v12-surface-raised:#1c202a;
+  --v12-line:rgba(255,255,255,.09);
+  --v12-line-strong:rgba(196,181,253,.28);
+  --v12-text:#f7f7fb;
+  --v12-text-2:rgba(232,233,239,.72);
+  --v12-text-3:rgba(210,212,220,.52);
+  --v12-accent:#8b7cf6;
+  --v12-accent-2:#b08cff;
+  --v12-good:#65d8b2;
+  --v12-warn:#f0bd66;
+  --v12-danger:#f38d98;
+  --v12-radius-lg:24px;
+  --v12-radius-md:18px;
+  --v12-radius-sm:12px;
+  --v12-shadow-lg:0 28px 80px -56px rgba(0,0,0,.98),0 1px 0 rgba(255,255,255,.025) inset;
+  --v12-shadow-focus:0 20px 48px -34px rgba(139,124,246,.45),0 1px 0 rgba(255,255,255,.03) inset;
+  --v12-motion:180ms;
+  --v12-ease:cubic-bezier(.2,.75,.25,1);
+}
+
+/* 1. Product chrome: keep utilities quiet and preserve one dominant product action. */
+body:not(.login-open) main{max-width:1200px;}
+body:not(.login-open) .topbar{
+  min-height:70px;
+  border-bottom-color:rgba(255,255,255,.065);
+  background:linear-gradient(180deg,rgba(12,14,18,.94),rgba(12,14,18,.86));
+  backdrop-filter:blur(20px) saturate(125%);
+  -webkit-backdrop-filter:blur(20px) saturate(125%);
+}
+body:not(.login-open) .logo{letter-spacing:-.045em;}
+body:not(.login-open) .top-actions{gap:6px;}
+body:not(.login-open) #statusBtn{
+  min-height:40px;
+  padding-inline:14px;
+  border-color:rgba(196,181,253,.34);
+  background:linear-gradient(135deg,rgba(92,76,214,.88),rgba(126,74,211,.72));
+  box-shadow:0 12px 30px -19px rgba(131,109,255,.9),inset 0 1px 0 rgba(255,255,255,.11);
+}
+body:not(.login-open) #adminBtn{min-height:40px;background:rgba(255,255,255,.06);}
+body:not(.login-open) #resetBtn,body:not(.login-open) #moreBtn{min-height:40px;}
+body:not(.login-open) :where(.top-btn,.filter-chip,.role-tab,.cta,.btn-primary,.btn-secondary,.ghost-btn,.jsm-btn):focus-visible{
+  outline:3px solid rgba(181,166,255,.88);
+  outline-offset:3px;
+}
+
+/* 2. Overview: identity is compact; role preview and task state become the primary reading path. */
+body:not(.login-open) .overview-panel{
+  border:1px solid rgba(255,255,255,.075);
+  border-radius:24px;
+  background:
+    radial-gradient(68% 150% at 100% -10%,rgba(121,103,255,.14),transparent 58%),
+    linear-gradient(145deg,rgba(25,28,36,.975),rgba(15,17,22,.96));
+  box-shadow:var(--v12-shadow-lg);
+}
+body:not(.login-open) .overview-panel .badge-top{gap:17px;}
+body:not(.login-open) .overview-panel .avatar{
+  width:54px;height:54px;
+  border:1px solid rgba(196,181,253,.18);
+  background:linear-gradient(145deg,rgba(122,104,238,.18),rgba(255,255,255,.035));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+body:not(.login-open) .overview-panel .badge-id label{
+  display:inline-flex;align-items:center;gap:6px;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+body:not(.login-open) .overview-panel .name-input{font-size:30px;font-weight:780;line-height:1.05;}
+body:not(.login-open) .overview-panel .emp-meta{margin-top:8px;line-height:1.55;}
+body:not(.login-open) .role-meta-pill{
+  margin-top:12px;
+  border-color:rgba(196,181,253,.16);
+  background:rgba(139,124,246,.07);
+}
+body:not(.login-open) .role-picker{display:flex;flex-direction:column;justify-content:center;}
+body:not(.login-open) .role-picker>label{
+  margin-bottom:10px;
+  font-size:11px;font-weight:760;letter-spacing:.08em;text-transform:uppercase;
+}
+body:not(.login-open) .role-tabs{
+  display:flex;
+  gap:5px;
+  padding:5px;
+  border:1px solid rgba(255,255,255,.065);
+  border-radius:14px;
+  background:rgba(8,10,14,.3);
+}
+body:not(.login-open) .role-tab{
+  min-height:40px;
+  flex:1 1 auto;
+  border-color:transparent;
+  border-radius:10px;
+  background:transparent;
+  color:var(--v12-text-2);
+}
+body:not(.login-open) .role-tab:hover{background:rgba(255,255,255,.045);color:#fff;}
+body:not(.login-open) .role-tab.active{
+  border-color:rgba(196,181,253,.2);
+  background:linear-gradient(135deg,rgba(105,88,223,.24),rgba(166,94,235,.15));
+  color:#f8f5ff;
+  box-shadow:0 10px 24px -20px rgba(158,114,255,.95),inset 0 1px 0 rgba(255,255,255,.045);
+}
+body:not(.login-open) .demo-preview-note{margin-top:12px;color:var(--v12-text-3);}
+
+/* 3. Progress becomes a task command surface instead of decorative chronology. */
+body:not(.login-open) .progress-wrap{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);
+  gap:18px;
+  align-items:center;
+  padding:18px 24px 20px;
+  background:linear-gradient(180deg,rgba(7,9,13,.38),rgba(9,11,15,.55));
+  border-top:1px solid rgba(255,255,255,.055);
+}
+body:not(.login-open) .progress-bar{min-width:0;}
+body:not(.login-open) .progress-step{position:relative;}
+body:not(.login-open) .progress-step .step-label{line-height:1.25;}
+body:not(.login-open) .progress-step.done .step-circle{border-color:rgba(101,216,178,.25);color:rgba(150,235,208,.9);}
+body:not(.login-open) .progress-step.current .step-circle{
+  width:32px;height:32px;
+  border-color:rgba(184,166,255,.52);
+  background:linear-gradient(145deg,rgba(101,82,226,.95),rgba(139,76,208,.86));
+  box-shadow:0 0 0 6px rgba(139,124,246,.10),0 12px 24px -17px rgba(139,124,246,.95);
+}
+body:not(.login-open) .progress-hint{
+  min-height:72px;
+  justify-content:flex-start;
+  gap:10px;
+  padding:13px 16px;
+  border:1px solid rgba(196,181,253,.13);
+  border-left:3px solid rgba(166,144,255,.64);
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(114,93,235,.115),rgba(255,255,255,.018));
+  color:rgba(236,236,244,.76);
+  line-height:1.55;
+  text-align:left;
+}
+body:not(.login-open) .progress-hint .demo-step-kicker{
+  flex:0 0 auto;
+  padding:5px 8px;
+  border:1px solid rgba(196,181,253,.18);
+  border-radius:999px;
+  background:rgba(139,124,246,.08);
+  color:#d8ceff;
+  font-size:10px;font-weight:800;letter-spacing:.05em;
+}
+body:not(.login-open) .progress-hint .demo-step-kicker.is-done{
+  border-color:rgba(101,216,178,.24);
+  background:rgba(101,216,178,.075);
+  color:#a6ead3;
+}
+body:not(.login-open) .progress-hint .hint-arrow{color:rgba(196,181,253,.58);}
+
+/* 4. v12 task brief: live next-action summary injected without changing the business state model. */
+body:not(.login-open) .v12-focus-panel{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:18px;
+  align-items:center;
+  margin:0;
+  padding:17px 20px;
+  border-top:1px solid rgba(255,255,255,.055);
+  background:
+    radial-gradient(80% 160% at 100% 0%,rgba(139,124,246,.11),transparent 64%),
+    rgba(255,255,255,.012);
+}
+body:not(.login-open) .v12-focus-copy{min-width:0;}
+body:not(.login-open) .v12-focus-eyebrow{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:6px;
+  color:rgba(196,181,253,.72);
+  font-size:10px;font-weight:820;letter-spacing:.11em;text-transform:uppercase;
+}
+body:not(.login-open) .v12-focus-eyebrow::before{
+  content:"";width:6px;height:6px;border-radius:50%;background:var(--v12-accent-2);box-shadow:0 0 0 4px rgba(176,140,255,.08);
+}
+body:not(.login-open) .v12-focus-title{
+  margin:0;
+  color:var(--v12-text);
+  font-size:17px;font-weight:780;letter-spacing:-.025em;line-height:1.35;
+}
+body:not(.login-open) .v12-focus-meta{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+  margin-top:9px;
+  color:var(--v12-text-3);
+  font-size:11.5px;
+}
+body:not(.login-open) .v12-focus-chip{
+  display:inline-flex;align-items:center;min-height:26px;
+  padding:4px 8px;
+  border:1px solid rgba(255,255,255,.075);
+  border-radius:999px;
+  background:rgba(255,255,255,.025);
+}
+body:not(.login-open) .v12-focus-action{
+  min-width:158px;min-height:44px;
+  padding:10px 15px;
+  border:1px solid rgba(196,181,253,.25);
+  border-radius:12px;
+  background:linear-gradient(135deg,rgba(97,80,218,.88),rgba(132,77,207,.78));
+  color:#fff;
+  font:inherit;font-size:13px;font-weight:760;
+  cursor:pointer;
+  box-shadow:0 14px 30px -21px rgba(139,124,246,.95),inset 0 1px 0 rgba(255,255,255,.09);
+  transition:transform var(--v12-motion) var(--v12-ease),box-shadow var(--v12-motion) var(--v12-ease),border-color var(--v12-motion) ease;
+}
+body:not(.login-open) .v12-focus-action:hover{transform:translateY(-1px);border-color:rgba(212,199,255,.38);box-shadow:0 18px 34px -22px rgba(139,124,246,.98),inset 0 1px 0 rgba(255,255,255,.1);}
+body:not(.login-open) .v12-focus-action:focus-visible{outline:3px solid rgba(181,166,255,.88);outline-offset:3px;}
+
+/* 5. Filters and sections: scanning first, decoration second. */
+body:not(.login-open) .tools-bar{
+  width:100%;
+  margin:24px 0 26px;
+  padding:6px;
+  border-color:rgba(255,255,255,.075);
+  background:rgba(12,14,18,.86);
+  box-shadow:0 18px 38px -32px rgba(0,0,0,.96),inset 0 1px 0 rgba(255,255,255,.025);
+}
+body:not(.login-open) .filter-tabs{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
+body:not(.login-open) .filter-chip{
+  min-height:39px;
+  justify-content:center;
+  border-radius:10px;
+  font-weight:680;
+}
+body:not(.login-open) .filter-chip.active{
+  background:linear-gradient(135deg,rgba(104,86,223,.27),rgba(166,91,234,.17));
+  border-color:rgba(196,181,253,.23);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 10px 22px -21px rgba(139,124,246,.9);
+}
+body:not(.login-open) .licenses{scroll-margin-top:140px;}
+body:not(.login-open) .section-head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+  margin-bottom:13px;
+}
+body:not(.login-open) .section-head h2{font-size:22px;font-weight:780;letter-spacing:-.035em;line-height:1.2;}
+body:not(.login-open) .section-head .count{color:var(--v12-text-3);font-size:11.5px;}
+body:not(.login-open) .role-secondary{position:relative;margin-top:44px;padding-top:4px;}
+body:not(.login-open) .role-secondary::before{
+  content:"";position:absolute;left:0;right:0;top:-20px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(196,181,253,.12),transparent);
+}
+
+/* 6. Cards: semantic state rail + quieter metadata + stronger primary action. */
+body:not(.login-open) .card{
+  position:relative;
+  overflow:hidden;
+  border-radius:20px;
+  border-color:rgba(255,255,255,.075);
+  background:linear-gradient(160deg,rgba(27,30,38,.955),rgba(17,19,24,.945));
+  box-shadow:0 18px 44px -40px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.022);
+}
+body:not(.login-open) .card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:rgba(196,181,253,.20);
+}
+body:not(.login-open) .card[data-status="auto"]::before,body:not(.login-open) .card[data-status="completed"]::before{background:rgba(101,216,178,.55);}
+body:not(.login-open) .card[data-status="request"]::before{background:rgba(139,124,246,.62);}
+body:not(.login-open) .card[data-status="approval"]::before{background:rgba(240,189,102,.62);}
+body:not(.login-open) .card[data-status="pending"]::before,body:not(.login-open) .card[data-status="approved"]::before{background:rgba(126,178,255,.58);}
+body:not(.login-open) .card[data-status="rejected"]::before{background:rgba(243,141,152,.66);}
+body:not(.login-open) .card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(196,181,253,.19);
+  box-shadow:var(--v12-shadow-focus);
+}
+body:not(.login-open) .card-top{align-items:center;}
+body:not(.login-open) .logo-chip{
+  border-color:rgba(255,255,255,.075);
+  background:rgba(255,255,255,.035);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+body:not(.login-open) .card-title{font-weight:760;letter-spacing:-.018em;}
+body:not(.login-open) .card-cat{color:var(--v12-text-3);}
+body:not(.login-open) #roleGrid .card{min-height:184px;padding:20px 20px 17px 22px;}
+body:not(.login-open) #commonGrid .card{min-height:146px;padding-left:20px;}
+body:not(.login-open) #roleGrid .card-owner{
+  color:var(--v12-text-3);
+  border-bottom-color:rgba(255,255,255,.06);
+}
+body:not(.login-open) #roleGrid .card-owner b{color:rgba(232,233,239,.72);font-weight:650;}
+body:not(.login-open) .card-bottom{margin-top:auto;}
+body:not(.login-open) .card-status-group{gap:7px;}
+body:not(.login-open) .status-pill{min-height:26px;padding-block:4px;}
+body:not(.login-open) #roleGrid .cta{
+  min-width:100px;min-height:40px;
+  padding-inline:14px;
+  border-radius:11px;
+  background:linear-gradient(135deg,rgba(93,77,215,.96),rgba(137,79,211,.86));
+  font-weight:760;
+  box-shadow:0 14px 30px -20px rgba(139,124,246,.92),inset 0 1px 0 rgba(255,255,255,.08);
+}
+body:not(.login-open) #roleGrid .card[data-status="pending"] .cta,
+body:not(.login-open) #roleGrid .card[data-status="approved"] .cta,
+body:not(.login-open) #roleGrid .card[data-status="rejected"] .cta{
+  background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.045));
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:none;
+}
+
+/* 7. Request/admin workbench: make status, evidence and next action easier to scan. */
+body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{
+  border:1px solid rgba(255,255,255,.085);
+  border-radius:26px;
+  background:radial-gradient(85% 100% at 100% 0%,rgba(139,124,246,.075),transparent 60%),linear-gradient(155deg,rgba(27,30,38,.99),rgba(16,18,23,.99));
+  box-shadow:0 34px 90px -46px rgba(0,0,0,.98);
+}
+body:not(.login-open) .request-modal h3,body:not(.login-open) .action-modal h3{font-size:24px;letter-spacing:-.035em;}
+body:not(.login-open) .detail-row{
+  padding-block:11px;
+  border-bottom-color:rgba(255,255,255,.055);
+}
+body:not(.login-open) .drawer{
+  width:min(470px,94vw);
+  border-left:1px solid rgba(255,255,255,.075);
+  background:radial-gradient(100% 80% at 100% 0%,rgba(139,124,246,.085),transparent 58%),linear-gradient(180deg,rgba(24,27,34,.995),rgba(14,16,20,.995));
+  box-shadow:-26px 0 80px -48px rgba(0,0,0,.98);
+}
+body:not(.login-open) .drawer-head{
+  position:sticky;top:0;z-index:4;
+  background:rgba(20,23,29,.90);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+body:not(.login-open) .request-item{
+  position:relative;
+  margin:12px 14px;
+  padding:17px 17px 15px 19px;
+  border:1px solid rgba(255,255,255,.075);
+  border-radius:16px;
+  background:rgba(255,255,255,.025);
+}
+body:not(.login-open) .request-item::before{
+  content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;border-radius:2px;background:rgba(139,124,246,.42);
+}
+body:not(.login-open) .request-item-title{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;font-weight:760;}
+body:not(.login-open) .ticket-key{flex:0 0 auto;color:rgba(196,181,253,.72);}
+body:not(.login-open) .request-item-meta{margin-top:9px;line-height:1.62;color:var(--v12-text-3);}
+body:not(.login-open) .request-history{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.055);}
+body:not(.login-open) .request-actions{
+  margin-top:14px;padding-top:13px;
+  border-top-color:rgba(255,255,255,.06);
+}
+body:not(.login-open) .request-actions button{min-height:42px;}
+body:not(.login-open) .modal-actions{
+  background:linear-gradient(180deg,rgba(23,25,32,.88),rgba(14,16,21,.995));
+}
+body:not(.login-open) .modal-actions button,body:not(.login-open) .action-modal-actions :where(button,a){min-height:42px;}
+
+/* 8. Completion/help surfaces stay secondary until the workflow is actually done. */
+body:not(.login-open) .complete-box{
+  border-color:rgba(255,255,255,.07);
+  background:linear-gradient(150deg,rgba(255,255,255,.025),rgba(255,255,255,.012));
+}
+body:not(.login-open) .complete-box.is-complete{
+  border-color:rgba(101,216,178,.18);
+  background:radial-gradient(70% 130% at 100% 0%,rgba(101,216,178,.08),transparent 64%),rgba(255,255,255,.018);
+  box-shadow:0 24px 58px -42px rgba(101,216,178,.42);
+}
+body:not(.login-open) footer .help{border-color:rgba(255,255,255,.065);}
+
+/* Tablet: preserve E7 two-column contract and keep task brief compact. */
+@media (max-width:1024px) and (min-width:769px){
+  body:not(.login-open) main{max-width:920px;}
+  body:not(.login-open) .progress-wrap{grid-template-columns:1fr;gap:13px;}
+  body:not(.login-open) .v12-focus-panel{grid-template-columns:1fr auto;}
+  body:not(.login-open) #commonGrid,body:not(.login-open) #roleGrid,body:not(.login-open) #roleGrid.balanced-four{grid-template-columns:repeat(2,minmax(0,1fr));}
+  body:not(.login-open) #roleGrid .card{min-height:176px;}
+}
+
+/* Mobile: keep common cards dense, role actions single-column, and prioritize one next action. */
+@media (max-width:768px){
+  body:not(.login-open) main{padding-inline:14px;}
+  body:not(.login-open) .overview-panel{border-radius:24px;}
+  body:not(.login-open) .role-tabs{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x proximity;
+    scrollbar-width:none;
+  }
+  body:not(.login-open) .role-tabs::-webkit-scrollbar{display:none;}
+  body:not(.login-open) .role-tab{flex:0 0 auto;min-width:max-content;padding-inline:13px;scroll-snap-align:start;}
+  body:not(.login-open) .progress-wrap{display:block;padding:16px 14px 17px;}
+  body:not(.login-open) .progress-hint{margin-top:14px;min-height:0;}
+  body:not(.login-open) .v12-focus-panel{grid-template-columns:1fr;gap:13px;padding:15px 14px 17px;}
+  body:not(.login-open) .v12-focus-action{width:100%;min-width:0;min-height:46px;}
+  body:not(.login-open) .tools-bar{top:62px;padding:5px;overflow:visible;}
+  body:not(.login-open) .filter-tabs{display:grid;width:100%;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;}
+  body:not(.login-open) .filter-chip{min-width:0;padding-inline:7px;font-size:11.5px;}
+  body:not(.login-open) .section-head{align-items:flex-start;flex-direction:column;gap:6px;}
+  body:not(.login-open) .section-head .count{line-height:1.45;}
+  body:not(.login-open) #commonGrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  body:not(.login-open) #roleGrid,body:not(.login-open) #roleGrid.balanced-four{grid-template-columns:1fr;}
+  body:not(.login-open) #roleGrid .card{min-height:0;}
+  body:not(.login-open) #commonGrid .card{min-height:132px;}
+  body:not(.login-open) .drawer{width:min(460px,100vw);}
+}
+
+@media (max-width:560px){
+  body:not(.login-open) .topbar{min-height:62px;}
+  body:not(.login-open) #statusBtn,body:not(.login-open) #adminBtn{min-height:38px;padding-inline:9px;}
+  body:not(.login-open) #resetBtn,body:not(.login-open) #moreBtn{min-height:38px;}
+  body:not(.login-open) .overview-panel .badge-top{gap:13px;}
+  body:not(.login-open) .overview-panel .avatar{width:48px;height:48px;}
+  body:not(.login-open) .overview-panel .name-input{font-size:24px;}
+  body:not(.login-open) .progress-hint{align-items:flex-start;flex-wrap:wrap;}
+  body:not(.login-open) .progress-hint .hint-arrow{display:none;}
+  body:not(.login-open) .v12-focus-title{font-size:16px;}
+  body:not(.login-open) .tools-bar{margin-top:18px;margin-bottom:22px;}
+  body:not(.login-open) .filter-chip{font-size:11px;}
+  body:not(.login-open) .card{border-radius:17px;}
+}
+
+@media (hover:hover) and (pointer:fine){
+  body:not(.login-open) :where(.v12-focus-action,.role-tab,.filter-chip,.cta,.request-actions button){transition-duration:var(--v12-motion);transition-timing-function:var(--v12-ease);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  body:not(.login-open) :where(.v12-focus-action,.role-tab,.filter-chip,.cta,.request-actions button,.card){
+    transition-duration:0s!important;
+    animation-duration:0s!important;
+    scroll-behavior:auto!important;
+  }
+}

@@ -1,0 +1,16 @@
+/* v12 compatibility refinements for previously approved UX/visual contracts. */
+body:not(.login-open) .request-actions button{min-height:44px;}
+body:not(.login-open) .request-item::before{width:3px;}
+
+/* WCAG AA: keep section counts muted, but above the 4.5:1 small-text threshold. */
+body:not(.login-open) .section-head .count{color:rgba(210,212,220,.62);}
+
+/* Reduced motion must not leave animation-revealed content at its initial hidden state. */
+@media (prefers-reduced-motion:reduce){
+  body:not(.login-open) :where(.badge-wrap,.card){opacity:1!important;transform:none!important;}
+}
+
+/* Existing narrow-grid contract: 320–359px uses one common-license column; 360px+ returns to two. */
+@media (max-width:359px){
+  body:not(.login-open) #commonGrid{grid-template-columns:1fr;}
+}
