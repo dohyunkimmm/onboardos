@@ -1,0 +1,44 @@
+name: V12 Experience Evolution
+
+on:
+  push:
+    branches:
+      - feat/v12-experience-evolution
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  experience-evolution:
+    name: X1-X8 experience evolution gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Static syntax checks
+        run: |
+          node --check js/events.js
+          node --check playwright.experience-evolution.config.js
+          node --check tests/experience-evolution.spec.js
+          node scripts/public-assets.js
+      - run: npx playwright install --with-deps chromium
+      - name: Run X1-X8 experience evolution scenarios
+        run: |
+          mkdir -p verification/experience-evolution-screenshots
+          npm run test:experience:v12
+      - name: Upload experience evolution evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: experience-evolution-evidence-${{ github.sha }}
+          path: |
+            verification/experience-evolution-playwright.json
+            verification/experience-evolution-screenshots/
+          if-no-files-found: error
+          retention-days: 30
