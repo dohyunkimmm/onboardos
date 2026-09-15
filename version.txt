@@ -1,9 +1,9 @@
-ONBOARD·OS v11.0.0
+ONBOARD·OS v12.0.0
 P6 feature freeze
 canonicalVersionSource=release.json
 releaseChannel=production
-releaseClass=interaction-clarity-product-refinement
-scope=post-login-interaction-clarity-product-refinement
+releaseClass=action-first-ui-ux-refinement
+scope=post-login-action-first-ui-ux-refinement
 freeze=P6
 businessFlowChanged=false
 securityContract=S1-S8

@@ -5,7 +5,8 @@ import path from 'node:path';
 const productionUrl = process.env.DEMO_URL || 'https://onboardos-rho.vercel.app/';
 const outputDir = path.resolve('demo-output');
 const rawDir = path.join(outputDir, 'raw');
-const webmPath = path.join(outputDir, 'ONBOARD_OS_v1.7.0_P6_production_demo.webm');
+const webmName = process.env.DEMO_WEBM_NAME || 'ONBOARD_OS_current_P6_production_demo.webm';
+const webmPath = path.join(outputDir, webmName);
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 

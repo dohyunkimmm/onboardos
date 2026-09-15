@@ -1,5 +1,25 @@
 # Changelog
 
+## v12.0.0 — Action-first UI/UX refinement — 2026-09-16
+
+P6에서 동결한 Business Flow와 상태 모델은 유지하면서, v11 후보로 Production 검증한 action-first UI/UX 레이어를 정식 v12 릴리즈 계약으로 승격했습니다. 현재 단계와 다음 행동의 우선순위, 카드 스캔성, semantic 상태 단서, CTA 계층, 모바일 조작성, focus-visible/reduced-motion/WCAG AA 대비를 정리했으며 JavaScript·data·request-state·role logic은 변경하지 않았습니다.
+
+### Release/link synchronization
+- `release.json`, `version.txt`, `package.json`, `package-lock.json`을 v12.0.0으로 동기화
+- `production-demo.html`의 설명·ARIA·MP4 asset·GitHub Release 링크를 v12.0.0으로 동기화
+- Release workflow가 canonical tag에서 36초 Production Demo를 녹화해 동일 immutable GitHub Release에 evidence와 함께 발행하도록 통합
+- 기존 v1.7.0 전용 demo workflow/request 파일 제거
+- release contract가 Production Demo와 README의 canonical 버전 링크 불일치를 자동으로 차단
+
+### Preserved contracts
+- P6 feature freeze / `businessFlowChanged: false`
+- R1–R8 Resilience/Recovery
+- S1–S8 Security/Failure-containment
+- U1–U8 Interaction UX/Accessibility
+- V1–V8 Visual System/Usability
+- D1–D8 Design Polish/Responsive Hierarchy
+- E1–E8 Experience Refinement
+
 ## v10.0.0 — Visual hierarchy & responsive polish — 2026-09-15
 
 P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 로그인 이후 화면의 정보 위계·타이포그래피·간격·카드·상태·CTA·Modal/Drawer·반응형 밀도를 리파인하고 D1–D8 Design Polish / Responsive Hierarchy gate로 검증했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
