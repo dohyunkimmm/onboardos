@@ -105,10 +105,16 @@ if(!/Security \/ failure-containment gate/.test(e2eWorkflow)) fail('v7 security 
 if(!/npm run test:security/.test(e2eWorkflow)) fail('v7 security scenario command missing');
 if(!/Interaction UX \/ accessibility state gate/.test(e2eWorkflow)) fail('v8 interaction UX CI gate missing');
 if(!/npm run test:ux/.test(e2eWorkflow)) fail('v8 interaction UX scenario command missing');
+if(!/Visual system \/ usability state gate/.test(e2eWorkflow)) fail('v9 visual system CI gate missing');
+if(!/npm run test:visual-system/.test(e2eWorkflow)) fail('v9 visual system scenario command missing');
+if(!/Design polish \/ responsive hierarchy gate/.test(e2eWorkflow)) fail('v10 design polish CI gate missing');
+if(!/npm run test:design-polish/.test(e2eWorkflow)) fail('v10 design polish scenario command missing');
 if(!fs.existsSync(path.join('scripts','dependency-review.js'))) fail('dependency-review.js is missing');
 if(!fs.existsSync(path.join('scripts','security-summary.js'))) fail('security-summary.js is missing');
 if(!fs.existsSync(path.join('scripts','ux-summary.js'))) fail('ux-summary.js is missing');
 if(!fs.existsSync(path.join('tests','security.spec.js'))) fail('security.spec.js is missing');
 if(!fs.existsSync(path.join('tests','ux-interaction.spec.js'))) fail('ux-interaction.spec.js is missing');
+if(!fs.existsSync(path.join('tests','visual-system.spec.js'))) fail('visual-system.spec.js is missing');
+if(!fs.existsSync(path.join('tests','design-polish.spec.js'))) fail('design-polish.spec.js is missing');
 
-console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, ${publicAssets.length} manifest assets, release ${release.version} canonical contract, role isolation, R1-R8 resilience, S1-S8 security, U1-U8 interaction UX, security headers + analytics privacy boundary + SHA-pinned workflows`);
+console.log(`Quality gate PASS: ${cards.length} tools, ${names.size} unique names, ${fontRefs.length} self-hosted font subsets, ${publicAssets.length} manifest assets, release ${release.version} canonical contract, role isolation, R1-R8 resilience, S1-S8 security, U1-U8 interaction UX, V1-V8 visual system, D1-D8 design polish, security headers + analytics privacy boundary + SHA-pinned workflows`);
