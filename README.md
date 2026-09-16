@@ -164,6 +164,7 @@ stateDiagram-v2
 ├── .github/
 │   ├── dependabot.yml
 │   └── workflows/
+│       ├── docs-sync.yml
 │       ├── e2e.yml
 │       ├── production-verify.yml
 │       └── release.yml
@@ -213,7 +214,7 @@ PR에서는 base/current `package-lock.json` delta를 비교하고 remote packag
 
 Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Production만 다시 확인해야 할 때는 **Production Verify** workflow를 `main`에서 수동 실행해 새 commit 없이 SHA-256 integrity와 Desktop Chromium+iPhone WebKit smoke를 다시 검증할 수 있습니다.
 
-각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다. 현재 Production integrity는 `integrity-assets.json`을 canonical scope로 사용해 필수 공개 asset과 `js/**/*.js`·`icons/**/*.svg`·`fonts/pretendard/**/*.woff2`를 자동 발견하며, 검증된 v4.0.0 Production에서는 **131/131 manifest assets**이 GitHub checkout과 Production에서 SHA-256 일치합니다. 공개되지 않는 `package.json`은 Production HTTP fetch 대상이 아니라 canonical release-contract CI gate에서 `release.json`과의 버전 일치를 검증합니다. README 상단의 **E2E Verification badge, Latest main verification runs, Manual Production Verify 링크**에서 `main`의 공개 검증 상태와 재검증 진입점을 바로 확인할 수 있습니다.
+각 성공 CI run은 GitHub Actions Step Summary와 30일 보관 artifact에 `verification-summary.json` / `verification-summary.md`를 남기며, Production에서는 별도 `asset-integrity.json`도 보관합니다. 현재 Production integrity는 `integrity-assets.json`을 canonical scope로 사용해 필수 공개 asset과 `js/**/*.js`·`icons/**/*.svg`·`fonts/pretendard/**/*.woff2`를 자동 발견하며, 현재 v15.0.0 Production에서는 canonical manifest 범위의 GitHub checkout과 Production SHA-256 일치를 검증했습니다. 공개되지 않는 `package.json`은 Production HTTP fetch 대상이 아니라 canonical release-contract CI gate에서 `release.json`과의 버전 일치를 검증합니다. README 상단의 **E2E Verification badge, Latest main verification runs, Manual Production Verify 링크**에서 `main`의 공개 검증 상태와 재검증 진입점을 바로 확인할 수 있습니다.
 
 ## Verification Matrix
 
@@ -230,7 +231,7 @@ Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Producti
 | Mobile Performance | Lighthouse 13.4.1 | Mobile profile 3회 모두 동일 quality budget 통과 |
 | Supply Chain | npm audit + PR Dependency Delta | high 이상 advisory·비HTTPS/무결성 누락 차단·GitHub Actions SHA pin·Dependabot |
 | Production | Playwright + runtime-aware Vercel status | Runtime 변경은 해당 commit 배포 success 강제, non-runtime 변경은 기존 Production 검증 · Desktop Chromium + iPhone WebKit 실제 Flow·CSP·asset·로그인 font metric 안정성·36초 Demo player/duration·canonical release/integrity contract |
-| Deployment Integrity | SHA-256 + canonical manifest | `integrity-assets.json`의 필수 asset + `js`·`icons`·Pretendard font 재귀 자동 발견 · 검증된 v4.0.0 Production **131/131 manifest asset** GitHub checkout ↔ Production hash 일치 |
+| Deployment Integrity | SHA-256 + canonical manifest | `integrity-assets.json`의 필수 asset + `js`·`icons`·Pretendard font 재귀 자동 발견 · v15.0.0 Production GitHub checkout ↔ Production hash 일치 검증 |
 | Evidence | GitHub Actions Summary + artifact + public/manual workflow | commit/run별 JSON·Markdown·Production integrity report + 공개 main status/run + 수동 Production 재검증 진입점 |
 
 ## Observability & Security
