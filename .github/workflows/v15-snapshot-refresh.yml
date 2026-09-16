@@ -1,0 +1,50 @@
+name: V15 Snapshot Refresh
+on:
+  push:
+    branches:
+      - feat/v15-visual-polish
+permissions:
+  contents: write
+jobs:
+  refresh:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/v15-visual-polish
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Refresh visual snapshots
+        run: npm run test:visual:update
+      - name: Verify exact approved baseline delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          mapfile -t changed < <(git status --porcelain | awk '{print $2}' | grep -v '^\.github/workflows/v15-snapshot-refresh.yml$' | sort)
+          printf '%s\n' "${changed[@]}"
+          expected=(
+            tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png
+            tests/visual.spec.js-snapshots/office-dashboard-mobile-chromium-linux.png
+            tests/visual.spec.js-snapshots/request-modal-desktop-chromium-linux.png
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          test "${#changed[@]}" -eq 3
+          diff -u <(printf '%s\n' "${expected_sorted[@]}") <(printf '%s\n' "${changed[@]}")
+      - name: Commit approved baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png
+          git add tests/visual.spec.js-snapshots/office-dashboard-mobile-chromium-linux.png
+          git add tests/visual.spec.js-snapshots/request-modal-desktop-chromium-linux.png
+          git commit -m 'test(v15): refresh approved visual baselines'
+          git push origin HEAD:feat/v15-visual-polish
