@@ -14,7 +14,7 @@
 
 ## 36초 Production Demo
 
-영상은 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화한 결과입니다. 원본은 `v1.7.0` GitHub Release asset으로 유지하며 FFmpeg/ffprobe로 **35.9~36.1초** 범위를 검증합니다. 녹화 중 Analytics·Speed Insights endpoint는 intercept해 synthetic 데모 트래픽이 실제 사용 지표에 섞이지 않도록 합니다.
+영상은 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화한 결과입니다. 원본은 `v15.0.0` GitHub Release asset `ONBOARD_OS_v15.0.0_P6_production_demo.mp4`로 유지하며 FFmpeg/ffprobe로 **정확히 36초**인지 검증합니다. 녹화 중 Analytics·Speed Insights endpoint는 intercept해 synthetic 데모 트래픽이 실제 사용 지표에 섞이지 않도록 합니다.
 
 ### Shot List
 
@@ -54,6 +54,7 @@
 2. Chromium 회귀, Firefox/WebKit, Desktop/Mobile Lighthouse, Production Desktop Chromium+iPhone WebKit smoke를 확인합니다.
 3. Production integrity artifact에서 `production-demo.html`과 `login-font-lock.css`를 포함한 deployable asset의 SHA-256 일치 여부를 확인합니다.
 4. 배포 후 Production만 다시 확인해야 할 때는 `Production Verify` workflow로 새 commit 없이 integrity/smoke를 재검증할 수 있습니다.
+5. 정식 Release 기준은 GitHub Release `v15.0.0`이며 target은 `c04bc09687794cee6eee00b0140adce0fe2c27cf`입니다.
 
 ## Prototype Scope
 
