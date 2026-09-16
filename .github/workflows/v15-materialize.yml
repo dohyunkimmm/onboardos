@@ -2,33 +2,25 @@ name: v15 visual polish materializer
 
 on:
   push:
-    branches:
-      - feat/v15-visual-polish
+    branches: ["feat/v15-visual-polish"]
 
 permissions:
   contents: write
 
 jobs:
   materialize:
-    if: github.actor != 'github-actions[bot]'
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: feat/v15-visual-polish
           fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
       - name: Apply v15 visual polish
         shell: bash
         run: |
           set -euo pipefail
-          if grep -q 'ONBOARD·OS v15 candidate' experience-refinement.css; then
-            echo 'v15 block already present'
-            exit 0
-          fi
+          if grep -q 'ONBOARD·OS v15 candidate' experience-refinement.css; then exit 0; fi
           cat <<'EOF' >> experience-refinement.css
 
 /* ONBOARD·OS v15 candidate — visual polish, density and rhythm.
@@ -43,8 +35,6 @@ jobs:
   --v15-radius-section:22px;
   --v15-radius-card:17px;
 }
-
-/* V15-1: tighten the first viewport and restore a deliberate vertical rhythm. */
 body:not(.login-open) main{max-width:1120px;padding-top:34px;padding-bottom:88px;}
 body:not(.login-open) .overview-panel{border-radius:22px;}
 @media (min-width:960px){
@@ -54,66 +44,36 @@ body:not(.login-open) .overview-panel{border-radius:22px;}
 }
 body:not(.login-open) .tools-bar{margin:18px 0 14px;padding:4px;border-radius:13px;}
 body:not(.login-open) .filter-chip{min-height:34px;padding-inline:12px;}
-
-/* V15-2: section shells become quieter so content, not chrome, owns the page. */
-body:not(.login-open) .licenses{
-  border-color:var(--v15-line);
-  border-radius:var(--v15-radius-section);
-  background:linear-gradient(160deg,rgba(255,255,255,.014),rgba(255,255,255,.005));
-  box-shadow:0 18px 44px -42px rgba(0,0,0,.96),inset 0 1px 0 rgba(255,255,255,.018);
-}
+body:not(.login-open) .licenses{border-color:var(--v15-line);border-radius:var(--v15-radius-section);background:linear-gradient(160deg,rgba(255,255,255,.014),rgba(255,255,255,.005));box-shadow:0 18px 44px -42px rgba(0,0,0,.96),inset 0 1px 0 rgba(255,255,255,.018);}
 body:not(.login-open) .section-head{padding-bottom:10px;margin-bottom:12px;border-bottom-color:rgba(255,255,255,.05);}
 body:not(.login-open) .section-head h2{font-size:20px;letter-spacing:-.025em;}
 body:not(.login-open) .section-head .count{color:var(--v15-dim);background:transparent;border-color:transparent;padding-inline:0;}
 body:not(.login-open) .card-grid{gap:10px;}
-
-/* V15-3: common auto-provisioned licenses use a purpose-built compact system. */
 body:not(.login-open) .licenses.common-first{padding:16px 17px 17px;}
 body:not(.login-open) .licenses.common-first .section-head{margin-bottom:9px;padding-bottom:9px;}
 body:not(.login-open) #commonGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
-body:not(.login-open) #commonGrid .card{
-  min-height:0;
-  padding:13px 14px 12px;
-  border-radius:var(--v15-radius-card);
-  background:linear-gradient(155deg,rgba(27,30,37,.82),rgba(17,19,24,.80));
-  box-shadow:none;
-}
+body:not(.login-open) #commonGrid .card{min-height:0;padding:13px 14px 12px;border-radius:var(--v15-radius-card);background:linear-gradient(155deg,rgba(27,30,37,.82),rgba(17,19,24,.80));box-shadow:none;}
 body:not(.login-open) #commonGrid .card-top{margin-bottom:9px;gap:9px;}
 body:not(.login-open) #commonGrid .logo-chip{transform:scale(.92);transform-origin:left center;}
 body:not(.login-open) #commonGrid .card-title{font-size:13.5px;font-weight:670;}
 body:not(.login-open) #commonGrid .card-cat{font-size:10.5px;margin-top:1px;}
 body:not(.login-open) #commonGrid .card-bottom{min-height:0;justify-content:flex-start;}
-body:not(.login-open) #commonGrid .status-pill{
-  padding:3px 8px;
-  font-size:10.5px;
-  background:rgba(110,231,183,.09);
-  border:1px solid rgba(110,231,183,.08);
-}
+body:not(.login-open) #commonGrid .status-pill{padding:3px 8px;font-size:10.5px;background:rgba(110,231,183,.09);border:1px solid rgba(110,231,183,.08);}
 body:not(.login-open) #commonGrid .card:hover{transform:translateY(-1px);box-shadow:0 14px 32px -30px rgba(99,102,241,.38);}
-
-/* V15-4: role-specific work remains deeper and action-oriented, but loses dead space. */
 body:not(.login-open) .licenses.role-secondary{margin-top:13px;padding:18px;}
 body:not(.login-open) #roleGrid .card{min-height:158px;padding:17px 18px 15px;border-radius:18px;}
 body:not(.login-open) #roleGrid .card-top{margin-bottom:12px;}
 body:not(.login-open) #roleGrid .card-owner{margin-bottom:10px;padding-bottom:10px;}
 body:not(.login-open) #roleGrid .card-bottom{min-height:38px;}
 body:not(.login-open) #roleGrid .cta{min-height:36px;min-width:84px;padding-inline:13px;border-radius:10px;}
-
-/* V15-5: status hierarchy is legible without visually competing with primary actions. */
 body:not(.login-open) .status-pill{font-weight:680;letter-spacing:-.005em;}
-body:not(.login-open) .sla-pill,
-body:not(.login-open) .sla-health{font-size:10.5px;opacity:.74;}
+body:not(.login-open) .sla-pill,body:not(.login-open) .sla-health{font-size:10.5px;opacity:.74;}
 body:not(.login-open) .card-status-group{gap:5px;}
 body:not(.login-open) .card.applied{border-color:rgba(203,190,255,.16);}
-
-/* V15-6: execution surfaces use slightly tighter internal rhythm while preserving touch targets. */
-body:not(.login-open) .request-modal,
-body:not(.login-open) .action-modal{border-radius:25px;}
+body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{border-radius:25px;}
 body:not(.login-open) .modal-actions{margin-top:18px;padding-top:13px;}
 body:not(.login-open) .request-item{padding-block:13px;}
 body:not(.login-open) .request-actions{margin-top:10px;padding-top:10px;}
-
-/* V15-7: tablet keeps two-column density; mobile avoids tall empty cards and excess section chrome. */
 @media (max-width:1024px) and (min-width:769px){
   body:not(.login-open) main{padding-top:28px;}
   body:not(.login-open) .licenses.common-first{padding:15px;}
@@ -141,32 +101,23 @@ body:not(.login-open) .request-actions{margin-top:10px;padding-top:10px;}
   body:not(.login-open) #commonGrid .card-title{font-size:12.5px;}
   body:not(.login-open) #commonGrid .status-pill{font-size:10px;padding-inline:7px;}
 }
-@media (max-width:359px){
-  body:not(.login-open) #commonGrid{grid-template-columns:1fr;}
-}
-
-/* V15-8: maintain focus, reduced-motion and forced-colors behavior. */
-@media (prefers-reduced-motion:reduce){
-  body:not(.login-open) #commonGrid .card{transition:none!important;transform:none!important;}
-}
-@media (forced-colors:active){
-  body:not(.login-open) .licenses,
-  body:not(.login-open) #commonGrid .card{border:1px solid CanvasText;}
-}
+@media (max-width:359px){body:not(.login-open) #commonGrid{grid-template-columns:1fr;}}
+@media (prefers-reduced-motion:reduce){body:not(.login-open) #commonGrid .card{transition:none!important;transform:none!important;}}
+@media (forced-colors:active){body:not(.login-open) .licenses,body:not(.login-open) #commonGrid .card{border:1px solid CanvasText;}}
 EOF
+      - name: Install dependencies
+        run: npm ci
       - name: Verify quality contracts
         run: |
-          npm ci
           npm run quality
           npm run release:check
       - name: Verify isolated visual change
         shell: bash
         run: |
           set -euo pipefail
-          changed=$(git status --porcelain | awk '{print $2}' | grep -v '^\.github/workflows/v15-materialize.yml$' || true)
-          test "$changed" = "experience-refinement.css"
           git diff --check
-      - name: Commit materialized v15 polish
+          test "$(git status --porcelain | awk '{print $2}' | grep -v '^\.github/workflows/v15-materialize.yml$' || true)" = "experience-refinement.css"
+      - name: Commit v15 polish
         shell: bash
         run: |
           set -euo pipefail
