@@ -32,7 +32,7 @@ jobs:
       - name: Verify sync-only diff
         run: |
           set -euo pipefail
-          mapfile -t changed < <(git diff --name-only)
+          mapfile -t changed < <({ git diff --name-only; git ls-files --others --exclude-standard; } | sort -u)
           printf '%s\n' "${changed[@]}"
           allowed='^(release.json|version.txt|package.json|package-lock.json|production-demo.html|README.md|CHANGELOG.md|RELEASE-v15.0.0.md)$'
           for f in "${changed[@]}"; do
