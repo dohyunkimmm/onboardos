@@ -10,7 +10,7 @@ jobs:
     if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: feat/v15-visual-polish
           fetch-depth: 0
@@ -103,9 +103,9 @@ jobs:
           @media (prefers-reduced-motion:reduce){body:not(.login-open) #commonGrid .card{transition:none!important;transform:none!important;}}
           @media (forced-colors:active){body:not(.login-open) .licenses,body:not(.login-open) #commonGrid .card{border:1px solid CanvasText;}}
           EOF
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - name: Verify contracts
