@@ -1,7 +1,7 @@
 {
-  "tag": "v13.0.0",
-  "target": "042e0962d2342cbad282b3804d575b002a9c8655",
-  "title": "v13.0.0 — Product-grade visual system",
-  "notes_file": "RELEASE-v13.0.0.md",
-  "sync_revision": 10
+  "tag": "v15.0.0",
+  "target": "c04bc09687794cee6eee00b0140adce0fe2c27cf",
+  "title": "v15.0.0 — Visual Polish & Density Refinement",
+  "notes_file": "RELEASE-v15.0.0.md",
+  "sync_revision": 11
 }
