@@ -1,5 +1,26 @@
 # Changelog
 
+## v15.0.0 — Visual Polish & Density Refinement — 2026-09-17
+
+P6에서 동결한 Business Flow와 상태 모델은 유지하면서, v14 Operational Command Center 위에 visual polish와 density refinement를 적용했습니다. SSO 이후 첫 viewport의 정보 밀도를 재조정하고 공통 라이선스 영역을 compact system으로 정리해 직무별 다음 행동이 더 빨리 보이도록 개선했습니다. JavaScript business logic, catalog data, request-state machine, role isolation은 변경하지 않았습니다.
+
+### Visual polish / density refinement
+- 공통 라이선스의 과도한 vertical whitespace를 줄이고 compact card/section density로 정리
+- overview → filter → common licenses → role licenses의 spacing rhythm과 scan hierarchy 정교화
+- role card의 CTA/action depth와 status/SLA hierarchy는 유지하면서 주변 여백을 다듬음
+- request modal/drawer의 action-zone spacing과 desktop/tablet/mobile responsive density 보정
+- desktop dashboard 전체 높이와 mobile scroll depth를 줄여 첫 viewport에서 다음 업무가 더 빨리 드러나도록 개선
+- 승인된 visual regression baseline은 desktop dashboard, mobile dashboard, desktop request modal 3개만 갱신
+
+### Preserved contracts
+- P6 feature freeze / `businessFlowChanged: false`
+- R1–R8 Resilience/Recovery
+- S1–S8 Security/Failure-containment
+- U1–U8 Interaction UX/Accessibility
+- V1–V8 Visual System/Usability
+- D1–D8 Design Polish/Responsive Hierarchy
+- E1–E8 Experience Refinement
+
 ## v14.0.0 — Operational Command Center — 2026-09-16
 
 P6에서 동결한 Business Flow와 상태 모델은 유지하면서, Production에서 검증한 v14 post-login design layer를 정식 릴리즈 계약으로 승격했습니다. 기존 product workspace를 Operational Command Center로 정리해 identity/role/progress hierarchy, filter command shelf, work-zone sections, card state rail과 CTA lane, modal·drawer execution surface, mobile task prioritization을 강화했습니다. JavaScript business logic, catalog data, request-state machine, role isolation과 login baseline은 변경하지 않았습니다.
