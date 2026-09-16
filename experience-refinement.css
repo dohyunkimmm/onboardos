@@ -1322,3 +1322,6 @@ body:not(.login-open) .overview-panel{border-radius:24px;}
   body:not(.login-open) .filter-chip{min-height:40px;}
   body:not(.login-open) #roleGrid .cta{min-height:44px;}
 }
+
+/* V15-10: preserve readable dashboard width while compacting internal content density. */
+body:not(.login-open) main{max-width:1180px;}
