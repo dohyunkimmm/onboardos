@@ -15,7 +15,8 @@
     "production-demo.html",
     "README.md",
     "CHANGELOG.md",
-    "RELEASE-v15.0.0.md"
+    "RELEASE-v15.0.0.md",
+    "docs/DEMO_WALKTHROUGH.md"
   ],
   "businessFlowChanged": false,
   "verificationContract": [
