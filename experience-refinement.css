@@ -1309,3 +1309,16 @@ body:not(.login-open) .request-actions{margin-top:10px;padding-top:10px;}
 @media (max-width:359px){body:not(.login-open) #commonGrid{grid-template-columns:1fr;}}
 @media (prefers-reduced-motion:reduce){body:not(.login-open) #commonGrid .card{transition:none!important;transform:none!important;}}
 @media (forced-colors:active){body:not(.login-open) .licenses,body:not(.login-open) #commonGrid .card{border:1px solid CanvasText;}}
+
+/* V15-9: preserve verified experience contracts while keeping the compact common-license system. */
+body:not(.login-open) .overview-panel{border-radius:24px;}
+@media (min-width:769px){
+  body:not(.login-open) #roleGrid .card{min-height:176px;}
+}
+@media (max-width:1024px) and (min-width:769px){
+  body:not(.login-open) #commonGrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:768px){
+  body:not(.login-open) .filter-chip{min-height:40px;}
+  body:not(.login-open) #roleGrid .cta{min-height:44px;}
+}
