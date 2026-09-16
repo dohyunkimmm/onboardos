@@ -1,0 +1,42 @@
+name: Documentation sync
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  docs-sync:
+    name: Canonical release / representative docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Verify representative docs follow canonical release
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./release.json').version")"
+          TAG="v${VERSION}"
+          RELEASE_NOTE="RELEASE-${TAG}.md"
+          VIDEO="ONBOARD_OS_${TAG}_P6_production_demo.mp4"
+
+          test -f "${RELEASE_NOTE}"
+          grep -Fq "Portfolio release — ${TAG} / P6 Production verified." README.md
+          grep -Fq "## ${TAG}" CHANGELOG.md
+          grep -Fq "${TAG}" docs/DEMO_WALKTHROUGH.md
+          grep -Fq "${VIDEO}" docs/DEMO_WALKTHROUGH.md
+          grep -Fq "releases/download/${TAG}/${VIDEO}" production-demo.html
+          grep -Fq "releases/tag/${TAG}" production-demo.html
+
+          LEGACY_RELEASE_NOTES="$(find . -maxdepth 1 -type f -name 'RELEASE-v*.md' ! -name "${RELEASE_NOTE}" -print)"
+          if [ -n "${LEGACY_RELEASE_NOTES}" ]; then
+            echo "Legacy standalone release notes must be consolidated into CHANGELOG.md:"
+            echo "${LEGACY_RELEASE_NOTES}"
+            exit 1
+          fi
+
+          echo "Documentation sync PASS: ${TAG}"
