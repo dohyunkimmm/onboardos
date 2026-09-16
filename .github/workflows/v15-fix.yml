@@ -1,0 +1,54 @@
+name: V15 Contract Fix
+on:
+  push:
+    branches:
+      - feat/v15-visual-polish
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/v15-visual-polish
+          fetch-depth: 0
+      - name: Restore verified experience contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q 'V15-9: preserve verified experience contracts' experience-refinement.css; then exit 0; fi
+          cat <<'EOF' >> experience-refinement.css
+          
+          /* V15-9: preserve verified experience contracts while keeping the compact common-license system. */
+          body:not(.login-open) .overview-panel{border-radius:24px;}
+          @media (min-width:769px){
+            body:not(.login-open) #roleGrid .card{min-height:176px;}
+          }
+          @media (max-width:1024px) and (min-width:769px){
+            body:not(.login-open) #commonGrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+          }
+          @media (max-width:768px){
+            body:not(.login-open) .filter-chip{min-height:40px;}
+            body:not(.login-open) #roleGrid .cta{min-height:44px;}
+          }
+          EOF
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Verify contracts
+        run: |
+          npm run quality
+          npm run release:check
+          git diff --check
+          test "$(git status --porcelain | awk '{print $2}' | grep -v '^\.github/workflows/v15-fix.yml$' || true)" = "experience-refinement.css"
+      - name: Commit compatibility fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add experience-refinement.css
+          git commit -m 'fix(v15): preserve responsive experience contracts'
+          git push origin HEAD:feat/v15-visual-polish
