@@ -6,6 +6,7 @@
       "main": true
     }
   },
+
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':!*.md' ':!docs/**' ':!.github/**' ':!tests/**' ':!scripts/**' ':!playwright*.js' ':!lighthouserc*.cjs' ':!package*.json'",
   "rewrites": [
     {
