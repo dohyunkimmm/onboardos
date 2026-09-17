@@ -29,6 +29,7 @@ function validateReleaseContract(){
   if(release.canonicalVersionSource !== 'release.json') fail('canonicalVersionSource must be release.json');
   if(release.integrityManifest !== MANIFEST_PATH) fail(`integrityManifest must be ${MANIFEST_PATH}`);
   if(release.businessFlowChanged !== false) fail('P6 release must keep businessFlowChanged=false');
+  if(!['candidate','verified'].includes(release.releaseStatus)) fail(`releaseStatus must be candidate or verified, found ${release.releaseStatus}`);
 
   const expectedArtifacts = ['version.txt', 'package.json', 'package-lock.json'];
   for(const artifact of expectedArtifacts){
@@ -148,13 +149,18 @@ function validateReleaseContract(){
   if(!productionDemo.includes(`releases/download/${expectedTag}/${expectedVideo}`)) fail(`production-demo.html video asset is not aligned to ${expectedTag}`);
   if(!productionDemo.includes(`releases/tag/${expectedTag}`)) fail(`production-demo.html release link is not aligned to ${expectedTag}`);
   if(!productionDemo.includes(`ONBOARD·OS ${expectedTag} 36초 Production Demo`)) fail(`production-demo.html accessible label is not aligned to ${expectedTag}`);
-  if(!readme.includes(`Portfolio release — ${expectedTag} / P6 Production verified.`)) fail(`README current release block is not aligned to ${expectedTag}`);
-  if(!readme.includes(`releases/tag/${expectedTag}`)) fail(`README current release link is not aligned to ${expectedTag}`);
+  if(release.releaseStatus === 'verified'){
+    if(!readme.includes(`Portfolio release — ${expectedTag} / P6 Production verified.`)) fail(`README verified release block is not aligned to ${expectedTag}`);
+    if(!readme.includes(`releases/tag/${expectedTag}`)) fail(`README verified release link is not aligned to ${expectedTag}`);
+  } else {
+    if(!readme.includes(`Portfolio release — ${expectedTag} / P6 design-only candidate.`)) fail(`README candidate release block is not aligned to ${expectedTag}`);
+  }
 
   const versionMatch = versionText.match(/^ONBOARD·OS v(\d+\.\d+\.\d+)$/m);
   if(!versionMatch) fail('version.txt must declare ONBOARD·OS semantic version');
   if(versionMatch[1] !== release.version) fail(`version.txt=${versionMatch[1]} release.json=${release.version}`);
   if(!/^releaseChannel=production$/m.test(versionText)) fail('version.txt must declare releaseChannel=production');
+  if(!versionText.includes(`releaseStatus=${release.releaseStatus}`)) fail(`version.txt releaseStatus is not aligned to ${release.releaseStatus}`);
   if(!/^securityContract=S1-S8$/m.test(versionText)) fail('version.txt must declare securityContract=S1-S8');
   if(!/^uxContract=U1-U8$/m.test(versionText)) fail('version.txt must declare uxContract=U1-U8');
   if(!/^designSystemContract=V1-V8$/m.test(versionText)) fail('version.txt must declare designSystemContract=V1-V8');

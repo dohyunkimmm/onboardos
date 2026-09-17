@@ -1,9 +1,10 @@
-ONBOARD·OS v15.0.0
+ONBOARD·OS v16.0.0
 P6 feature freeze
 canonicalVersionSource=release.json
 releaseChannel=production
-releaseClass=visual-polish-density-refinement
-scope=post-login-visual-polish-density-refinement
+releaseStatus=candidate
+releaseClass=visual-system-consolidation-product-finish
+scope=design-only-visual-system-consolidation-product-finish
 freeze=P6
 businessFlowChanged=false
 securityContract=S1-S8

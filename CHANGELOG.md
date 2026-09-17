@@ -1,5 +1,22 @@
 # Changelog
 
+## v16.0.0 — Visual System Consolidation & Product Finish — 2026-09-17
+
+P6에서 동결한 Business Flow와 상태 모델을 유지하면서 로그인부터 post-login workspace까지 분산되어 있던 visual language를 하나의 product design system으로 통합했습니다. v15의 density/spacing 개선을 반복하는 대신 surface·radius·border·elevation·typography·semantic state·interaction state를 단일 grammar로 정리했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.
+
+### Visual system consolidation
+- 로그인 카드와 post-login workspace의 surface/radius/elevation 언어 통합
+- Primary action / Selected state / Status state의 accent 역할 분리
+- overview, role selector, progress, filter, common/role license cards의 공통 token 적용
+- common compact card와 role execution card의 logo→title→category→owner→status→CTA grammar 통일
+- request/action modal과 drawer의 elevated surface 및 sticky action-zone 통합
+- mobile breakpoint의 surface radius, padding, typography composition 정교화
+- v16-visual-system.css를 최종 override layer 및 Production integrity 대상으로 추가
+
+### Preserved contracts
+- P6 feature freeze / businessFlowChanged: false
+- R1–R8 / S1–S8 / U1–U8 / V1–V8 / D1–D8 / E1–E8
+
 ## v15.0.0 — Visual Polish & Density Refinement — 2026-09-17
 
 P6에서 동결한 Business Flow와 상태 모델은 유지하면서, v14 Operational Command Center 위에 visual polish와 density refinement를 적용했습니다. SSO 이후 첫 viewport의 정보 밀도를 재조정하고 공통 라이선스 영역을 compact system으로 정리해 직무별 다음 행동이 더 빨리 보이도록 개선했습니다. JavaScript business logic, catalog data, request-state machine, role isolation은 변경하지 않았습니다.
