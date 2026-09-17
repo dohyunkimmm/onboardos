@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 10,
+  "$schemaVersion": 10,
   "product": "ONBOARD·OS",
   "version": "16.0.0",
   "freeze": "P6",
@@ -171,6 +171,5 @@
       "E7-tablet-density.png",
       "E8-empty-state.png"
     ]
-  },
-  "releaseStatus": "candidate"
+  }
 }
