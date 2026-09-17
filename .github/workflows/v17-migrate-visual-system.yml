@@ -1,0 +1,36 @@
+name: v17 one-shot visual system migration
+
+on:
+  push:
+    branches:
+      - v17-visual-evolution
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v17-visual-evolution
+      - name: Normalize visual system naming and v17 design contract
+        run: |
+          set -euo pipefail
+          sed -i 's/v16-visual-system\.css/visual-system.css/g' index.html integrity-assets.json
+          sed -i 's/<meta content="#0A0B0E" name="theme-color"\/>/<meta content="#080A0F" name="theme-color"\/>/' index.html
+          sed -i 's/\[D8\] v16 unifies login and post-login visual language without changing login behavior/[D8] v17 preserves one product identity across login and post-login without changing login behavior/' tests/design-polish.spec.js
+          sed -i "s/expect(loginSurface.borderRadius).toBe('24px');/expect(loginSurface.borderRadius).toBe('26px');/" tests/design-polish.spec.js
+          sed -i "s/expect(panel.borderRadius).toBe('24px');/expect(panel.borderRadius).toBe('26px');/" tests/design-polish.spec.js
+          rm -f v16-visual-system.css
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html integrity-assets.json tests/design-polish.spec.js v16-visual-system.css
+          if git diff --cached --quiet; then
+            echo 'No migration changes required.'
+            exit 0
+          fi
+          git commit -m 'design: migrate runtime to version-neutral v17 visual system'
+          git push origin HEAD:v17-visual-evolution
