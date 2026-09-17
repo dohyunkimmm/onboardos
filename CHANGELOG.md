@@ -1,5 +1,21 @@
 # Changelog
 
+## v17.0.0 — Product Identity & Interface Evolution — 2026-09-17
+
+P6에서 동결한 Business Flow와 상태 모델을 유지하면서 v16.1 수준의 visual precision을 포함한 Product Identity / Interface Evolution을 적용했습니다. 기능 추가 없이 Login → Dashboard → License Cards → Modal·Drawer 전 구간의 typography, spacing rhythm, surface hierarchy, elevation, action/selection/status 역할, responsive composition을 정교화했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.
+
+### Product identity & visual precision
+- typography hierarchy와 spacing rhythm을 재정렬하고 optical alignment를 정교화
+- Primary action / Selected state / Semantic status의 visual role을 더 명확하게 분리
+- Overview shell과 Common/Role card grammar, Modal·Drawer elevated surface를 통합
+- Desktop/Tablet/Mobile composition과 touch/focus/reduced-motion/forced-colors를 함께 보정
+- versioned runtime stylesheet를 제거하고 `visual-system.css` 단일 visual layer로 통합
+- v17 의도된 Login/Dashboard visual regression baseline을 Desktop/Mobile에서 승인
+
+### Preserved contracts
+- P6 feature freeze / `businessFlowChanged: false`
+- R1–R8 / S1–S8 / U1–U8 / V1–V8 / D1–D8 / E1–E8
+
 ## v16.0.0 — Visual System Consolidation & Product Finish — 2026-09-17
 
 P6에서 동결한 Business Flow와 상태 모델을 유지하면서 로그인부터 post-login workspace까지 분산되어 있던 visual language를 하나의 product design system으로 통합했습니다. v15의 density/spacing 개선을 반복하는 대신 surface·radius·border·elevation·typography·semantic state·interaction state를 단일 grammar로 정리했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.

@@ -1,10 +1,10 @@
 {
   "schemaVersion": 10,
   "product": "ONBOARD·OS",
-  "version": "16.0.0",
+  "version": "17.0.0",
   "freeze": "P6",
-  "releaseClass": "visual-system-consolidation-product-finish",
-  "scope": "design-only-visual-system-consolidation-product-finish",
+  "releaseClass": "product-identity-interface-evolution",
+  "scope": "design-only-product-identity-interface-evolution",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -111,7 +111,7 @@
       "security-summary.json",
       "ux-summary.json",
       "visual-system-summary.json",
-      "ONBOARD_OS_v16.0.0_P6_production_demo.mp4"
+      "ONBOARD_OS_v17.0.0_P6_production_demo.mp4"
     ],
     "requireSuccessfulTargetRun": true,
     "requiredGates": [

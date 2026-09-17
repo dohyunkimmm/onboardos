@@ -1,10 +1,10 @@
-ONBOARD·OS v16.0.0
+ONBOARD·OS v17.0.0
 P6 feature freeze
 canonicalVersionSource=release.json
 releaseChannel=production
 releaseStatus=verified
-releaseClass=visual-system-consolidation-product-finish
-scope=design-only-visual-system-consolidation-product-finish
+releaseClass=product-identity-interface-evolution
+scope=design-only-product-identity-interface-evolution
 freeze=P6
 businessFlowChanged=false
 securityContract=S1-S8
