@@ -100,13 +100,15 @@ test('[D7] mobile density keeps two-column common cards, single-column role card
   await shot(page,'D7-mobile-dashboard.png');
 });
 
-test('[D8] v10 polish is scoped after login so the approved login surface is not restyled', async ({page}) => {
+test('[D8] v16 unifies login and post-login visual language without changing login behavior', async ({page}) => {
   await stabilize(page);
   await expect(page.locator('body')).toHaveClass(/login-open/);
-  const before = await css(page.locator('.login-card'));
-  expect(before.borderRadius).not.toBe('24px');
+  const loginSurface = await css(page.locator('.login-card'));
+  expect(loginSurface.borderRadius).toBe('24px');
+  expect(loginSurface.backgroundImage).toContain('gradient');
   await login(page);
   await expect(page.locator('body')).not.toHaveClass(/login-open/);
   const panel = await css(page.locator('.overview-panel'));
   expect(panel.borderRadius).toBe('24px');
+  expect(panel.backgroundImage).toContain('gradient');
 });
