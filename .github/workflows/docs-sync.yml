@@ -21,16 +21,28 @@ jobs:
           set -euo pipefail
           VERSION="$(node -p "require('./release.json').version")"
           TAG="v${VERSION}"
+          STATUS="$(node -p "require('./release.json').releaseStatus || 'verified'")"
           RELEASE_NOTE="RELEASE-${TAG}.md"
           VIDEO="ONBOARD_OS_${TAG}_P6_production_demo.mp4"
 
           test -f "${RELEASE_NOTE}"
-          grep -Fq "Portfolio release — ${TAG} / P6 Production verified." README.md
+          if [ "${STATUS}" = "verified" ]; then
+            grep -Fq "Portfolio release — ${TAG} / P6 Production verified." README.md
+            grep -Fq "releases/tag/${TAG}" README.md
+          elif [ "${STATUS}" = "candidate" ]; then
+            grep -Fq "Portfolio release — ${TAG} / P6 design-only candidate." README.md
+          else
+            echo "Unsupported releaseStatus: ${STATUS}" >&2
+            exit 1
+          fi
           grep -Fq "## ${TAG}" CHANGELOG.md
           grep -Fq "${TAG}" docs/DEMO_WALKTHROUGH.md
           grep -Fq "${VIDEO}" docs/DEMO_WALKTHROUGH.md
           grep -Fq "releases/download/${TAG}/${VIDEO}" production-demo.html
           grep -Fq "releases/tag/${TAG}" production-demo.html
+          if grep -q '^releaseStatus=' version.txt; then
+            grep -Fq "releaseStatus=${STATUS}" version.txt
+          fi
 
           LEGACY_RELEASE_NOTES="$(find . -maxdepth 1 -type f -name 'RELEASE-v*.md' ! -name "${RELEASE_NOTE}" -print)"
           if [ -n "${LEGACY_RELEASE_NOTES}" ]; then
@@ -39,4 +51,4 @@ jobs:
             exit 1
           fi
 
-          echo "Documentation sync PASS: ${TAG}"
+          echo "Documentation sync PASS: ${TAG} · ${STATUS}"
