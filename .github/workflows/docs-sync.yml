@@ -22,10 +22,8 @@ jobs:
           VERSION="$(node -p "require('./release.json').version")"
           TAG="v${VERSION}"
           STATUS="$(node -p "require('./release.json').releaseStatus || 'verified'")"
-          RELEASE_NOTE="RELEASE-${TAG}.md"
           VIDEO="ONBOARD_OS_${TAG}_P6_production_demo.mp4"
 
-          test -f "${RELEASE_NOTE}"
           if [ "${STATUS}" = "verified" ]; then
             grep -Fq "Portfolio release — ${TAG} / P6 Production verified." README.md
             grep -Fq "releases/tag/${TAG}" README.md
@@ -44,10 +42,10 @@ jobs:
             grep -Fq "releaseStatus=${STATUS}" version.txt
           fi
 
-          LEGACY_RELEASE_NOTES="$(find . -maxdepth 1 -type f -name 'RELEASE-v*.md' ! -name "${RELEASE_NOTE}" -print)"
-          if [ -n "${LEGACY_RELEASE_NOTES}" ]; then
-            echo "Legacy standalone release notes must be consolidated into CHANGELOG.md:"
-            echo "${LEGACY_RELEASE_NOTES}"
+          STANDALONE_RELEASE_NOTES="$(find . -maxdepth 1 -type f -name 'RELEASE-v*.md' -print)"
+          if [ -n "${STANDALONE_RELEASE_NOTES}" ]; then
+            echo "Standalone release notes must stay consolidated in CHANGELOG.md + immutable GitHub Releases:"
+            echo "${STANDALONE_RELEASE_NOTES}"
             exit 1
           fi
 
