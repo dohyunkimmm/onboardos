@@ -1,0 +1,52 @@
+name: v17 Visual Baseline Sync
+
+on:
+  push:
+    branches: [v17-visual-evolution]
+    paths:
+      - .github/workflows/v17-baseline-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: v17-visual-evolution
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Update approved v17 visual baselines
+        run: npx playwright test tests/visual.spec.js --project=desktop-chromium --project=mobile-chromium --update-snapshots
+      - name: Guard exact snapshot scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only | sort > /tmp/changed.txt
+          cat > /tmp/expected.txt <<'EOF'
+          tests/visual.spec.js-snapshots/login-card-desktop-chromium-linux.png
+          tests/visual.spec.js-snapshots/login-card-mobile-chromium-linux.png
+          tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png
+          tests/visual.spec.js-snapshots/office-dashboard-mobile-chromium-linux.png
+          EOF
+          sort -o /tmp/expected.txt /tmp/expected.txt
+          diff -u /tmp/expected.txt /tmp/changed.txt
+      - name: Commit baselines
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/visual.spec.js-snapshots/login-card-desktop-chromium-linux.png \
+                  tests/visual.spec.js-snapshots/login-card-mobile-chromium-linux.png \
+                  tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png \
+                  tests/visual.spec.js-snapshots/office-dashboard-mobile-chromium-linux.png
+          git commit -m "test: approve v17 visual baselines"
+          git push origin HEAD:v17-visual-evolution
