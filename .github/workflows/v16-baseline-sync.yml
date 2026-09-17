@@ -1,0 +1,46 @@
+name: v16 visual baseline sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/v16-baseline-sync.yml'
+      - 'v16-visual-system.css'
+
+permissions:
+  contents: write
+
+jobs:
+  update-desktop-dashboard-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Update only approved desktop dashboard baseline
+        run: npx playwright test tests/visual.spec.js --project=desktop-chromium --grep "기본 대시보드 visual baseline" --update-snapshots
+      - name: Guard snapshot scope
+        shell: bash
+        run: |
+          mapfile -t changed < <(git diff --name-only)
+          if [ "${#changed[@]}" -ne 1 ] || [ "${changed[0]}" != "tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png" ]; then
+            printf 'Unexpected changed files:\n'
+            printf '%s\n' "${changed[@]}"
+            exit 1
+          fi
+      - name: Commit approved baseline
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/visual.spec.js-snapshots/office-dashboard-desktop-chromium-linux.png
+          git commit -m "test: approve v16 desktop dashboard visual baseline"
+          git push
