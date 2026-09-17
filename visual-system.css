@@ -1,0 +1,194 @@
+/* ONBOARD·OS v17 — Product Identity & Interface Evolution
+   Includes v16.1-level visual precision and product finish.
+   Design-only release candidate. Business flow, data, request state machine,
+   SLA semantics, role isolation and P6 behavior remain frozen. */
+:root{
+  --vs-canvas:#080A0F;
+  --vs-canvas-2:#0B0E15;
+  --vs-surface-1:rgba(255,255,255,.026);
+  --vs-surface-2:rgba(255,255,255,.044);
+  --vs-surface-3:rgba(255,255,255,.064);
+  --vs-line:rgba(255,255,255,.082);
+  --vs-line-strong:rgba(255,255,255,.135);
+  --vs-text:#F7F8FB;
+  --vs-muted:rgba(229,232,240,.68);
+  --vs-dim:rgba(229,232,240,.48);
+  --vs-accent:#A78BFA;
+  --vs-accent-strong:#8B5CF6;
+  --vs-accent-cool:#7DD3FC;
+  --vs-positive:#6EE7B7;
+  --vs-warning:#F6C76D;
+  --vs-danger:#FB8A9B;
+  --vs-radius-shell:26px;
+  --vs-radius-card:18px;
+  --vs-radius-control:11px;
+  --vs-shadow-shell:0 30px 78px -56px rgba(0,0,0,.96),inset 0 1px 0 rgba(255,255,255,.028);
+  --vs-shadow-card:0 18px 46px -40px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.024);
+  --vs-shadow-raised:0 30px 72px -44px rgba(0,0,0,.96),0 0 0 1px rgba(167,139,250,.045),inset 0 1px 0 rgba(255,255,255,.032);
+  --vs-focus:0 0 0 3px rgba(167,139,250,.24),0 10px 30px -22px rgba(124,58,237,.72);
+  --vs-motion-fast:140ms cubic-bezier(.2,.7,.2,1);
+  --vs-motion-base:180ms cubic-bezier(.2,.7,.2,1);
+}
+
+html{background:var(--vs-canvas);}
+body{background:var(--vs-canvas);color:var(--vs-text);}
+.bg-atmosphere::before{
+  background:
+    radial-gradient(42% 34% at 82% 0%,rgba(125,211,252,.055),transparent 72%),
+    radial-gradient(52% 42% at 10% 2%,rgba(139,92,246,.105),transparent 74%),
+    linear-gradient(180deg,#080A0F 0%,#0A0D13 44%,#0E121A 100%);
+}
+.bg-grid{opacity:.48;background-size:80px 80px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.82),rgba(0,0,0,.28) 58%,transparent 92%);}
+
+/* Login — same product language as the authenticated experience. */
+.login-screen{
+  background:
+    radial-gradient(46% 46% at 14% 10%,rgba(139,92,246,.16),transparent 70%),
+    radial-gradient(38% 34% at 88% 8%,rgba(125,211,252,.075),transparent 72%),
+    linear-gradient(138deg,#080A0F,#0B0E15 58%,#111722);
+}
+.login-card{
+  width:min(920px,100%);
+  gap:42px;
+  padding:42px;
+  border:1px solid var(--vs-line);
+  border-radius:var(--vs-radius-shell);
+  background:
+    linear-gradient(145deg,rgba(27,31,41,.985),rgba(14,17,24,.972));
+  box-shadow:0 44px 112px -68px rgba(0,0,0,.98),0 0 0 1px rgba(167,139,250,.03),inset 0 1px 0 rgba(255,255,255,.036);
+}
+.login-brandline{margin-bottom:18px;gap:10px;}
+.login-brand{letter-spacing:-.035em;}
+.login-eyebrow{color:var(--vs-muted);border-color:var(--vs-line);background:rgba(255,255,255,.022);}
+.login-card .login-title{font-size:32px;line-height:1.22;letter-spacing:-.042em;font-weight:780;}
+.login-card p{max-width:540px;color:var(--vs-muted);line-height:1.68;}
+.scenario-list{gap:11px;margin-top:22px;}
+.scenario-item{color:var(--vs-muted);line-height:1.5;}
+.scenario-check{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;border-radius:7px;background:rgba(167,139,250,.085);border:1px solid rgba(167,139,250,.15);color:#E8E1FF;font-size:11px;}
+.login-meta{color:var(--vs-dim);}
+.login-panel{padding:21px;border:1px solid var(--vs-line);border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.052),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.03);}
+.login-account{border-color:rgba(255,255,255,.072);background:rgba(0,0,0,.08);}
+.login-account-label,.login-note,.reviewer-entry{color:var(--vs-dim);}
+.google-btn{min-height:48px;border-radius:12px;box-shadow:0 14px 32px -26px rgba(0,0,0,.92);transition:transform var(--vs-motion-fast),box-shadow var(--vs-motion-base),filter var(--vs-motion-fast);}
+.google-btn:hover{box-shadow:0 18px 40px -28px rgba(0,0,0,.94);filter:brightness(1.025);}
+.google-btn:active{transform:translateY(1px) scale(.995);}
+
+/* App chrome — action, selection and status use distinct visual roles. */
+body:not(.login-open) .topbar{border-bottom-color:rgba(255,255,255,.055);background:rgba(8,10,15,.88);backdrop-filter:blur(18px) saturate(120%);box-shadow:0 14px 36px -34px rgba(0,0,0,.98);}
+body:not(.login-open) .topbar .logo{letter-spacing:-.035em;}
+body:not(.login-open) #statusBtn{background:linear-gradient(135deg,#5B5FEF,#7C3AED);border-color:rgba(216,205,255,.22);box-shadow:0 16px 34px -24px rgba(124,58,237,.88),inset 0 1px 0 rgba(255,255,255,.10);color:#fff;}
+body:not(.login-open) #statusBtn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+body:not(.login-open) #statusBtn:active{transform:translateY(0) scale(.985);}
+body:not(.login-open) #adminBtn{background:var(--vs-surface-1);border-color:var(--vs-line);color:var(--vs-muted);}
+body:not(.login-open) #adminBtn:hover{background:var(--vs-surface-2);border-color:var(--vs-line-strong);color:var(--vs-text);}
+body:not(.login-open) #resetBtn,body:not(.login-open) #moreBtn{background:transparent;border-color:transparent;color:var(--vs-dim);}
+body:not(.login-open) #resetBtn:hover,body:not(.login-open) #moreBtn:hover{background:var(--vs-surface-2);color:var(--vs-text);}
+body:not(.login-open) .top-btn{transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast),transform var(--vs-motion-fast),filter var(--vs-motion-fast);}
+body:not(.login-open) .topbar .sub{color:var(--vs-muted);}
+body:not(.login-open) #resetBtn{color:rgba(229,232,240,.54);}
+
+/* Dashboard shell and information hierarchy. */
+body:not(.login-open) main{max-width:1220px;padding-top:34px;padding-bottom:96px;}
+body:not(.login-open) .overview-panel{
+  border:1px solid var(--vs-line);
+  border-radius:var(--vs-radius-shell);
+  background:
+    radial-gradient(62% 110% at 100% 0%,rgba(125,211,252,.045),transparent 62%),
+    radial-gradient(70% 120% at 8% 0%,rgba(139,92,246,.09),transparent 66%),
+    linear-gradient(145deg,rgba(25,29,39,.982),rgba(13,16,22,.966));
+  box-shadow:var(--vs-shadow-shell);
+}
+body:not(.login-open) .overview-panel .name-input{font-weight:790;letter-spacing:-.048em;}
+body:not(.login-open) .overview-panel .badge-id label,body:not(.login-open) .role-picker>label,body:not(.login-open) .emp-meta{color:var(--vs-dim);}
+body:not(.login-open) .role-meta-pill{background:rgba(110,231,183,.078);border:1px solid rgba(110,231,183,.13);color:rgba(186,255,224,.9);}
+body:not(.login-open) .role-picker{background:rgba(255,255,255,.006);}
+body:not(.login-open) .role-tab{border-radius:var(--vs-radius-control);border-color:rgba(255,255,255,.07);background:rgba(255,255,255,.016);color:var(--vs-muted);transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast),box-shadow var(--vs-motion-fast);}
+body:not(.login-open) .role-tab:hover{background:var(--vs-surface-2);border-color:var(--vs-line-strong);color:var(--vs-text);}
+body:not(.login-open) .role-tab.active{background:rgba(167,139,250,.105);border-color:rgba(167,139,250,.27);color:#F4F0FF;box-shadow:inset 0 1px 0 rgba(255,255,255,.038);}
+body:not(.login-open) .role-tab.exception:not(.active){color:rgba(246,199,109,.82);border-color:rgba(246,199,109,.16);}
+body:not(.login-open) .demo-preview-note{background:linear-gradient(90deg,rgba(167,139,250,.04),transparent);border-left-color:rgba(167,139,250,.28);color:var(--vs-muted);}
+
+/* Progress is status, not selection. */
+body:not(.login-open) .progress-wrap{background:rgba(2,4,8,.20);}
+body:not(.login-open) .progress-step.done{opacity:.66;}
+body:not(.login-open) .progress-step.done .step-circle{background:rgba(110,231,183,.13);border-color:rgba(110,231,183,.27);color:var(--vs-positive);}
+body:not(.login-open) .progress-step.done .step-label{color:rgba(110,231,183,.72);}
+body:not(.login-open) .progress-step.current .step-circle{background:linear-gradient(135deg,#6366F1,#8B5CF6);box-shadow:0 0 0 4px rgba(139,92,246,.11),0 12px 26px -17px rgba(139,92,246,.92);}
+body:not(.login-open) .progress-hint{color:var(--vs-muted);}
+
+/* Filter selection stays quiet so it cannot be confused with a CTA. */
+body:not(.login-open) .tools-bar{border:1px solid var(--vs-line);border-radius:13px;background:rgba(10,13,19,.86);box-shadow:0 18px 42px -36px rgba(0,0,0,.98);backdrop-filter:blur(16px);}
+body:not(.login-open) .filter-chip{border-radius:9px;color:var(--vs-muted);transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast);}
+body:not(.login-open) .filter-chip:hover{background:rgba(255,255,255,.034);color:var(--vs-text);}
+body:not(.login-open) .filter-chip.active{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(125,211,252,.045));border-color:rgba(167,139,250,.20);color:#F1EDFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);}
+
+/* Section shells and card grammar. */
+body:not(.login-open) .licenses{border:1px solid var(--vs-line);border-radius:var(--vs-radius-shell);background:linear-gradient(160deg,rgba(255,255,255,.018),rgba(255,255,255,.005));box-shadow:var(--vs-shadow-shell);}
+body:not(.login-open) .section-head{border-bottom-color:rgba(255,255,255,.055);}
+body:not(.login-open) .section-head h2{font-size:21px;font-weight:780;letter-spacing:-.042em;line-height:1.3;}
+body:not(.login-open) .section-head .count{color:var(--vs-dim);}
+body:not(.login-open) .card{border:1px solid rgba(255,255,255,.073);border-radius:var(--vs-radius-card);background:linear-gradient(160deg,rgba(27,31,40,.91),rgba(15,18,24,.90));box-shadow:var(--vs-shadow-card);transition:transform var(--vs-motion-base),border-color var(--vs-motion-fast),background var(--vs-motion-fast),box-shadow var(--vs-motion-base);}
+body:not(.login-open) #commonGrid .card{background:linear-gradient(160deg,rgba(255,255,255,.034),rgba(255,255,255,.014));box-shadow:inset 0 1px 0 rgba(255,255,255,.022);}
+body:not(.login-open) #roleGrid .card{background:linear-gradient(158deg,rgba(28,32,42,.965),rgba(15,18,25,.945));box-shadow:0 22px 54px -44px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.03);}
+body:not(.login-open) .card:hover{transform:translateY(-2px);border-color:rgba(167,139,250,.18);background:linear-gradient(160deg,rgba(32,36,47,.96),rgba(17,20,27,.95));box-shadow:0 24px 58px -42px rgba(124,58,237,.30),inset 0 1px 0 rgba(255,255,255,.03);}
+body:not(.login-open) .card:focus-within{border-color:rgba(167,139,250,.25);box-shadow:0 24px 58px -42px rgba(124,58,237,.30),inset 0 1px 0 rgba(255,255,255,.032);}
+body:not(.login-open) .logo-chip{border-radius:12px;border-color:rgba(255,255,255,.078);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));}
+body:not(.login-open) .card-title{letter-spacing:-.02em;line-height:1.35;}
+body:not(.login-open) .card-cat,body:not(.login-open) .card-owner{color:var(--vs-dim);}
+body:not(.login-open) #roleGrid .card-owner{border-bottom-color:rgba(255,255,255,.052);}
+
+/* CTA is the only high-energy accent in card content. */
+body:not(.login-open) #roleGrid .cta{border:1px solid rgba(193,178,255,.18);border-radius:10px;background:linear-gradient(135deg,#5B5FEF,#7C3AED);color:#fff;box-shadow:0 14px 30px -22px rgba(124,58,237,.86),inset 0 1px 0 rgba(255,255,255,.08);font-weight:720;transition:transform var(--vs-motion-fast),filter var(--vs-motion-fast),box-shadow var(--vs-motion-base);}
+body:not(.login-open) #roleGrid .cta:hover{filter:brightness(1.07);box-shadow:0 18px 38px -24px rgba(124,58,237,.9),inset 0 1px 0 rgba(255,255,255,.10);}
+body:not(.login-open) #roleGrid .cta:active{transform:translateY(1px) scale(.99);}
+
+/* Semantic statuses use color only as reinforcement, never as the only boundary. */
+body:not(.login-open) .status-pill{border:1px solid transparent;font-weight:650;}
+body:not(.login-open) .status-auto,body:not(.login-open) .status-approved,body:not(.login-open) .status-completed{background:rgba(110,231,183,.075);border-color:rgba(110,231,183,.13);}
+body:not(.login-open) .status-request{background:rgba(246,199,109,.075);border-color:rgba(246,199,109,.13);}
+body:not(.login-open) .status-approval,body:not(.login-open) .status-rejected{background:rgba(251,138,155,.075);border-color:rgba(251,138,155,.13);}
+
+/* Elevated execution surfaces. */
+body:not(.login-open) .request-modal,body:not(.login-open) .action-modal,body:not(.login-open) .drawer{border-color:var(--vs-line);background:linear-gradient(155deg,rgba(25,29,39,.995),rgba(12,15,21,.992));box-shadow:var(--vs-shadow-raised);}
+body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{border-radius:var(--vs-radius-shell);}
+body:not(.login-open) .request-modal h3,body:not(.login-open) .action-modal h3{letter-spacing:-.038em;}
+body:not(.login-open) .drawer-head{border-bottom-color:rgba(255,255,255,.06);background:rgba(18,21,29,.88);backdrop-filter:blur(14px);}
+body:not(.login-open) .modal-actions{border-top-color:rgba(255,255,255,.065);background:linear-gradient(180deg,rgba(21,25,34,.90),rgba(11,14,20,.997));}
+body:not(.login-open) .modal-actions .primary-btn,body:not(.login-open) .modal-actions .btn-primary{background:linear-gradient(135deg,#5B5FEF,#7C3AED);border-color:transparent;box-shadow:0 16px 34px -22px rgba(124,58,237,.88),inset 0 1px 0 rgba(255,255,255,.09);}
+body:not(.login-open) .request-item,body:not(.login-open) .reason-item,body:not(.login-open) .request-note-view,body:not(.login-open) .action-info{border-color:rgba(255,255,255,.068);background:rgba(255,255,255,.026);}
+body:not(.login-open) .empty-state{border-color:rgba(167,139,250,.15);background:radial-gradient(72% 120% at 50% 0%,rgba(139,92,246,.065),transparent 70%),rgba(255,255,255,.008);}
+
+/* Accessibility and interaction precision. */
+:where(a,button,input,textarea):focus-visible{outline:2px solid var(--vs-accent);outline-offset:3px;box-shadow:var(--vs-focus);}
+:where(button,.role-tab,.filter-chip,.cta){-webkit-tap-highlight-color:transparent;}
+
+@media (max-width:1024px){
+  body:not(.login-open) main{max-width:100%;padding-inline:20px;}
+  .login-card{width:min(880px,100%);gap:32px;padding:36px;}
+}
+@media (max-width:768px){
+  .login-card{padding:28px 22px;gap:24px;border-radius:24px;}
+  .login-card .login-title{font-size:26px;}
+  .login-panel{padding:18px;border-radius:17px;}
+  body:not(.login-open) main{padding-top:18px;padding-inline:16px;padding-bottom:76px;}
+  body:not(.login-open) .overview-panel{border-radius:24px;}
+  body:not(.login-open) .licenses{border-radius:21px;}
+  body:not(.login-open) .section-head h2{font-size:18px;}
+  body:not(.login-open) #roleGrid .card{border-radius:17px;}
+  body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{border-radius:21px;}
+  body:not(.login-open) .card:hover{transform:none;}
+}
+@media (max-width:420px){
+  .login-screen{padding:12px 12px 76px;}
+  .login-card{padding:24px 18px;}
+  .login-card .login-title{font-size:23px;line-height:1.27;}
+  body:not(.login-open) main{padding-inline:12px;}
+  body:not(.login-open) .licenses.common-first,body:not(.login-open) .licenses.role-secondary{padding-inline:11px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .login-card,.google-btn,body:not(.login-open) .top-btn,body:not(.login-open) .role-tab,body:not(.login-open) .filter-chip,body:not(.login-open) .card,body:not(.login-open) #roleGrid .cta{transition:none!important;scroll-behavior:auto!important;}
+}
+@media (forced-colors:active){
+  .login-card,body:not(.login-open) .overview-panel,body:not(.login-open) .licenses,body:not(.login-open) .card,body:not(.login-open) .request-modal,body:not(.login-open) .action-modal,body:not(.login-open) .drawer{border:1px solid CanvasText;box-shadow:none;}
+  body:not(.login-open) .filter-chip.active,body:not(.login-open) .role-tab.active{outline:1px solid CanvasText;outline-offset:2px;}
+}
