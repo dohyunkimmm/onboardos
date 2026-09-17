@@ -37,9 +37,12 @@ test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mob
   if((viewport?.width || 0) >= 960){
     expect(panel.display).toBe('grid');
     expect(panel.gridTemplateColumns.split(' ').length).toBe(2);
-    expect(panel.borderRadius).toBe('26px');
   }else{
     expect(panel.display).toBe('block');
+  }
+  if((viewport?.width || 0) >= 769){
+    expect(panel.borderRadius).toBe('26px');
+  }else{
     expect(panel.borderRadius).toBe('24px');
   }
   await shot(page.locator('.overview-panel'),'E2-overview-composition.png');
