@@ -54,7 +54,7 @@
 2. Chromium 회귀, Firefox/WebKit, Desktop/Mobile Lighthouse, Production Desktop Chromium+iPhone WebKit smoke를 확인합니다.
 3. Production integrity artifact에서 `production-demo.html`과 `login-font-lock.css`를 포함한 deployable asset의 SHA-256 일치 여부를 확인합니다.
 4. 배포 후 Production만 다시 확인해야 할 때는 `Production Verify` workflow로 새 commit 없이 integrity/smoke를 재검증할 수 있습니다.
-5. 정식 Release 기준은 GitHub Release v16.0.0이며 target은 Production 검증 완료 후 immutable Release에 고정합니다.
+5. 정식 Release 기준은 immutable GitHub Release `v16.0.0`이며 target은 `9a38b1dde2b68bff9a3a4427736ee0983ed9c92a`로 고정되어 있습니다.
 
 ## Prototype Scope
 
