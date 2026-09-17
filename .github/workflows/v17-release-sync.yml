@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   sync:
-    if: startsWith(github.event.head_commit.message, 'chore: add one-shot v17 release sync')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -34,38 +33,27 @@ jobs:
           release.releaseStatus='verified';
           release.evidenceContract.releaseAssets=release.evidenceContract.releaseAssets.map(x=>x.replace('ONBOARD_OS_v16.0.0_P6_production_demo.mp4','ONBOARD_OS_v17.0.0_P6_production_demo.mp4'));
           fs.writeFileSync('release.json',JSON.stringify(release,null,2)+'\n');
-
-          let version=fs.readFileSync('version.txt','utf8')
-            .replace('ONBOARD·OS v16.0.0','ONBOARD·OS v17.0.0')
-            .replace('releaseClass=visual-system-consolidation-product-finish','releaseClass=product-identity-interface-evolution')
-            .replace('scope=design-only-visual-system-consolidation-product-finish','scope=design-only-product-identity-interface-evolution');
+          let version=fs.readFileSync('version.txt','utf8').replace('ONBOARD·OS v16.0.0','ONBOARD·OS v17.0.0').replace('releaseClass=visual-system-consolidation-product-finish','releaseClass=product-identity-interface-evolution').replace('scope=design-only-visual-system-consolidation-product-finish','scope=design-only-product-identity-interface-evolution');
           fs.writeFileSync('version.txt',version);
-
-          let demo=fs.readFileSync('production-demo.html','utf8').replaceAll('v16.0.0','v17.0.0');
-          fs.writeFileSync('production-demo.html',demo);
-
+          fs.writeFileSync('production-demo.html',fs.readFileSync('production-demo.html','utf8').replaceAll('v16.0.0','v17.0.0'));
           let readme=fs.readFileSync('README.md','utf8');
-          readme=readme.replace(/^> \*\*Portfolio release — v16\.0\.0 \/ P6 Production verified\.\*\*.*$/m,
-          '> **Portfolio release — v17.0.0 / P6 Production verified.** P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, v16.1 수준의 typography·spacing·state·responsive polish를 포함해 Product Identity와 Interface hierarchy를 한 단계 고도화했습니다. Login → Overview → License Cards → Modal·Drawer까지 surface·elevation·card grammar·Action / Selection / Status 역할을 더 명확하게 분리했고, 버전별 runtime stylesheet는 `visual-system.css`로 통합했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다. 정식 기준은 [GitHub Release v17.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v17.0.0)과 공개 Verification Evidence로 고정합니다.');
+          readme=readme.replace(/^> \*\*Portfolio release — v16\.0\.0 \/ P6 Production verified\.\*\*.*$/m,'> **Portfolio release — v17.0.0 / P6 Production verified.** P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, v16.1 수준의 typography·spacing·state·responsive polish를 포함해 Product Identity와 Interface hierarchy를 한 단계 고도화했습니다. Login → Overview → License Cards → Modal·Drawer까지 surface·elevation·card grammar·Action / Selection / Status 역할을 더 명확하게 분리했고, 버전별 runtime stylesheet는 `visual-system.css`로 통합했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다. 정식 기준은 [GitHub Release v17.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v17.0.0)과 공개 Verification Evidence로 고정합니다.');
           readme=readme.replaceAll('v16.0.0 GitHub Release asset','v17.0.0 GitHub Release asset');
           fs.writeFileSync('README.md',readme);
-
           let walk=fs.readFileSync('docs/DEMO_WALKTHROUGH.md','utf8').replaceAll('v16.0.0','v17.0.0').replaceAll('ONBOARD_OS_v16.0.0_P6_production_demo.mp4','ONBOARD_OS_v17.0.0_P6_production_demo.mp4');
-          walk=walk.replace(/5\. 정식 Release 기준은 immutable GitHub Release `v17\.0\.0`이며 target은 `[^`]+`로 고정되어 있습니다\./,
-            '5. 정식 Release 기준은 immutable GitHub Release `v17.0.0`이며, Release target이 검증된 Production SHA와 일치하는지 확인합니다.');
+          walk=walk.replace(/5\. 정식 Release 기준은 immutable GitHub Release `v17\.0\.0`이며 target은 `[^`]+`로 고정되어 있습니다\./,'5. 정식 Release 기준은 immutable GitHub Release `v17.0.0`이며, Release target이 검증된 Production SHA와 일치하는지 확인합니다.');
           fs.writeFileSync('docs/DEMO_WALKTHROUGH.md',walk);
-
           let changelog=fs.readFileSync('CHANGELOG.md','utf8');
           if(!changelog.includes('## v17.0.0 — Product Identity & Interface Evolution')){
-            const entry=`## v17.0.0 — Product Identity & Interface Evolution — 2026-09-17\n\nP6에서 동결한 Business Flow와 상태 모델을 유지하면서 v16.1 수준의 visual precision을 포함한 Product Identity / Interface Evolution을 적용했습니다. 기능 추가 없이 Login → Dashboard → License Cards → Modal·Drawer 전 구간의 typography, spacing rhythm, surface hierarchy, elevation, action/selection/status 역할, responsive composition을 정교화했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.\n\n### Product identity & visual precision\n- typography hierarchy와 spacing rhythm을 재정렬하고 optical alignment를 정교화\n- Primary action / Selected state / Semantic status의 visual role을 더 명확하게 분리\n- Overview shell과 Common/Role card grammar, Modal·Drawer elevated surface를 통합\n- Desktop/Tablet/Mobile composition과 touch/focus/reduced-motion/forced-colors를 함께 보정\n- versioned runtime stylesheet를 제거하고 \`visual-system.css\` 단일 visual layer로 통합\n- v17 의도된 Login/Dashboard visual regression baseline을 Desktop/Mobile에서 승인\n\n### Preserved contracts\n- P6 feature freeze / \`businessFlowChanged: false\`\n- R1–R8 / S1–S8 / U1–U8 / V1–V8 / D1–D8 / E1–E8\n\n`;
+            const entry='## v17.0.0 — Product Identity & Interface Evolution — 2026-09-17\n\nP6에서 동결한 Business Flow와 상태 모델을 유지하면서 v16.1 수준의 visual precision을 포함한 Product Identity / Interface Evolution을 적용했습니다. 기능 추가 없이 Login → Dashboard → License Cards → Modal·Drawer 전 구간의 typography, spacing rhythm, surface hierarchy, elevation, action/selection/status 역할, responsive composition을 정교화했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.\n\n### Product identity & visual precision\n- typography hierarchy와 spacing rhythm을 재정렬하고 optical alignment를 정교화\n- Primary action / Selected state / Semantic status의 visual role을 더 명확하게 분리\n- Overview shell과 Common/Role card grammar, Modal·Drawer elevated surface를 통합\n- Desktop/Tablet/Mobile composition과 touch/focus/reduced-motion/forced-colors를 함께 보정\n- versioned runtime stylesheet를 제거하고 `visual-system.css` 단일 visual layer로 통합\n- v17 의도된 Login/Dashboard visual regression baseline을 Desktop/Mobile에서 승인\n\n### Preserved contracts\n- P6 feature freeze / `businessFlowChanged: false`\n- R1–R8 / S1–S8 / U1–U8 / V1–V8 / D1–D8 / E1–E8\n\n';
             changelog=changelog.replace('# Changelog\n\n','# Changelog\n\n'+entry);
           }
           fs.writeFileSync('CHANGELOG.md',changelog);
           NODE
           node scripts/public-assets.js --write
           npm run quality
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add package.json package-lock.json release.json version.txt production-demo.html README.md CHANGELOG.md docs/DEMO_WALKTHROUGH.md integrity-assets.json
-          git commit -m "release: sync v17.0.0 canonical metadata"
+          git commit -m 'release: sync v17.0.0 canonical metadata'
           git push origin HEAD:v17-visual-evolution
