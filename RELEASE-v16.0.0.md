@@ -31,7 +31,9 @@ R1–R8, S1–S8, U1–U8, V1–V8, D1–D8, E1–E8, Chromium functional/WCAG/k
 - Firefox / WebKit functional smoke: PASS
 - Desktop / Mobile Lighthouse 13.4.1 budgets: PASS
 - Supply-chain security gate: PASS
+- Release workflow: #19 / `35180957072` · success
+- Production Demo: `ONBOARD_OS_v16.0.0_P6_production_demo.mp4` · Production 기준 정확히 36초로 생성·검증
+- GitHub Release: `v16.0.0` · target `9a38b1dde2b68bff9a3a4427736ee0983ed9c92a` · immutable `true`
 - Business Flow / catalog / request state / SLA / role isolation: P6 frozen, `businessFlowChanged=false`
-- v16 Production Demo asset: `ONBOARD_OS_v16.0.0_P6_production_demo.mp4` · release workflow에서 Production 기준 정확히 36초로 생성·검증
 
-Canonical runtime metadata, verified Production SHA, `version.txt`, README/CHANGELOG/release note, Production Demo links와 GitHub Release는 v16.0.0을 기준으로 동기화합니다. 이전 standalone release note는 CHANGELOG와 immutable GitHub Release history로 통합합니다.
+Canonical runtime metadata, verified Production SHA, `version.txt`, README/CHANGELOG/release note, Production Demo links와 immutable GitHub Release는 v16.0.0을 기준으로 동기화했습니다. 이전 standalone release note는 CHANGELOG와 immutable GitHub Release history로 통합합니다.
