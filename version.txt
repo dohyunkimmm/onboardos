@@ -2,6 +2,7 @@ ONBOARD·OS v16.0.0
 P6 feature freeze
 canonicalVersionSource=release.json
 releaseChannel=production
+releaseStatus=verified
 releaseClass=visual-system-consolidation-product-finish
 scope=design-only-visual-system-consolidation-product-finish
 freeze=P6
