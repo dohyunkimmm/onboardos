@@ -12,7 +12,7 @@
   --vs-line-strong:rgba(255,255,255,.135);
   --vs-text:#F7F8FB;
   --vs-muted:rgba(229,232,240,.68);
-  --vs-dim:rgba(229,232,240,.48);
+  --vs-dim:rgba(229,232,240,.56);
   --vs-accent:#A78BFA;
   --vs-accent-strong:#8B5CF6;
   --vs-accent-cool:#7DD3FC;
@@ -76,6 +76,7 @@ body{background:var(--vs-canvas);color:var(--vs-text);}
 /* App chrome — action, selection and status use distinct visual roles. */
 body:not(.login-open) .topbar{border-bottom-color:rgba(255,255,255,.055);background:rgba(8,10,15,.88);backdrop-filter:blur(18px) saturate(120%);box-shadow:0 14px 36px -34px rgba(0,0,0,.98);}
 body:not(.login-open) .topbar .logo{letter-spacing:-.035em;}
+body:not(.login-open) .topbar .sub{color:var(--vs-dim);}
 body:not(.login-open) #statusBtn{background:linear-gradient(135deg,#5B5FEF,#7C3AED);border-color:rgba(216,205,255,.22);box-shadow:0 16px 34px -24px rgba(124,58,237,.88),inset 0 1px 0 rgba(255,255,255,.10);color:#fff;}
 body:not(.login-open) #statusBtn:hover{filter:brightness(1.06);transform:translateY(-1px);}
 body:not(.login-open) #statusBtn:active{transform:translateY(0) scale(.985);}
