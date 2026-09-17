@@ -1,0 +1,287 @@
+/* ONBOARD·OS v16 — Visual System Consolidation & Product Finish
+   Scope: presentation only. P6 business flow, request state machine, catalog, SLA semantics,
+   role isolation and application behavior remain unchanged. */
+
+:root{
+  --v16-canvas:#090B10;
+  --v16-surface-1:rgba(16,19,26,.94);
+  --v16-surface-2:rgba(23,27,36,.96);
+  --v16-surface-3:rgba(31,35,46,.98);
+  --v16-surface-soft:rgba(255,255,255,.026);
+  --v16-line:rgba(255,255,255,.078);
+  --v16-line-strong:rgba(203,190,255,.20);
+  --v16-text:#F6F4FA;
+  --v16-muted:rgba(224,222,232,.64);
+  --v16-dim:rgba(224,222,232,.44);
+  --v16-accent:#A78BFA;
+  --v16-accent-strong:#8B5CF6;
+  --v16-accent-soft:rgba(167,139,250,.14);
+  --v16-positive:#6EE7B7;
+  --v16-warning:#F7C873;
+  --v16-danger:#FB7185;
+  --v16-radius-xs:10px;
+  --v16-radius-sm:13px;
+  --v16-radius-md:17px;
+  --v16-radius-lg:22px;
+  --v16-radius-xl:26px;
+  --v16-shadow-1:0 14px 36px -32px rgba(0,0,0,.92),inset 0 1px 0 rgba(255,255,255,.022);
+  --v16-shadow-2:0 24px 64px -46px rgba(0,0,0,.96),0 10px 34px -30px rgba(124,58,237,.34),inset 0 1px 0 rgba(255,255,255,.03);
+  --v16-focus:0 0 0 3px rgba(167,139,250,.26);
+  --v16-motion-fast:150ms;
+  --v16-motion:210ms;
+  --v16-ease:cubic-bezier(.2,.8,.2,1);
+}
+
+/* Global product finish */
+body{background:var(--v16-canvas);color:var(--v16-text);}
+body:not(.login-open) main{max-width:1120px;padding-top:32px;padding-bottom:88px;}
+body:not(.login-open) .topbar{
+  padding-block:12px;
+  border-bottom-color:var(--v16-line);
+  background:rgba(9,11,16,.88);
+  box-shadow:0 10px 30px -28px rgba(0,0,0,.92);
+}
+body:not(.login-open) .topbar .sub{color:var(--v16-dim);}
+body:not(.login-open) .top-actions{gap:6px;}
+body:not(.login-open) .top-btn{
+  min-height:38px;
+  border-radius:var(--v16-radius-xs);
+  border-color:var(--v16-line);
+  background:rgba(255,255,255,.032);
+  color:var(--v16-muted);
+  box-shadow:none;
+}
+body:not(.login-open) #statusBtn{
+  color:#fff;
+  border-color:rgba(167,139,250,.24);
+  background:linear-gradient(135deg,rgba(79,70,229,.76),rgba(124,58,237,.62));
+  box-shadow:0 12px 28px -22px rgba(124,58,237,.9),inset 0 1px 0 rgba(255,255,255,.08);
+}
+body:not(.login-open) #adminBtn:hover,
+body:not(.login-open) #resetBtn:hover,
+body:not(.login-open) #moreBtn:hover{background:rgba(255,255,255,.055);color:#fff;border-color:rgba(255,255,255,.105);}
+
+/* Login and post-login now share one visual grammar without changing login behavior. */
+.login-screen{
+  background:
+    radial-gradient(46% 42% at 14% 14%,rgba(124,58,237,.13),transparent 70%),
+    radial-gradient(40% 36% at 86% 10%,rgba(99,102,241,.08),transparent 72%),
+    linear-gradient(145deg,#080A0F 0%,#0D1016 52%,#121620 100%);
+}
+.login-card{
+  width:min(880px,100%);
+  border-radius:var(--v16-radius-xl);
+  border-color:var(--v16-line);
+  background:linear-gradient(145deg,rgba(23,27,36,.965),rgba(14,17,23,.955));
+  box-shadow:var(--v16-shadow-2);
+  gap:34px;
+}
+.login-brandline{margin-bottom:12px;}
+.login-eyebrow{border-color:var(--v16-line);background:rgba(255,255,255,.025);color:var(--v16-dim);}
+.login-card .login-title{color:var(--v16-text);letter-spacing:-.035em;}
+.login-card p,.scenario-item,.login-note,.login-meta{color:var(--v16-muted);}
+.login-panel{
+  border-radius:var(--v16-radius-lg);
+  border-color:var(--v16-line);
+  background:linear-gradient(155deg,rgba(255,255,255,.045),rgba(255,255,255,.018));
+  box-shadow:var(--v16-shadow-1);
+}
+.login-account{border-color:var(--v16-line);background:rgba(255,255,255,.025);}
+.google-btn{border-radius:var(--v16-radius-sm);}
+.reviewer-entry{color:var(--v16-dim);}
+.reviewer-entry a{color:rgba(224,222,232,.76);}
+.reviewer-entry a:hover{color:#fff;}
+
+/* Overview / identity / progress */
+body:not(.login-open) .overview-panel{
+  border-radius:var(--v16-radius-xl);
+  border-color:var(--v16-line);
+  background:
+    radial-gradient(70% 120% at 100% 0%,rgba(124,58,237,.11),transparent 60%),
+    linear-gradient(145deg,var(--v16-surface-2),rgba(14,17,23,.96));
+  box-shadow:var(--v16-shadow-2);
+}
+body:not(.login-open) .overview-panel .name-input{color:var(--v16-text);font-weight:760;letter-spacing:-.045em;}
+body:not(.login-open) .overview-panel .badge-id label,
+body:not(.login-open) .role-picker>label{color:var(--v16-dim);}
+body:not(.login-open) .overview-panel .emp-meta{color:var(--v16-dim);}
+body:not(.login-open) .role-meta-pill{background:rgba(110,231,183,.105);border:1px solid rgba(110,231,183,.10);}
+body:not(.login-open) .role-tab{
+  min-height:36px;
+  border-radius:var(--v16-radius-xs);
+  border:1px solid var(--v16-line);
+  background:rgba(255,255,255,.022);
+  color:var(--v16-muted);
+}
+body:not(.login-open) .role-tab:hover{background:rgba(255,255,255,.045);color:#fff;border-color:rgba(255,255,255,.12);}
+body:not(.login-open) .role-tab.active{
+  color:#F5F1FF;
+  border-color:rgba(167,139,250,.30);
+  background:linear-gradient(135deg,rgba(99,102,241,.22),rgba(168,85,247,.16));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+body:not(.login-open) .demo-preview-note{color:var(--v16-muted);border-left-color:rgba(167,139,250,.28);background:rgba(167,139,250,.035);}
+body:not(.login-open) .progress-wrap{background:rgba(4,6,10,.26);}
+body:not(.login-open) .progress-step.done{opacity:.62;}
+body:not(.login-open) .progress-step.current{opacity:1;}
+body:not(.login-open) .progress-step.current .step-circle{box-shadow:0 0 0 4px rgba(167,139,250,.13),0 10px 28px -18px rgba(124,58,237,.92);}
+body:not(.login-open) .progress-hint{color:var(--v16-muted);}
+
+/* Command surface */
+body:not(.login-open) .tools-bar{
+  margin:18px 0 14px;
+  padding:4px;
+  border-radius:var(--v16-radius-sm);
+  border-color:var(--v16-line);
+  background:rgba(12,15,21,.86);
+  box-shadow:0 16px 36px -32px rgba(0,0,0,.94);
+}
+body:not(.login-open) .filter-chip{
+  min-height:34px;
+  border-radius:10px;
+  color:var(--v16-muted);
+}
+body:not(.login-open) .filter-chip.active{
+  color:#F5F1FF;
+  border-color:rgba(167,139,250,.24);
+  background:linear-gradient(135deg,rgba(99,102,241,.22),rgba(168,85,247,.15));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+/* Section and card system */
+body:not(.login-open) .licenses{
+  border-radius:var(--v16-radius-lg);
+  border-color:var(--v16-line);
+  background:linear-gradient(160deg,rgba(255,255,255,.016),rgba(255,255,255,.006));
+  box-shadow:var(--v16-shadow-1);
+}
+body:not(.login-open) .section-head{border-bottom-color:rgba(255,255,255,.055);}
+body:not(.login-open) .section-head h2{font-size:20px;font-weight:760;letter-spacing:-.03em;color:var(--v16-text);}
+body:not(.login-open) .section-head .count{color:var(--v16-dim);}
+body:not(.login-open) .card{
+  border-radius:var(--v16-radius-md);
+  border-color:var(--v16-line);
+  background:linear-gradient(160deg,rgba(27,31,40,.92),rgba(17,20,27,.90));
+  box-shadow:var(--v16-shadow-1);
+  transition:transform var(--v16-motion) var(--v16-ease),border-color var(--v16-motion-fast) ease,background var(--v16-motion-fast) ease,box-shadow var(--v16-motion) var(--v16-ease);
+}
+body:not(.login-open) .card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(167,139,250,.20);
+  background:linear-gradient(160deg,rgba(31,35,46,.95),rgba(18,21,29,.93));
+  box-shadow:0 20px 48px -38px rgba(124,58,237,.42),inset 0 1px 0 rgba(255,255,255,.03);
+}
+body:not(.login-open) .logo-chip{
+  border-radius:var(--v16-radius-xs);
+  border-color:var(--v16-line);
+  background:rgba(255,255,255,.035);
+}
+body:not(.login-open) .card-title{color:var(--v16-text);letter-spacing:-.012em;}
+body:not(.login-open) .card-cat,
+body:not(.login-open) .card-owner{color:var(--v16-dim);}
+body:not(.login-open) .card-owner b{color:var(--v16-muted);}
+body:not(.login-open) #commonGrid .card{box-shadow:none;background:linear-gradient(155deg,rgba(26,30,38,.82),rgba(16,19,26,.80));}
+body:not(.login-open) #roleGrid .card{min-height:176px;}
+body:not(.login-open) .status-pill{font-weight:690;border:1px solid transparent;}
+body:not(.login-open) .status-auto,
+body:not(.login-open) .status-approved,
+body:not(.login-open) .status-completed{color:var(--v16-positive);background:rgba(110,231,183,.09);border-color:rgba(110,231,183,.085);}
+body:not(.login-open) .status-request,
+body:not(.login-open) .status-pending{color:var(--v16-warning);background:rgba(247,200,115,.09);border-color:rgba(247,200,115,.085);}
+body:not(.login-open) .status-approval,
+body:not(.login-open) .status-rejected{color:var(--v16-danger);background:rgba(251,113,133,.09);border-color:rgba(251,113,133,.085);}
+body:not(.login-open) #roleGrid .cta{
+  min-height:36px;
+  min-width:86px;
+  padding-inline:13px;
+  border-radius:var(--v16-radius-xs);
+  border:1px solid rgba(167,139,250,.20);
+  color:#F4EEFF;
+  background:linear-gradient(135deg,rgba(99,102,241,.24),rgba(124,58,237,.18));
+  box-shadow:0 12px 24px -19px rgba(124,58,237,.74);
+}
+body:not(.login-open) #roleGrid .cta:hover{border-color:rgba(167,139,250,.34);background:linear-gradient(135deg,rgba(99,102,241,.31),rgba(124,58,237,.24));}
+
+/* Modal, drawer and execution surfaces */
+body:not(.login-open) .request-modal,
+body:not(.login-open) .action-modal,
+body:not(.login-open) .drawer{
+  border-color:var(--v16-line);
+  background:linear-gradient(155deg,var(--v16-surface-2),rgba(14,17,23,.985));
+  box-shadow:var(--v16-shadow-2);
+}
+body:not(.login-open) .request-modal,
+body:not(.login-open) .action-modal{border-radius:var(--v16-radius-xl);}
+body:not(.login-open) .drawer-head{border-bottom-color:var(--v16-line);}
+body:not(.login-open) .modal-actions{
+  border-top-color:var(--v16-line);
+  background:linear-gradient(180deg,rgba(23,27,36,.84),rgba(12,15,21,.995));
+}
+body:not(.login-open) .request-item,
+body:not(.login-open) .reason-item,
+body:not(.login-open) .request-note-view,
+body:not(.login-open) .action-info{border-color:var(--v16-line);background:rgba(255,255,255,.028);}
+body:not(.login-open) .request-actions{border-top-color:rgba(255,255,255,.055);}
+body:not(.login-open) .request-actions button,
+body:not(.login-open) .modal-actions button{border-radius:var(--v16-radius-xs);}
+
+/* Empty, disabled and completion visual states */
+body:not(.login-open) .empty-state{
+  border-radius:var(--v16-radius-md);
+  border-color:rgba(167,139,250,.17);
+  background:radial-gradient(70% 120% at 50% 0%,rgba(124,58,237,.075),transparent 68%),rgba(255,255,255,.012);
+  color:var(--v16-muted);
+}
+body:not(.login-open) .empty-state::before{border-color:rgba(167,139,250,.20);background:rgba(167,139,250,.06);color:rgba(203,190,255,.78);}
+body:not(.login-open) :disabled,
+body:not(.login-open) [aria-disabled="true"]{filter:saturate(.72);}
+body:not(.login-open) .complete-box.is-complete{border-color:rgba(110,231,183,.14);box-shadow:0 22px 56px -40px rgba(110,231,183,.42);}
+
+/* Unified focus language */
+body:not(.login-open) :where(a,button,input,textarea,select):focus-visible{outline:2px solid var(--v16-accent);outline-offset:2px;box-shadow:var(--v16-focus);}
+
+/* Responsive composition */
+@media (max-width:1024px) and (min-width:769px){
+  body:not(.login-open) main{max-width:920px;padding-top:27px;}
+  body:not(.login-open) #commonGrid,
+  body:not(.login-open) #roleGrid,
+  body:not(.login-open) #roleGrid.balanced-four{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:768px){
+  .login-screen{padding:14px;}
+  .login-card{padding:26px 20px;gap:24px;border-radius:22px;}
+  .login-card .login-title{font-size:24px;}
+  .login-panel{padding:18px;border-radius:18px;}
+  body:not(.login-open) main{padding-top:18px;padding-bottom:58px;}
+  body:not(.login-open) .overview-panel{border-radius:22px;}
+  body:not(.login-open) .tools-bar{top:62px;width:100%;overflow-x:auto;scrollbar-width:none;}
+  body:not(.login-open) .licenses{border-radius:20px;}
+  body:not(.login-open) #roleGrid,
+  body:not(.login-open) #roleGrid.balanced-four{grid-template-columns:1fr;}
+  body:not(.login-open) #roleGrid .card{min-height:0;padding:16px 15px 14px;}
+  body:not(.login-open) #roleGrid .card-bottom{align-items:stretch;flex-direction:column;}
+  body:not(.login-open) #roleGrid .card-action{width:100%;}
+  body:not(.login-open) #roleGrid .cta{width:100%;min-height:44px;}
+  body:not(.login-open) .request-modal,
+  body:not(.login-open) .action-modal{border-radius:22px;}
+}
+@media (max-width:420px){
+  body:not(.login-open) #commonGrid{grid-template-columns:1fr 1fr;}
+  body:not(.login-open) .top-actions{gap:4px;}
+}
+@media (hover:hover) and (pointer:fine){
+  body:not(.login-open) :where(.top-btn,.filter-chip,.role-tab,.cta,.request-actions button,.modal-actions button){transition-duration:var(--v16-motion-fast);transition-timing-function:var(--v16-ease);}
+}
+@media (prefers-reduced-motion:reduce){
+  body:not(.login-open) .card,
+  body:not(.login-open) :where(.top-btn,.filter-chip,.role-tab,.cta,.request-actions button,.modal-actions button){transition-duration:0s!important;}
+}
+@media (forced-colors:active){
+  .login-card,.login-panel,
+  body:not(.login-open) .overview-panel,
+  body:not(.login-open) .licenses,
+  body:not(.login-open) .card,
+  body:not(.login-open) .request-modal,
+  body:not(.login-open) .action-modal,
+  body:not(.login-open) .drawer{border:1px solid CanvasText;}
+}
