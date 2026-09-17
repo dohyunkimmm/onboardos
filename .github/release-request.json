@@ -1,7 +1,7 @@
 {
-  "tag": "v16.0.0",
-  "target": "9a38b1dde2b68bff9a3a4427736ee0983ed9c92a",
-  "title": "v16.0.0 — Visual System Consolidation & Product Finish",
-  "notes_file": "RELEASE-v16.0.0.md",
-  "sync_revision": 12
+  "tag": "v17.0.0",
+  "target": "fa024c92c0d8727bd4a6b67f61a255c8ae02b12a",
+  "title": "v17.0.0 — Product Identity & Interface Evolution",
+  "notes_file": "CHANGELOG.md",
+  "sync_revision": 13
 }
