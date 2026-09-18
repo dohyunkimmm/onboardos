@@ -1,7 +1,6 @@
 /* ONBOARD·OS v18 candidate — Task Clarity & Product Experience
-   Builds on the verified v17 Product Identity & Interface Evolution baseline.
-   Design-only evolution. Business flow, data, request state machine,
-   SLA semantics, role isolation and P6 behavior remain frozen. */
+   Builds on the verified v17 visual baseline. Design-only evolution;
+   business flow, data, request state, SLA, role isolation and P6 stay frozen. */
 :root{
   --vs-canvas:#080A0F;
   --vs-canvas-2:#0B0E15;
@@ -29,338 +28,46 @@
   --vs-motion-fast:140ms cubic-bezier(.2,.7,.2,1);
   --vs-motion-base:180ms cubic-bezier(.2,.7,.2,1);
 }
-
 html{background:var(--vs-canvas);}
 body{background:var(--vs-canvas);color:var(--vs-text);}
-.bg-atmosphere::before{
-  background:
-    radial-gradient(42% 34% at 82% 0%,rgba(125,211,252,.055),transparent 72%),
-    radial-gradient(52% 42% at 10% 2%,rgba(139,92,246,.105),transparent 74%),
-    linear-gradient(180deg,#080A0F 0%,#0A0D13 44%,#0E121A 100%);
-}
+.bg-atmosphere::before{background:radial-gradient(42% 34% at 82% 0%,rgba(125,211,252,.055),transparent 72%),radial-gradient(52% 42% at 10% 2%,rgba(139,92,246,.105),transparent 74%),linear-gradient(180deg,#080A0F 0%,#0A0D13 44%,#0E121A 100%);}
 .bg-grid{opacity:.48;background-size:80px 80px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.82),rgba(0,0,0,.28) 58%,transparent 92%);}
+.login-screen{background:radial-gradient(46% 46% at 14% 10%,rgba(139,92,246,.16),transparent 70%),radial-gradient(38% 34% at 88% 8%,rgba(125,211,252,.075),transparent 72%),linear-gradient(138deg,#080A0F,#0B0E15 58%,#111722);}
+.login-card{width:min(920px,100%);gap:42px;padding:42px;border:1px solid var(--vs-line);border-radius:var(--vs-radius-shell);background:linear-gradient(145deg,rgba(27,31,41,.985),rgba(14,17,24,.972));box-shadow:0 44px 112px -68px rgba(0,0,0,.98),0 0 0 1px rgba(167,139,250,.03),inset 0 1px 0 rgba(255,255,255,.036);}
+.login-brandline{margin-bottom:18px;gap:10px;}.login-brand{letter-spacing:-.035em;}.login-eyebrow{color:var(--vs-muted);border-color:var(--vs-line);background:rgba(255,255,255,.022);}.login-card .login-title{font-size:32px;line-height:1.22;letter-spacing:-.042em;font-weight:780;}.login-card p{max-width:540px;color:var(--vs-muted);line-height:1.68;}.scenario-list{gap:11px;margin-top:22px;}.scenario-item{color:var(--vs-muted);line-height:1.5;}.scenario-check{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;border-radius:7px;background:rgba(167,139,250,.085);border:1px solid rgba(167,139,250,.15);color:#E8E1FF;font-size:11px;}.login-meta{color:var(--vs-dim);}.login-panel{padding:21px;border:1px solid var(--vs-line);border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.052),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.03);}.login-account{border-color:rgba(255,255,255,.072);background:rgba(0,0,0,.08);}.login-account-label,.login-note,.reviewer-entry{color:var(--vs-dim);}.google-btn{min-height:48px;border-radius:12px;box-shadow:0 14px 32px -26px rgba(0,0,0,.92);transition:transform var(--vs-motion-fast),box-shadow var(--vs-motion-base),filter var(--vs-motion-fast);}.google-btn:hover{box-shadow:0 18px 40px -28px rgba(0,0,0,.94);filter:brightness(1.025);}.google-btn:active{transform:translateY(1px) scale(.995);}
+body:not(.login-open) .topbar{border-bottom-color:rgba(255,255,255,.055);background:rgba(8,10,15,.88);backdrop-filter:blur(18px) saturate(120%);box-shadow:0 14px 36px -34px rgba(0,0,0,.98);}body:not(.login-open) .topbar .logo{letter-spacing:-.035em;}body:not(.login-open) #statusBtn{background:linear-gradient(135deg,#5B5FEF,#7C3AED);border-color:rgba(216,205,255,.22);box-shadow:0 16px 34px -24px rgba(124,58,237,.88),inset 0 1px 0 rgba(255,255,255,.10);color:#fff;}body:not(.login-open) #statusBtn:hover{filter:brightness(1.06);transform:translateY(-1px);}body:not(.login-open) #statusBtn:active{transform:translateY(0) scale(.985);}body:not(.login-open) #adminBtn{background:var(--vs-surface-1);border-color:var(--vs-line);color:var(--vs-muted);}body:not(.login-open) #adminBtn:hover{background:var(--vs-surface-2);border-color:var(--vs-line-strong);color:var(--vs-text);}body:not(.login-open) #resetBtn,body:not(.login-open) #moreBtn{background:transparent;border-color:transparent;color:var(--vs-dim);}body:not(.login-open) #resetBtn:hover,body:not(.login-open) #moreBtn:hover{background:var(--vs-surface-2);color:var(--vs-text);}body:not(.login-open) .top-btn{transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast),transform var(--vs-motion-fast),filter var(--vs-motion-fast);}body:not(.login-open) .topbar .sub{color:var(--vs-muted);}body:not(.login-open) #resetBtn{color:rgba(229,232,240,.54);}
+body:not(.login-open) main{max-width:1220px;padding-top:34px;padding-bottom:96px;}body:not(.login-open) .overview-panel{border:1px solid var(--vs-line);border-radius:var(--vs-radius-shell);background:radial-gradient(62% 110% at 100% 0%,rgba(125,211,252,.045),transparent 62%),radial-gradient(70% 120% at 8% 0%,rgba(139,92,246,.09),transparent 66%),linear-gradient(145deg,rgba(25,29,39,.982),rgba(13,16,22,.966));box-shadow:var(--vs-shadow-shell);}body:not(.login-open) .overview-panel .name-input{font-weight:790;letter-spacing:-.048em;}body:not(.login-open) .overview-panel .badge-id label,body:not(.login-open) .role-picker>label,body:not(.login-open) .emp-meta{color:var(--vs-dim);}body:not(.login-open) .role-meta-pill{background:rgba(110,231,183,.078);border:1px solid rgba(110,231,183,.13);color:rgba(186,255,224,.9);}body:not(.login-open) .role-picker{background:rgba(255,255,255,.006);}body:not(.login-open) .role-tab{border-radius:var(--vs-radius-control);border-color:rgba(255,255,255,.07);background:rgba(255,255,255,.016);color:var(--vs-muted);transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast),box-shadow var(--vs-motion-fast);}body:not(.login-open) .role-tab:hover{background:var(--vs-surface-2);border-color:var(--vs-line-strong);color:var(--vs-text);}body:not(.login-open) .role-tab.active{background:rgba(167,139,250,.105);border-color:rgba(167,139,250,.27);color:#F4F0FF;box-shadow:inset 0 1px 0 rgba(255,255,255,.038);}body:not(.login-open) .role-tab.exception:not(.active){color:rgba(246,199,109,.82);border-color:rgba(246,199,109,.16);}body:not(.login-open) .demo-preview-note{background:linear-gradient(90deg,rgba(167,139,250,.04),transparent);border-left-color:rgba(167,139,250,.28);color:var(--vs-muted);}
+body:not(.login-open) .progress-wrap{background:rgba(2,4,8,.20);}body:not(.login-open) .progress-step.done{opacity:.66;}body:not(.login-open) .progress-step.done .step-circle{background:rgba(110,231,183,.13);border-color:rgba(110,231,183,.27);color:var(--vs-positive);}body:not(.login-open) .progress-step.done .step-label{color:rgba(110,231,183,.72);}body:not(.login-open) .progress-step.current .step-circle{background:linear-gradient(135deg,#6366F1,#8B5CF6);box-shadow:0 0 0 4px rgba(139,92,246,.11),0 12px 26px -17px rgba(139,92,246,.92);}body:not(.login-open) .progress-hint{color:var(--vs-muted);}
+body:not(.login-open) .tools-bar{border:1px solid var(--vs-line);border-radius:13px;background:rgba(10,13,19,.86);box-shadow:0 18px 42px -36px rgba(0,0,0,.98);backdrop-filter:blur(16px);}body:not(.login-open) .filter-chip{border-radius:9px;color:var(--vs-muted);transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast);}body:not(.login-open) .filter-chip:hover{background:rgba(255,255,255,.034);color:var(--vs-text);}body:not(.login-open) .filter-chip.active{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(125,211,252,.045));border-color:rgba(167,139,250,.20);color:#F1EDFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);}
+body:not(.login-open) .licenses{border:1px solid var(--vs-line);border-radius:var(--vs-radius-shell);background:linear-gradient(160deg,rgba(255,255,255,.018),rgba(255,255,255,.005));box-shadow:var(--vs-shadow-shell);}body:not(.login-open) .section-head{border-bottom-color:rgba(255,255,255,.055);}body:not(.login-open) .section-head h2{font-size:21px;font-weight:780;letter-spacing:-.042em;line-height:1.3;}body:not(.login-open) .section-head .count{color:var(--vs-dim);}body:not(.login-open) .card{border:1px solid rgba(255,255,255,.073);border-radius:var(--vs-radius-card);background:linear-gradient(160deg,rgba(27,31,40,.91),rgba(15,18,24,.90));box-shadow:var(--vs-shadow-card);transition:transform var(--vs-motion-base),border-color var(--vs-motion-fast),background var(--vs-motion-fast),box-shadow var(--vs-motion-base);}body:not(.login-open) #commonGrid .card{background:linear-gradient(160deg,rgba(255,255,255,.034),rgba(255,255,255,.014));box-shadow:inset 0 1px 0 rgba(255,255,255,.022);}body:not(.login-open) #roleGrid .card{background:linear-gradient(158deg,rgba(28,32,42,.965),rgba(15,18,25,.945));box-shadow:0 22px 54px -44px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.03);}body:not(.login-open) .card:hover{transform:translateY(-2px);border-color:rgba(167,139,250,.18);background:linear-gradient(160deg,rgba(32,36,47,.96),rgba(17,20,27,.95));box-shadow:0 24px 58px -42px rgba(124,58,237,.30),inset 0 1px 0 rgba(255,255,255,.03);}body:not(.login-open) .card:focus-within{border-color:rgba(167,139,250,.25);box-shadow:0 24px 58px -42px rgba(124,58,237,.30),inset 0 1px 0 rgba(255,255,255,.032);}body:not(.login-open) .logo-chip{border-radius:12px;border-color:rgba(255,255,255,.078);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));}body:not(.login-open) .card-title{letter-spacing:-.02em;line-height:1.35;}body:not(.login-open) .card-cat,body:not(.login-open) .card-owner{color:var(--vs-dim);}body:not(.login-open) #roleGrid .card-owner{border-bottom-color:rgba(255,255,255,.052);}
+body:not(.login-open) #roleGrid .cta{border:1px solid rgba(193,178,255,.18);border-radius:10px;background:linear-gradient(135deg,#5B5FEF,#7C3AED);color:#fff;box-shadow:0 14px 30px -22px rgba(124,58,237,.86),inset 0 1px 0 rgba(255,255,255,.08);font-weight:720;transition:transform var(--vs-motion-fast),filter var(--vs-motion-fast),box-shadow var(--vs-motion-base);}body:not(.login-open) #roleGrid .cta:hover{filter:brightness(1.07);box-shadow:0 18px 38px -24px rgba(124,58,237,.9),inset 0 1px 0 rgba(255,255,255,.10);}body:not(.login-open) #roleGrid .cta:active{transform:translateY(1px) scale(.99);}
+body:not(.login-open) .status-pill{border:1px solid transparent;font-weight:650;}body:not(.login-open) .status-auto,body:not(.login-open) .status-approved,body:not(.login-open) .status-completed{background:rgba(110,231,183,.075);border-color:rgba(110,231,183,.13);}body:not(.login-open) .status-request{background:rgba(246,199,109,.075);border-color:rgba(246,199,109,.13);}body:not(.login-open) .status-approval,body:not(.login-open) .status-rejected{background:rgba(251,138,155,.075);border-color:rgba(251,138,155,.13);}
+body:not(.login-open) .request-modal,body:not(.login-open) .action-modal,body:not(.login-open) .drawer{border-color:var(--vs-line);background:linear-gradient(155deg,rgba(25,29,39,.995),rgba(12,15,21,.992));box-shadow:var(--vs-shadow-raised);}body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{border-radius:var(--vs-radius-shell);}body:not(.login-open) .request-modal h3,body:not(.login-open) .action-modal h3{letter-spacing:-.038em;}body:not(.login-open) .drawer-head{border-bottom-color:rgba(255,255,255,.06);background:rgba(18,21,29,.88);backdrop-filter:blur(14px);}body:not(.login-open) .modal-actions{border-top-color:rgba(255,255,255,.065);background:linear-gradient(180deg,rgba(21,25,34,.90),rgba(11,14,20,.997));}body:not(.login-open) .modal-actions .primary-btn,body:not(.login-open) .modal-actions .btn-primary{background:linear-gradient(135deg,#5B5FEF,#7C3AED);border-color:transparent;box-shadow:0 16px 34px -22px rgba(124,58,237,.88),inset 0 1px 0 rgba(255,255,255,.09);}body:not(.login-open) .request-item,body:not(.login-open) .reason-item,body:not(.login-open) .request-note-view,body:not(.login-open) .action-info{border-color:rgba(255,255,255,.068);background:rgba(255,255,255,.026);}body:not(.login-open) .empty-state{border-color:rgba(167,139,250,.15);background:radial-gradient(72% 120% at 50% 0%,rgba(139,92,246,.065),transparent 70%),rgba(255,255,255,.008);}
+:where(a,button,input,textarea):focus-visible{outline:2px solid var(--vs-accent);outline-offset:3px;box-shadow:var(--vs-focus);}:where(button,.role-tab,.filter-chip,.cta){-webkit-tap-highlight-color:transparent;}
+@media (max-width:1024px){body:not(.login-open) main{max-width:100%;padding-inline:20px;}.login-card{width:min(880px,100%);gap:32px;padding:36px;}}
+@media (max-width:768px){.login-card{padding:28px 22px;gap:24px;border-radius:24px;}.login-card .login-title{font-size:26px;}.login-panel{padding:18px;border-radius:17px;}body:not(.login-open) main{padding-top:18px;padding-inline:16px;padding-bottom:76px;}body:not(.login-open) .overview-panel{border-radius:24px;}body:not(.login-open) .licenses{border-radius:21px;}body:not(.login-open) .section-head h2{font-size:18px;}body:not(.login-open) #roleGrid .card{border-radius:17px;}body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{border-radius:21px;}body:not(.login-open) .card:hover{transform:none;}}
+@media (max-width:420px){.login-screen{padding:12px 12px 76px;}.login-card{padding:24px 18px;}.login-card .login-title{font-size:23px;line-height:1.27;}body:not(.login-open) main{padding-inline:12px;}body:not(.login-open) .licenses.common-first,body:not(.login-open) .licenses.role-secondary{padding-inline:11px;}}
+@media (prefers-reduced-motion:reduce){.login-card,.google-btn,body:not(.login-open) .top-btn,body:not(.login-open) .role-tab,body:not(.login-open) .filter-chip,body:not(.login-open) .card,body:not(.login-open) #roleGrid .cta{transition:none!important;scroll-behavior:auto!important;}}
+@media (forced-colors:active){.login-card,body:not(.login-open) .overview-panel,body:not(.login-open) .licenses,body:not(.login-open) .card,body:not(.login-open) .request-modal,body:not(.login-open) .action-modal,body:not(.login-open) .drawer{border:1px solid CanvasText;box-shadow:none;}body:not(.login-open) .filter-chip.active,body:not(.login-open) .role-tab.active{outline:1px solid CanvasText;outline-offset:2px;}}
 
-/* Login — same product language as the authenticated experience. */
-.login-screen{
-  background:
-    radial-gradient(46% 46% at 14% 10%,rgba(139,92,246,.16),transparent 70%),
-    radial-gradient(38% 34% at 88% 8%,rgba(125,211,252,.075),transparent 72%),
-    linear-gradient(138deg,#080A0F,#0B0E15 58%,#111722);
-}
-.login-card{
-  width:min(920px,100%);
-  gap:42px;
-  padding:42px;
-  border:1px solid var(--vs-line);
-  border-radius:var(--vs-radius-shell);
-  background:
-    linear-gradient(145deg,rgba(27,31,41,.985),rgba(14,17,24,.972));
-  box-shadow:0 44px 112px -68px rgba(0,0,0,.98),0 0 0 1px rgba(167,139,250,.03),inset 0 1px 0 rgba(255,255,255,.036);
-}
-.login-brandline{margin-bottom:18px;gap:10px;}
-.login-brand{letter-spacing:-.035em;}
-.login-eyebrow{color:var(--vs-muted);border-color:var(--vs-line);background:rgba(255,255,255,.022);}
-.login-card .login-title{font-size:32px;line-height:1.22;letter-spacing:-.042em;font-weight:780;}
-.login-card p{max-width:540px;color:var(--vs-muted);line-height:1.68;}
-.scenario-list{gap:11px;margin-top:22px;}
-.scenario-item{color:var(--vs-muted);line-height:1.5;}
-.scenario-check{display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;border-radius:7px;background:rgba(167,139,250,.085);border:1px solid rgba(167,139,250,.15);color:#E8E1FF;font-size:11px;}
-.login-meta{color:var(--vs-dim);}
-.login-panel{padding:21px;border:1px solid var(--vs-line);border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.052),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.03);}
-.login-account{border-color:rgba(255,255,255,.072);background:rgba(0,0,0,.08);}
-.login-account-label,.login-note,.reviewer-entry{color:var(--vs-dim);}
-.google-btn{min-height:48px;border-radius:12px;box-shadow:0 14px 32px -26px rgba(0,0,0,.92);transition:transform var(--vs-motion-fast),box-shadow var(--vs-motion-base),filter var(--vs-motion-fast);}
-.google-btn:hover{box-shadow:0 18px 40px -28px rgba(0,0,0,.94);filter:brightness(1.025);}
-.google-btn:active{transform:translateY(1px) scale(.995);}
-
-/* App chrome — action, selection and status use distinct visual roles. */
-body:not(.login-open) .topbar{border-bottom-color:rgba(255,255,255,.055);background:rgba(8,10,15,.88);backdrop-filter:blur(18px) saturate(120%);box-shadow:0 14px 36px -34px rgba(0,0,0,.98);}
-body:not(.login-open) .topbar .logo{letter-spacing:-.035em;}
-body:not(.login-open) #statusBtn{background:linear-gradient(135deg,#5B5FEF,#7C3AED);border-color:rgba(216,205,255,.22);box-shadow:0 16px 34px -24px rgba(124,58,237,.88),inset 0 1px 0 rgba(255,255,255,.10);color:#fff;}
-body:not(.login-open) #statusBtn:hover{filter:brightness(1.06);transform:translateY(-1px);}
-body:not(.login-open) #statusBtn:active{transform:translateY(0) scale(.985);}
-body:not(.login-open) #adminBtn{background:var(--vs-surface-1);border-color:var(--vs-line);color:var(--vs-muted);}
-body:not(.login-open) #adminBtn:hover{background:var(--vs-surface-2);border-color:var(--vs-line-strong);color:var(--vs-text);}
-body:not(.login-open) #resetBtn,body:not(.login-open) #moreBtn{background:transparent;border-color:transparent;color:var(--vs-dim);}
-body:not(.login-open) #resetBtn:hover,body:not(.login-open) #moreBtn:hover{background:var(--vs-surface-2);color:var(--vs-text);}
-body:not(.login-open) .top-btn{transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast),transform var(--vs-motion-fast),filter var(--vs-motion-fast);}
-body:not(.login-open) .topbar .sub{color:var(--vs-muted);}
-body:not(.login-open) #resetBtn{color:rgba(229,232,240,.54);}
-
-/* Dashboard shell and information hierarchy. */
-body:not(.login-open) main{max-width:1220px;padding-top:34px;padding-bottom:96px;}
-body:not(.login-open) .overview-panel{
-  border:1px solid var(--vs-line);
-  border-radius:var(--vs-radius-shell);
-  background:
-    radial-gradient(62% 110% at 100% 0%,rgba(125,211,252,.045),transparent 62%),
-    radial-gradient(70% 120% at 8% 0%,rgba(139,92,246,.09),transparent 66%),
-    linear-gradient(145deg,rgba(25,29,39,.982),rgba(13,16,22,.966));
-  box-shadow:var(--vs-shadow-shell);
-}
-body:not(.login-open) .overview-panel .name-input{font-weight:790;letter-spacing:-.048em;}
-body:not(.login-open) .overview-panel .badge-id label,body:not(.login-open) .role-picker>label,body:not(.login-open) .emp-meta{color:var(--vs-dim);}
-body:not(.login-open) .role-meta-pill{background:rgba(110,231,183,.078);border:1px solid rgba(110,231,183,.13);color:rgba(186,255,224,.9);}
-body:not(.login-open) .role-picker{background:rgba(255,255,255,.006);}
-body:not(.login-open) .role-tab{border-radius:var(--vs-radius-control);border-color:rgba(255,255,255,.07);background:rgba(255,255,255,.016);color:var(--vs-muted);transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast),box-shadow var(--vs-motion-fast);}
-body:not(.login-open) .role-tab:hover{background:var(--vs-surface-2);border-color:var(--vs-line-strong);color:var(--vs-text);}
-body:not(.login-open) .role-tab.active{background:rgba(167,139,250,.105);border-color:rgba(167,139,250,.27);color:#F4F0FF;box-shadow:inset 0 1px 0 rgba(255,255,255,.038);}
-body:not(.login-open) .role-tab.exception:not(.active){color:rgba(246,199,109,.82);border-color:rgba(246,199,109,.16);}
-body:not(.login-open) .demo-preview-note{background:linear-gradient(90deg,rgba(167,139,250,.04),transparent);border-left-color:rgba(167,139,250,.28);color:var(--vs-muted);}
-
-/* Progress is status, not selection. */
-body:not(.login-open) .progress-wrap{background:rgba(2,4,8,.20);}
-body:not(.login-open) .progress-step.done{opacity:.66;}
-body:not(.login-open) .progress-step.done .step-circle{background:rgba(110,231,183,.13);border-color:rgba(110,231,183,.27);color:var(--vs-positive);}
-body:not(.login-open) .progress-step.done .step-label{color:rgba(110,231,183,.72);}
-body:not(.login-open) .progress-step.current .step-circle{background:linear-gradient(135deg,#6366F1,#8B5CF6);box-shadow:0 0 0 4px rgba(139,92,246,.11),0 12px 26px -17px rgba(139,92,246,.92);}
-body:not(.login-open) .progress-hint{color:var(--vs-muted);}
-
-/* Filter selection stays quiet so it cannot be confused with a CTA. */
-body:not(.login-open) .tools-bar{border:1px solid var(--vs-line);border-radius:13px;background:rgba(10,13,19,.86);box-shadow:0 18px 42px -36px rgba(0,0,0,.98);backdrop-filter:blur(16px);}
-body:not(.login-open) .filter-chip{border-radius:9px;color:var(--vs-muted);transition:background var(--vs-motion-fast),border-color var(--vs-motion-fast),color var(--vs-motion-fast);}
-body:not(.login-open) .filter-chip:hover{background:rgba(255,255,255,.034);color:var(--vs-text);}
-body:not(.login-open) .filter-chip.active{background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(125,211,252,.045));border-color:rgba(167,139,250,.20);color:#F1EDFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);}
-
-/* Section shells and card grammar. */
-body:not(.login-open) .licenses{border:1px solid var(--vs-line);border-radius:var(--vs-radius-shell);background:linear-gradient(160deg,rgba(255,255,255,.018),rgba(255,255,255,.005));box-shadow:var(--vs-shadow-shell);}
-body:not(.login-open) .section-head{border-bottom-color:rgba(255,255,255,.055);}
-body:not(.login-open) .section-head h2{font-size:21px;font-weight:780;letter-spacing:-.042em;line-height:1.3;}
-body:not(.login-open) .section-head .count{color:var(--vs-dim);}
-body:not(.login-open) .card{border:1px solid rgba(255,255,255,.073);border-radius:var(--vs-radius-card);background:linear-gradient(160deg,rgba(27,31,40,.91),rgba(15,18,24,.90));box-shadow:var(--vs-shadow-card);transition:transform var(--vs-motion-base),border-color var(--vs-motion-fast),background var(--vs-motion-fast),box-shadow var(--vs-motion-base);}
-body:not(.login-open) #commonGrid .card{background:linear-gradient(160deg,rgba(255,255,255,.034),rgba(255,255,255,.014));box-shadow:inset 0 1px 0 rgba(255,255,255,.022);}
-body:not(.login-open) #roleGrid .card{background:linear-gradient(158deg,rgba(28,32,42,.965),rgba(15,18,25,.945));box-shadow:0 22px 54px -44px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.03);}
-body:not(.login-open) .card:hover{transform:translateY(-2px);border-color:rgba(167,139,250,.18);background:linear-gradient(160deg,rgba(32,36,47,.96),rgba(17,20,27,.95));box-shadow:0 24px 58px -42px rgba(124,58,237,.30),inset 0 1px 0 rgba(255,255,255,.03);}
-body:not(.login-open) .card:focus-within{border-color:rgba(167,139,250,.25);box-shadow:0 24px 58px -42px rgba(124,58,237,.30),inset 0 1px 0 rgba(255,255,255,.032);}
-body:not(.login-open) .logo-chip{border-radius:12px;border-color:rgba(255,255,255,.078);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));}
-body:not(.login-open) .card-title{letter-spacing:-.02em;line-height:1.35;}
-body:not(.login-open) .card-cat,body:not(.login-open) .card-owner{color:var(--vs-dim);}
-body:not(.login-open) #roleGrid .card-owner{border-bottom-color:rgba(255,255,255,.052);}
-
-/* CTA is the only high-energy accent in card content. */
-body:not(.login-open) #roleGrid .cta{border:1px solid rgba(193,178,255,.18);border-radius:10px;background:linear-gradient(135deg,#5B5FEF,#7C3AED);color:#fff;box-shadow:0 14px 30px -22px rgba(124,58,237,.86),inset 0 1px 0 rgba(255,255,255,.08);font-weight:720;transition:transform var(--vs-motion-fast),filter var(--vs-motion-fast),box-shadow var(--vs-motion-base);}
-body:not(.login-open) #roleGrid .cta:hover{filter:brightness(1.07);box-shadow:0 18px 38px -24px rgba(124,58,237,.9),inset 0 1px 0 rgba(255,255,255,.10);}
-body:not(.login-open) #roleGrid .cta:active{transform:translateY(1px) scale(.99);}
-
-/* Semantic statuses use color only as reinforcement, never as the only boundary. */
-body:not(.login-open) .status-pill{border:1px solid transparent;font-weight:650;}
-body:not(.login-open) .status-auto,body:not(.login-open) .status-approved,body:not(.login-open) .status-completed{background:rgba(110,231,183,.075);border-color:rgba(110,231,183,.13);}
-body:not(.login-open) .status-request{background:rgba(246,199,109,.075);border-color:rgba(246,199,109,.13);}
-body:not(.login-open) .status-approval,body:not(.login-open) .status-rejected{background:rgba(251,138,155,.075);border-color:rgba(251,138,155,.13);}
-
-/* Elevated execution surfaces. */
-body:not(.login-open) .request-modal,body:not(.login-open) .action-modal,body:not(.login-open) .drawer{border-color:var(--vs-line);background:linear-gradient(155deg,rgba(25,29,39,.995),rgba(12,15,21,.992));box-shadow:var(--vs-shadow-raised);}
-body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{border-radius:var(--vs-radius-shell);}
-body:not(.login-open) .request-modal h3,body:not(.login-open) .action-modal h3{letter-spacing:-.038em;}
-body:not(.login-open) .drawer-head{border-bottom-color:rgba(255,255,255,.06);background:rgba(18,21,29,.88);backdrop-filter:blur(14px);}
-body:not(.login-open) .modal-actions{border-top-color:rgba(255,255,255,.065);background:linear-gradient(180deg,rgba(21,25,34,.90),rgba(11,14,20,.997));}
-body:not(.login-open) .modal-actions .primary-btn,body:not(.login-open) .modal-actions .btn-primary{background:linear-gradient(135deg,#5B5FEF,#7C3AED);border-color:transparent;box-shadow:0 16px 34px -22px rgba(124,58,237,.88),inset 0 1px 0 rgba(255,255,255,.09);}
-body:not(.login-open) .request-item,body:not(.login-open) .reason-item,body:not(.login-open) .request-note-view,body:not(.login-open) .action-info{border-color:rgba(255,255,255,.068);background:rgba(255,255,255,.026);}
-body:not(.login-open) .empty-state{border-color:rgba(167,139,250,.15);background:radial-gradient(72% 120% at 50% 0%,rgba(139,92,246,.065),transparent 70%),rgba(255,255,255,.008);}
-
-/* Accessibility and interaction precision. */
-:where(a,button,input,textarea):focus-visible{outline:2px solid var(--vs-accent);outline-offset:3px;box-shadow:var(--vs-focus);}
-:where(button,.role-tab,.filter-chip,.cta){-webkit-tap-highlight-color:transparent;}
-
-/* v18 — task clarity: flatter foundation, selective elevation, explicit action hierarchy. */
-:root{
-  --v18-task-bg:rgba(139,92,246,.075);
-  --v18-task-line:rgba(167,139,250,.22);
-  --v18-flat-bg:rgba(255,255,255,.012);
-  --v18-flat-line:rgba(255,255,255,.065);
-  --v18-raised-line:rgba(196,181,253,.19);
-}
-body:not(.login-open) main{padding-top:28px;}
-body:not(.login-open) .overview-panel{
-  background:
-    radial-gradient(60% 95% at 100% 0%,rgba(125,211,252,.038),transparent 64%),
-    linear-gradient(150deg,rgba(22,25,34,.972),rgba(12,15,21,.964));
-  box-shadow:0 24px 62px -54px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.024);
-}
-body:not(.login-open) .overview-panel .badge-top{align-self:center;}
-body:not(.login-open) .overview-panel .name-input{font-size:28px;line-height:1.12;}
-body:not(.login-open) .overview-panel .emp-meta{margin-top:7px;}
-body:not(.login-open) .role-meta-pill{margin-top:10px;}
-body:not(.login-open) .role-picker{align-self:stretch;}
-body:not(.login-open) .role-tabs{gap:7px;}
-body:not(.login-open) .demo-preview-note{margin-top:14px;}
-
-/* The instruction becomes the visual entry point while the five-step tracker stays intact. */
-body:not(.login-open) .progress-wrap{display:flex;flex-direction:column;gap:13px;background:rgba(5,7,11,.34);}
-body:not(.login-open) .progress-hint{
-  order:-1;
-  justify-content:flex-start;
-  width:100%;
-  padding:12px 14px;
-  border:1px solid var(--v18-task-line);
-  border-radius:12px;
-  background:linear-gradient(90deg,var(--v18-task-bg),rgba(125,211,252,.028));
-  color:rgba(245,242,255,.9);
-  font-size:13px;
-  line-height:1.5;
-}
-body:not(.login-open) .demo-step-kicker{
-  flex:0 0 auto;
-  padding:3px 7px;
-  border-radius:999px;
-  background:rgba(167,139,250,.12);
-  color:#EDE7FF;
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.04em;
-}
-body:not(.login-open) .hint-arrow{color:rgba(196,181,253,.7);}
-body:not(.login-open) .progress-bar{opacity:.86;}
-body:not(.login-open) .progress-step.current{opacity:1;}
-body:not(.login-open) .progress-step.current .step-label{color:#fff;font-weight:780;}
-
-/* Filtering is a utility, not a competing primary action. */
-body:not(.login-open) .tools-bar{
-  margin-top:22px;
-  margin-bottom:16px;
-  border-color:var(--v18-flat-line);
-  background:rgba(10,13,18,.78);
-  box-shadow:0 14px 34px -32px rgba(0,0,0,.98);
-}
-body:not(.login-open) .filter-chip.active{
-  background:linear-gradient(135deg,rgba(167,139,250,.10),rgba(125,211,252,.025));
-  border-color:rgba(167,139,250,.17);
-  box-shadow:none;
-}
-
-/* Common licenses read as compact entitlements; role licenses remain decision surfaces. */
-body:not(.login-open) .licenses.common-first{
-  padding-bottom:16px;
-  border-color:var(--v18-flat-line);
-  background:var(--v18-flat-bg);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.018);
-}
+/* v18 task-first refinement: current task first, entitlements quiet, decisions raised. */
+body:not(.login-open) .overview-panel{box-shadow:0 24px 62px -54px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.024);}
+body:not(.login-open) .progress-wrap{display:flex;flex-direction:column;gap:12px;background:rgba(5,7,11,.34);}
+body:not(.login-open) .progress-hint{order:-1;justify-content:flex-start;width:100%;padding:11px 13px;border:1px solid rgba(167,139,250,.22);border-radius:12px;background:linear-gradient(90deg,rgba(139,92,246,.075),rgba(125,211,252,.025));color:rgba(245,242,255,.9);font-size:13px;line-height:1.5;}
+body:not(.login-open) .demo-step-kicker{flex:0 0 auto;padding:3px 7px;border-radius:999px;background:rgba(167,139,250,.12);color:#EDE7FF;font-size:10px;font-weight:800;letter-spacing:.04em;}
+body:not(.login-open) .tools-bar{margin-top:22px;margin-bottom:16px;box-shadow:0 14px 34px -32px rgba(0,0,0,.98);}
+body:not(.login-open) .filter-chip.active{background:linear-gradient(135deg,rgba(167,139,250,.10),rgba(125,211,252,.025));border-color:rgba(167,139,250,.17);box-shadow:none;}
+body:not(.login-open) .licenses.common-first{padding-bottom:16px;border-color:rgba(255,255,255,.065);background:rgba(255,255,255,.012);box-shadow:inset 0 1px 0 rgba(255,255,255,.018);}
 body:not(.login-open) .licenses.common-first .section-head{padding-bottom:12px;margin-bottom:8px;}
-body:not(.login-open) .licenses.common-first .section-head h2{font-size:18px;color:rgba(236,238,244,.84);}
-body:not(.login-open) .licenses.common-first .count{font-size:10.5px;}
+body:not(.login-open) .licenses.common-first .section-head h2{font-size:20px;color:rgba(236,238,244,.86);}
 body:not(.login-open) #commonGrid{gap:9px;}
-body:not(.login-open) #commonGrid .card{
-  min-height:0;
-  padding:13px 14px;
-  border-radius:14px;
-  border-color:rgba(255,255,255,.058);
-  background:rgba(255,255,255,.018);
-  box-shadow:none;
-}
+body:not(.login-open) #commonGrid .card{min-height:0;padding:13px 14px;border-radius:14px;border-color:rgba(255,255,255,.058);background:rgba(255,255,255,.018);box-shadow:none;}
 body:not(.login-open) #commonGrid .card:hover{transform:none;border-color:rgba(255,255,255,.10);background:rgba(255,255,255,.026);box-shadow:none;}
-body:not(.login-open) #commonGrid .card-top{margin-bottom:10px;}
-body:not(.login-open) #commonGrid .logo-chip{width:38px;height:38px;border-radius:10px;}
-body:not(.login-open) #commonGrid .card-title{font-size:14px;font-weight:690;}
-body:not(.login-open) #commonGrid .card-cat{font-size:10.5px;}
-body:not(.login-open) #commonGrid .card-bottom{min-height:28px;}
-body:not(.login-open) #commonGrid .status-pill{font-size:10px;}
-
-body:not(.login-open) .licenses.role-secondary{
-  position:relative;
-  margin-top:24px;
-  border-color:rgba(167,139,250,.11);
-  background:linear-gradient(160deg,rgba(255,255,255,.024),rgba(255,255,255,.007));
-  box-shadow:0 26px 66px -54px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.022);
-}
-body:not(.login-open) .licenses.role-secondary .section-head{padding-bottom:15px;margin-bottom:14px;}
-body:not(.login-open) .licenses.role-secondary .section-head h2{font-size:22px;}
-body:not(.login-open) .licenses.role-secondary .section-head h2::after{
-  content:"현재 직무에서 필요한 추가 항목";
-  display:block;
-  margin-top:5px;
-  color:var(--vs-dim);
-  font-size:11px;
-  font-weight:560;
-  letter-spacing:0;
-}
-body:not(.login-open) #roleGrid{gap:14px;}
-body:not(.login-open) #roleGrid .card{
-  min-height:184px;
-  padding:19px;
-  border-color:var(--v18-raised-line);
-  background:linear-gradient(160deg,rgba(29,33,44,.975),rgba(14,17,24,.955));
-  box-shadow:0 24px 56px -46px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.028);
-}
-body:not(.login-open) #roleGrid .card-top{margin-bottom:14px;}
-body:not(.login-open) #roleGrid .card-owner{min-height:31px;margin-bottom:12px;padding-bottom:12px;}
-body:not(.login-open) #roleGrid .card-bottom{margin-top:auto;min-height:44px;}
-body:not(.login-open) #roleGrid .cta{min-width:96px;min-height:38px;border-radius:10px;}
-
-/* Execution surfaces: content is flatter; action zones remain elevated and obvious. */
-body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{
-  background:linear-gradient(155deg,rgba(23,27,36,.995),rgba(11,14,20,.995));
-}
-body:not(.login-open) .request-item,body:not(.login-open) .reason-item,body:not(.login-open) .request-note-view,body:not(.login-open) .action-info{
-  border-color:rgba(255,255,255,.06);
-  background:rgba(255,255,255,.018);
-}
-body:not(.login-open) .modal-actions{
-  border-top-color:rgba(167,139,250,.10);
-  box-shadow:0 -18px 42px -38px rgba(0,0,0,.98);
-}
-body:not(.login-open) .drawer{background:linear-gradient(155deg,rgba(22,26,35,.995),rgba(11,14,20,.995));}
-body:not(.login-open) .drawer-head{background:rgba(14,17,24,.94);}
-body:not(.login-open) .request-item{border-radius:14px;}
-body:not(.login-open) .request-actions{margin-top:12px;padding-top:12px;}
-
-@media (min-width:960px){
-  body:not(.login-open) .overview-panel{grid-template-columns:minmax(0,.72fr) minmax(470px,1.28fr);}
-  body:not(.login-open) .overview-panel .badge-top{padding:27px 28px 24px;}
-  body:not(.login-open) .overview-panel .role-picker{padding:24px 28px;}
-  body:not(.login-open) .overview-panel .progress-wrap{padding:15px 28px 17px;}
-}
-@media (max-width:1024px){
-  body:not(.login-open) #commonGrid{gap:8px;}
-  body:not(.login-open) #roleGrid{gap:12px;}
-}
-@media (max-width:768px){
-  body:not(.login-open) main{padding-top:14px;}
-  body:not(.login-open) .overview-panel .badge-top{padding-bottom:17px;}
-  body:not(.login-open) .overview-panel .role-picker{padding-top:17px;}
-  body:not(.login-open) .progress-wrap{gap:11px;}
-  body:not(.login-open) .progress-hint{padding:11px 12px;font-size:12px;}
-  body:not(.login-open) .licenses.common-first{margin-top:2px;}
-  body:not(.login-open) #commonGrid .card{padding:12px;}
-  body:not(.login-open) .licenses.role-secondary{margin-top:18px;}
-  body:not(.login-open) #roleGrid .card{min-height:0;padding:17px;}
-  body:not(.login-open) .licenses.role-secondary .section-head h2{font-size:19px;}
-}
-@media (max-width:420px){
-  body:not(.login-open) .progress-hint{align-items:flex-start;gap:6px;}
-  body:not(.login-open) .hint-arrow{display:none;}
-  body:not(.login-open) #commonGrid{gap:7px;}
-  body:not(.login-open) #commonGrid .logo-chip{width:34px;height:34px;}
-  body:not(.login-open) #commonGrid .card-title{font-size:13px;}
-  body:not(.login-open) #roleGrid .cta{min-height:44px;}
-}
-
-@media (max-width:1024px){
-  body:not(.login-open) main{max-width:100%;padding-inline:20px;}
-  .login-card{width:min(880px,100%);gap:32px;padding:36px;}
-}
-@media (max-width:768px){
-  .login-card{padding:28px 22px;gap:24px;border-radius:24px;}
-  .login-card .login-title{font-size:26px;}
-  .login-panel{padding:18px;border-radius:17px;}
-  body:not(.login-open) main{padding-top:18px;padding-inline:16px;padding-bottom:76px;}
-  body:not(.login-open) .overview-panel{border-radius:24px;}
-  body:not(.login-open) .licenses{border-radius:21px;}
-  body:not(.login-open) .section-head h2{font-size:18px;}
-  body:not(.login-open) #roleGrid .card{border-radius:17px;}
-  body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{border-radius:21px;}
-  body:not(.login-open) .card:hover{transform:none;}
-}
-@media (max-width:420px){
-  .login-screen{padding:12px 12px 76px;}
-  .login-card{padding:24px 18px;}
-  .login-card .login-title{font-size:23px;line-height:1.27;}
-  body:not(.login-open) main{padding-inline:12px;}
-  body:not(.login-open) .licenses.common-first,body:not(.login-open) .licenses.role-secondary{padding-inline:11px;}
-}
-@media (prefers-reduced-motion:reduce){
-  .login-card,.google-btn,body:not(.login-open) .top-btn,body:not(.login-open) .role-tab,body:not(.login-open) .filter-chip,body:not(.login-open) .card,body:not(.login-open) #roleGrid .cta{transition:none!important;scroll-behavior:auto!important;}
-}
-@media (forced-colors:active){
-  .login-card,body:not(.login-open) .overview-panel,body:not(.login-open) .licenses,body:not(.login-open) .card,body:not(.login-open) .request-modal,body:not(.login-open) .action-modal,body:not(.login-open) .drawer{border:1px solid CanvasText;box-shadow:none;}
-  body:not(.login-open) .filter-chip.active,body:not(.login-open) .role-tab.active{outline:1px solid CanvasText;outline-offset:2px;}
-}
+body:not(.login-open) #commonGrid .card-top{margin-bottom:10px;}body:not(.login-open) #commonGrid .logo-chip{width:38px;height:38px;border-radius:10px;}body:not(.login-open) #commonGrid .card-title{font-size:14px;font-weight:690;}body:not(.login-open) #commonGrid .card-bottom{min-height:28px;}
+body:not(.login-open) .licenses.role-secondary{margin-top:24px;border-color:rgba(167,139,250,.11);box-shadow:0 26px 66px -54px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.022);}
+body:not(.login-open) .licenses.role-secondary .section-head{padding-bottom:15px;margin-bottom:14px;}body:not(.login-open) .licenses.role-secondary .section-head h2{font-size:22px;}body:not(.login-open) .licenses.role-secondary .section-head h2::after{content:"현재 직무에서 필요한 추가 항목";display:block;margin-top:5px;color:var(--vs-dim);font-size:11px;font-weight:560;letter-spacing:0;}
+body:not(.login-open) #roleGrid{gap:14px;}body:not(.login-open) #roleGrid .card{min-height:184px;padding:19px;border-color:rgba(196,181,253,.19);}body:not(.login-open) #roleGrid .card-owner{min-height:31px;margin-bottom:12px;padding-bottom:12px;}body:not(.login-open) #roleGrid .card-bottom{margin-top:auto;min-height:44px;}body:not(.login-open) #roleGrid .cta{min-width:96px;min-height:38px;}
+body:not(.login-open) .request-item,body:not(.login-open) .reason-item,body:not(.login-open) .request-note-view,body:not(.login-open) .action-info{background:rgba(255,255,255,.018);}body:not(.login-open) .modal-actions{border-top-color:rgba(167,139,250,.10);box-shadow:0 -18px 42px -38px rgba(0,0,0,.98);}body:not(.login-open) .drawer-head{background:rgba(14,17,24,.94);}
+@media (min-width:960px){body:not(.login-open) .overview-panel{grid-template-columns:minmax(0,.72fr) minmax(470px,1.28fr);}body:not(.login-open) .overview-panel .badge-top{padding:27px 28px 24px;}body:not(.login-open) .overview-panel .role-picker{padding:24px 28px;}body:not(.login-open) .overview-panel .progress-wrap{padding:15px 28px 17px;}}
+@media (max-width:768px){body:not(.login-open) .progress-hint{padding:10px 11px;font-size:12px;}body:not(.login-open) #commonGrid .card{padding:12px;}body:not(.login-open) .licenses.role-secondary{margin-top:18px;}body:not(.login-open) #roleGrid .card{min-height:0;padding:17px;}body:not(.login-open) .licenses.role-secondary .section-head h2{font-size:19px;}}
+@media (max-width:420px){body:not(.login-open) .hint-arrow{display:none;}body:not(.login-open) #commonGrid{gap:7px;}body:not(.login-open) #roleGrid .cta{min-height:44px;}}
