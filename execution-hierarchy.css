@@ -94,7 +94,7 @@ body:not(.login-open) #requestDetails .request-note{
 }
 
 @media (min-width:561px){
-  body:not(.login-open) .request-modal{padding:29px;}
+  body:not(.login-open) .request-modal{padding:27px;}
 }
 
 /* Drawer: ticket → current state/SLA → action → history. */
