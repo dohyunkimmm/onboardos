@@ -6,7 +6,7 @@ module.exports = defineConfig({
   timeout: 45_000,
   expect: { timeout: 8_000 },
   retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never', outputFolder: 'playwright-report-production' }]] : 'list',
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never', outputFolder: '../playwright-report-production' }]] : 'list',
   use: {
     baseURL: process.env.PRODUCTION_URL || 'https://onboardos-rho.vercel.app',
     trace: 'retain-on-failure',

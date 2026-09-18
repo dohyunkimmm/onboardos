@@ -9,7 +9,7 @@ module.exports = defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: [
     ['list'],
-    ['json', { outputFile: 'verification/ux-playwright.json' }]
+    ['json', { outputFile: '../verification/ux-playwright.json' }]
   ],
   use: {
     ...devices['Desktop Chrome'],
@@ -22,7 +22,7 @@ module.exports = defineConfig({
     { name: 'interaction-chromium' }
   ],
   webServer: {
-    command: 'node scripts/serve.js',
+    command: 'node ../scripts/serve.js',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI,
     timeout: 15_000
