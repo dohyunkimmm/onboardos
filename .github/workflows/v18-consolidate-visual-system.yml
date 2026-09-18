@@ -69,7 +69,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -t changed < <(git diff --name-only | sort)
+          mapfile -t changed < <(git diff HEAD --name-only | sort)
           expected=(
             'execution-hierarchy.css'
             'index.html'
