@@ -1,15 +1,15 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
-  testDir: './tests',
-  testMatch: ['**/visual-system.spec.js'],
+  testDir: '../tests',
+  testMatch: ['**/ux-interaction.spec.js'],
   timeout: 45_000,
   expect: { timeout: 7_000 },
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
   reporter: [
     ['list'],
-    ['json', { outputFile: 'verification/visual-system-playwright.json' }]
+    ['json', { outputFile: 'verification/ux-playwright.json' }]
   ],
   use: {
     ...devices['Desktop Chrome'],
@@ -19,7 +19,7 @@ module.exports = defineConfig({
     timezoneId: 'Asia/Seoul'
   },
   projects: [
-    { name: 'visual-system-chromium' }
+    { name: 'interaction-chromium' }
   ],
   webServer: {
     command: 'node scripts/serve.js',
