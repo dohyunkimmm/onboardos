@@ -71,3 +71,5 @@ body:not(.login-open) .request-item,body:not(.login-open) .reason-item,body:not(
 @media (min-width:960px){body:not(.login-open) .overview-panel{grid-template-columns:minmax(0,.72fr) minmax(470px,1.28fr);}body:not(.login-open) .overview-panel .badge-top{padding:27px 28px 24px;}body:not(.login-open) .overview-panel .role-picker{padding:24px 28px;}body:not(.login-open) .overview-panel .progress-wrap{padding:15px 28px 17px;}}
 @media (max-width:768px){body:not(.login-open) .progress-hint{padding:10px 11px;font-size:12px;}body:not(.login-open) #commonGrid .card{padding:12px;}body:not(.login-open) .licenses.role-secondary{margin-top:18px;}body:not(.login-open) #roleGrid .card{min-height:0;padding:17px;}body:not(.login-open) .licenses.role-secondary .section-head h2{font-size:19px;}}
 @media (max-width:420px){body:not(.login-open) .hint-arrow{display:none;}body:not(.login-open) #commonGrid{gap:7px;}body:not(.login-open) #roleGrid .cta{min-height:44px;}}
+
+body:not(.login-open) .licenses.common-first .count{color:var(--vs-muted);}
