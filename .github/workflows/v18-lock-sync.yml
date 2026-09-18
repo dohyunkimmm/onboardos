@@ -17,13 +17,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: release/v18.0.0
-      - name: Update package versions
-        run: |
-          node -e "const fs=require('fs'); for (const p of ['package.json','package-lock.json']) { const j=JSON.parse(fs.readFileSync(p,'utf8')); j.version='18.0.0'; if (p==='package-lock.json' && j.packages && j.packages['']) j.packages[''].version='18.0.0'; fs.writeFileSync(p, JSON.stringify(j,null,2)+'\n'); }"
-      - name: Commit package version sync
+      - name: Package v18 canonical artifacts
+        run: node .github/v18-package.js
+      - name: Verify release contract
+        run: npm run release:check
+      - name: Commit canonical v18 metadata
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add package.json package-lock.json
-          git commit -m 'release(v18): sync package versions'
+          git add CHANGELOG.md README.md docs/DEMO_WALKTHROUGH.md package-lock.json package.json production-demo.html release.json version.txt
+          git commit -m 'release(v18): synchronize canonical production metadata'
           git push origin HEAD:release/v18.0.0
