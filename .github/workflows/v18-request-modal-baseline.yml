@@ -1,0 +1,55 @@
+name: v18 request modal baseline updater
+
+on:
+  push:
+    branches:
+      - v18-execution-hierarchy
+    paths:
+      - '.github/workflows/v18-request-modal-baseline.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-request-modal-baselines:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: v18-execution-hierarchy
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Approve request modal visual baselines
+        run: npx playwright test tests/visual.spec.js --update-snapshots
+      - name: Guard baseline scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          expected=(
+            'tests/visual.spec.js-snapshots/request-modal-desktop-chromium-linux.png'
+            'tests/visual.spec.js-snapshots/request-modal-mobile-chromium-linux.png'
+          )
+          if [ "${#changed[@]}" -ne "${#expected[@]}" ]; then
+            printf 'Unexpected baseline file count:\n%s\n' "${changed[*]}"
+            exit 1
+          fi
+          for i in "${!expected[@]}"; do
+            if [ "${changed[$i]}" != "${expected[$i]}" ]; then
+              printf 'Unexpected baseline change: %s\n' "${changed[$i]}"
+              exit 1
+            fi
+          done
+      - name: Commit approved baselines
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/visual.spec.js-snapshots/request-modal-*-chromium-linux.png
+          git commit -m 'test(v18): approve request modal visual baselines'
+          git push origin HEAD:v18-execution-hierarchy
