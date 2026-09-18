@@ -18,7 +18,8 @@ module.exports = defineConfig({
     { name: 'desktop-webkit', use: { ...devices['Desktop Safari'] } }
   ],
   webServer: {
-    command: 'node ../scripts/serve.js',
+    command: 'node scripts/serve.js',
+    cwd: require('path').resolve(__dirname, '..'),
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI,
     timeout: 15_000
