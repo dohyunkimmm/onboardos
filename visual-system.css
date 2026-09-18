@@ -1,6 +1,6 @@
-/* ONBOARD·OS v17 — Product Identity & Interface Evolution
-   Includes v16.1-level visual precision and product finish.
-   Design-only release candidate. Business flow, data, request state machine,
+/* ONBOARD·OS v18 candidate — Task Clarity & Product Experience
+   Builds on the verified v17 Product Identity & Interface Evolution baseline.
+   Design-only evolution. Business flow, data, request state machine,
    SLA semantics, role isolation and P6 behavior remain frozen. */
 :root{
   --vs-canvas:#080A0F;
@@ -161,6 +161,178 @@ body:not(.login-open) .empty-state{border-color:rgba(167,139,250,.15);background
 /* Accessibility and interaction precision. */
 :where(a,button,input,textarea):focus-visible{outline:2px solid var(--vs-accent);outline-offset:3px;box-shadow:var(--vs-focus);}
 :where(button,.role-tab,.filter-chip,.cta){-webkit-tap-highlight-color:transparent;}
+
+/* v18 — task clarity: flatter foundation, selective elevation, explicit action hierarchy. */
+:root{
+  --v18-task-bg:rgba(139,92,246,.075);
+  --v18-task-line:rgba(167,139,250,.22);
+  --v18-flat-bg:rgba(255,255,255,.012);
+  --v18-flat-line:rgba(255,255,255,.065);
+  --v18-raised-line:rgba(196,181,253,.19);
+}
+body:not(.login-open) main{padding-top:28px;}
+body:not(.login-open) .overview-panel{
+  background:
+    radial-gradient(60% 95% at 100% 0%,rgba(125,211,252,.038),transparent 64%),
+    linear-gradient(150deg,rgba(22,25,34,.972),rgba(12,15,21,.964));
+  box-shadow:0 24px 62px -54px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.024);
+}
+body:not(.login-open) .overview-panel .badge-top{align-self:center;}
+body:not(.login-open) .overview-panel .name-input{font-size:28px;line-height:1.12;}
+body:not(.login-open) .overview-panel .emp-meta{margin-top:7px;}
+body:not(.login-open) .role-meta-pill{margin-top:10px;}
+body:not(.login-open) .role-picker{align-self:stretch;}
+body:not(.login-open) .role-tabs{gap:7px;}
+body:not(.login-open) .demo-preview-note{margin-top:14px;}
+
+/* The instruction becomes the visual entry point while the five-step tracker stays intact. */
+body:not(.login-open) .progress-wrap{display:flex;flex-direction:column;gap:13px;background:rgba(5,7,11,.34);}
+body:not(.login-open) .progress-hint{
+  order:-1;
+  justify-content:flex-start;
+  width:100%;
+  padding:12px 14px;
+  border:1px solid var(--v18-task-line);
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--v18-task-bg),rgba(125,211,252,.028));
+  color:rgba(245,242,255,.9);
+  font-size:13px;
+  line-height:1.5;
+}
+body:not(.login-open) .demo-step-kicker{
+  flex:0 0 auto;
+  padding:3px 7px;
+  border-radius:999px;
+  background:rgba(167,139,250,.12);
+  color:#EDE7FF;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+body:not(.login-open) .hint-arrow{color:rgba(196,181,253,.7);}
+body:not(.login-open) .progress-bar{opacity:.86;}
+body:not(.login-open) .progress-step.current{opacity:1;}
+body:not(.login-open) .progress-step.current .step-label{color:#fff;font-weight:780;}
+
+/* Filtering is a utility, not a competing primary action. */
+body:not(.login-open) .tools-bar{
+  margin-top:22px;
+  margin-bottom:16px;
+  border-color:var(--v18-flat-line);
+  background:rgba(10,13,18,.78);
+  box-shadow:0 14px 34px -32px rgba(0,0,0,.98);
+}
+body:not(.login-open) .filter-chip.active{
+  background:linear-gradient(135deg,rgba(167,139,250,.10),rgba(125,211,252,.025));
+  border-color:rgba(167,139,250,.17);
+  box-shadow:none;
+}
+
+/* Common licenses read as compact entitlements; role licenses remain decision surfaces. */
+body:not(.login-open) .licenses.common-first{
+  padding-bottom:16px;
+  border-color:var(--v18-flat-line);
+  background:var(--v18-flat-bg);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.018);
+}
+body:not(.login-open) .licenses.common-first .section-head{padding-bottom:12px;margin-bottom:8px;}
+body:not(.login-open) .licenses.common-first .section-head h2{font-size:18px;color:rgba(236,238,244,.84);}
+body:not(.login-open) .licenses.common-first .count{font-size:10.5px;}
+body:not(.login-open) #commonGrid{gap:9px;}
+body:not(.login-open) #commonGrid .card{
+  min-height:0;
+  padding:13px 14px;
+  border-radius:14px;
+  border-color:rgba(255,255,255,.058);
+  background:rgba(255,255,255,.018);
+  box-shadow:none;
+}
+body:not(.login-open) #commonGrid .card:hover{transform:none;border-color:rgba(255,255,255,.10);background:rgba(255,255,255,.026);box-shadow:none;}
+body:not(.login-open) #commonGrid .card-top{margin-bottom:10px;}
+body:not(.login-open) #commonGrid .logo-chip{width:38px;height:38px;border-radius:10px;}
+body:not(.login-open) #commonGrid .card-title{font-size:14px;font-weight:690;}
+body:not(.login-open) #commonGrid .card-cat{font-size:10.5px;}
+body:not(.login-open) #commonGrid .card-bottom{min-height:28px;}
+body:not(.login-open) #commonGrid .status-pill{font-size:10px;}
+
+body:not(.login-open) .licenses.role-secondary{
+  position:relative;
+  margin-top:24px;
+  border-color:rgba(167,139,250,.11);
+  background:linear-gradient(160deg,rgba(255,255,255,.024),rgba(255,255,255,.007));
+  box-shadow:0 26px 66px -54px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.022);
+}
+body:not(.login-open) .licenses.role-secondary .section-head{padding-bottom:15px;margin-bottom:14px;}
+body:not(.login-open) .licenses.role-secondary .section-head h2{font-size:22px;}
+body:not(.login-open) .licenses.role-secondary .section-head h2::after{
+  content:"현재 직무에서 필요한 추가 항목";
+  display:block;
+  margin-top:5px;
+  color:var(--vs-dim);
+  font-size:11px;
+  font-weight:560;
+  letter-spacing:0;
+}
+body:not(.login-open) #roleGrid{gap:14px;}
+body:not(.login-open) #roleGrid .card{
+  min-height:184px;
+  padding:19px;
+  border-color:var(--v18-raised-line);
+  background:linear-gradient(160deg,rgba(29,33,44,.975),rgba(14,17,24,.955));
+  box-shadow:0 24px 56px -46px rgba(0,0,0,.98),inset 0 1px 0 rgba(255,255,255,.028);
+}
+body:not(.login-open) #roleGrid .card-top{margin-bottom:14px;}
+body:not(.login-open) #roleGrid .card-owner{min-height:31px;margin-bottom:12px;padding-bottom:12px;}
+body:not(.login-open) #roleGrid .card-bottom{margin-top:auto;min-height:44px;}
+body:not(.login-open) #roleGrid .cta{min-width:96px;min-height:38px;border-radius:10px;}
+
+/* Execution surfaces: content is flatter; action zones remain elevated and obvious. */
+body:not(.login-open) .request-modal,body:not(.login-open) .action-modal{
+  background:linear-gradient(155deg,rgba(23,27,36,.995),rgba(11,14,20,.995));
+}
+body:not(.login-open) .request-item,body:not(.login-open) .reason-item,body:not(.login-open) .request-note-view,body:not(.login-open) .action-info{
+  border-color:rgba(255,255,255,.06);
+  background:rgba(255,255,255,.018);
+}
+body:not(.login-open) .modal-actions{
+  border-top-color:rgba(167,139,250,.10);
+  box-shadow:0 -18px 42px -38px rgba(0,0,0,.98);
+}
+body:not(.login-open) .drawer{background:linear-gradient(155deg,rgba(22,26,35,.995),rgba(11,14,20,.995));}
+body:not(.login-open) .drawer-head{background:rgba(14,17,24,.94);}
+body:not(.login-open) .request-item{border-radius:14px;}
+body:not(.login-open) .request-actions{margin-top:12px;padding-top:12px;}
+
+@media (min-width:960px){
+  body:not(.login-open) .overview-panel{grid-template-columns:minmax(0,.72fr) minmax(470px,1.28fr);}
+  body:not(.login-open) .overview-panel .badge-top{padding:27px 28px 24px;}
+  body:not(.login-open) .overview-panel .role-picker{padding:24px 28px;}
+  body:not(.login-open) .overview-panel .progress-wrap{padding:15px 28px 17px;}
+}
+@media (max-width:1024px){
+  body:not(.login-open) #commonGrid{gap:8px;}
+  body:not(.login-open) #roleGrid{gap:12px;}
+}
+@media (max-width:768px){
+  body:not(.login-open) main{padding-top:14px;}
+  body:not(.login-open) .overview-panel .badge-top{padding-bottom:17px;}
+  body:not(.login-open) .overview-panel .role-picker{padding-top:17px;}
+  body:not(.login-open) .progress-wrap{gap:11px;}
+  body:not(.login-open) .progress-hint{padding:11px 12px;font-size:12px;}
+  body:not(.login-open) .licenses.common-first{margin-top:2px;}
+  body:not(.login-open) #commonGrid .card{padding:12px;}
+  body:not(.login-open) .licenses.role-secondary{margin-top:18px;}
+  body:not(.login-open) #roleGrid .card{min-height:0;padding:17px;}
+  body:not(.login-open) .licenses.role-secondary .section-head h2{font-size:19px;}
+}
+@media (max-width:420px){
+  body:not(.login-open) .progress-hint{align-items:flex-start;gap:6px;}
+  body:not(.login-open) .hint-arrow{display:none;}
+  body:not(.login-open) #commonGrid{gap:7px;}
+  body:not(.login-open) #commonGrid .logo-chip{width:34px;height:34px;}
+  body:not(.login-open) #commonGrid .card-title{font-size:13px;}
+  body:not(.login-open) #roleGrid .cta{min-height:44px;}
+}
 
 @media (max-width:1024px){
   body:not(.login-open) main{max-width:100%;padding-inline:20px;}
