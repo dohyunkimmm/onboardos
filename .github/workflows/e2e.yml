@@ -44,15 +44,15 @@ jobs:
           node --check scripts/verification-summary.js
           node --check scripts/lighthouse-run.js
           node --check playwright.config.js
-          node --check playwright.resilience.config.js
-          node --check playwright.security.config.js
-          node --check playwright.ux.config.js
-          node --check playwright.visual-system.config.js
-          node --check playwright.design-polish.config.js
-          node --check playwright.cross-browser.config.js
-          node --check playwright.production.config.js
-          node --check lighthouserc.cjs
-          node --check lighthouserc.mobile.cjs
+          node --check config/playwright.resilience.config.js
+          node --check config/playwright.security.config.js
+          node --check config/playwright.ux.config.js
+          node --check config/playwright.visual-system.config.js
+          node --check config/playwright.design-polish.config.js
+          node --check config/playwright.cross-browser.config.js
+          node --check config/playwright.production.config.js
+          node --check config/lighthouserc.cjs
+          node --check config/lighthouserc.mobile.cjs
           node --check tests/role-isolation.spec.js
           node --check tests/recovery.spec.js
           node --check tests/security.spec.js
@@ -342,7 +342,7 @@ jobs:
           while IFS= read -r file; do
             echo "- ${file}"
             case "$file" in
-              .github/*|*.md|docs/*|tests/*|scripts/*|playwright*.js|lighthouserc*.cjs|package*.json)
+              .github/*|*.md|docs/*|tests/*|scripts/*|config/*|playwright*.js|lighthouserc*.cjs|package*.json)
                 ;;
               *)
                 runtime_changed=true

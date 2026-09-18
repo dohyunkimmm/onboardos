@@ -1,24 +1,29 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
-  testDir: './tests',
-  testMatch: 'cross-browser.spec.js',
-  timeout: 30_000,
-  expect: { timeout: 5_000 },
+  testDir: '../tests',
+  testMatch: ['**/ux-interaction.spec.js'],
+  timeout: 45_000,
+  expect: { timeout: 7_000 },
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['list'], ['html', { open: 'never', outputFolder: 'playwright-report-cross-browser' }]] : 'list',
+  reporter: [
+    ['list'],
+    ['json', { outputFile: '../verification/ux-playwright.json' }]
+  ],
   use: {
+    ...devices['Desktop Chrome'],
     baseURL: 'http://127.0.0.1:4173',
+    viewport: { width: 1440, height: 900 },
     trace: 'retain-on-failure',
     timezoneId: 'Asia/Seoul'
   },
   projects: [
-    { name: 'desktop-firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'desktop-webkit', use: { ...devices['Desktop Safari'] } }
+    { name: 'interaction-chromium' }
   ],
   webServer: {
     command: 'node scripts/serve.js',
+    cwd: require('path').resolve(__dirname, '..'),
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI,
     timeout: 15_000
