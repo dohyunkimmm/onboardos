@@ -1,7 +1,7 @@
 {
-  "tag": "v17.0.0",
-  "target": "fa024c92c0d8727bd4a6b67f61a255c8ae02b12a",
-  "title": "v17.0.0 — Product Identity & Interface Evolution",
+  "tag": "v18.0.0",
+  "target": "12ca2749b68d7d36cd66f1fbb8d7523dc36aa269",
+  "title": "v18.0.0 — Task Clarity & Product Experience",
   "notes_file": "CHANGELOG.md",
-  "sync_revision": 13
+  "sync_revision": 14
 }
