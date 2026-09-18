@@ -93,6 +93,10 @@ body:not(.login-open) #requestDetails .request-note{
   margin:0 4px 4px;
 }
 
+@media (min-width:561px){
+  body:not(.login-open) .request-modal{padding:29px;}
+}
+
 /* Drawer: ticket → current state/SLA → action → history. */
 body:not(.login-open) .drawer{
   background:linear-gradient(180deg,rgba(20,23,29,.995),rgba(13,15,20,.99));
@@ -206,10 +210,13 @@ body:not(.login-open) .admin-demo-note{
     align-items:center;
     padding:10px;
   }
-  body:not(.login-open) #requestDetails > .detail-row b,
-  body:not(.login-open) #requestDetails > .detail-row:nth-last-of-type(3) b{
+  body:not(.login-open) #requestDetails > .detail-row b{
     text-align:right;
     font-size:12px;
+  }
+  body:not(.login-open) #requestDetails > .detail-row:nth-last-of-type(3) b{
+    text-align:right;
+    font-size:13px;
   }
   body:not(.login-open) .request-item{
     padding:14px 13px 13px;
