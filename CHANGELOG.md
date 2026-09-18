@@ -1,5 +1,24 @@
 # Changelog
 
+## v18.0.0 — Task Clarity & Product Experience — 2026-09-18
+
+P6에서 동결한 Business Flow와 상태 모델을 유지하면서, v17의 Product Identity 위에 task-first information hierarchy와 execution clarity를 적용했습니다. 기능 추가 없이 Overview → Common/Role Licenses → Request Modal → User/Admin Drawer 전 구간에서 현재 할 일, 상태·SLA, 처리 Action과 History의 우선순위를 더 빠르게 파악하도록 정리했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.
+
+### Task clarity & execution hierarchy
+- 첫 viewport를 Current Task / Next Action 중심으로 재정렬하고 5-step P6 progress contract 유지
+- 전사 공통 라이선스를 compact entitlement presentation으로 낮춰 직무별 decision surface를 우선 노출
+- Role card의 status / SLA / CTA scan lane과 action hierarchy 정렬
+- 신청 Modal에서 SLA·예상 지급일을 secondary metadata보다 먼저 읽도록 information hierarchy 강화
+- 사용자 신청현황과 관리자 queue를 ticket → status/SLA → action → history 순으로 재구성
+- 390px mobile에서도 critical facts/action이 viewport와 touch target contract를 유지하도록 보정
+- T1–T8 task-clarity 및 X1–X6 execution-hierarchy regression contract 추가
+- 별도 execution hierarchy stylesheet는 initial mobile FCP 예산을 지키기 위해 post-login deferred layer로 유지
+
+### Preserved contracts
+- P6 feature freeze / `businessFlowChanged: false`
+- R1–R8 / S1–S8 / U1–U8 / V1–V8 / D1–D8 / E1–E8
+- Desktop/Mobile Lighthouse budget, Firefox/WebKit smoke, Production smoke, SHA-256 integrity
+
 ## v17.0.0 — Product Identity & Interface Evolution — 2026-09-17
 
 P6에서 동결한 Business Flow와 상태 모델을 유지하면서 v16.1 수준의 visual precision을 포함한 Product Identity / Interface Evolution을 적용했습니다. 기능 추가 없이 Login → Dashboard → License Cards → Modal·Drawer 전 구간의 typography, spacing rhythm, surface hierarchy, elevation, action/selection/status 역할, responsive composition을 정교화했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.
