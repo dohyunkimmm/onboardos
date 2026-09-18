@@ -26,12 +26,14 @@ async function rect(locator){
   });
 }
 
-test('[X1] execution hierarchy layer loads after the canonical visual system', async ({page}) => {
+test('[X1] canonical visual system owns execution hierarchy without a runtime override layer', async ({page}) => {
   await stabilize(page);
-  const order = await page.evaluate(() => Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(link => link.getAttribute('href')));
-  expect(order).toContain('visual-system.css');
-  expect(order).toContain('execution-hierarchy.css');
-  expect(order.indexOf('execution-hierarchy.css')).toBeGreaterThan(order.indexOf('visual-system.css'));
+  const stylesheets = await page.evaluate(() => Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(link => link.getAttribute('href')));
+  expect(stylesheets).toContain('visual-system.css');
+  expect(stylesheets).not.toContain('execution-hierarchy.css');
+  await expect(page.locator('#executionHierarchyStylesheet')).toHaveCount(0);
+  const token = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--x18-surface').trim());
+  expect(token).not.toBe('');
 });
 
 test('[X2] request modal promotes SLA and expected delivery above secondary metadata', async ({page}) => {
