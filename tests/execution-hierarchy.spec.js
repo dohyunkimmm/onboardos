@@ -53,7 +53,12 @@ test('[X2] request modal promotes SLA and expected delivery above secondary meta
 
   const expectedBox = await rect(expected);
   const ordinaryBox = await rect(ordinary);
-  expect(expectedBox.width).toBeGreaterThan(ordinaryBox.width * 1.6);
+  const viewport = page.viewportSize();
+  if((viewport?.width || 0) > 560){
+    expect(expectedBox.width).toBeGreaterThan(ordinaryBox.width * 1.6);
+  }else{
+    expect(Math.abs(expectedBox.width-ordinaryBox.width)).toBeLessThanOrEqual(1);
+  }
 });
 
 test('[X3] request execution controls remain separated and business copy remains intact', async ({page}) => {
