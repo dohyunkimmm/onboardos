@@ -14,7 +14,7 @@
 
 **추천 순서:** 36초 영상으로 핵심을 먼저 확인한 뒤 → Live Production에서 직접 체험 → 필요하면 Case Study와 검증 근거를 확인합니다. [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md) · [Latest main verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Release Notes](./CHANGELOG.md)
 
-> **Portfolio release — v17.0.0 / P6 Production verified.** P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, v16.1 수준의 typography·spacing·state·responsive polish를 포함해 Product Identity와 Interface hierarchy를 한 단계 고도화했습니다. Login → Overview → License Cards → Modal·Drawer까지 surface·elevation·card grammar·Action / Selection / Status 역할을 더 명확하게 분리했고, 버전별 runtime stylesheet는 `visual-system.css`로 통합했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다. 정식 기준은 [GitHub Release v17.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v17.0.0)과 공개 Verification Evidence로 고정합니다.
+> **Portfolio release — v18.0.0 / P6 Production verified.** P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 첫 viewport를 Current Task / Next Action 중심으로 재정렬하고 공통 라이선스를 compact entitlement로 낮춰 직무별 의사결정과 다음 행동이 더 빠르게 보이도록 개선했습니다. Role card의 status·SLA·CTA scan hierarchy를 정렬하고, 신청 Modal은 SLA·예상 지급일을 우선 노출하며, 사용자 신청현황과 관리자 queue는 요청번호 → 상태/SLA → 처리 Action → History 순으로 execution hierarchy를 강화했습니다. Desktop/Tablet/Mobile, focus, reduced-motion, forced-colors와 기존 P6 state/SLA/role-isolation 계약은 유지했으며 JavaScript business logic, catalog data, request-state machine은 변경하지 않았습니다. 정식 기준은 [GitHub Release v18.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v18.0.0)과 공개 Verification Evidence로 고정합니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
@@ -27,7 +27,7 @@
 3. **예외·상태 일관성** — 반려→보완 재신청, 직무 미매핑/목록 외 Fallback, 직무 전환 후 상태 격리·복원 확인
 4. **검증 Evidence** — README Verification Matrix와 최신 `main` GitHub Actions에서 54개 회귀·Desktop/Mobile Lighthouse·Production smoke·SHA-256 integrity 확인
 
-[**36초 Production Demo**](https://onboardos-rho.vercel.app/production-demo)는 Vercel의 웹 플레이어에서 바로 재생되며, 영상 원본은 v17.0.0 GitHub Release asset으로 유지합니다. GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고, Release asset은 FFmpeg/ffprobe로 **정확히 36초**인지 검증합니다. 제품 Flow 이후의 Verification Evidence 화면은 영상에서 제외했고, 녹화 중 Analytics·Speed Insights endpoint는 intercept하여 synthetic 트래픽이 실제 사용 지표에 섞이지 않도록 합니다. 화면 녹화용 shot list와 설명 문구는 [`docs/DEMO_WALKTHROUGH.md`](./docs/DEMO_WALKTHROUGH.md)에 정리했습니다.
+[**36초 Production Demo**](https://onboardos-rho.vercel.app/production-demo)는 Vercel의 웹 플레이어에서 바로 재생되며, 영상 원본은 v18.0.0 GitHub Release asset으로 유지합니다. GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고, Release asset은 FFmpeg/ffprobe로 **정확히 36초**인지 검증합니다. 제품 Flow 이후의 Verification Evidence 화면은 영상에서 제외했고, 녹화 중 Analytics·Speed Insights endpoint는 intercept하여 synthetic 트래픽이 실제 사용 지표에 섞이지 않도록 합니다. 화면 녹화용 shot list와 설명 문구는 [`docs/DEMO_WALKTHROUGH.md`](./docs/DEMO_WALKTHROUGH.md)에 정리했습니다.
 
 ## 주요 기능
 
