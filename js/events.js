@@ -1,5 +1,10 @@
 'use strict';
 
+requestAnimationFrame(() => {
+  const executionHierarchyStylesheet = document.getElementById('executionHierarchyStylesheet');
+  if(executionHierarchyStylesheet) executionHierarchyStylesheet.media = 'all';
+});
+
 const actionHandlers = {
   'open-user-drawer': () => openDrawer('user'),
   'open-admin-drawer': () => openDrawer('admin'),
