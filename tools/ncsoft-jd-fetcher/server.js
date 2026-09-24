@@ -14,11 +14,10 @@ function isPrivateIp(ip) {
   if (!net.isIP(ip)) return false;
   if (ip.startsWith('10.') || ip.startsWith('127.') || ip.startsWith('169.254.') || ip.startsWith('192.168.')) return true;
   if (ip.startsWith('172.')) {
-    const second = Number(ip.split('.')[1]);
-    if (second >= 16 && second <= 31) return true;
+    const n = Number(ip.split('.')[1]);
+    if (n >= 16 && n <= 31) return true;
   }
-  if (ip === '::1' || ip.startsWith('fc') || ip.startsWith('fd') || ip.startsWith('fe80:')) return true;
-  return false;
+  return ip === '::1' || ip.startsWith('fc') || ip.startsWith('fd') || ip.startsWith('fe80:');
 }
 
 async function validateUrl(input) {
@@ -33,72 +32,124 @@ async function validateUrl(input) {
 
 function parseIdentity(url) {
   const m = url.pathname.match(/\/apply\/view\/(\d+)/);
-  const postingId = m?.[1] || url.searchParams.get('jopenId') || '';
-  const companyId = url.searchParams.get('companyId') || '';
-  return { postingId, companyId };
+  return {
+    postingId: m?.[1] || url.searchParams.get('jopenId') || '',
+    companyId: url.searchParams.get('companyId') || ''
+  };
 }
 
-function normalize(s='') {
-  return s.replace(/\u00a0/g, ' ').replace(/[\t\r]+/g, ' ').replace(/ +/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+function normalize(s = '') {
+  return String(s)
+    .replace(/\u00a0/g, ' ')
+    .replace(/\r/g, '')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n[ \t]+/g, '\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
-const HEADING_MAP = [
-  ['responsibilities', [/주요\s*업무/i,/업무\s*내용/i,/담당\s*업무/i,/job\s*description/i,/responsibilit/i]],
-  ['required_qualifications', [/지원\s*자격/i,/자격\s*요건/i,/필수\s*요건/i,/requirements?/i,/qualification/i]],
-  ['preferred_qualifications', [/우대\s*사항/i,/우대\s*요건/i,/preferred/i]],
-  ['team', [/조직\s*소개/i,/팀\s*소개/i,/프로젝트\s*소개/i,/organization/i,/team/i]],
-  ['employment_type', [/고용\s*형태/i,/채용\s*구분/i,/employment\s*type/i]],
-  ['location', [/근무\s*지/i,/근무\s*지역/i,/location/i]],
-  ['application_period', [/모집\s*기간/i,/접수\s*기간/i,/지원\s*기간/i,/application\s*period/i]],
-  ['status', [/공고\s*상태/i,/지원\s*상태/i,/status/i]]
-];
-
-function splitItems(text='') {
-  return normalize(text)
-    .split(/\n|(?:^|\s)[•·▪◦*-]\s+/)
-    .map(s => s.replace(/^[-•·▪◦*]\s*/, '').trim())
-    .filter(s => s.length >= 2 && s.length < 1200);
+function extractBlock(text, startRe, endRe) {
+  const start = text.search(startRe);
+  if (start < 0) return '';
+  const tail = text.slice(start).replace(startRe, '');
+  const end = tail.search(endRe);
+  return normalize(end >= 0 ? tail.slice(0, end) : tail);
 }
 
-function extractSectionsFromText(raw='') {
-  const lines = normalize(raw).split('\n').map(x=>x.trim()).filter(Boolean);
-  const sections = { responsibilities: [], required_qualifications: [], preferred_qualifications: [] };
-  let current = null;
-  for (const line of lines) {
-    let matched = null;
-    for (const [key, pats] of HEADING_MAP) {
-      if (pats.some(p => p.test(line)) && line.length < 80) { matched = key; break; }
-    }
-    if (matched) { current = matched; continue; }
-    if (!current) continue;
-    if (['responsibilities','required_qualifications','preferred_qualifications'].includes(current)) {
-      if (line.length >= 2) sections[current].push(line);
-    } else if (!sections[current]) {
-      sections[current] = line;
-    }
+function splitBullets(text = '') {
+  const cleaned = normalize(text)
+    .replace(/^아래 중 하나의 직무 경험 필수\s*/i, '')
+    .replace(/^주요 업무\s*/i, '');
+  const parts = cleaned
+    .split(/(?:^|\n|\s)-\s+(?=[A-Za-z0-9가-힣])/)
+    .map(v => normalize(v).replace(/^[-•·▪◦*]\s*/, ''))
+    .filter(v => v.length >= 2);
+  if (parts.length > 1) return [...new Set(parts)].slice(0, 30);
+  return cleaned ? [cleaned] : [];
+}
+
+function parseStructuredText(raw) {
+  const text = normalize(raw);
+  const team = extractBlock(text, /\[\s*팀\/프로젝트 소개\s*\]/i, /\[\s*업무내용\s*\]/i);
+  const work = extractBlock(text, /\[\s*업무내용\s*\]/i, /\[\s*지원자격\s*\]/i);
+  const qualifications = extractBlock(text, /\[\s*지원자격\s*\]/i, /\[\s*제출서류\s*\]/i);
+  const submission = extractBlock(text, /\[\s*제출서류\s*\]/i, /\[\s*전형단계\s*\]/i);
+  const selection = extractBlock(text, /\[\s*전형단계\s*\]/i, /\[\s*도움말\s*\]/i);
+
+  let responsibilityText = work;
+  const mainMatch = work.match(/주요\s*업무\s*([\s\S]*)/i);
+  if (mainMatch) responsibilityText = mainMatch[1];
+
+  const requiredMarker = /이런 역량을 갖추신 분을 찾고 있습니다\s*\(필수\)/i;
+  const preferredMarker = /이런 역량도 있다면 더욱 도움이 됩니다\s*\(우대\)/i;
+  let requiredText = qualifications;
+  let preferredText = '';
+  const reqMatch = qualifications.match(requiredMarker);
+  if (reqMatch) requiredText = qualifications.slice(reqMatch.index + reqMatch[0].length);
+  const prefMatch = requiredText.match(preferredMarker);
+  if (prefMatch) {
+    preferredText = requiredText.slice(prefMatch.index + prefMatch[0].length);
+    requiredText = requiredText.slice(0, prefMatch.index);
+  } else {
+    const p2 = qualifications.match(preferredMarker);
+    if (p2) preferredText = qualifications.slice(p2.index + p2[0].length);
   }
-  for (const k of ['responsibilities','required_qualifications','preferred_qualifications']) {
-    sections[k] = [...new Set(sections[k])].slice(0, 30);
-  }
-  return sections;
+
+  const education = qualifications.match(/학력\s*:\s*([^\n]+)/i)?.[1]?.trim() || '';
+  const experienceRequirement = qualifications.match(/경력\s*:\s*\n?\s*(\d+년)\s*~?/i)?.[1] || '';
+  const applicationPeriod = text.match(/\d{4}\.\d{2}\.\d{2}\s*~\s*\d{4}\.\d{2}\.\d{2}/)?.[0] || '';
+  const status = text.match(/(?:^|\n)(D-\d+|마감|상시)(?:\n|$)/)?.[1] || '';
+  const careerType = text.match(/(?:^|\n)(경력|신입|인턴|단기)(?:\n|$)/)?.[1] || '';
+
+  const selectionProcess = [...selection.matchAll(/STEP\s*\d+\s*\n?\s*([^\n]+)/gi)].map(m => normalize(m[1]));
+
+  return {
+    team,
+    responsibilities: splitBullets(responsibilityText),
+    required_qualifications: splitBullets(requiredText),
+    preferred_qualifications: splitBullets(preferredText),
+    education,
+    experience_requirement: experienceRequirement,
+    career_type: careerType,
+    application_period: applicationPeriod,
+    status,
+    submission_materials: splitBullets(submission),
+    selection_process: selectionProcess
+  };
 }
 
 function parseHtml(html, sourceUrl) {
   const $ = cheerio.load(html || '');
   $('script,style,noscript,svg').remove();
-  const bodyText = normalize($('body').text().replace(/\s*\n\s*/g, '\n'));
+  $('br').replaceWith('\n');
+  $('li,p,h1,h2,h3,h4,section,article').each((_, el) => $(el).append('\n'));
+  const bodyText = normalize($('body').text());
   let title = normalize($('h1').first().text()) || normalize($('h2').first().text()) || normalize($('title').text());
-  if (/NC Careers|공고보기|채용공고/i.test(title)) {
-    const candidates = $('h1,h2,h3,strong,.title,[class*=title]').map((_,el)=>normalize($(el).text())).get().filter(t=>t.length>3 && t.length<180 && !/NC Careers|채용공고|공고보기/i.test(t));
+  if (!title || /NC Careers|공고보기|채용공고/i.test(title)) {
+    const candidates = $('h1,h2,h3,strong,.title,[class*=title]')
+      .map((_, el) => normalize($(el).text()))
+      .get()
+      .filter(t => t.length > 3 && t.length < 180 && !/NC Careers|채용공고|공고보기/i.test(t));
     if (candidates.length) title = candidates[0];
   }
-  const sections = extractSectionsFromText(bodyText);
-  return { title, bodyText, sections, sourceUrl };
+  return { title, bodyText, structured: parseStructuredText(bodyText), sourceUrl };
+}
+
+function isUseful(parsed) {
+  const s = parsed?.structured || {};
+  return Boolean(
+    parsed?.title &&
+    parsed.bodyText?.includes('[ 업무내용 ]') &&
+    parsed.bodyText?.includes('[ 지원자격 ]') &&
+    s.responsibilities?.length &&
+    s.required_qualifications?.length
+  );
 }
 
 async function directFetch(url) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
+  const timer = setTimeout(() => controller.abort(), 15000);
   try {
     const res = await fetch(url, {
       redirect: 'follow',
@@ -109,25 +160,24 @@ async function directFetch(url) {
       },
       signal: controller.signal
     });
-    const text = await res.text();
-    return { status: res.status, finalUrl: res.url, text, contentType: res.headers.get('content-type') || '' };
-  } finally { clearTimeout(timer); }
+    return { status: res.status, finalUrl: res.url, text: await res.text() };
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
-function isUseful(parsed) {
-  const s = parsed.sections || {};
-  return Boolean(parsed.title && parsed.title.length > 3 && parsed.bodyText.length > 300 && (s.responsibilities?.length || s.required_qualifications?.length || s.preferred_qualifications?.length));
-}
-
-function mobileCandidates(url, postingId, companyId) {
-  if (!postingId) return [];
+function candidatesFor(url, postingId, companyId) {
   const q = companyId ? `?companyId=${encodeURIComponent(companyId)}` : '';
-  return [
+  const jq = `${companyId ? `companyId=${encodeURIComponent(companyId)}&` : ''}jopenId=${encodeURIComponent(postingId)}`;
+  return [...new Set([
+    url.toString(),
     `https://m-careers.ncsoft.com/apply/view/${postingId}${q}`,
     `https://m-careers.ncsoft.com/apply/view/${postingId}`,
-    `https://m-careers.ncsoft.com/apply/view/?${companyId ? `companyId=${encodeURIComponent(companyId)}&` : ''}jopenId=${postingId}`,
-    `https://careers.ncsoft.com/apply/view/?${companyId ? `companyId=${encodeURIComponent(companyId)}&` : ''}jopenId=${postingId}`
-  ];
+    `https://m-careers.ncsoft.com/apply/view/?${jq}`,
+    `https://m-careers.ncsoft.com/apply/view?${jq}`,
+    `https://careers.ncsoft.com/apply/view/?${jq}`,
+    `https://careers.ncsoft.com/apply/view?${jq}`
+  ])];
 }
 
 async function browserFetch(candidates, postingId) {
@@ -139,7 +189,7 @@ async function browserFetch(candidates, postingId) {
     for (const target of candidates) {
       const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36');
-      await page.setExtraHTTPHeaders({'Accept-Language':'ko-KR,ko;q=0.9,en;q=0.8'});
+      await page.setExtraHTTPHeaders({ 'Accept-Language': 'ko-KR,ko;q=0.9,en;q=0.8' });
       const networkBodies = [];
       page.on('response', async response => {
         try {
@@ -147,59 +197,96 @@ async function browserFetch(candidates, postingId) {
           const u = response.url();
           if ((ct.includes('json') || ct.includes('text')) && (u.includes(postingId) || u.includes('apply') || u.includes('recruit') || u.includes('job'))) {
             const body = await response.text();
-            if (body && body.length < 2_000_000) networkBodies.push({url:u, body});
+            if (body && body.length < 2_000_000) networkBodies.push({ url: u, body });
           }
         } catch {}
       });
       try {
         await page.goto(target, { waitUntil: 'networkidle2', timeout: 30000 });
         await new Promise(r => setTimeout(r, 2500));
-        const html = await page.content();
-        const finalUrl = page.url();
-        const parsed = parseHtml(html, finalUrl);
-        if (isUseful(parsed)) return { ...parsed, retrievalMethod: 'puppeteer_dom', networkBodies, finalUrl };
+        const parsed = parseHtml(await page.content(), page.url());
+        if (isUseful(parsed)) return { ...parsed, finalUrl: page.url(), retrievalMethod: 'puppeteer_dom' };
         for (const n of networkBodies) {
           if (!n.body.includes(postingId)) continue;
-          if (n.body.trim().startsWith('{') || n.body.trim().startsWith('[')) {
-            const text = normalize(n.body);
-            const fakeHtml = `<body>${text.replaceAll('<','&lt;')}</body>`;
-            const p = parseHtml(fakeHtml, n.url);
-            if (p.bodyText.length > parsed.bodyText.length) return { ...p, retrievalMethod: 'puppeteer_network_json', networkBodies, finalUrl };
-          }
+          const p = parseHtml(`<body>${n.body.replaceAll('<','&lt;')}</body>`, n.url);
+          if (isUseful(p)) return { ...p, finalUrl: page.url(), retrievalMethod: 'puppeteer_network' };
         }
       } catch {}
       finally { await page.close(); }
     }
     return null;
-  } finally { await browser.close(); }
+  } finally {
+    await browser.close();
+  }
 }
 
 function buildResult(parsed, identity, originalUrl, retrievalMethod) {
-  const s = parsed?.sections || {};
-  const title = normalize(parsed?.title || '');
-  const responsibilities = Array.isArray(s.responsibilities) ? s.responsibilities : splitItems(s.responsibilities || '');
-  const required = Array.isArray(s.required_qualifications) ? s.required_qualifications : splitItems(s.required_qualifications || '');
-  const preferred = Array.isArray(s.preferred_qualifications) ? s.preferred_qualifications : splitItems(s.preferred_qualifications || '');
-  const identityMatch = Boolean(identity.postingId) && (!parsed?.finalUrl || parsed.finalUrl.includes(identity.postingId) || parsed.bodyText?.includes(identity.postingId) || retrievalMethod?.includes('network'));
-  const verified = Boolean(identityMatch && title && responsibilities.length && required.length && preferred.length);
+  const s = parsed.structured || {};
+  const identityMatch = Boolean(
+    identity.postingId &&
+    ((parsed.finalUrl || parsed.sourceUrl || '').includes(identity.postingId) || parsed.bodyText.includes(identity.postingId))
+  );
+  const verified = Boolean(
+    identityMatch &&
+    parsed.title &&
+    s.responsibilities?.length &&
+    s.required_qualifications?.length &&
+    s.preferred_qualifications?.length
+  );
+
   return {
     source_url: originalUrl,
-    resolved_url: parsed?.sourceUrl || parsed?.finalUrl || null,
+    resolved_url: parsed.sourceUrl || parsed.finalUrl || null,
     posting_id: identity.postingId,
     company_id: identity.companyId,
-    title,
+    title: parsed.title,
     company: 'NCSOFT',
-    team: typeof s.team === 'string' ? s.team : '',
-    responsibilities,
-    required_qualifications: required,
-    preferred_qualifications: preferred,
-    employment_type: typeof s.employment_type === 'string' ? s.employment_type : '',
-    location: typeof s.location === 'string' ? s.location : '',
-    application_period: typeof s.application_period === 'string' ? s.application_period : '',
-    status: typeof s.status === 'string' ? s.status : '',
-    raw_text: (parsed?.bodyText || '').slice(0, 50000),
+    team: s.team || '',
+    responsibilities: s.responsibilities || [],
+    required_qualifications: s.required_qualifications || [],
+    preferred_qualifications: s.preferred_qualifications || [],
+    education: s.education || '',
+    experience_requirement: s.experience_requirement || '',
+    career_type: s.career_type || '',
+    employment_type: '',
+    location: '',
+    application_period: s.application_period || '',
+    status: s.status || '',
+    submission_materials: s.submission_materials || [],
+    selection_process: s.selection_process || [],
+    raw_text: parsed.bodyText.slice(0, 50000),
     retrieval_method: retrievalMethod,
     verified
+  };
+}
+
+async function fetchJob(input) {
+  const url = await validateUrl(input);
+  const identity = parseIdentity(url);
+  if (!identity.postingId) throw new Error('postingId not found in URL');
+  const candidates = candidatesFor(url, identity.postingId, identity.companyId);
+
+  for (const target of candidates) {
+    try {
+      const d = await directFetch(target);
+      if (d.status >= 200 && d.status < 400 && d.text) {
+        const parsed = parseHtml(d.text, d.finalUrl || target);
+        if (isUseful(parsed)) {
+          return buildResult({ ...parsed, finalUrl: d.finalUrl }, identity, input, 'direct_http');
+        }
+      }
+    } catch {}
+  }
+
+  const browserParsed = await browserFetch(candidates, identity.postingId);
+  if (browserParsed) return buildResult(browserParsed, identity, input, browserParsed.retrievalMethod);
+
+  return {
+    source_url: input,
+    posting_id: identity.postingId,
+    company_id: identity.companyId,
+    verified: false,
+    error: 'Exact posting content could not be retrieved from allowed NCSOFT routes'
   };
 }
 
@@ -207,33 +294,10 @@ app.get('/health', (_req, res) => res.json({ ok: true, service: 'ncsoft-jd-fetch
 
 app.post('/fetch', async (req, res) => {
   const input = req.body?.url;
-  if (!input || typeof input !== 'string') return res.status(400).json({ error: 'url is required' });
+  if (!input || typeof input !== 'string') return res.status(400).json({ error: 'url is required', verified: false });
   try {
-    const url = await validateUrl(input);
-    const identity = parseIdentity(url);
-    if (!identity.postingId) return res.status(400).json({ error: 'postingId not found in URL' });
-
-    const attempts = [url.toString(), ...mobileCandidates(url, identity.postingId, identity.companyId)];
-    for (const target of [...new Set(attempts)]) {
-      try {
-        const d = await directFetch(target);
-        if (d.status >= 200 && d.status < 400 && d.text) {
-          const parsed = parseHtml(d.text, d.finalUrl || target);
-          if (isUseful(parsed)) return res.json(buildResult({ ...parsed, finalUrl: d.finalUrl }, identity, input, 'direct_http'));
-        }
-      } catch {}
-    }
-
-    const browserParsed = await browserFetch([...new Set(attempts)], identity.postingId);
-    if (browserParsed) return res.json(buildResult(browserParsed, identity, input, browserParsed.retrievalMethod));
-
-    return res.status(502).json({
-      source_url: input,
-      posting_id: identity.postingId,
-      company_id: identity.companyId,
-      verified: false,
-      error: 'Exact posting content could not be retrieved from allowed NCSOFT routes'
-    });
+    const result = await fetchJob(input);
+    return res.status(result.error ? 502 : 200).json(result);
   } catch (err) {
     return res.status(400).json({ error: err?.message || 'request failed', verified: false });
   }
