@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { detectIdentity } from '../src/retriever.js';
+import { detectIdentity, retrieveJD } from '../src/retriever.js';
 
 test('detects Korean recruiting platform posting identities', () => {
   const cases: Array<[string, string, string]> = [
@@ -53,4 +53,25 @@ test('analytics parameters do not destabilize known posting fingerprints', () =>
   const a = detectIdentity('https://www.wanted.co.kr/wd/47797?utm_source=a');
   const b = detectIdentity('https://www.wanted.co.kr/wd/47797?utm_source=b');
   assert.equal(a.fingerprint, b.fingerprint);
+});
+
+test('blocks direct private-IP SSRF targets before retrieval', async () => {
+  await assert.rejects(
+    () => retrieveJD({ url: 'http://127.0.0.1/admin' }),
+    /Private IP targets are not allowed/,
+  );
+});
+
+test('blocks credential-bearing URLs before retrieval', async () => {
+  await assert.rejects(
+    () => retrieveJD({ url: 'https://user:password@example.com/job' }),
+    /Credential-bearing URLs are not allowed/,
+  );
+});
+
+test('blocks non-standard target ports before retrieval', async () => {
+  await assert.rejects(
+    () => retrieveJD({ url: 'https://example.com:8443/job' }),
+    /Non-standard ports are not allowed/,
+  );
 });
