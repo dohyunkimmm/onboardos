@@ -69,3 +69,17 @@ jobs:
             --data '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"jd_retriever_health","arguments":{}}}')"
           echo "$body"
           echo "$body" | grep -Eq 'jd-retriever-mcp|supported_platforms'
+
+      - name: Exercise public retrieval path
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$(curl -fsS --max-time 30 \
+            -X POST 'https://portfolio-jd-retriever-mcp.onrender.com/mcp' \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json, text/event-stream' \
+            -H 'MCP-Protocol-Version: 2025-11-25' \
+            --data '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"retrieve_jd","arguments":{"url":"https://example.com/","render":false}}}')"
+          echo "$body"
+          echo "$body" | grep -q '"platform":"generic"'
+          echo "$body" | grep -q 'route_attempts'
