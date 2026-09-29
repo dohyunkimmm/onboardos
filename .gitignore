@@ -2,5 +2,20 @@ node_modules/
 playwright-report/
 test-results/
 .lighthouseci/
+.lighthouseci-mobile/
 playwright-report-cross-browser/
 playwright-report-production/
+verification/
+demo-output/
+
+# Vercel / local environment
+.vercel/
+.env
+.env.*
+!.env.example
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
