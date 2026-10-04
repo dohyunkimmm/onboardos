@@ -153,16 +153,25 @@ stateDiagram-v2
 ├── docs/
 │   └── DEMO_WALKTHROUGH.md
 ├── playwright.config.js
-├── playwright.resilience.config.js
-├── playwright.cross-browser.config.js
-├── playwright.production.config.js
-├── lighthouserc.cjs
-├── lighthouserc.mobile.cjs
+├── config/
+│   ├── lighthouserc.cjs
+│   ├── lighthouserc.mobile.cjs
+│   ├── playwright.cross-browser.config.js
+│   ├── playwright.design-polish.config.js
+│   ├── playwright.experience-refinement.config.js
+│   ├── playwright.production.config.js
+│   ├── playwright.resilience.config.js
+│   ├── playwright.scenario.config.js
+│   ├── playwright.security.config.js
+│   ├── playwright.ux.config.js
+│   └── playwright.visual-system.config.js
 ├── package.json
 ├── package-lock.json
 ├── CHANGELOG.md
 ├── .github/
 │   ├── dependabot.yml
+│   ├── pull_request_template.md
+│   ├── SECURITY.md
 │   └── workflows/
 │       ├── docs-sync.yml
 │       ├── e2e.yml
