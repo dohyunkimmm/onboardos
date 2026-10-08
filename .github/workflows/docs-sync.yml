@@ -28,7 +28,8 @@ jobs:
             grep -Fq "Portfolio release — ${TAG} / P6 Production verified." README.md
             grep -Fq "releases/tag/${TAG}" README.md
           elif [ "${STATUS}" = "candidate" ]; then
-            grep -Fq "Portfolio release — ${TAG} / P6 design-only candidate." README.md
+            CANDIDATE_KIND="$(node -p "require('./release.json').productReview ? 'product-review' : 'design-only'")"
+            grep -Fq "Portfolio release — ${TAG} / P6 ${CANDIDATE_KIND} candidate." README.md
           else
             echo "Unsupported releaseStatus: ${STATUS}" >&2
             exit 1
