@@ -18,3 +18,5 @@ Validation: seven Node regression checks plus connected Chrome checks for reques
 - Updated approval request E2E tests to supply the newly required product/permission scope and usage period.
 - Addressed a reduced-motion rendering defect where animation-dependent cards could remain transparent; added visual assertions for card presence and opacity and regenerated desktop/mobile candidate screenshot baselines. Existing release media remain historical and are not promoted by these candidate screenshots.
 - Keep `releaseStatus=candidate` pending a full passing branch E2E matrix and post-merge Production verification. No test coverage, security threshold, or Lighthouse budget is intentionally lowered.
+
+- Synchronized both request-modal deadline/processing-emphasis screenshots and the ARIA snapshots with the candidate flow. Existing required-field validation and approval semantics remain enforced.
