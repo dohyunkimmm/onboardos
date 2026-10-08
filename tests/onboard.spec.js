@@ -71,6 +71,8 @@ test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리�
   const designCard = await card(page, 'Adobe Creative Cloud');
   await designCard.getByRole('button', { name: '승인 요청하기' }).click();
   await page.locator('#requestNote').fill('디자인 제작 업무용');
+  await page.locator('#requestScope').selectOption({label:'Photoshop'});
+  await page.locator('#requestPeriod').selectOption({label:'3개월'});
   await page.getByRole('button', { name: '신청 완료' }).click();
 
   await page.locator('#adminBtn').click();
@@ -131,6 +133,8 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
   const designCard = await card(page, 'Adobe Creative Cloud');
   await designCard.getByRole('button', { name: '승인 요청하기' }).click();
   await page.locator('#requestNote').fill('이 내용은 Analytics에 전송되면 안 됩니다');
+  await page.locator('#requestScope').selectOption({label:'Photoshop'});
+  await page.locator('#requestPeriod').selectOption({label:'3개월'});
   await page.getByRole('button', { name: '신청 완료' }).click();
 
   const events = await page.evaluate(() => (window.vaq || [])

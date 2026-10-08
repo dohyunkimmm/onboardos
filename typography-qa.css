@@ -12,6 +12,7 @@ body:not(.login-open) .requirement-pill,body:not(.login-open) .employee-timing,b
 body:not(.login-open) #readinessSummary p,body:not(.login-open) .optional-summary,body:not(.login-open) .policy-note,body:not(.login-open) .hint-copy{font-size:14px!important;line-height:1.6!important;}
 body:not(.login-open) .task-overview h2{line-height:1.4;}
 body:not(.login-open) .cta,body:not(.login-open) .hint-cta,body:not(.login-open) .top-btn,body:not(.login-open) .filter-chip,body:not(.login-open) .btn-primary,body:not(.login-open) .btn-secondary,body:not(.login-open) .ghost-btn{font-size:14px!important;font-weight:650!important;line-height:1.4!important;min-height:44px;}
+body:not(.login-open) #roleGrid .cta{font-weight:700!important;}
 body:not(.login-open) .request-modal label,body:not(.login-open) .approval-fields label{font-size:14px!important;line-height:1.5!important;}
 body:not(.login-open) .request-modal input,body:not(.login-open) .request-modal textarea,body:not(.login-open) .request-modal select{font-size:16px!important;line-height:1.5!important;}
 body:not(.login-open) .request-modal textarea::placeholder,body:not(.login-open) .request-modal input::placeholder{color:#b8c0d1;opacity:1;}
