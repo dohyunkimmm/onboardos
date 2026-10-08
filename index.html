@@ -25,7 +25,7 @@
 <link as="style" href="fonts/pretendard.css" id="brandFontStylesheet" media="print" rel="stylesheet"/>
 <link href="styles.css" rel="stylesheet"/>
 <link href="login-font-lock.css" rel="stylesheet"/>
-<link href="experience-refinement.css" rel="stylesheet"/>
+<link href="experience-refinement.css" id="experienceRefinementStylesheet" media="print" rel="stylesheet"/>
 <link href="visual-system.css" rel="stylesheet"/>
 <link href="product-readiness.css" rel="stylesheet"/>
 <link href="execution-hierarchy.css" id="executionHierarchyStylesheet" media="print" rel="stylesheet"/>
@@ -96,9 +96,14 @@
 <h2 id="taskOverviewTitle">지금 필요한 도구부터 준비하세요</h2>
 <div id="readinessSummary" aria-live="polite"></div>
 <div id="pendingSummary" hidden></div>
+<div class="role-picker">
+<label>직무 미리보기</label><p class="preview-scroll-note">아래에서 체험할 직무를 선택하세요. 실제 운영에서는 본인 직무가 자동 적용됩니다.</p>
+<div aria-label="직무 미리보기" class="role-tabs" id="roleTabs" role="group"><button aria-pressed="false" class="role-tab" data-role="design" type="button">디자인</button><button aria-pressed="false" class="role-tab" data-role="dev" type="button">개발</button><button aria-pressed="false" class="role-tab" data-role="data" type="button">데이터</button><button aria-pressed="true" class="role-tab active" data-role="office" type="button">경영지원·총무</button><button aria-pressed="false" class="role-tab exception" data-role="unmapped" type="button">⚠ 직무 미매핑</button></div>
+<div class="demo-preview-note">실제 운영에서는 Google Workspace 조직·직무 정보에 따라 <b>본인 직무의 SaaS·업무 도구만</b> 자동 노출됩니다.</div>
+</div>
 <div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div>
 </section>
-<details class="badge-wrap overview-panel"><summary>직무 미리보기 · 사용자 정보 · 대표 신청 진행</summary>
+<details class="badge-wrap overview-panel"><summary>사용자 정보 · 대표 신청 진행</summary>
 
 <div class="badge-top">
 <div class="avatar" id="avatarInitial">H</div>
@@ -110,11 +115,6 @@
 </div>
 </div>
 <hr class="badge-divider"/>
-<div class="role-picker">
-<label>직무 미리보기</label><p class="preview-scroll-note">아래에서 체험할 직무를 선택하세요. 실제 운영에서는 본인 직무가 자동 적용됩니다.</p>
-<div aria-label="직무 미리보기" class="role-tabs" id="roleTabs" role="group"><button aria-pressed="false" class="role-tab" data-role="design" type="button">디자인</button><button aria-pressed="false" class="role-tab" data-role="dev" type="button">개발</button><button aria-pressed="false" class="role-tab" data-role="data" type="button">데이터</button><button aria-pressed="true" class="role-tab active" data-role="office" type="button">경영지원·총무</button><button aria-pressed="false" class="role-tab exception" data-role="unmapped" type="button">⚠ 직무 미매핑</button></div>
-<div class="demo-preview-note">실제 운영에서는 Google Workspace 조직·직무 정보에 따라 <b>본인 직무의 SaaS·업무 도구만</b> 자동 노출됩니다.</div>
-</div>
 <div class="progress-wrap"><p class="demo-tracker-label">대표 신청 체험 진행 · 직원의 업무 준비 상태와 별도로 표시합니다.</p>
 <div aria-label="대표 신청 체험 진행 상태" class="progress-bar" id="progressBar" role="list">
 <div class="progress-step done" role="listitem">
