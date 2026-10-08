@@ -36,10 +36,11 @@ test('[D1] dashboard hierarchy increases readable width and headline contrast af
 
 test('[D2] overview panel uses layered surface and tighter information hierarchy', async ({page}) => {
   await stabilize(page); await login(page);
-  const panel = await css(page.locator('.overview-panel'));
-  expect(parseFloat(panel.borderRadius)).toBeGreaterThanOrEqual(24);
-  expect(panel.backgroundImage).toContain('gradient');
-  expect(panel.boxShadow).not.toBe('none');
+  const overview = await css(page.locator('.task-overview'));
+  expect(parseFloat(overview.borderRadius)).toBeGreaterThanOrEqual(20);
+  expect(overview.backgroundImage).toContain('gradient');
+  await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
+  await page.locator('.overview-panel > summary').click();
   const name = await css(page.locator('.overview-panel .name-input'));
   expect(parseFloat(name.fontSize)).toBeGreaterThanOrEqual(28);
 });
@@ -57,8 +58,8 @@ test('[D4] role cards use consistent elevated surfaces and stronger primary CTA'
   const card = page.locator('#roleGrid .card').first();
   const state = await css(card);
   expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(18);
-  expect(state.backgroundImage).toContain('gradient');
-  expect(state.boxShadow).not.toBe('none');
+  expect(state.background).not.toBe('none');
+  expect(state.borderStyle).toBe('solid');
   const cta = await css(card.locator('.cta'));
   expect(cta.backgroundImage).toContain('gradient');
   expect(Number(cta.fontWeight)).toBeGreaterThanOrEqual(700);
@@ -108,7 +109,8 @@ test('[D8] v17 preserves one product identity across login and post-login withou
   expect(loginSurface.backgroundImage).toContain('gradient');
   await login(page);
   await expect(page.locator('body')).not.toHaveClass(/login-open/);
-  const panel = await css(page.locator('.overview-panel'));
-  expect(panel.borderRadius).toBe('26px');
+  const panel = await css(page.locator('.task-overview'));
+  expect(parseFloat(panel.borderRadius)).toBeGreaterThanOrEqual(20);
   expect(panel.backgroundImage).toContain('gradient');
+  await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
 });

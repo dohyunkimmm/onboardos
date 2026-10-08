@@ -32,20 +32,15 @@ test('[E1] top navigation separates primary product action from demo utilities',
 
 test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mobile',async({page})=>{
   await stabilize(page);await login(page);
-  const panel=await css(page.locator('.overview-panel'));
-  const viewport=page.viewportSize();
-  if((viewport?.width || 0) >= 960){
-    expect(panel.display).toBe('grid');
-    expect(panel.gridTemplateColumns.split(' ').length).toBe(2);
-  }else{
-    expect(panel.display).toBe('block');
-  }
-  if((viewport?.width || 0) >= 769){
-    expect(panel.borderRadius).toBe('26px');
-  }else{
-    expect(panel.borderRadius).toBe('24px');
-  }
-  await shot(page.locator('.overview-panel'),'E2-overview-composition.png');
+  const task=await css(page.locator('.task-overview'));
+  expect(task.display).not.toBe('none');
+  expect(task.backgroundImage).toContain('gradient');
+  const profile=page.locator('.overview-panel');
+  await expect(profile).not.toHaveAttribute('open');
+  await expect(page.locator('.task-overview .role-tab').first()).toBeVisible();
+  await profile.locator('summary').click();
+  await expect(profile.locator('.name-input')).toBeVisible();
+  await shot(page.locator('.task-overview'),'E2-overview-composition.png');
 });
 
 test('[E3] progress hierarchy emphasizes current work while preserving all five P6 steps',async({page})=>{
@@ -61,8 +56,10 @@ test('[E4] status filters behave as a sticky command surface with a distinct sel
   await stabilize(page);await login(page);
   const tools=await css(page.locator('.tools-bar'));
   const active=await css(page.locator('.filter-chip.active'));
-  expect(tools.position).toBe('sticky');
+  expect(tools.position).toBe('static');
   expect(active.backgroundImage).toContain('gradient');
+  const selected=page.locator('.filter-chip.active');
+  await expect(selected).toHaveAttribute('aria-pressed','true');
   await shot(page.locator('.tools-bar'),'E4-filter-command-surface.png');
 });
 
@@ -92,7 +89,7 @@ test('[E6] request modal keeps execution controls in a clearly separated action 
   const state=await css(actions);
   expect(state.position).toBe('sticky');
   expect(state.borderTopStyle).toBe('solid');
-  expect(state.backgroundImage).toContain('gradient');
+  expect(state.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
   await shot(page.locator('.request-modal'),'E6-modal-action-zone.png');
 });
 

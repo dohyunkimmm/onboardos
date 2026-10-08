@@ -71,6 +71,8 @@ test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리�
   const designCard = await card(page, 'Adobe Creative Cloud');
   await designCard.getByRole('button', { name: '승인 요청하기' }).click();
   await page.locator('#requestNote').fill('디자인 제작 업무용');
+  await page.locator('#requestScope').selectOption({label:'Photoshop'});
+  await page.locator('#requestPeriod').selectOption({label:'3개월'});
   await page.getByRole('button', { name: '신청 완료' }).click();
 
   await page.locator('#adminBtn').click();
@@ -96,7 +98,7 @@ test('직무 미매핑 Fallback이 실제 데모 ITSM 요청으로 생성된다'
   await page.goto('/');
   await login(page);
   await page.locator('.role-tab[data-role="unmapped"]').click();
-  await page.getByRole('button', { name: '직무 정보 확인 요청' }).click();
+  await page.locator('#roleGrid').getByRole('button', { name: '직무 정보 확인 요청' }).click();
   await page.getByRole('button', { name: '요청 접수' }).click();
   await expect(page.locator('#statusBtn')).toBeFocused();
 
@@ -131,6 +133,8 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
   const designCard = await card(page, 'Adobe Creative Cloud');
   await designCard.getByRole('button', { name: '승인 요청하기' }).click();
   await page.locator('#requestNote').fill('이 내용은 Analytics에 전송되면 안 됩니다');
+  await page.locator('#requestScope').selectOption({label:'Photoshop'});
+  await page.locator('#requestPeriod').selectOption({label:'3개월'});
   await page.getByRole('button', { name: '신청 완료' }).click();
 
   const events = await page.evaluate(() => (window.vaq || [])

@@ -39,7 +39,7 @@ test('[X2] request modal promotes SLA and expected delivery above secondary meta
   const rows = page.locator('#requestDetails > .detail-row');
   await expect(rows).toHaveCount(7);
 
-  const sla = page.locator('#requestDetails > .detail-row').filter({hasText:'SLA 기준'});
+  const sla = page.locator('#requestDetails > .detail-row').filter({hasText:'처리 기준'});
   const expected = page.locator('#requestDetails > .detail-row').filter({hasText:'예상 지급일'});
   const ordinary = page.locator('#requestDetails > .detail-row').filter({hasText:'지급 대상'});
   const slaStyle = await sla.evaluate(el => ({bg:getComputedStyle(el).backgroundImage,border:getComputedStyle(el).borderTopColor}));

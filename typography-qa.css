@@ -1,0 +1,19 @@
+/* Final typography and surface tokens, shared by desktop and mobile. */
+body{--qa-bg:#0d1017;--qa-panel:#121620;--qa-card:#191f2b;--qa-line:#303847;--qa-muted:#b8c0d1;}
+body:not(.login-open){background:var(--qa-bg)!important;}
+body button,body input,body select,body textarea{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,sans-serif!important;}
+body:not(.login-open) .licenses,body:not(.login-open) details.overview-panel{background:var(--qa-panel)!important;border-color:var(--qa-line)!important;}
+body:not(.login-open) #roleGrid .card,body:not(.login-open) #commonGrid .card{background:var(--qa-card)!important;border-color:var(--qa-line)!important;}
+body:not(.login-open) .card:hover,body:not(.login-open) .card:focus-within{border-color:#8c79da!important;}
+body:not(.login-open) .card-title{font-size:17px!important;font-weight:700!important;line-height:1.4!important;}
+body:not(.login-open) .card-cat,body:not(.login-open) .card-owner,body:not(.login-open) .count{font-size:12px!important;line-height:1.6!important;color:var(--qa-muted)!important;}
+body:not(.login-open) .card-owner :is(b,strong){color:#d9deea!important;font-weight:600!important;}
+body:not(.login-open) .requirement-pill,body:not(.login-open) .employee-timing,body:not(.login-open) .status-pill{font-size:12px!important;line-height:1.5!important;font-weight:600!important;}
+body:not(.login-open) #readinessSummary p,body:not(.login-open) .optional-summary,body:not(.login-open) .policy-note,body:not(.login-open) .hint-copy{font-size:14px!important;line-height:1.6!important;}
+body:not(.login-open) .task-overview h2{line-height:1.4;}
+body:not(.login-open) .cta,body:not(.login-open) .hint-cta,body:not(.login-open) .top-btn,body:not(.login-open) .filter-chip,body:not(.login-open) .btn-primary,body:not(.login-open) .btn-secondary,body:not(.login-open) .ghost-btn{font-size:14px!important;font-weight:650!important;line-height:1.4!important;min-height:44px;}
+body:not(.login-open) #roleGrid .cta{font-weight:700!important;}
+body:not(.login-open) .request-modal label,body:not(.login-open) .approval-fields label{font-size:14px!important;line-height:1.5!important;}
+body:not(.login-open) .request-modal input,body:not(.login-open) .request-modal textarea,body:not(.login-open) .request-modal select{font-size:16px!important;line-height:1.5!important;}
+body:not(.login-open) .request-modal textarea::placeholder,body:not(.login-open) .request-modal input::placeholder{color:#b8c0d1;opacity:1;}
+@media(max-width:560px){body:not(.login-open) .top-btn{font-size:13px!important;}body:not(.login-open) .hint-copy{min-width:0;}body:not(.login-open) .task-overview h2{font-size:22px;}}

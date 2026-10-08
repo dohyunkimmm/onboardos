@@ -14,7 +14,7 @@
 
 **추천 순서:** 36초 영상으로 핵심을 먼저 확인한 뒤 → Live Production에서 직접 체험 → 필요하면 Case Study와 검증 근거를 확인합니다. [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md) · [Latest main verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Release Notes](./CHANGELOG.md)
 
-> **Portfolio release — v18.0.0 / P6 Production verified.** P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대로 유지하면서, 첫 viewport를 Current Task / Next Action 중심으로 재정렬하고 공통 라이선스를 compact entitlement로 낮춰 직무별 의사결정과 다음 행동이 더 빠르게 보이도록 개선했습니다. Role card의 status·SLA·CTA scan hierarchy를 정렬하고, 신청 Modal은 SLA·예상 지급일을 우선 노출하며, 사용자 신청현황과 관리자 queue는 요청번호 → 상태/SLA → 처리 Action → History 순으로 execution hierarchy를 강화했습니다. Desktop/Tablet/Mobile, focus, reduced-motion, forced-colors와 기존 P6 state/SLA/role-isolation 계약은 유지했으며 JavaScript business logic, catalog data, request-state machine은 변경하지 않았습니다. 정식 기준은 [GitHub Release v18.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v18.0.0)과 공개 Verification Evidence로 고정합니다.
+> **Portfolio release — v18.0.0 / P6 product-review candidate.** [2026-10-08 검토 1~7](./docs/PRODUCT_REVIEW_2026-10-08.md)을 반영했습니다. 업무 준비 요약과 직무 도구를 먼저 보여주고, 공통 도구와 사용자 정보는 펼쳐볼 수 있습니다. 완료 필터의 실제 카드 숨김, 필수·선택 도구 분류, 대표 신청 체험과 직원 준비 상태 분리, 설치·계정 시작 가이드, 승인 목적·제품/권한·기간 검증과 관리자 판단 정보를 추가했습니다. 필수 분류는 데모 정책이며 실제 회사의 좌석·비용·설치 배포 경로는 미연동입니다. 기존 v18.0.0 영상과 Release evidence는 해당 태그의 역사적 자료이며 이번 변경의 전체 E2E/시각 회귀 인증을 의미하지 않습니다. 이번 변경은 `node --test scripts/product-review-check.js`와 연결된 Chrome에서 주요 흐름을 검증합니다.
 
 > 포트폴리오용 가상 데이터 기반 프로토타입입니다. Google SSO, Google Workspace 조직·직무 정보, Jira Service Management, SaaS Provisioning API는 실제 운영 환경을 가정한 Mock Flow이며 실제 계정·티켓 시스템과 연결되어 있지 않습니다.
 
@@ -110,10 +110,16 @@ stateDiagram-v2
 ├── release.json
 ├── integrity-assets.json
 ├── styles.css
+├── visual-system.css
+├── execution-hierarchy.css
+├── experience-refinement.css
+├── product-readiness.css
+├── typography-qa.css
 ├── login-font-lock.css
 ├── data.js
 ├── js/
 │   ├── state.js
+│   ├── product-readiness.js
 │   ├── analytics.js
 │   ├── a11y.js
 │   └── events.js
@@ -128,6 +134,7 @@ stateDiagram-v2
 │       └── *.woff2
 ├── scripts/
 │   ├── quality-check.js
+│   ├── product-review-check.js
 │   ├── release-contract.js
 │   ├── public-assets.js
 │   ├── serve.js
@@ -151,7 +158,8 @@ stateDiagram-v2
 │   ├── visual.spec.js
 │   └── visual.spec.js-snapshots/
 ├── docs/
-│   └── DEMO_WALKTHROUGH.md
+│   ├── DEMO_WALKTHROUGH.md
+│   └── PRODUCT_REVIEW_2026-10-08.md
 ├── playwright.config.js
 ├── config/
 │   ├── lighthouserc.cjs
@@ -264,7 +272,7 @@ P6 이후에는 synthetic 숫자를 만들지 않고 **실제 방문이 발생�
 
 ## Code Structure
 
-`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(직무별 세션·상태·복구), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `js/events.js`(CSP-safe 이벤트 위임), `app.js`(화면·업무 Flow)로 분리했습니다. 릴리스 메타데이터는 `release.json`을 canonical source로 두고, Production integrity scope는 `integrity-assets.json`이 소유하며 `scripts/public-assets.js`가 재귀 asset discovery를 수행합니다.
+`data.js`를 라이선스 카드 데이터의 단일 Source of Truth로 사용하며 `index.html`에는 카드 목록을 중복 하드코딩하지 않습니다. 런타임 책임은 `js/state.js`(직무별 세션·상태·복구), `js/analytics.js`(이벤트), `js/a11y.js`(오버레이·포커스), `js/events.js`(CSP-safe 이벤트 위임), `js/product-readiness.js`(필수 도구 준비 상태·신청 입력 보조), `app.js`(화면·업무 Flow)로 분리했습니다. 릴리스 메타데이터는 `release.json`을 canonical source로 두고, Production integrity scope는 `integrity-assets.json`이 소유하며 `scripts/public-assets.js`가 재귀 asset discovery를 수행합니다.
 
 ## Deployment
 

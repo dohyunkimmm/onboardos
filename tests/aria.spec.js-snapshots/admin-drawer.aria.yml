@@ -2,17 +2,29 @@
   - heading "관리자 체험" [level=3]
   - button "닫기": ×
   - button "검토 대기 1":
-    - text: 검토 대기
+    - text: ""
     - strong: "1"
   - button "지급 대기 0":
-    - text: 지급 대기
+    - text: ""
     - strong: "0"
   - button "보완 대기 0":
-    - text: 보완 대기
+    - text: ""
     - strong: "0"
   - button "완료 0":
-    - text: 완료
+    - text: ""
     - strong: "0"
-  - text: /Interactive Prototype · IT 관리자 역할 미리보기 Microsoft Office ITSM-\d+ 요청자 · 홍길동 \(경영지원·총무 · 신규입사자\) 담당 · IT팀 상태 · 처리 중 SLA 정상 · D-2 목표 9월 \d+일 \(화\) · 기준 D\+1~2 신청일 · 9월 \d+일 홍길동 · 신청 접수 · 9\/\d+ \d+:\d+/
+  - text: /Interactive Prototype · IT 관리자 역할 미리보기 Microsoft Office ITSM-\d+ 요청자 · 홍길동 \(경영지원·총무 · 신규입사자\) 담당 · IT팀 상태 · 처리 중 SLA 정상 · D-2 처리 예정 9월 \d+일 \(화\) · 기준 D\+1~2 신청일 · 9월 \d+일 승인 판단 정보/
+  - paragraph: 프로토타입 · 좌석·비용은 실제 운영 값이 아닙니다.
+  - term: 제품·권한 범위
+  - definition: 기본 라이선스
+  - term: 사용 기간
+  - definition: 담당자 확인 필요
+  - term: 예산·비용 부서
+  - definition: 담당자 확인 필요
+  - term: 잔여 좌석
+  - definition: 미연동 · 실제 좌석 조회 필요
+  - term: 비용
+  - definition: 미연동 · 제품·플랜별 견적 확인 필요
+  - text: /홍길동 · 신청 접수 · 9\/\d+ \d+:\d+/
   - button "IT 검토 완료"
   - button "반려"

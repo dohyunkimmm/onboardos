@@ -59,6 +59,8 @@ test('반려 후 보완 재신청은 동일 ITSM 티켓의 이력을 이어간�
   const card = page.locator('#roleGrid .card').filter({hasText:'Adobe Creative Cloud'});
   await card.getByRole('button', {name:'승인 요청하기'}).click();
   await page.locator('#requestNote').fill('디자인 제작 업무용');
+  await page.locator('#requestScope').selectOption({label:'Photoshop'});
+  await page.locator('#requestPeriod').selectOption({label:'3개월'});
   await page.getByRole('button', {name:'신청 완료'}).click();
   const original = await page.evaluate(() => requestState['Adobe Creative Cloud'].ticket);
   await page.locator('#adminBtn').click();

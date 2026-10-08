@@ -1,9 +1,13 @@
 'use strict';
 
-requestAnimationFrame(() => {
-  const executionHierarchyStylesheet = document.getElementById('executionHierarchyStylesheet');
-  if(executionHierarchyStylesheet) executionHierarchyStylesheet.media = 'all';
-});
+// Large post-login presentation styles should not block the initial login paint.
+function activatePostLoginStyles(){
+  for(const id of ['experienceRefinementStylesheet','executionHierarchyStylesheet']){
+    const link = document.getElementById(id);
+    if(link) link.media = 'all';
+  }
+}
+if(loggedIn) activatePostLoginStyles();
 
 const actionHandlers = {
   'open-user-drawer': () => openDrawer('user'),
@@ -11,7 +15,7 @@ const actionHandlers = {
   'reset-demo': () => resetDemo(),
   'reset-demo-close-more': () => { resetDemo(); closeMoreMenu(); },
   'toggle-more': event => toggleMoreMenu(event),
-  'fake-login': () => fakeLogin(),
+  'fake-login': () => { activatePostLoginStyles(); fakeLogin(); },
   'support-other': () => openSupportRequest('other'),
   'support-role': () => openSupportRequest('role'),
   'close-request': () => closeRequestModal(),
@@ -20,6 +24,8 @@ const actionHandlers = {
   'hide-action': () => hideActionModal(),
   'submit-support': () => submitSupportRequest(),
   'toggle-admin-filter': (_event, value) => toggleAdminFilter(value),
+  'demo-next': () => nextDemoAction(),
+  'guide-support': (_event,value) => { hideActionModal(); openSupportRequest('other'); const field=document.getElementById('supportRequestNote'); if(field) field.value=value+' 설치·접속 지원 요청'; },
   'license-action': (_event, value) => openLicenseAction(value),
   'confirm-reject': (_event, value) => confirmReject(value),
   'approve-license': (_event, value) => approveLicense(value),

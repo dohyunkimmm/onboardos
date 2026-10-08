@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — Product review candidate — 2026-10-08
+
+PR #102 후보 변경으로 직무별 필수 도구 준비 상태, 완료 필터의 실제 비노출·키보드 제외, 설치·계정 시작 가이드, 승인 요청의 목적·범위·기간 입력 및 관리자 판단 정보를 추가했습니다. 공통 도구와 대표 신청 체험은 필수 도구 준비 상태와 구분합니다. 실제 기업의 SSO·좌석·비용·설치 포털은 연결되지 않았습니다.
+
+**검증 상태:** 후보 브랜치의 Node 회귀 검사와 일부 브라우저 확인만 반영했습니다. 기존 v18.0.0 Release 영상·증빙은 과거 정식 배포 자료이며, 이 후보의 전체 E2E·시각 회귀·Production 검증으로 간주하지 않습니다. 상세 내용은 [`docs/PRODUCT_REVIEW_2026-10-08.md`](./docs/PRODUCT_REVIEW_2026-10-08.md)를 참고하세요.
+
 ## v18.0.0 — Task Clarity & Product Experience — 2026-09-18
 
 P6에서 동결한 Business Flow와 상태 모델을 유지하면서, v17의 Product Identity 위에 task-first information hierarchy와 execution clarity를 적용했습니다. 기능 추가 없이 Overview → Common/Role Licenses → Request Modal → User/Admin Drawer 전 구간에서 현재 할 일, 상태·SLA, 처리 Action과 History의 우선순위를 더 빠르게 파악하도록 정리했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.

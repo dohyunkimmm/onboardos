@@ -54,6 +54,9 @@ function sanitizeRequestRecord(name,value,role){
     dueDate:typeof value.dueDate === 'string' ? value.dueDate : '',
     expected:typeof value.expected === 'string' ? value.expected.slice(0,120) : '',
     note:typeof value.note === 'string' ? value.note.slice(0,200) : '',
+    scope:typeof value.scope === 'string' ? value.scope.slice(0,120) : '',
+    period:typeof value.period === 'string' ? value.period.slice(0,80) : '',
+    budget:typeof value.budget === 'string' ? value.budget.slice(0,80) : '',
     rejectionReason:typeof value.rejectionReason === 'string' ? value.rejectionReason.slice(0,200) : '',
     completedAt:typeof value.completedAt === 'string' ? value.completedAt : '',
     roleLabel:typeof value.roleLabel === 'string' && value.roleLabel.trim()
