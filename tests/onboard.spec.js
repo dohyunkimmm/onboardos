@@ -98,7 +98,7 @@ test('직무 미매핑 Fallback이 실제 데모 ITSM 요청으로 생성된다'
   await page.goto('/');
   await login(page);
   await page.locator('.role-tab[data-role="unmapped"]').click();
-  await page.getByRole('button', { name: '직무 정보 확인 요청' }).click();
+  await page.locator('#roleGrid').getByRole('button', { name: '직무 정보 확인 요청' }).click();
   await page.getByRole('button', { name: '요청 접수' }).click();
   await expect(page.locator('#statusBtn')).toBeFocused();
 

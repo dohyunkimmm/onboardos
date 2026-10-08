@@ -37,7 +37,8 @@ test('[T1] current task instruction is visually presented before the five-step t
   const hint = await box(page.locator('#progressHint'));
   const tracker = await box(page.locator('#progressBar'));
   expect(hint.y).toBeLessThan(tracker.y);
-  await expect(page.locator('#progressHint')).toContainText('전사 공통 항목을 확인한 뒤');
+  await expect(page.locator('#progressHint')).toContainText('필요한 도구의 신청 흐름을 체험하세요');
+  await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
 });
 
 test('[T2] common entitlements stay quieter and more compact than actionable role cards', async ({page}) => {
@@ -79,7 +80,7 @@ test('[T5] request modal keeps the frozen request flow and a separated execution
   await card.getByRole('button',{name:'신청하기'}).click();
   const modal = page.locator('.request-modal');
   await expect(modal).toBeVisible();
-  await expect(modal.getByText('SLA 기준')).toBeVisible();
+  await expect(modal.getByText('처리 기준')).toBeVisible();
   await expect(modal.getByText('예상 지급일')).toBeVisible();
   await expect(modal.getByRole('button',{name:'신청 완료'})).toBeVisible();
   const actions = await style(modal.locator('.modal-actions'));

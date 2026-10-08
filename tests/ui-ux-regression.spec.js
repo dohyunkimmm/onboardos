@@ -59,10 +59,10 @@ test('진행 안내는 5단계 tracker를 유지하고 별도 숫자 카운트 �
   await login(page);
 
   await expect(page.locator('.demo-step-kicker')).toBeVisible();
-  const pseudoContent = await page.locator('.demo-step-kicker').evaluate(el => getComputedStyle(el, '::after').content);
-  expect(pseudoContent).toContain('다음 행동');
+  await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
+  await expect(page.locator('.demo-step-kicker')).toContainText('대표 신청 체험');
   await expect(page.locator('.progress-bar .progress-step')).toHaveCount(5);
-  await expect(page.locator('#progressHint')).toContainText('전사 공통 항목');
+  await expect(page.locator('#progressHint')).toContainText('필요한 도구의 신청 흐름을 체험하세요');
 });
 
 test('초소형 모바일에서는 전사 공통 라이선스를 1열로 표시한다', async ({ page }) => {
