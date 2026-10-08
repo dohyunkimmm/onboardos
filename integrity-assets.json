@@ -24,7 +24,8 @@
     "fonts/pretendard.css",
     "fonts/PRETENDARD-LICENSE.txt",
     "execution-hierarchy.css",
-    "product-readiness.css"
+    "product-readiness.css",
+    "typography-qa.css"
   ],
   "recursiveSets": [
     {
