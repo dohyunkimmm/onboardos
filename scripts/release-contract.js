@@ -153,7 +153,7 @@ function validateReleaseContract(){
     if(!readme.includes(`Portfolio release — ${expectedTag} / P6 Production verified.`)) fail(`README verified release block is not aligned to ${expectedTag}`);
     if(!readme.includes(`releases/tag/${expectedTag}`)) fail(`README verified release link is not aligned to ${expectedTag}`);
   } else {
-    if(!readme.includes(`Portfolio release — ${expectedTag} / P6 design-only candidate.`)) fail(`README candidate release block is not aligned to ${expectedTag}`);
+    if(!readme.includes(`Portfolio release — ${expectedTag} / P6 ${release.productReview ? 'product-review' : 'design-only'} candidate.`)) fail(`README candidate release block is not aligned to ${expectedTag}`);
   }
 
   const versionMatch = versionText.match(/^ONBOARD·OS v(\d+\.\d+\.\d+)$/m);

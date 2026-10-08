@@ -4,7 +4,7 @@
   "version": "18.0.0",
   "freeze": "P6",
   "releaseClass": "task-clarity-product-experience",
-  "scope": "design-only-task-clarity-execution-hierarchy",
+  "scope": "product-review-1-through-7",
   "releaseChannel": "production",
   "canonicalVersionSource": "release.json",
   "integrityManifest": "integrity-assets.json",
@@ -171,5 +171,19 @@
       "E8-empty-state.png"
     ]
   },
-  "releaseStatus": "verified"
+  "releaseStatus": "candidate",
+  "productReview": {
+    "date": "2026-10-08",
+    "items": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "validation": "browser-smoke-and-node-regression",
+    "historicalVideoVersion": "18.0.0"
+  }
 }

@@ -27,6 +27,7 @@
 <link href="login-font-lock.css" rel="stylesheet"/>
 <link href="experience-refinement.css" rel="stylesheet"/>
 <link href="visual-system.css" rel="stylesheet"/>
+<link href="product-readiness.css" rel="stylesheet"/>
 <link href="execution-hierarchy.css" id="executionHierarchyStylesheet" media="print" rel="stylesheet"/>
 </head>
 <body class="login-open">
@@ -89,7 +90,14 @@
 </nav>
 </div>
 <main id="mainContent" inert="" tabindex="-1">
-<div class="badge-wrap overview-panel">
+<section class="task-overview" aria-labelledby="taskOverviewTitle">
+<div class="task-identity"><span>홍길동님의 업무 준비</span><span id="currentRoleLabel">경영지원·총무 직군</span></div>
+<h2 id="taskOverviewTitle">지금 필요한 도구부터 준비하세요</h2>
+<div id="readinessSummary" aria-live="polite"></div>
+<div id="pendingSummary" hidden></div>
+<div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div>
+</section>
+<details class="badge-wrap overview-panel"><summary>직무 미리보기 · 사용자 정보 · 대표 신청 진행</summary>
 
 <div class="badge-top">
 <div class="avatar" id="avatarInitial">H</div>
@@ -102,12 +110,12 @@
 </div>
 <hr class="badge-divider"/>
 <div class="role-picker">
-<label>직무 미리보기</label>
+<label>직무 미리보기</label><p class="preview-scroll-note">아래에서 체험할 직무를 선택하세요. 실제 운영에서는 본인 직무가 자동 적용됩니다.</p>
 <div aria-label="직무 미리보기" class="role-tabs" id="roleTabs" role="group"><button aria-pressed="false" class="role-tab" data-role="design" type="button">디자인</button><button aria-pressed="false" class="role-tab" data-role="dev" type="button">개발</button><button aria-pressed="false" class="role-tab" data-role="data" type="button">데이터</button><button aria-pressed="true" class="role-tab active" data-role="office" type="button">경영지원·총무</button><button aria-pressed="false" class="role-tab exception" data-role="unmapped" type="button">⚠ 직무 미매핑</button></div>
 <div class="demo-preview-note">실제 운영에서는 Google Workspace 조직·직무 정보에 따라 <b>본인 직무의 SaaS·업무 도구만</b> 자동 노출됩니다.</div>
 </div>
-<div class="progress-wrap">
-<div aria-label="온보딩 진행 상태" class="progress-bar" id="progressBar" role="list">
+<div class="progress-wrap"><p class="demo-tracker-label">대표 신청 체험 진행 · 직원의 업무 준비 상태와 별도로 표시합니다.</p>
+<div aria-label="대표 신청 체험 진행 상태" class="progress-bar" id="progressBar" role="list">
 <div class="progress-step done" role="listitem">
 <div class="step-circle">✓</div>
 <div class="step-label">계정 생성</div>
@@ -129,8 +137,8 @@
 <div class="step-label">지급 완료</div>
 </div>
 </div>
-<div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div>
-</div></div>
+
+</div></details>
 <!-- 진행 상태 트래커 (현재 단계 + 다음 할 일 안내) -->
 
 <div class="tools-bar">
@@ -141,22 +149,24 @@
 <button aria-pressed="false" class="filter-chip" data-filter="done" type="button">완료</button>
 </div>
 </div>
-<section class="licenses common-first">
-<div class="section-head">
-<h2>전사 공통 라이선스</h2>
-<span class="count mono" data-base="6종 · 계정 생성 후 1시간 이내 자동 지급" id="commonCount">6종 · 계정 생성 후 1시간 이내 자동 지급</span>
-</div>
-<div class="card-grid" id="commonGrid"></div>
-<div class="empty-state no-result" hidden="" id="commonEmpty"><b>조건에 맞는 라이선스가 없습니다</b>상태 필터를 바꿔 다시 확인해 보세요.</div>
-</section>
+
 <section class="licenses role-secondary">
 <div class="section-head">
 <h2 id="roleHeading">경영지원·총무 추가 라이선스</h2>
 <span class="count mono" data-base="3종 · 직무별 추가 항목" id="roleCount">3종 · 직무별 추가 항목</span>
 </div>
+<p class="policy-note">필수·선택 구분은 데모 운영 정책입니다. 필수 도구는 업무 시작 전 준비하고, 선택 도구는 필요할 때 신청하세요.</p>
 <div class="card-grid" id="roleGrid"></div>
 <div class="empty-state no-result" hidden="" id="roleEmpty"><b>조건에 맞는 라이선스가 없습니다</b>상태 필터를 바꿔 다시 확인해 보세요.</div>
 </section>
+<details class="licenses common-first">
+<summary class="common-summary">
+<h2>전사 공통 라이선스</h2>
+<span class="count mono" data-base="6종 · 계정 생성 후 1시간 이내 자동 지급" id="commonCount">6종 · 계정 생성 후 1시간 이내 자동 지급</span>
+</summary>
+<div class="card-grid" id="commonGrid"></div>
+<div class="empty-state no-result" hidden="" id="commonEmpty"><b>조건에 맞는 라이선스가 없습니다</b>상태 필터를 바꿔 다시 확인해 보세요.</div>
+</details>
 <div class="empty-state no-result" hidden="" id="globalEmpty"><b>조건에 맞는 라이선스가 없습니다</b>현재 직무의 상태 필터를 바꿔 다시 확인해 보세요.</div>
 <section class="complete-box" id="demoComplete">
 <h3 id="demoCompleteTitle">기획 배경 · 운영 정책</h3>
@@ -212,6 +222,7 @@
 <script src="js/state.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/a11y.js"></script>
+<script src="js/product-readiness.js"></script>
 <script src="app.js"></script>
 <script src="js/events.js"></script>
 <script defer="" src="/_vercel/insights/script.js"></script>

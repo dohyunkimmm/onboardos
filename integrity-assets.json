@@ -22,7 +22,9 @@
     "scripts/visual-system-summary.js",
     "scripts/public-assets.js",
     "fonts/pretendard.css",
-    "fonts/PRETENDARD-LICENSE.txt"
+    "fonts/PRETENDARD-LICENSE.txt",
+    "execution-hierarchy.css",
+    "product-readiness.css"
   ],
   "recursiveSets": [
     {

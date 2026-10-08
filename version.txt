@@ -2,7 +2,7 @@ ONBOARD·OS v18.0.0
 P6 feature freeze
 canonicalVersionSource=release.json
 releaseChannel=production
-releaseStatus=verified
+releaseStatus=candidate
 releaseClass=task-clarity-product-experience
 scope=design-only-task-clarity-execution-hierarchy
 freeze=P6
@@ -13,3 +13,4 @@ designSystemContract=V1-V8
 designPolishContract=D1-D8
 experienceRefinementContract=E1-E8
 integrityManifest=integrity-assets.json
+productReview=2026-10-08-items-1-7

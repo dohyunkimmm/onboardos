@@ -20,6 +20,8 @@ const actionHandlers = {
   'hide-action': () => hideActionModal(),
   'submit-support': () => submitSupportRequest(),
   'toggle-admin-filter': (_event, value) => toggleAdminFilter(value),
+  'demo-next': () => nextDemoAction(),
+  'guide-support': (_event,value) => { hideActionModal(); openSupportRequest('other'); const field=document.getElementById('supportRequestNote'); if(field) field.value=value+' 설치·접속 지원 요청'; },
   'license-action': (_event, value) => openLicenseAction(value),
   'confirm-reject': (_event, value) => confirmReject(value),
   'approve-license': (_event, value) => approveLicense(value),

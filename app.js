@@ -28,20 +28,26 @@ function openLicenseAction(name){
 
 function showActionGuideModal(item){
   const st = getEffectiveStatus(item);
-  const sc = statusConfig[st];
-  const isDone = st === 'completed';
-  document.getElementById('actionModalEyebrow').textContent = isDone ? 'LICENSE READY' : 'LICENSE GUIDE';
-  document.getElementById('actionModalTitle').textContent = `${item.name} ${isDone ? '지급 완료' : '안내'}`;
+  const available = ['completed','auto'].includes(st);
+  const installed = INSTALLED_TOOLS.has(item.mono);
+  const invited = INVITED_TOOLS.has(item.mono);
+  document.getElementById('actionModalEyebrow').textContent = available ? 'READY TO WORK' : 'LICENSE GUIDE';
+  document.getElementById('actionModalTitle').textContent = item.name+' '+startLabel(item);
+  const steps = installed
+    ? ['회사에서 배포한 설치 파일 또는 소프트웨어 포털을 확인합니다.','회사 계정으로 로그인하거나 IT팀이 안내한 라이선스 방식으로 활성화합니다.','설치·활성화 오류가 있으면 담당팀에 요청번호와 함께 문의합니다.']
+    : invited
+    ? ['회사 메일로 받은 조직·워크스페이스 초대를 확인합니다.','hong.gildong@company.com 계정 또는 회사 SSO로 로그인합니다.','올바른 회사 조직과 권한이 보이는지 확인한 뒤 업무를 시작합니다.']
+    : ['회사 계정 또는 SSO로 로그인합니다.','담당팀이 안내한 조직·업무 공간과 권한을 확인합니다.','로그인이 안 되거나 권한이 없으면 담당팀에 문의합니다.'];
   document.getElementById('actionModalBody').innerHTML = `
-    <p class="action-guide-copy">${tooltipText[st] || ''}${isDone ? ' 아래 버튼은 실제 서비스로 연결되는 지점으로, 새 탭에서 열립니다.' : ''}</p>
-    <div class="action-grid">
-      <div class="action-info"><label>담당 부서</label><div>${item.owner}</div></div>
-      <div class="action-info"><label>처리 안내</label><div>${sc.timing}</div></div>
-    </div>`;
-  document.getElementById('actionModalActions').innerHTML = `<button class="ghost-btn" data-action="hide-action">닫기</button><a class="ghost-btn service-link-btn" href="${item.url}" target="_blank" rel="noopener noreferrer">서비스 접속 ↗</a>`;
+    <p class="action-guide-copy">${available?'사용 준비가 완료된 도구입니다.':'지급 상태를 먼저 확인해 주세요.'} 아래 순서로 사용을 시작하세요.</p>
+    <ol class="start-guide">${steps.map(text=>'<li>'+text+'</li>').join('')}</ol>
+    <div class="action-grid"><div class="action-info"><label>담당 부서</label><div>${escapeHTML(item.owner)}</div></div><div class="action-info"><label>사용 계정</label><div>hong.gildong@company.com</div></div></div>
+    <p class="guide-notice">가상 데이터 기반 안내입니다. 실제 회사의 설치 파일·조직 URL·초대 메일은 연결되어 있지 않습니다. 아래 링크는 공식 서비스 안내 페이지로 이동합니다.</p>`;
+  document.getElementById('actionModalActions').innerHTML = `<button class="ghost-btn" data-action="hide-action">닫기</button><button class="ghost-btn" data-action="guide-support" data-value="${escapeHTML(item.name)}">설치·접속 문의</button><a class="ghost-btn service-link-btn" href="${item.url}" target="_blank" rel="noopener noreferrer">${installed?'공식 설치·제품 안내':'공식 서비스 열기'} ↗</a>`;
   document.getElementById('actionModalBackdrop').classList.add('show');
   activateOverlay('actionModalBackdrop','.action-modal-close');
 }
+
 
 function hideActionModal(){
   document.getElementById('actionModalBackdrop').classList.remove('show');
@@ -163,10 +169,8 @@ function renderCard(item, showCta){
   const sla = getSlaMeta(item.status);
   const isApplied = !!requestState[item.name];
   const isAuto = item.status === 'auto';
-  const ctaBtn = (!isAuto && showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${sc.cta}</button>` : '';
-  const slaPill = isAuto ? '' : (isApplied
-    ? slaHealthHTML(requestState[item.name])
-    : `<span class="sla-pill mono" title="SLA ${sla.detail}">SLA · ${sla.short}</span>`);
+  const ctaBtn = (showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${['auto','completed'].includes(effectiveStatus) ? startLabel(item) : sc.cta}</button>` : '';
+  const slaPill = isAuto ? '' : `<span class="sla-pill employee-timing">${escapeHTML(employeeTiming(item))}</span>`;
   const ownerRow = isAuto ? '' : `<div class="card-owner">담당 · <b>${item.owner}</b></div>`;
   const bottomRight = ctaBtn ? `<div class="card-action">${ctaBtn}</div>` : '';
   return `
@@ -175,7 +179,7 @@ function renderCard(item, showCta){
         <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${item.mono}</div>`}</div>
         <div>
           <div class="card-title">${item.name}</div>
-          <div class="card-cat">${item.cat}</div>
+          <div class="card-cat">${item.cat}</div>${isAuto ? '' : `<span class="requirement-pill ${requirementFor(item)==='필수'?'required':'optional'}">${requirementFor(item)} 도구</span>`}
         </div>
       </div>
       ${ownerRow}
@@ -190,9 +194,9 @@ function renderCard(item, showCta){
 }
 
 function renderCommon(){
-  document.getElementById('commonGrid').innerHTML = commonLicenses.map(item => renderCard(item, false)).join('');
+  document.getElementById('commonGrid').innerHTML = commonLicenses.map(item => renderCard(item, true)).join('');
   const cc = document.getElementById('commonCount');
-  cc.dataset.base = `${commonLicenses.length}종 · 계정 생성 후 1시간 이내 자동 지급`;
+  cc.dataset.base = `${commonLicenses.length}종 사용 가능 · 펼쳐서 시작 안내 확인`;
   cc.textContent = cc.dataset.base;
 }
 
@@ -234,7 +238,7 @@ function setRole(key){
       ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`
       : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 위의 전사 공통 라이선스만 확인하시면 됩니다.</div>`;
   } else {
-    grid.innerHTML = r.cards.map(item => renderCard(item, true)).join('');
+    grid.innerHTML = [...r.cards].sort((a,b)=>(requirementFor(a)==='필수'?0:1)-(requirementFor(b)==='필수'?0:1)).map(item => renderCard(item, true)).join('');
   }
   applyFilters();
   updateDashboard();
@@ -430,6 +434,8 @@ function applyFilters(){
   document.querySelectorAll('.card').forEach(card => {
     const matchesFilter = !group || group.has(card.dataset.status);
     card.classList.toggle('is-hidden', !matchesFilter);
+    card.hidden = !matchesFilter;
+    card.inert = !matchesFilter;
   });
   updateSectionEmptyStates();
 }
@@ -446,7 +452,8 @@ function updateSectionEmptyStates(){
     const cards = grid.querySelectorAll('.card');
     const visible = grid.querySelectorAll('.card:not(.is-hidden)').length;
     totalVisible += visible;
-    empty.hidden = true;
+    empty.hidden = !(filtering && cards.length > 0 && visible === 0);
+    if(!empty.hidden) empty.innerHTML = `<b>${selectedFilter==='processing'?'처리 중인 요청이 없습니다':selectedFilter==='done'?'지급 완료된 도구가 없습니다':'신청하거나 보완할 항목이 없습니다'}</b>다른 상태 필터에서 도구를 확인할 수 있습니다.`;
     grid.closest('.licenses')?.classList.toggle('is-filter-empty', filtering && cards.length > 0 && visible === 0);
     if(countEl && countEl.dataset.base){
       countEl.textContent = filtering ? `${visible}종 표시 중 · 전체 ${cards.length}종` : countEl.dataset.base;
@@ -480,17 +487,17 @@ function openRequestModal(name){
     document.getElementById('requestDesc').textContent = '반려 사유를 확인하고 보완 내용을 입력하면 다시 접수됩니다.';
   }
   document.getElementById('requestDetails').innerHTML =
-    (isResubmit ? `<div class="reject-recap"><b>반려 사유</b><br>${existing.rejectionReason}</div>` : '') + `
+    (isResubmit ? `<div class="reject-recap"><b>반려 사유</b><br>${escapeHTML(existing.rejectionReason)}</div>` : '') + `
     <div class="detail-row"><span>담당 부서</span><b>${selectedRequestItem.owner}</b></div>
     <div class="detail-row"><span>지급 대상</span><b>${selectedRequestItem.audience || roles[currentRole].label + ' 직군'}</b></div>
     <div class="detail-row"><span>상태</span><b>${sc.label}</b></div>
     <div class="detail-row"><span>예상 처리 시간</span><b>${sc.timing}</b></div>
-    <div class="detail-row"><span>SLA 기준</span><b class="sla-detail"><span class="sla-pill mono">SLA · ${sla.short}</span> ${sla.detail}</b></div>
+    <div class="detail-row"><span>처리 기준</span><b class="sla-detail">${sla.detail}</b></div>
     <div class="detail-row"><span>예상 지급일</span><b>${expected}</b></div>
     <div class="detail-row"><span>신청 경로</span><b>Jira Service Management</b></div>
     <div class="detail-hint">접수 시 JSM 요청번호가 발급되고, 신청현황과 관리자 화면에서 같은 번호로 추적됩니다.</div>` +
-    `<label class="request-note-label" for="requestNote">${isResubmit ? '보완 내용 (필수)' : '신청 사유 (선택)'}</label>
-     <textarea id="requestNote" class="request-note" rows="2" maxlength="200" placeholder="${isResubmit ? '반려 사유에 대한 보완 내용을 입력해 주세요' : '사용 목적이나 필요 기간을 적어두면 검토가 빨라집니다'}"></textarea>`;
+    `<label class="request-note-label" for="requestNote">${isResubmit ? '보완 내용 (필수)' : selectedRequestItem.status==='approval' ? '사용 목적 (필수)' : '신청 사유 (선택)'}</label>
+     <textarea id="requestNote" class="request-note" rows="2" maxlength="200" ${isResubmit || selectedRequestItem.status==='approval' ? 'required aria-required="true"' : ''} placeholder="${isResubmit ? '반려 사유에 대한 보완 내용을 입력해 주세요' : '사용 목적이나 필요 기간을 적어두면 검토가 빨라집니다'}"></textarea>` + requestFields(selectedRequestItem,existing,isResubmit);
   document.getElementById('submitRequestBtn').textContent = isResubmit ? '재신청하기' : '신청 완료';
   document.getElementById('requestBackdrop').classList.add('show');
   activateOverlay('requestBackdrop','#requestNote');
@@ -512,10 +519,18 @@ function submitRequest(){
   const prevReq = requestState[item.name];
   const isResubmit = !!(prevReq && prevReq.status === 'rejected');
   const note = (document.getElementById('requestNote')?.value || '').trim();
-  if(isResubmit && !note){
-    showToast('보완 내용을 입력해야 재신청할 수 있습니다.');
+  if((isResubmit || item.status==='approval') && !note){
+    showToast(isResubmit ? '보완 내용을 입력해야 재신청할 수 있습니다.' : '승인 검토를 위한 사용 목적을 입력해 주세요.');
     document.getElementById('requestNote')?.focus();
     return;
+  }
+  const scope = (document.getElementById('requestScope')?.value || '').trim();
+  const period = (document.getElementById('requestPeriod')?.value || '').trim();
+  const budget = (document.getElementById('requestBudget')?.value || '').trim();
+  if(item.status==='approval' && (!scope || !period)){
+    const missing = document.getElementById(!scope?'requestScope':'requestPeriod');
+    showToast(!scope?'제품·권한 범위를 선택해 주세요.':'사용 기간을 선택해 주세요.');
+    missing?.focus(); return;
   }
   const today = new Date();
   const days = item.status === 'approval' ? 3 : 2;
@@ -531,6 +546,7 @@ function submitRequest(){
     dueDate:businessDate(days).toISOString(),
     expected:expectedDate(days),
     note:note,
+    scope,period,budget,
     roleLabel:previous?.roleLabel || roles[currentRole].label,
     history:[...(previous?.history || cancelledHistory[item.name] || []),
              {actor:'홍길동',label:((previous || cancelledHistory[item.name]) ? '재신청 접수' : '신청 접수') + (note ? ' · 사유 기재' : ''), at:timeLabel()}]
@@ -713,9 +729,9 @@ function renderDrawer(){
     const history = `<div class="request-history">${(req.history || []).map(h=>`<div class="history-row"><span class="history-dot"></span><span><b class="history-actor">${escapeHTML(historyActor(h,req))}</b> · ${escapeHTML(h.label)} · ${escapeHTML(h.at)}</span></div>`).join('')}</div>`;
     return `<div class="request-item">
       <div class="request-item-title">${req.name}<span class="ticket-key mono">${req.ticket}</span></div>
-      <div class="request-item-meta">${drawerMode === 'admin' ? `요청자 · <b>홍길동</b> (${escapeHTML(req.roleLabel || '경영지원·총무')} · 신규입사자)<br>` : ''}담당 · ${req.owner}<br>상태 · <b>${stateLabel}</b><br><span class="request-sla">${slaHealthHTML(req)}<span class="sla-target">목표 ${req.expected} · 기준 ${sla.short}</span></span><br>신청일 · ${req.createdAt}</div>
+      <div class="request-item-meta">${drawerMode === 'admin' ? `요청자 · <b>홍길동</b> (${escapeHTML(req.roleLabel || '경영지원·총무')} · 신규입사자)<br>` : ''}담당 · ${req.owner}<br>상태 · <b>${stateLabel}</b><br><span class="request-sla">${drawerMode==='admin'?slaHealthHTML(req):''}<span class="sla-target">${req.status==='completed'?(isSupportRequest?'처리 완료':'지급 완료'):req.status==='rejected'?'보완 후 재신청 시 예정일을 다시 안내합니다':'처리 예정 '+req.expected}${drawerMode==='admin'?' · 기준 '+sla.short:''}</span></span><br>신청일 · ${req.createdAt}</div>
       ${req.note ? `<div class="request-note-view"><b>${req.status === 'rejected' ? '직전 신청 사유' : '신청 사유'}</b><br>${escapeHTML(req.note)}</div>` : ''}
-      ${reason}${history}${adminActions}${userActions}
+      ${adminDecisionHTML(req)}${reason}${history}${adminActions}${userActions}
     </div>`;
   }).join('');
 }
@@ -727,9 +743,9 @@ function updateDemoCompleteState({requests,completed}){
   if(!box || !title || !lead) return;
   const done = requests.length > 0 && completed === requests.length;
   box.classList.toggle('is-complete',done);
-  title.textContent = done ? '🎉 체험 완료' : '기획 배경 · 운영 정책';
+  title.textContent = done ? '🎉 대표 신청 흐름 체험 완료' : '기획 배경 · 운영 정책';
   lead.textContent = done
-    ? '신청 → 검토·승인 → 지급 완료 흐름을 모두 확인했습니다.'
+    ? '대표 요청의 신청 → 검토·승인 → 지급 완료를 확인했습니다. 직원의 필수 도구 준비 상태는 상단에서 별도로 확인하세요.'
     : '프로토타입의 설계 기준과 운영 시나리오를 정리했습니다.';
 }
 
@@ -781,50 +797,29 @@ function updateDashboard(){
   document.querySelector('.progress-step.current')?.setAttribute('aria-current','step');
   updateProgressHint({state});
   updateDemoCompleteState({requests,completed});
+  renderReadiness();
   saveSession();
 }
 
 // 현재 직무에서 사용자가 바로 체험할 신청 항목을 찾는다.
 function getSuggestedRoleLicense(){
-  const cards = roles[currentRole]?.cards || [];
-  return cards.find(item => getEffectiveStatus(item) === 'request')
-      || cards.find(item => getEffectiveStatus(item) === 'approval')
-      || cards.find(item => ['rejected','pending','approved'].includes(getEffectiveStatus(item)))
-      || null;
+  const cards = [...(roles[currentRole]?.cards || [])].sort((a,b)=>(requirementFor(a)==='필수'?0:1)-(requirementFor(b)==='필수'?0:1));
+  return cards.find(item => ['request','approval','rejected','pending','approved'].includes(getEffectiveStatus(item))) || null;
 }
 
-// 현재 단계에 맞는 다음 행동을 한 줄로 안내한다.
+
 function updateProgressHint({state}){
-  const el = document.getElementById('progressHint');
+  const el=document.getElementById('progressHint');
   if(!el) return;
-  let step='체험 1/3';
-  let done=false;
-  let msg;
-  if(state === 'rejected'){
-    step='체험 1/3 · 보완';
-    msg='<b>신청현황</b>에서 반려 사유를 확인하고 보완 내용을 입력해 다시 신청해 보세요.';
-  } else if(state === 'ready'){
-    const suggested = getSuggestedRoleLicense();
-    if(currentRole === 'unmapped'){
-      msg='전사 공통 항목을 확인한 뒤, 아래에서 <b>직무 정보 확인 요청</b>을 진행해 보세요.';
-    } else {
-      msg = suggested
-        ? `전사 공통 항목을 확인한 뒤, 아래 <b>${suggested.name}</b> 신청을 진행해 보세요.`
-        : '전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 확인해 보세요.';
-    }
-  } else if(state === 'pending'){
-    step='체험 2/3';
-    msg='상단 <b>관리자 체험</b>에서 접수된 요청을 검토해 보세요.';
-  } else if(state === 'approved'){
-    step='체험 3/3';
-    msg='상단 <b>관리자 체험</b>에서 처리 완료 또는 라이선스 지급 완료를 진행해 보세요.';
-  } else {
-    step='체험 완료'; done=true;
-    msg='신청 → 검토·승인 → 지급 완료까지 확인했습니다. 아래에서 <b>설계 배경과 운영 정책</b>을 이어서 확인해 보세요.';
-  }
-  el.innerHTML=`<span class="demo-step-kicker${done?' is-done':''}">${step}</span><span class="hint-arrow">→</span><span>${msg}</span>`;
+  const suggested=getSuggestedRoleLicense();
+  let step='대표 신청 체험 1/3',msg='필요한 도구의 신청 흐름을 체험하세요.',cta=suggested?suggested.name+' 신청하기':'사용 시작 안내';
+  if(currentRole==='unmapped'){msg='직무 정보를 확인한 뒤 맞춤 도구를 안내합니다.';cta='직무 정보 확인 요청';}
+  if(state==='rejected'){step='대표 신청 체험 · 보완';msg='신청현황에서 반려 사유를 확인하고 보완해 주세요.';cta='보완 요청 확인';}
+  else if(state==='pending'){step='대표 신청 체험 2/3';msg='접수된 요청을 관리자 역할로 검토해 보세요.';cta='관리자 검토 체험';}
+  else if(state==='approved'){step='대표 신청 체험 3/3';msg='검토된 요청의 지급 완료를 관리자 역할로 처리해 보세요.';cta='지급 처리 체험';}
+  else if(state==='completed'){step='대표 신청 체험 완료';msg='대표 요청 처리가 끝났습니다. 필수 도구 준비 상태는 위에서 별도로 확인하세요.';const missing=(roles[currentRole]?.cards||[]).find(item=>requirementFor(item)==='필수'&&!['auto','completed'].includes(getEffectiveStatus(item)));cta=missing?missing.name+' 신청하기':'필수 도구 시작 안내';}
+  el.innerHTML=`<span class="demo-step-kicker${state==='completed'?' is-done':''}">${step}</span><span class="hint-copy">${escapeHTML(msg)}</span><button class="hint-cta" data-action="demo-next">${escapeHTML(cta)}</button>`;
 }
-
 
 // 모바일 더보기 메뉴는 바깥 영역을 누르면 닫힌다.
 document.addEventListener('click', e => {
