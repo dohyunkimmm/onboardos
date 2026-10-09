@@ -29,7 +29,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.55.0",
-    "lighthouse": "13.4.1"
+    "lighthouse": "13.5.0"
   },
   "overrides": {
     "basic-ftp": "6.2.2",
