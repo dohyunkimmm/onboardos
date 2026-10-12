@@ -63,7 +63,7 @@ jobs:
         run: npm run test:e2e
       - name: Upload Playwright report on failure
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-chromium
           path: playwright-report/
@@ -84,7 +84,7 @@ jobs:
         run: node scripts/resilience-summary.js verification/resilience-playwright.json
       - name: Upload resilience evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: resilience-evidence-${{ github.sha }}
           path: |
@@ -108,7 +108,7 @@ jobs:
         run: node scripts/security-summary.js verification/security-playwright.json
       - name: Upload security evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: security-evidence-${{ github.sha }}
           path: |
@@ -132,7 +132,7 @@ jobs:
         run: node scripts/ux-summary.js verification/ux-playwright.json
       - name: Upload interaction UX evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ux-evidence-${{ github.sha }}
           path: |
@@ -157,7 +157,7 @@ jobs:
         run: node scripts/visual-system-summary.js verification/visual-system-playwright.json
       - name: Upload visual system evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: visual-system-evidence-${{ github.sha }}
           path: |
@@ -180,7 +180,7 @@ jobs:
           npm run test:design-polish
       - name: Upload design polish evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: design-polish-evidence-${{ github.sha }}
           path: |
@@ -202,7 +202,7 @@ jobs:
           npm run test:experience
       - name: Upload experience refinement evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: experience-refinement-evidence-${{ github.sha }}
           path: |
@@ -221,7 +221,7 @@ jobs:
       - run: npm run test:cross-browser
       - name: Upload cross-browser report on failure
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-cross-browser
           path: playwright-report-cross-browser/
@@ -237,7 +237,7 @@ jobs:
         run: npm run test:lighthouse
       - name: Upload desktop Lighthouse reports on failure
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: lighthouse-reports-desktop
           path: .lighthouseci/
@@ -253,7 +253,7 @@ jobs:
         run: npm run test:lighthouse:mobile
       - name: Upload mobile Lighthouse reports on failure
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: lighthouse-reports-mobile
           path: .lighthouseci-mobile/
@@ -331,7 +331,7 @@ jobs:
         run: npm run test:production
       - name: Upload Production integrity evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: production-integrity-${{ github.sha }}
           path: verification/asset-integrity.json
@@ -339,7 +339,7 @@ jobs:
           retention-days: 30
       - name: Upload Production smoke report on failure
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-production
           path: playwright-report-production/
@@ -384,7 +384,7 @@ jobs:
           PRODUCTION_RESULT: ${{ needs.production-smoke.result }}
         run: node scripts/verification-summary.js
       - name: Upload verification evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: verification-evidence-${{ github.sha }}
           path: |
