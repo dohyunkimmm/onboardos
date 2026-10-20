@@ -2,11 +2,13 @@
 
 [![E2E Verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 
-**신규입사자가 직무별 업무 도구를 확인하고, 라이선스 신청부터 승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다.**
+**신규 입사자가 직무별 업무 도구를 확인하고, 라이선스 신청부터 승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다.**
 
 [36초 핵심 데모](https://onboardos-rho.vercel.app/production-demo) · [직접 체험](https://onboardos-rho.vercel.app/) · [Case Study](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
 
-> **Portfolio release — v18.0.0 / P6 product-review candidate.** 2026-10-08 제품 검토 1~7 항목을 반영한 후보 상태입니다. 기존 v18.0.0 릴리스 영상과 검증 자료는 당시 버전의 기록이며, 이번 후보 변경 전체의 E2E·시각 회귀·Production 인증을 의미하지 않습니다.
+> **Portfolio release — v18.0.0 / P6 product-review candidate.**
+>
+> 2026-10-08 제품 검토 1~7을 반영한 후보 상태입니다. 기존 v18.0.0 릴리스 영상과 검증 자료는 당시 버전의 기록입니다. 이 자료를 이번 후보 변경 전체의 E2E·시각 회귀·Production 검증 완료로 해석하지 않습니다.
 
 ## 핵심 사용자 흐름
 
@@ -20,7 +22,9 @@
 
 ## 실제 연동 범위
 
-이 프로젝트는 **가상 데이터 기반 인터랙티브 프로토타입**입니다. Google SSO, Google Workspace 조직 정보, Jira Service Management 티켓, SaaS 계정·라이선스 발급은 실제 시스템에 연결되지 않은 모의 흐름입니다. 실제 회사의 라이선스 좌석·비용·설치 배포도 연동하지 않았습니다.
+이 프로젝트는 **가상 데이터 기반 인터랙티브 프로토타입**입니다.
+
+Google SSO, Google Workspace 조직 정보, Jira Service Management 티켓, SaaS 계정·라이선스 발급은 모의 흐름이며 실제 시스템과 연결되지 않습니다. 실제 회사의 라이선스 좌석·비용·설치 배포도 연동하지 않았습니다.
 
 상태는 브라우저 `sessionStorage`에 시나리오별로 유지됩니다. SLA는 데모 정책이며 영업일 계산에서 주말만 제외합니다.
 
@@ -28,7 +32,7 @@
 
 - **기술:** HTML, CSS, Vanilla JavaScript, Vercel, Playwright, axe, Lighthouse
 - **품질:** 신청·관리자 흐름, 접근성, 시각 회귀, 복구·보안, 크로스 브라우저, 성능 검사
-- **배포:** `main` → Vercel Production; 배포 자산의 SHA-256 무결성 및 브라우저 Smoke 검증
+- **배포·검증 절차:** `main` → Vercel Production. SHA-256 무결성·브라우저 Smoke 결과는 대상 배포의 별도 검증 기록을 기준으로 판단
 - **기록:** GitHub Actions에서 자동 검증 결과와 릴리스 근거를 확인할 수 있습니다.
 
 ```bash
