@@ -6,6 +6,12 @@ PR #102 후보 변경으로 직무별 필수 도구 준비 상태, 완료 필터
 
 **검증 상태:** 후보 브랜치의 Node 회귀 검사와 일부 브라우저 확인만 반영했습니다. 기존 v18.0.0 Release 영상·증빙은 과거 정식 배포 자료이며, 이 후보의 전체 E2E·시각 회귀·Production 검증으로 간주하지 않습니다. 상세 내용은 [`docs/PRODUCT_REVIEW_2026-10-08.md`](./docs/PRODUCT_REVIEW_2026-10-08.md)를 참고하세요.
 
+### 문서·CI 유지보수 — 2026-10-09
+
+- [#105](https://github.com/dohyunkimmm/onboardos/pull/105)에서 README를 간소화했습니다. 자세한 검증 안내는 [DEMO_WALKTHROUGH](docs/DEMO_WALKTHROUGH.md)와 현재 GitHub Actions 실행 내역을 참고합니다.
+- [#106](https://github.com/dohyunkimmm/onboardos/pull/106)에서 E2E의 Node 22/npm 캐시/`npm ci` 반복 설정을 `.github/actions/setup-node-dependencies/action.yml`로 통합했습니다. 기존 QA 게이트와 제품 동작은 변경하지 않았습니다.
+- 이 작업은 `releaseStatus: candidate`를 `verified`로 변경하지 않으며 새 Production 확인 기록도 아닙니다.
+
 ## v18.0.0 — Task Clarity & Product Experience — 2026-09-18
 
 P6에서 동결한 Business Flow와 상태 모델을 유지하면서, v17의 Product Identity 위에 task-first information hierarchy와 execution clarity를 적용했습니다. 기능 추가 없이 Overview → Common/Role Licenses → Request Modal → User/Admin Drawer 전 구간에서 현재 할 일, 상태·SLA, 처리 Action과 History의 우선순위를 더 빠르게 파악하도록 정리했습니다. JavaScript business logic, catalog data, request-state machine, SLA semantics, role isolation은 변경하지 않았습니다.
