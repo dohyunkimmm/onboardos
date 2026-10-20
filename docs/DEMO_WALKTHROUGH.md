@@ -48,11 +48,20 @@
 3. 직무 미매핑 또는 목록 외 라이선스 요청이 Fallback ITSM 요청으로 생성되는지 확인합니다.
 4. 직무를 전환했다가 돌아와 요청 상태가 직무별로 격리·복원되는지 확인합니다.
 
+## 제품 검토 후보 기능 · 2026-10-08
+
+위 36초 영상은 **기존 v18.0.0 정식 릴리스의 역사적 자료**이며, PR #102에서 구현한 다음 후보 기능이나 최신 Production 반영을 보증하지 않습니다. [제품 검토 1~7](PRODUCT_REVIEW_2026-10-08.md)과 `release.json`의 `releaseStatus: candidate`를 별도로 확인합니다.
+
+- 직무별 필수·선택 도구, 준비 상태와 공통 도구 구분, 완료 필터를 확인합니다.
+- 승인 요청에 목적·제품/권한 범위·사용 기간이 요구되는지, 관리자 판단 정보가 제공되는지 확인합니다.
+- 설치·계정 시작 가이드는 참고 안내이며 실제 회사 배포·초대 시스템과 연결되지 않습니다.
+- 코드 차원의 제품 검토 회귀는 `npm run test:review`로 실행합니다. 이 검사만으로 전체 E2E·시각 회귀·Production 검증을 완료한 것으로 간주하지 않습니다.
+
 ## 검증 Evidence — 필요할 때만
 
 제품 Flow를 먼저 본 뒤 검증 근거가 필요할 때 확인합니다.
 
-1. GitHub README의 **Verification Matrix**와 최신 `main` Actions run을 엽니다.
+1. [README](../README.md)의 **구현·검증** 안내에서 [최신 `main` E2E Actions](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)와 [Production 수동 검증](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml)을 확인합니다. 간소화된 README에는 기존 `Verification Matrix` 목차가 없습니다.
 2. Chromium 회귀, Firefox/WebKit, Desktop/Mobile Lighthouse, Production Desktop Chromium+iPhone WebKit smoke를 확인합니다.
 3. Production integrity artifact에서 `production-demo.html`과 `login-font-lock.css`를 포함한 deployable asset의 SHA-256 일치 여부를 확인합니다.
 4. 배포 후 Production만 다시 확인해야 할 때는 `Production Verify` workflow로 새 commit 없이 integrity/smoke를 재검증할 수 있습니다.
