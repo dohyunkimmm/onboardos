@@ -1,0 +1,21 @@
+name: Commit signature readiness
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  audit:
+    name: Commit signatures (informational)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Report GitHub-verified PR commits
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/audit-commit-signatures.js
