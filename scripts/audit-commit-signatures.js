@@ -56,7 +56,7 @@ async function main() {
     '',
     ...(rows.length ? ['| Unverified commit | GitHub reason |', '| --- | --- |', ...rows] : ['All commits are verified by GitHub.']),
     '',
-    'See [commit signing instructions](../blob/main/.github/COMMIT_SIGNING.md) or the repository documentation.',
+    'See [commit signing instructions](https://github.com/dohyunkimmm/onboardos/blob/main/.github/COMMIT_SIGNING.md) or the repository documentation.',
     '',
   ].join('\n');
 
