@@ -43,6 +43,7 @@ npm run test:e2e
 
 ## 자세히 보기
 
+- [저장소 보호·커밋 서명·운영 검증 상태](docs/REPO-OPERATIONS.md) · [커밋 서명 설정](.github/COMMIT_SIGNING.md)
 - [2–3분 체험 안내](docs/DEMO_WALKTHROUGH.md) · [2026-10-08 제품 검토](docs/PRODUCT_REVIEW_2026-10-08.md)
 - [릴리스 이력](CHANGELOG.md) · [최신 CI 검증](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 - [Production 수동 검증](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml)
