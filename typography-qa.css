@@ -17,3 +17,6 @@ body:not(.login-open) .request-modal label,body:not(.login-open) .approval-field
 body:not(.login-open) .request-modal input,body:not(.login-open) .request-modal textarea,body:not(.login-open) .request-modal select{font-size:16px!important;line-height:1.5!important;}
 body:not(.login-open) .request-modal textarea::placeholder,body:not(.login-open) .request-modal input::placeholder{color:#b8c0d1;opacity:1;}
 @media(max-width:560px){body:not(.login-open) .top-btn{font-size:13px!important;}body:not(.login-open) .hint-copy{min-width:0;}body:not(.login-open) .task-overview h2{font-size:22px;}}
+
+/* Keyboard focus must remain visually distinct from the resting card, even when QA styles load last. */
+body:not(.login-open) #roleGrid .card:focus-within{box-shadow:0 0 0 3px rgba(167,139,250,.18),0 24px 58px -42px rgba(124,58,237,.30)!important;}
