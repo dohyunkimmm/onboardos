@@ -27,7 +27,7 @@
     "test:review": "node --test scripts/product-review-check.js"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
     "lighthouse": "13.5.0"
   },
