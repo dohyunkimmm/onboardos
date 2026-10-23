@@ -251,3 +251,7 @@ body #commonGrid .card{min-height:96px!important;}
 }
 
 body .shared-access{margin-right:8px;}
+
+/* The service mark is the single home control. */
+body .logo-home{display:inline-flex;align-items:center;min-height:44px;padding:0;border:0;border-radius:4px;background:transparent;color:inherit;font:inherit!important;letter-spacing:inherit;cursor:pointer;}
+body .logo-home:hover{color:#185abc;}
