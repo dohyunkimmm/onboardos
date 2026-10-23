@@ -12,7 +12,6 @@
     "version.txt",
     "package.json",
     "package-lock.json",
-    "production-demo.html",
     "README.md",
     "CHANGELOG.md",
     "docs/DEMO_WALKTHROUGH.md"
@@ -110,8 +109,7 @@
       "resilience-summary.json",
       "security-summary.json",
       "ux-summary.json",
-      "visual-system-summary.json",
-      "ONBOARD_OS_v17.0.0_P6_production_demo.mp4"
+      "visual-system-summary.json"
     ],
     "requireSuccessfulTargetRun": true,
     "requiredGates": [
