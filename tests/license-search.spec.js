@@ -23,7 +23,7 @@ test('Employee search composes with status and preserves common-tool visibility'
 
 test('First screen exposes role control and shared tools without duplicate Case Study',async({page})=>{
  await page.goto('/');
- await expect(page.getByRole('link',{name:'Case Study',exact:true})).toHaveCount(1);
+ await expect(page.locator('.reviewer-entry')).toBeHidden();
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
  await expect(page.locator('main a').filter({hasText:'Case Study'})).toHaveCount(0);
