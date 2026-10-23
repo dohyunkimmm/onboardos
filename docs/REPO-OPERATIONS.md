@@ -37,8 +37,8 @@
 - **Vercel 배포·검증 (최종 확인):** [PR #135](https://github.com/dohyunkimmm/onboardos/pull/135)의 테스트 전용 WebKit 우회를 병합한 후 Production 배포는 SHA `5f4d0e5`로 **READY**. [main E2E #39969112576](https://github.com/dohyunkimmm/onboardos/actions/runs/39969112576)와 문서 동기화 [#136](https://github.com/dohyunkimmm/onboardos/pull/136) 이후 최신 [main E2E #39969874660](https://github.com/dohyunkimmm/onboardos/actions/runs/39969874660)에서 **13개 작업 전체 성공**. 공개 정적 자산 139/139 SHA-256 무결성, POST 전용 API 계약, Production Desktop Chromium·iPhone WebKit Smoke, 릴리스 검증 증빙 모두 성공. 구형 WebKit native `<select>`의 `style-src-attr` 엔진 회귀는 기능 테스트 컨텍스트에만 `bypassCSP:true`를 사용하며, 실제 배포 CSP는 그대로 유지하고 별도 엄격 CSP 재현 및 보안 게이트를 유지함. WebKit 기능 성공을 WebKit의 CSP 강제 실행 자체를 검증한 것으로 해석하지 않음.
 - **저장소 보호:** `protect-main` active, strict 필수 검사 3개, PR 필수 및 선형 이력 정책을 GitHub에서 재확인함. 구형 중복 규칙은 disabled. `Require signed commits` 규칙은 포함되어 있지 않음.
 - **브랜치 정리:** 작업 전 확인한 기존 비기본 브랜치 24개는 모두 `main`과 diverged이며 고유 commit 기준 `ahead_by > 0`. Squash 병합된 이력도 포함될 수 있어 무조건 삭제하거나 강제 동기화하지 않음. 열린 PR·이슈는 작업 착수 시 0개였음.
-- **문서 동기화:** [PR #136](https://github.com/dohyunkimmm/onboardos/pull/136) 병합 완료. README·체험 안내·CHANGELOG에서 현재 직무/AI/리뷰어 흐름 및 과거 릴리스 영상 링크를 정리함. 문서 변경은 런타임 배포 없이 기존 Production을 재검증함.
-- **릴리스 상태:** `release.json`의 v18.0.0/P6 `candidate`는 유지. 기존 불변 릴리스 영상과 새 버전의 운영 검증 증거를 섞지 않음. Gemini 실계정 추천 품질·비용·인증은 별도 미검증.
+- **문서 동기화:** [PR #136](https://github.com/dohyunkimmm/onboardos/pull/136) 병합 완료. README·체험 안내·CHANGELOG에서 현재 직무/AI/리뷰어 흐름과 실서비스 체험 경로를 정리함. 문서 변경은 런타임 배포 없이 기존 Production을 재검증함.
+- **릴리스 상태:** `release.json`의 v18.0.0/P6 `candidate`는 유지. 기존 릴리스 검증 자료와 최신 운영 검증 증거를 구분함. Gemini 실계정 추천 품질·비용·인증은 별도 미검증.
 
 ## 미완료 — 서명 **강제** 전환
 
