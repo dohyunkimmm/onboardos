@@ -124,3 +124,17 @@ test('1920 catalog fits every role and shared tools above the fold without repea
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(1920);
  }
 });
+
+test('Submitting a request updates its card without repeating the request in the identity toolbar',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ const card=page.locator('#roleGrid .card[data-name="Microsoft Office"]');
+ await card.getByRole('button',{name:'신청하기',exact:true}).click();
+ await page.getByRole('button',{name:'신청 완료',exact:true}).click();
+ await expect(card).toContainText('검토 대기');
+ await expect(page.locator('#pendingSummary')).toBeHidden();
+ await expect(page.locator('.task-overview')).not.toContainText('Microsoft Office');
+ await card.getByRole('button',{name:'상태 보기',exact:true}).click();
+ await expect(page.getByRole('dialog',{name:'신청현황',exact:true})).toContainText('Microsoft Office');
+});
