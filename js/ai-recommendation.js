@@ -38,6 +38,17 @@ function openAiRecommendation(){
   document.getElementById('actionModalBackdrop').classList.add('show');
   activateOverlay('actionModalBackdrop',role.exception ? '.action-modal-close' : '#aiRoleDetail');
   document.getElementById('aiRecommendationForm')?.addEventListener('submit', submitAiRecommendation);
+  document.getElementById('aiRoleDetail')?.addEventListener('input',()=>{
+    const status=document.getElementById('aiRecommendationStatus');
+    const results=document.getElementById('aiRecommendationResults');
+    const hadRecommendation=!!aiRecommendationController || results.childElementCount>0 || !!status.textContent;
+    cancelAiRecommendation();
+    results.replaceChildren();
+    status.textContent=hadRecommendation ? '입력 내용이 변경되었습니다. 다시 추천받아 주세요.' : '';
+    const button=document.getElementById('aiRecommendSubmit');
+    button.disabled=false;
+    button.removeAttribute('aria-busy');
+  });
 }
 
 async function submitAiRecommendation(event){
@@ -69,6 +80,8 @@ async function submitAiRecommendation(event){
         429:'요청이 많습니다. 잠시 후 다시 시도해 주세요.',
         503:'AI 추천이 아직 연결되지 않았습니다. 기존 직군별 목록에서 라이선스를 확인해 주세요.'
       };
+      const retryAfter=Number(response.headers.get('Retry-After'));
+      if(response.status===429 && Number.isFinite(retryAfter) && retryAfter>0) throw new Error('요청이 많습니다. '+Math.ceil(retryAfter)+'초 후 다시 시도해 주세요.');
       throw new Error(messages[response.status] || '추천을 가져오지 못했습니다. 다시 시도하거나 기존 목록을 이용해 주세요.');
     }
     const data = await response.json();
@@ -99,12 +112,15 @@ async function submitAiRecommendation(event){
       action.textContent = ['auto','completed'].includes(effective) ? '사용 안내' : effective === 'rejected' ? '반려 사유 확인' : ['pending','approved'].includes(effective) ? '신청현황 확인' : '신청 내용 확인';
       action.addEventListener('click',()=>{
         if(currentRole !== role) return;
+        const returnFocus=overlayReturnFocus.get('actionModalBackdrop');
         hideActionModal();
         // Existing policy and request-state checks remain the source of truth.
         openLicenseAction(item.name,{
           role,toolId:item.mono,
           draft:recommendationRequestDraft(detail,recommendation.reason)
         });
+        const nextOverlay=currentOverlay();
+        if(nextOverlay && returnFocus?.isConnected) overlayReturnFocus.set(nextOverlay.id,returnFocus);
       });
       card.append(title,reason,meta,action);
       results.append(card);

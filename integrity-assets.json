@@ -27,7 +27,8 @@
     "fonts/PRETENDARD-LICENSE.txt",
     "execution-hierarchy.css",
     "product-readiness.css",
-    "typography-qa.css"
+    "typography-qa.css",
+    "lib/recommendation-rate-limit.js"
   ],
   "recursiveSets": [
     {

@@ -217,7 +217,7 @@ function setRole(key){
     cancelAiRecommendation();
     if(document.getElementById('aiRecommendationForm')) hideActionModal();
   }
-  currentRole = roles[key] ? key : 'office';
+  currentRole = isKnownRole(key) ? key : 'office';
   activateRoleState(currentRole);
   key = currentRole;
   document.getElementById('roleSelect').value = currentRole;
