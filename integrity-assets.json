@@ -3,7 +3,6 @@
   "profile": "production-critical-public-assets",
   "requiredFiles": [
     "index.html",
-    "production-demo.html",
     "version.txt",
     "release.json",
     "integrity-assets.json",
@@ -23,15 +22,21 @@
   "recursiveSets": [
     {
       "root": "js",
-      "extensions": [".js"]
+      "extensions": [
+        ".js"
+      ]
     },
     {
       "root": "icons",
-      "extensions": [".svg"]
+      "extensions": [
+        ".svg"
+      ]
     },
     {
       "root": "fonts/pretendard",
-      "extensions": [".woff2"]
+      "extensions": [
+        ".woff2"
+      ]
     }
   ]
 }
