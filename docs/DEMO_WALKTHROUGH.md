@@ -2,7 +2,7 @@
 
 채용 담당자와 리뷰어가 **현재 서비스**의 핵심 기능을 짧게 살펴볼 수 있는 안내입니다. 동영상 대신 실제 프로토타입에서 직접 시연하는 경로만 제공합니다.
 
-[서비스 직접 체험](https://onboardos-rho.vercel.app/) · [관리자 체험](https://onboardos-rho.vercel.app/?review=1) · [설계 사례](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
+[서비스 직접 체험](https://onboardos-rho.vercel.app/) · [관리자 체험](https://onboardos-rho.vercel.app/?review=1) · [설계 사례](https://app.notion.com/p/08d21460c934838cb66601b681e85d8c)
 
 ## 약 2–3분 직접 체험
 
