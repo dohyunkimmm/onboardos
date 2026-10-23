@@ -133,3 +133,20 @@ body .request-note-label{color:#202124!important;}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;}}
 @media(forced-colors:active){body :where(.card,.role-tab,.filter-chip,.request-modal,.admin-kpi){border:1px solid CanvasText!important;}}
 
+
+/* Keep the role switch discoverable beside the employee identity. */
+body .task-overview .role-picker>summary{display:flex;align-items:center;justify-content:center;gap:8px;list-style:none;min-height:44px;padding:10px 16px;border:1px solid #a8c7fa;border-radius:8px;background:#e8f0fe;color:#185abc;font-size:14px;font-weight:600;width:max-content;}
+body .task-overview .role-picker>summary::-webkit-details-marker{display:none;}
+body .task-overview .role-picker>summary::after{content:'⌄';}
+body .task-overview .role-picker[open]>summary::after{content:'⌃';}
+body #currentRoleLabel{color:#185abc;background:#e8f0fe;border-radius:6px;padding:3px 8px;font-weight:600;}
+body .task-overview .demo-preview-note{display:block;margin-top:10px;color:#5f6368;font-size:13px;}
+body details.common-first>.common-summary h2{font-size:20px;color:#202124;}
+@media(min-width:960px){
+ body .task-overview{position:relative;}
+ body .task-overview .task-identity{justify-content:flex-start;gap:12px;padding-right:170px;}
+ body .task-overview h2{padding-right:170px;}
+ body .task-overview .role-picker{position:absolute;top:20px;right:24px;margin:0;padding:0;border:0;z-index:5;}
+ body .task-overview .role-picker[open]{width:500px;max-width:calc(100% - 48px);padding:16px;background:#fff!important;border:1px solid #dadce0;border-radius:12px;box-shadow:0 8px 24px #20212420;}
+ body .task-overview .role-picker[open]>summary{margin-left:auto;}
+}

@@ -1,11 +1,13 @@
 const {test,expect}=require('@playwright/test');
-test('Employee search composes with status and finds collapsed common tools',async({page})=>{
+test('Employee search composes with status and preserves common-tool visibility',async({page})=>{
  await page.goto('/');
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
  const search=page.getByRole('searchbox',{name:'도구 검색'});
  await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
  await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
+ await expect(page.locator('details.common-first')).toHaveAttribute('open');
+ await page.locator('details.common-first > summary').click();
  await search.fill('Slack');
  await expect(page.locator('details.common-first')).toHaveAttribute('open');
  await expect(page.locator('.card:not(.is-hidden)')).toHaveCount(1);
