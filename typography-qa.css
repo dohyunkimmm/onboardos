@@ -223,3 +223,6 @@ body .task-overview .role-tab{font-size:14px!important;font-weight:500;min-heigh
 @media(max-width:959px){body .task-overview .role-picker{margin-left:0!important;width:100%;}}
 
 body .task-overview .role-tabs{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;}
+
+/* The off-screen keyboard shortcut must not leave a shadow on the page. */
+body .skip-link:not(:focus){box-shadow:none;}
