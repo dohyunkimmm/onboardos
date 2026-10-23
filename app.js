@@ -735,7 +735,7 @@ function renderDrawer(){
     const history = `<div class="request-history">${(req.history || []).map(h=>`<div class="history-row"><span class="history-dot"></span><span><b class="history-actor">${escapeHTML(historyActor(h,req))}</b> · ${escapeHTML(h.label)} · ${escapeHTML(h.at)}</span></div>`).join('')}</div>`;
     return `<div class="request-item">
       <div class="request-item-title">${req.name}<span class="ticket-key mono">${req.ticket}</span></div>
-      <div class="request-item-meta">${drawerMode === 'admin' ? `요청자 · <b>홍길동</b> (${escapeHTML(req.roleLabel || '경영지원·총무')} · 신규입사자)<br>` : ''}담당 · ${req.owner}<br>상태 · <b>${stateLabel}</b><br><span class="request-sla">${drawerMode==='admin'?slaHealthHTML(req):''}<span class="sla-target">${req.status==='completed'?(isSupportRequest?'처리 완료':'지급 완료'):req.status==='rejected'?'보완 후 재신청 시 예정일을 다시 안내합니다':'처리 예정 '+req.expected}${drawerMode==='admin'?' · 기준 '+sla.short:''}</span></span><br>신청일 · ${req.createdAt}</div>
+      <div class="request-item-meta">${drawerMode === 'admin' ? `요청자 · <b>홍길동</b> (${escapeHTML(req.roleLabel || '경영지원·총무')} · 신규입사자)<br>` : ''}담당 · ${req.owner}<br>상태 · <b>${stateLabel}</b><br><span class="request-sla">${drawerMode==='admin'?slaHealthHTML(req):''}<span class="sla-target">${req.status==='completed'?'처리 이력은 아래에서 확인하세요':req.status==='rejected'?'보완 후 재신청 시 예정일을 다시 안내합니다':'처리 예정 '+req.expected}${drawerMode==='admin'?' · 기준 '+sla.short:''}</span></span><br>신청일 · ${req.createdAt}</div>
       ${req.note ? `<div class="request-note-view"><b>${req.status === 'rejected' ? '직전 신청 사유' : '신청 사유'}</b><br>${escapeHTML(req.note)}</div>` : ''}
       ${adminDecisionHTML(req)}${reason}${history}${adminActions}${userActions}
     </div>`;
