@@ -32,7 +32,7 @@ function showActionGuideModal(item){
   const installed = INSTALLED_TOOLS.has(item.mono);
   const invited = INVITED_TOOLS.has(item.mono);
   document.getElementById('actionModalEyebrow').textContent = available ? 'READY TO WORK' : 'LICENSE GUIDE';
-  document.getElementById('actionModalTitle').textContent = item.name+' '+startLabel(item);
+  document.getElementById('actionModalTitle').textContent = item.name;
   const steps = installed
     ? ['회사에서 배포한 설치 파일 또는 소프트웨어 포털을 확인합니다.','회사 계정으로 로그인하거나 IT팀이 안내한 라이선스 방식으로 활성화합니다.','설치·활성화 오류가 있으면 담당팀에 요청번호와 함께 문의합니다.']
     : invited
@@ -194,9 +194,9 @@ function renderCard(item, showCta){
 }
 
 function renderCommon(){
-  document.getElementById('commonGrid').innerHTML = commonLicenses.map(item => renderCard(item, true)).join('');
+  document.getElementById('commonGrid').innerHTML = commonLicenses.map(item => renderCard(item, false)).join('');
   const cc = document.getElementById('commonCount');
-  cc.dataset.base = `${commonLicenses.length}개 · 사용 가능`;
+  cc.dataset.base = `${commonLicenses.length}개`;
   cc.textContent = cc.dataset.base;
 }
 

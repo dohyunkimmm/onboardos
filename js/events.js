@@ -10,6 +10,18 @@ function activatePostLoginStyles(){
 if(loggedIn) activatePostLoginStyles();
 
 const actionHandlers = {
+  'go-home': () => {
+    document.getElementById('onboardingHelp')?.close();
+    loggedIn = false;
+    saveSession();
+    const screen = document.getElementById('loginScreen');
+    screen.hidden = false;
+    screen.inert = false;
+    screen.setAttribute('aria-hidden','false');
+    document.body.classList.add('login-open');
+    syncPageInert();
+    document.querySelector('.login-card')?.focus({preventScroll:true});
+  },
   'open-onboarding-help': () => document.getElementById('onboardingHelp')?.showModal(),
   'close-onboarding-help': () => document.getElementById('onboardingHelp')?.close(),
   'show-common-tools': () => {

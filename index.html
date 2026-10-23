@@ -3,7 +3,7 @@
 <html lang="ko"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모 | 김도현</title>
+<title>OnboardOS · 라이선스</title>
 <meta content="신규입사자가 직무별 SaaS·업무 도구를 확인하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 인터랙티브 온보딩 포털 프로토타입입니다." name="description"/>
 <link href="https://onboardos-rho.vercel.app/" rel="canonical"/>
 <meta content="#f7f8fa" name="theme-color"/>
@@ -45,6 +45,7 @@
 <div class="sub">신규입사자 SaaS·업무 도구 가이드</div>
 </div>
 <div class="top-actions">
+<button class="top-btn secondary" type="button" data-action="go-home">첫 페이지</button>
 <button class="top-btn secondary" type="button" data-action="open-onboarding-help">도움말</button>
 <button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="statusBtn" data-action="open-user-drawer">신청현황 <span class="notif-dot is-empty" id="requestCount">0</span></button>
 <button aria-controls="drawerPanel" aria-expanded="false" aria-label="관리자 체험 — IT 관리자 역할" class="top-btn" id="adminBtn" data-action="open-admin-drawer"><span class="desktop-label">관리자 체험</span><span class="mobile-label">관리자</span> </button>
@@ -106,7 +107,7 @@
 <!-- 진행 상태 트래커 (현재 단계 + 다음 할 일 안내) -->
 
 <div class="tools-bar">
-<label class="tool-search" for="toolSearch">도구 검색<input id="toolSearch" type="search" placeholder="도구 이름 검색" autocomplete="off" aria-controls="roleGrid commonGrid"></label>
+<label class="tool-search" for="toolSearch">도구 검색<input id="toolSearch" type="search" placeholder="이름 입력" autocomplete="off" aria-controls="roleGrid commonGrid"></label>
 <div aria-label="현재 상태 필터" class="filter-tabs" id="filterTabs" role="group">
 <button aria-pressed="true" class="filter-chip active" data-filter="all" type="button">전체</button>
 <button aria-pressed="false" class="filter-chip" data-filter="todo" type="button">해야 할 일</button>
