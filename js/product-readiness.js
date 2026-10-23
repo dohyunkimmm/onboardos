@@ -9,7 +9,7 @@ function requirementFor(item){
   return item.status === 'auto' || REQUIRED_ROLE_TOOLS.has(item.mono) ? '필수' : '선택';
 }
 function startLabel(item){
-  return INSTALLED_TOOLS.has(item.mono) ? '설치 안내' : INVITED_TOOLS.has(item.mono) ? '계정·초대 안내' : '사용 시작 안내';
+  return '사용 안내';
 }
 function employeeTiming(item){
   const req = requestState[item.name];

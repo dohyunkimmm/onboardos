@@ -41,10 +41,10 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await common.locator('summary').click();
  await page.getByRole('link',{name:/공통 도구 6개 사용 가능/}).click();
  await expect(common).toHaveAttribute('open');
- await expect(common.getByRole('heading',{name:'모든 직원이 사용하는 도구'})).toBeVisible();
+ await expect(common.getByRole('heading',{name:'전사 공통 도구'})).toBeVisible();
 });
 
-test('Shared-tool shortcut clears conflicting filters and exposes start guidance',async({page})=>{
+test('Shared-tool shortcut clears conflicting filters without repeated guide buttons',async({page})=>{
  await page.goto('/');
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
@@ -56,9 +56,8 @@ test('Shared-tool shortcut clears conflicting filters and exposes start guidance
  await expect(page.getByRole('button',{name:'전체',exact:true})).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#commonGrid .card:not(.is-hidden)')).toHaveCount(6);
  const slack=page.locator('#commonGrid .card[data-name="Slack"]');
- await slack.getByRole('button',{name:'계정·초대 안내'}).click();
- await expect(page.locator('#actionModalBackdrop')).toHaveClass(/show/);
- await expect(page.locator('#actionModalTitle')).toContainText('Slack');
+ await expect(slack).toBeVisible();
+ await expect(page.locator('#commonGrid button')).toHaveCount(0);
 });
 
 test('Instructions stay outside the catalog and help closes with Escape',async({page})=>{
@@ -72,4 +71,18 @@ test('Instructions stay outside the catalog and help closes with Escape',async({
  await help.getByRole('button',{name:'도움말 닫기'}).press('Escape');
  await expect(help).not.toBeVisible();
  await expect(page.getByRole('button',{name:'도움말',exact:true})).toBeFocused();
+});
+
+test('First page return preserves the role and allows SSO again',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await page.locator('details.role-picker > summary').click();
+ await page.getByRole('button',{name:'개발',exact:true}).click();
+ await page.getByRole('button',{name:'첫 페이지',exact:true}).click();
+ await expect(page.locator('#loginScreen')).toBeVisible();
+ await expect(page.getByRole('button',{name:'Google SSO로 시작하기'})).toBeEnabled();
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await expect(page.locator('#currentRoleLabel')).toHaveText('개발 직군');
 });

@@ -5,11 +5,7 @@ const selectors = [
   '.login-brand',
   '.login-eyebrow',
   '#loginTitle',
-  '#loginIntro',
-  '.scenario-item:nth-child(1)',
-  '.scenario-item:nth-child(2)',
-  '.scenario-item:nth-child(3)',
-  '.login-meta'
+  '#loginIntro'
 ];
 
 async function readMetrics(page){
