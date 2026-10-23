@@ -206,3 +206,18 @@ body .task-overview .role-picker[open]{position:absolute;top:12px;right:16px;}
 @media(max-width:959px){body .task-overview .role-picker[open]{position:static;width:100%;}body .task-overview .role-picker{margin-left:0;}body #readinessSummary strong{font-size:14px;}}
 
 @media(max-width:768px){body .top-actions{flex-wrap:wrap!important;}}
+
+/* Final employee hierarchy: equal headings, clear groups and restrained metadata. */
+body .section-head h2,body details.common-first>.common-summary h2{font-size:18px!important;line-height:1.4!important;font-weight:700!important;letter-spacing:-.02em;}
+body #roleGrid .card-title,body #commonGrid .card-title{font-size:16px!important;line-height:1.45!important;font-weight:600!important;letter-spacing:-.01em;}
+body .employee-timing{font-weight:500!important;}
+body .licenses.role-secondary+details.common-first{margin-top:16px!important;}
+body #commonGrid .card[data-name="Notion"] img{filter:brightness(0);}
+body #readinessSummary strong{font-weight:600;font-variant-numeric:tabular-nums;}
+body .task-overview .task-identity{font-size:14px;}
+body .common-tools-link{display:none;}
+
+body .task-overview .role-picker{position:static!important;inset:auto!important;margin:0 0 0 auto!important;padding:0!important;border:0!important;background:transparent!important;max-width:100%;}
+body .task-overview .role-tabs{display:flex!important;flex-wrap:wrap;gap:6px;margin:0!important;padding:0!important;overflow:visible;}
+body .task-overview .role-tab{font-size:14px!important;font-weight:500;min-height:40px;padding:8px 12px;border-radius:8px;white-space:nowrap;}
+@media(max-width:959px){body .task-overview .role-picker{margin-left:0!important;width:100%;}}

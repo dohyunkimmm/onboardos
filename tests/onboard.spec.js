@@ -155,6 +155,5 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
 });
 
 async function revealRolePicker(page){
-  const picker = page.locator('details.role-picker');
-  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
 }

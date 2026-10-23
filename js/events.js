@@ -28,13 +28,6 @@ const actionHandlers = {
   },
   'open-onboarding-help': () => document.getElementById('onboardingHelp')?.showModal(),
   'close-onboarding-help': () => document.getElementById('onboardingHelp')?.close(),
-  'show-common-tools': () => {
-    const search=document.getElementById('toolSearch');
-    if(search){ search.value=''; search.dispatchEvent(new Event('input',{bubbles:true})); }
-    setFilter('all');
-    const common=document.getElementById('commonTools');
-    if(common) common.open=true;
-  },
   'open-user-drawer': () => openDrawer('user'),
   'open-admin-drawer': () => openDrawer('admin'),
   'reset-demo': () => resetDemo(),

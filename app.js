@@ -210,7 +210,6 @@ function renderRoleTabs(){
     btn.addEventListener('click', () => {
       trackEvent('Role Preview',{role:btn.dataset.role});
       setRole(btn.dataset.role);
-      document.querySelector('details.role-picker')?.removeAttribute('open');
     });
   });
 }
@@ -237,7 +236,7 @@ function setRole(key){
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
       ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`
-      : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 위의 전사 공통 라이선스만 확인하시면 됩니다.</div>`;
+      : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 전사 공통 도구를 이용하세요.</div>`;
   } else {
     grid.innerHTML = [...r.cards].sort((a,b)=>(requirementFor(a)==='필수'?0:1)-(requirementFor(b)==='필수'?0:1)).map(item => renderCard(item, true)).join('');
   }
@@ -490,8 +489,8 @@ function openRequestModal(name){
   const expected = expectedDate(days);
   document.getElementById('requestTitle').textContent = `${selectedRequestItem.name} 신청`;
   document.getElementById('requestDesc').textContent = selectedRequestItem.status === 'approval'
-    ? '해당 라이선스는 관리자 승인 후 지급됩니다. 담당 부서와 예상 지급일을 확인해 주세요.'
-    : '해당 라이선스는 신청 후 IT 담당자 검토를 거쳐 지급됩니다.';
+    ? '관리자 승인 후 지급됩니다.'
+    : 'IT 담당자 검토 후 지급됩니다.';
   const isResubmit = !!(existing && existing.status === 'rejected');
   if(isResubmit){
     document.getElementById('requestTitle').textContent = `${selectedRequestItem.name} 수정 후 재신청`;
@@ -505,9 +504,9 @@ function openRequestModal(name){
     <div class="detail-row"><span>처리 기준</span><b class="sla-detail">${sla.detail}</b></div>
     <div class="detail-row"><span>예상 지급일</span><b>${expected}</b></div>
     <div class="detail-row"><span>신청 경로</span><b>Jira Service Management</b></div>
-    <div class="detail-hint">접수 시 JSM 요청번호가 발급되고, 신청현황과 관리자 화면에서 같은 번호로 추적됩니다.</div>` +
+    <div class="detail-hint">접수 후 신청현황에서 확인할 수 있습니다.</div>` +
     `<label class="request-note-label" for="requestNote">${isResubmit ? '보완 내용 (필수)' : selectedRequestItem.status==='approval' ? '사용 목적 (필수)' : '신청 사유 (선택)'}</label>
-     <textarea id="requestNote" class="request-note" rows="2" maxlength="200" ${isResubmit || selectedRequestItem.status==='approval' ? 'required aria-required="true"' : ''} placeholder="${isResubmit ? '반려 사유에 대한 보완 내용을 입력해 주세요' : '사용 목적이나 필요 기간을 적어두면 검토가 빨라집니다'}"></textarea>` + requestFields(selectedRequestItem,existing,isResubmit);
+     <textarea id="requestNote" class="request-note" rows="2" maxlength="200" ${isResubmit || selectedRequestItem.status==='approval' ? 'required aria-required="true"' : ''} placeholder="${isResubmit ? '반려 사유에 대한 보완 내용을 입력해 주세요' : '사용 목적 또는 필요 기간'}"></textarea>` + requestFields(selectedRequestItem,existing,isResubmit);
   document.getElementById('submitRequestBtn').textContent = isResubmit ? '재신청하기' : '신청 완료';
   document.getElementById('requestBackdrop').classList.add('show');
   activateOverlay('requestBackdrop','#requestNote');
@@ -847,8 +846,6 @@ document.addEventListener('keydown', e => {
   if(request && request.classList.contains('show')){ closeRequestModal(); return; }
   if(drawer && drawer.classList.contains('show')){ closeDrawer(); return; }
   if(!document.getElementById('moreMenu')?.hidden){ closeMoreMenu(); document.getElementById('moreBtn')?.focus(); }
-  const picker=document.querySelector('details.role-picker[open]');
-  if(picker){ picker.removeAttribute('open'); picker.querySelector('summary')?.focus(); }
 });
 
 document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEvent('Case Study CTA',{source:'footer'}));
