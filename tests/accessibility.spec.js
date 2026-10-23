@@ -7,6 +7,11 @@ async function login(page){
   await expect(page.locator('#loginScreen')).toBeHidden();
 }
 async function assertA11y(page, label){
+  // Audit the settled interface rather than a partially transparent entry transition.
+  await page.locator('.drawer-backdrop.show .drawer, .request-backdrop.show .request-modal, .action-modal-backdrop.show .action-modal')
+    .evaluateAll(elements => Promise.all(elements.flatMap(element => element.getAnimations())
+      .filter(animation => animation.playState === 'running' && Number.isFinite(animation.effect?.getComputedTiming().endTime))
+      .map(animation => animation.finished.catch(() => {}))));
   const result = await new AxeBuilder({ page })
     .withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22a','wcag22aa'])
     .analyze();
