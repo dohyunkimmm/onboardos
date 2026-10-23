@@ -15,7 +15,10 @@ module.exports = defineConfig({
   },
   projects: [
     { name: 'desktop-firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'desktop-webkit', use: { ...devices['Desktop Safari'] } }
+    // WebKit 27.2 checks its own <select> shadow styles against page CSP.
+    // Functional smoke only; CSP enforcement remains covered by the security gate.
+    // Remove with upstream fix: https://github.com/microsoft/playwright/issues/43416
+    { name: 'desktop-webkit', use: { ...devices['Desktop Safari'], bypassCSP:true } }
   ],
   webServer: {
     command: 'node scripts/serve.js',
