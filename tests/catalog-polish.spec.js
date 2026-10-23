@@ -11,8 +11,10 @@ test('basic license guidance opens without creating a request',async({page})=>{
  await expect(card.getByRole('button',{name:'사용 안내',exact:true})).toBeFocused();
 });
 test('wide catalogs fill a row for four and five license roles',async({page},testInfo)=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.setViewportSize({width:1280,height:1080});await login(page);
  for(const width of [1280,1920]){
-  await page.setViewportSize({width,height:1080});await login(page);
+  await page.setViewportSize({width,height:1080});
   for(const role of ['office','design','dev','data']){
    await page.getByRole('combobox',{name:'직군 선택'}).selectOption(role);
    const grid=page.locator('#roleGrid');
