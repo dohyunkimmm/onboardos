@@ -115,6 +115,19 @@ body :where(button,input,select,textarea,a,summary):focus-visible{outline:2px so
 body #roleGrid .card:focus-within{border-color:#1a73e8!important;box-shadow:0 0 0 3px #d2e3fc!important;}
 @media(min-width:960px){body .task-overview{display:grid;grid-template-columns:1fr auto;gap:0 24px;}body .task-identity,body .task-overview h2,body #readinessSummary,body #pendingSummary,body #progressHint{grid-column:1/-1;}body .task-overview .role-picker{grid-column:1/-1;}}
 @media(max-width:768px){body #loginScreen .login-card{padding:28px;gap:24px;grid-template-columns:1fr;}body .login-card .login-title{font-size:26px;}body:not(.login-open) main{padding:20px 16px 48px;}body .task-overview{padding:20px;}body .task-overview h2{font-size:23px;}body .tool-search,body .tool-search input{width:100%;}body .tool-search{flex-wrap:wrap;}body .drawer{width:100%!important;}body .request-modal{padding:20px!important;}body .login-screen{padding:24px 16px;}}
+/* Keep employee identity and readiness ahead of the demo-only walkthrough. */
+body .task-overview > *{order:0!important;}
+body .task-overview #progressHint{order:1!important;}
+body .task-overview .walkthrough{grid-column:1/-1;margin-top:8px;font-size:14px;color:#5f6368;}
+body .task-overview .walkthrough>summary{cursor:pointer;padding:8px 0;}
+body .task-overview .walkthrough #progressHint{margin-top:8px!important;}
+body #requestDetails>.detail-row:has(.sla-detail){grid-column:auto;}
+body .reject-recap{padding:12px;border:1px solid #dadce0;border-radius:8px;}
+body .task-overview{border-radius:20px;}
+body .section-head h2,body #roleGrid .cta{font-weight:700!important;}
+body .reason-item,body .reason-item span,body .reject-recap{color:#3c4043!important;background:#f8fafd!important;border-color:#dadce0!important;}
+body .request-note-label{color:#202124!important;}
+@media(max-width:768px){body #roleGrid .card{min-height:0!important;}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;}}
 @media(forced-colors:active){body :where(.card,.role-tab,.filter-chip,.request-modal,.admin-kpi){border:1px solid CanvasText!important;}}
 
