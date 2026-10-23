@@ -11,12 +11,12 @@ function escapeHTML(value){
   return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 }
 
-function openLicenseAction(name){
+function openLicenseAction(name, recommendationContext){
   const item = findLicenseByName(name);
   if(!item) return;
   const status = getEffectiveStatus(item);
   if(status === 'request' || status === 'approval'){
-    openRequestModal(name);
+    openRequestModal(name, recommendationContext);
   } else if(status === 'pending' || status === 'approved' || status === 'rejected'){
     openDrawer('user');
   } else if(status === 'completed'){
@@ -472,7 +472,7 @@ function updateSectionEmptyStates(){
   }
 }
 
-function openRequestModal(name){
+function openRequestModal(name, recommendationContext){
   const existing = requestState[name];
   if(existing && existing.status !== 'rejected'){
     showToast('이미 신청된 라이선스입니다. 신청현황에서 처리 상태를 확인해 주세요.');
@@ -490,6 +490,8 @@ function openRequestModal(name){
     ? '관리자 승인 후 지급됩니다.'
     : 'IT 담당자 검토 후 지급됩니다.';
   const isResubmit = !!(existing && existing.status === 'rejected');
+  const recommendationDraft = !existing && recommendationContext?.role === currentRole && recommendationContext?.toolId === selectedRequestItem.mono && typeof recommendationContext?.draft === 'string'
+    ? recommendationContext.draft.trim().slice(0,200) : '';
   if(isResubmit){
     document.getElementById('requestTitle').textContent = `${selectedRequestItem.name} 수정 후 재신청`;
     document.getElementById('requestDesc').textContent = '반려 사유를 확인하고 보완 내용을 입력하면 다시 접수됩니다.';
@@ -505,6 +507,27 @@ function openRequestModal(name){
     <div class="detail-hint">접수 후 신청현황에서 확인할 수 있습니다.</div>` +
     `<label class="request-note-label" for="requestNote">${isResubmit ? '보완 내용 (필수)' : selectedRequestItem.status==='approval' ? '사용 목적 (필수)' : '신청 사유 (선택)'}</label>
      <textarea id="requestNote" class="request-note" rows="2" maxlength="200" ${isResubmit || selectedRequestItem.status==='approval' ? 'required aria-required="true"' : ''} placeholder="${isResubmit ? '반려 사유에 대한 보완 내용을 입력해 주세요' : '사용 목적 또는 필요 기간'}"></textarea>` + requestFields(selectedRequestItem,existing,isResubmit);
+  if(recommendationDraft){
+    const note = document.getElementById('requestNote');
+    note.value = recommendationDraft;
+    note.required = true;
+    document.querySelector('label[for="requestNote"]').textContent = '신청 사유 (필수 · 수정 가능)';
+    note.setAttribute('aria-required','true');
+    note.setAttribute('aria-describedby','recommendationDraftNotice');
+    const notice = document.createElement('p');
+    notice.id = 'recommendationDraftNotice';
+    notice.className = 'detail-hint';
+    notice.textContent = '입력한 역할과 AI 추천 이유를 조합한 초안입니다. 실제 사용 목적에 맞게 수정하고 확인해 주세요.';
+    const review = document.createElement('label');
+    review.className = 'request-note-label recommendation-review';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'recommendationDraftReviewed';
+    checkbox.required = true;
+    note.addEventListener('input',()=>{ checkbox.checked = false; });
+    review.append(checkbox,document.createTextNode(' 신청 사유를 확인했습니다'));
+    note.after(notice,review);
+  }
   document.getElementById('submitRequestBtn').textContent = isResubmit ? '재신청하기' : '신청 완료';
   document.getElementById('requestBackdrop').classList.add('show');
   activateOverlay('requestBackdrop','#requestNote');
@@ -526,6 +549,12 @@ function submitRequest(){
   const prevReq = requestState[item.name];
   const isResubmit = !!(prevReq && prevReq.status === 'rejected');
   const note = (document.getElementById('requestNote')?.value || '').trim();
+  const draftReview = document.getElementById('recommendationDraftReviewed');
+  if(draftReview && (!note || !draftReview.checked)){
+    showToast(!note ? '실제 사용 목적에 맞게 신청 사유를 입력해 주세요.' : '신청 사유를 확인한 뒤 확인란을 선택해 주세요.');
+    (!note ? document.getElementById('requestNote') : draftReview)?.focus();
+    return;
+  }
   if((isResubmit || item.status==='approval') && !note){
     showToast(isResubmit ? '보완 내용을 입력해야 재신청할 수 있습니다.' : '승인 검토를 위한 사용 목적을 입력해 주세요.');
     document.getElementById('requestNote')?.focus();

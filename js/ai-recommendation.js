@@ -3,6 +3,14 @@
 let aiRecommendationController = null;
 let aiRecommendationSequence = 0;
 
+// Reuse the returned AI reasoning; no second API call or extra quota is needed.
+function recommendationRequestDraft(detail,reason){
+  const clean = value => String(value || '').replace(/\s+/g,' ').trim();
+  const roleDetail = clean(detail).slice(0,85);
+  const purpose = clean(reason).slice(0,85);
+  return roleDetail && purpose ? `담당 역할: ${roleDetail}\n활용 목적: ${purpose}`.slice(0,200) : '';
+}
+
 function cancelAiRecommendation(){
   aiRecommendationSequence++;
   aiRecommendationController?.abort();
@@ -77,7 +85,7 @@ async function submitAiRecommendation(event){
     for(const recommendation of data.recommendations){
       const item = catalog.find(tool=>tool.mono === recommendation.toolId);
       const card = document.createElement('section');
-      card.className = 'action-info';
+      card.className = 'action-info ai-recommendation-card';
       const title = document.createElement('h4');
       title.textContent = item.name;
       const reason = document.createElement('p');
@@ -93,7 +101,10 @@ async function submitAiRecommendation(event){
         if(currentRole !== role) return;
         hideActionModal();
         // Existing policy and request-state checks remain the source of truth.
-        openLicenseAction(item.name);
+        openLicenseAction(item.name,{
+          role,toolId:item.mono,
+          draft:recommendationRequestDraft(detail,recommendation.reason)
+        });
       });
       card.append(title,reason,meta,action);
       results.append(card);
