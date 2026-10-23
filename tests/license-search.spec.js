@@ -23,7 +23,7 @@ test('Employee search composes with status and preserves common-tool visibility'
 
 test('First screen exposes role control and shared tools without duplicate Case Study',async({page})=>{
  await page.goto('/');
- await expect(page.getByRole('link',{name:'Case Study',exact:true})).toHaveCount(1);
+ await expect(page.locator('.reviewer-entry')).toBeHidden();
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
  await expect(page.locator('main a').filter({hasText:'Case Study'})).toHaveCount(0);
@@ -77,7 +77,8 @@ test('First page return preserves the role and allows SSO again',async({page})=>
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
- await page.getByRole('button',{name:'첫 페이지',exact:true}).click();
+ await expect(page.locator('.top-actions [data-action="go-home"]')).toHaveCount(0);
+ await page.getByRole('button',{name:'ONBOARD·OS 첫 페이지',exact:true}).press('Enter');
  await expect(page.locator('#loginScreen')).toBeVisible();
  await expect(page.getByRole('button',{name:'Google SSO로 시작하기'})).toBeEnabled();
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
@@ -137,4 +138,22 @@ test('Submitting a request updates its card without repeating the request in the
  await expect(page.locator('.task-overview')).not.toContainText('Microsoft Office');
  await card.getByRole('button',{name:'상태 보기',exact:true}).click();
  await expect(page.getByRole('dialog',{name:'신청현황',exact:true})).toContainText('Microsoft Office');
+});
+
+test('Employee navigation contains only status and help, with concise practical help content',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await expect(page.locator('.top-actions button:visible')).toHaveCount(2);
+ await expect(page.locator('#adminBtn')).toBeHidden();
+ await expect(page.locator('#resetBtn')).toBeHidden();
+ await expect(page.locator('#moreBtn')).toBeHidden();
+ await page.getByRole('button',{name:'도움말',exact:true}).click();
+ const help=page.getByRole('dialog',{name:'사용 안내'});
+ await expect(help.locator('.help-steps')).toBeVisible();
+ await expect(help.locator('.walkthrough')).toBeHidden();
+ await expect(help.locator('.overview-panel')).toBeHidden();
+ await expect(help.getByRole('button',{name:'직무 정보 확인이 필요한 경우',exact:true})).toBeHidden();
+ await help.getByRole('button',{name:'도움말 닫기'}).press('Escape');
+ await expect(page.getByRole('button',{name:'도움말',exact:true})).toBeFocused();
 });

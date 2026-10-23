@@ -5,7 +5,7 @@ test('Firefox/WebKit에서 신청 → 사용자/관리자 동일 티켓 핵심 F
   const consoleErrors = [];
   page.on('pageerror', e => pageErrors.push(e.message));
   page.on('console', msg => { if(msg.type() === 'error') consoleErrors.push(msg.text()); });
-  await page.goto('/');
+  await page.goto('/?review=1');
   const loginButton = page.getByRole('button', {name:'Google SSO로 시작하기'});
   await loginButton.click();
   try {

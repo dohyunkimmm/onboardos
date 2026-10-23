@@ -23,7 +23,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   await page.route('**/_vercel/insights/event**', route => route.fulfill({status:204, body:''}));
   await page.route('**/_vercel/speed-insights/vitals**', route => route.fulfill({status:204, body:''}));
 
-  const response = await page.goto('/', {waitUntil:'domcontentloaded'});
+  const response = await page.goto('/?review=1', {waitUntil:'domcontentloaded'});
   expect(response.status()).toBe(200);
   const csp = response.headers()['content-security-policy'] || '';
   expect(csp).toContain("script-src-attr 'none'");

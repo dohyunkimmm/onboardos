@@ -8,7 +8,7 @@ const SHOT_DIR = path.join('verification','visual-system-screenshots');
 
 async function stabilize(page){
   await page.clock.setFixedTime(new Date('2026-09-10T12:00:00+09:00'));
-  await page.goto('/');
+  await page.goto('/?review=1');
 }
 
 async function login(page){

@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
 async function login(page){
-  await page.goto('/');
+  await page.goto('/?review=1');
   await page.getByRole('button', { name: 'Google SSO로 시작하기' }).click();
   await expect(page.locator('#loginScreen')).toBeHidden();
 }
@@ -19,7 +19,7 @@ async function assertA11y(page, label){
 }
 
 test('로그인 화면에 WCAG A/AA axe 위반이 없다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   await assertA11y(page, 'login');
 });
 

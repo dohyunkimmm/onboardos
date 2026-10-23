@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 async function fixed(page){
   await page.clock.setFixedTime(new Date('2026-09-11T12:00:00+09:00'));
-  await page.goto('/');
+  await page.goto('/?review=1');
 }
 async function login(page){
   await page.getByRole('button', {name:'Google SSO로 시작하기'}).click();
