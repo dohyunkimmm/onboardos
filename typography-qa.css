@@ -295,3 +295,8 @@ body:not(.login-open) .request-modal>h3,body:not(.login-open) .request-modal>p{f
 body:not(.login-open) .request-modal #requestDetails{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;align-content:start;}
 body:not(.login-open) .request-modal #requestDetails .approval-fields{grid-column:1/-1;}
 body:not(.login-open) .request-modal .modal-actions{position:static;flex:0 0 auto;margin:0;padding:14px 0 0;}
+
+body #roleGrid .card-bottom{display:flex;flex-direction:column;align-items:stretch;gap:12px;}
+body #roleGrid .card-status-group{display:flex;flex-wrap:wrap;gap:6px;}
+body #roleGrid .card-action,body #roleGrid .cta{width:100%;}
+body:not(.login-open) .action-modal{max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain;}
