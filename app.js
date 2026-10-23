@@ -579,7 +579,7 @@ function completeLicense(name){
   setRole(currentRole);
   renderDrawer();
   requestAnimationFrame(()=>focusCurrentOverlay('.drawer-close'));
-  showToast(`${name} 라이선스 지급이 완료되었습니다. 아래에서 설계 배경과 운영 정책을 이어서 확인할 수 있습니다.`);
+  showToast(`${name} 라이선스 지급이 완료되었습니다. 신청현황에서 지급 상태를 확인해 주세요.`);
 }
 
 function approveLicense(name){

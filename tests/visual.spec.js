@@ -29,6 +29,7 @@ test('기본 대시보드 visual baseline', async ({ page }) => {
     await expect(card).toHaveCSS('opacity','1');
   }
   await expect(page.locator('.overview-panel')).toHaveCSS('opacity','1');
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
   await expect(page).toHaveScreenshot('office-dashboard.png', { ...screenshotOptions, fullPage:true });
 });
 

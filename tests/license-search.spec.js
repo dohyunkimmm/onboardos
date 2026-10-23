@@ -21,3 +21,24 @@ test('Employee search composes with status and preserves common-tool visibility'
  await expect(page.locator('details.common-first')).not.toHaveAttribute('open');
  await expect(page.locator('#roleGrid .card:not(.is-hidden)')).toHaveCount(3);
 });
+
+test('First screen exposes role control and shared tools without duplicate Case Study',async({page})=>{
+ await page.goto('/');
+ await expect(page.getByRole('link',{name:'Case Study',exact:true})).toHaveCount(1);
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await expect(page.locator('main a').filter({hasText:'Case Study'})).toHaveCount(0);
+ const picker=page.locator('details.role-picker > summary');
+ await expect(picker).toHaveText(/다른 직무 보기/);
+ await expect(picker).toBeVisible();
+ await picker.click();
+ await page.getByRole('button',{name:'개발',exact:true}).click();
+ await expect(page.locator('#currentRoleLabel')).toHaveText('개발 직군');
+ await expect(page.locator('#roleGrid .card')).toHaveCount(4);
+ const common=page.locator('#commonTools');
+ await expect(common).toHaveAttribute('open');
+ await common.locator('summary').click();
+ await page.getByRole('link',{name:/공통 도구 6개 사용 가능/}).click();
+ await expect(common).toHaveAttribute('open');
+ await expect(common.getByRole('heading',{name:'모든 직원이 사용하는 도구'})).toBeVisible();
+});

@@ -153,3 +153,6 @@ body details.common-first>.common-summary h2{font-size:20px;color:#202124;}
 
 body .common-tools-link{color:#185abc;text-decoration:underline;text-underline-offset:3px;font-weight:600;}
 body #commonTools{scroll-margin-top:100px;}
+
+body #commonGrid .card-title{font-size:16px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere;line-height:1.4!important;}
+@media(max-width:768px){body #commonGrid .card-top{flex-wrap:wrap!important;}body #commonGrid .card-top>div:last-child{flex-basis:100%;}body #commonGrid .card-title{-webkit-line-clamp:unset!important;}}

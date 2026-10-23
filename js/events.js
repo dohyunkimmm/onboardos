@@ -10,6 +10,7 @@ function activatePostLoginStyles(){
 if(loggedIn) activatePostLoginStyles();
 
 const actionHandlers = {
+  'show-common-tools': () => { const common=document.getElementById('commonTools'); if(common) common.open=true; },
   'open-user-drawer': () => openDrawer('user'),
   'open-admin-drawer': () => openDrawer('admin'),
   'reset-demo': () => resetDemo(),
