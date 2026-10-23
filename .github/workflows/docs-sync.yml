@@ -36,7 +36,7 @@ jobs:
           grep -Fq "## ${TAG}" CHANGELOG.md
           grep -Fq "${TAG}" docs/DEMO_WALKTHROUGH.md
           # Reject stale recording references in representative public documents.
-          if grep -Eiq '36초|production-demo|\.mp4' README.md docs/DEMO_WALKTHROUGH.md release.json; then
+          if grep -Eiq '3[0-9][[:space:]]*초|production-demo|\.mp4' README.md docs/DEMO_WALKTHROUGH.md release.json; then
             echo "Obsolete recording reference in public documents" >&2
             exit 1
           fi
