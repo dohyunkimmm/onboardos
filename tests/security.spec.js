@@ -16,7 +16,7 @@ async function submitOfficeRequest(page,note){
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   await card.getByRole('button',{name:'신청하기'}).click();
   if(note) await page.locator('#requestNote').fill(note);
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await expect(page.locator('#requestCount')).toHaveText('1');
 }
 

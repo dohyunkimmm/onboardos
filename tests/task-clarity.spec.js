@@ -84,7 +84,7 @@ test('[T5] request modal keeps the frozen request flow and a separated execution
   await expect(modal).toBeVisible();
   await expect(modal.getByText('처리 기준')).toBeVisible();
   await expect(modal.getByText('예상 지급일')).toBeVisible();
-  await expect(modal.getByRole('button',{name:'신청 완료'})).toBeVisible();
+  await expect(modal.getByRole('button',{name:'신청 제출'})).toBeVisible();
   const actions = await style(modal.locator('.modal-actions'));
   expect(actions.borderColor).not.toBe('rgba(0, 0, 0, 0)');
 });
@@ -94,7 +94,7 @@ test('[T6] mobile preserves compact entitlements, single-column decisions, touch
   await stabilize(page); await login(page);
   const common = await style(page.locator('#commonGrid'));
   const role = await style(page.locator('#roleGrid'));
-  expect(common.gridTemplateColumns.split(' ').length).toBe(2);
+  expect(common.gridTemplateColumns.split(' ').length).toBe(1);
   expect(role.gridTemplateColumns.split(' ').length).toBe(1);
   const cta = await box(page.locator('#roleGrid .cta').first());
   expect(cta.height).toBeGreaterThanOrEqual(44);

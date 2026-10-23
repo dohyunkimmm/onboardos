@@ -46,9 +46,9 @@ test('Catalog has no repeated shared-tool summary or guidance buttons',async({pa
  await expect(page.locator('#loginScreen')).toBeHidden();
  await expect(page.locator('#readinessSummary')).not.toContainText('공통 라이선스');
  await expect(page.locator('#commonGrid .card')).toHaveCount(5);
- await expect(page.locator('#commonGrid button')).toHaveCount(0);
- await expect(page.locator('#roleHeading')).toHaveCSS('font-size','18px');
- await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','18px');
+ await expect(page.locator('#commonGrid button')).toHaveCount(5);
+ await expect(page.locator('#roleHeading')).toHaveCSS('font-size','20px');
+ await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','20px');
  await expect(page.locator('#roleGrid .card-title').first()).toHaveCSS('font-size','16px');
  await expect(page.locator('#commonGrid .card-title').first()).toHaveCSS('font-size','16px');
  await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('Slack');
@@ -112,7 +112,7 @@ test('1920 catalog fits every role and shared tools above the fold without repea
  await expect(page.locator('#currentRoleLabel')).toBeHidden();
  await expect(page.locator('#commonGrid .status-pill')).toHaveCount(0);
  await expect(page.locator('#commonTools .shared-access')).toHaveText('자동 지급');
- await expect(page.locator('.task-identity>span').first()).toHaveCSS('font-size','22px');
+ await expect(page.locator('.task-identity>span').first()).toHaveCSS('font-size','18px');
  await expect(page.locator('#readinessSummary')).toHaveCSS('font-weight','400');
  for(const role of ['office','design','dev','data']){
   await page.getByRole('combobox',{name:'직군 선택'}).selectOption(role);
@@ -132,7 +132,7 @@ test('Submitting a request updates its card without repeating the request in the
  await expect(page.locator('#loginScreen')).toBeHidden();
  const card=page.locator('#roleGrid .card[data-name="Microsoft Office"]');
  await card.getByRole('button',{name:'신청하기',exact:true}).click();
- await page.getByRole('button',{name:'신청 완료',exact:true}).click();
+ await page.getByRole('button',{name:'신청 제출',exact:true}).click();
  await expect(card).toContainText('검토 대기');
  await expect(page.locator('#pendingSummary')).toBeHidden();
  await expect(page.locator('.task-overview')).not.toContainText('Microsoft Office');

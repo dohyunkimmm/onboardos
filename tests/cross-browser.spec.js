@@ -48,7 +48,7 @@ ${error.message}`);
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   await card.getByRole('button', {name:'신청하기'}).click();
   await page.locator('#requestNote').fill('브라우저 호환성 검증');
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   await page.locator('#statusBtn').click();
   const userReq = page.locator('.request-item').filter({hasText:'Microsoft Office'});
   const ticket = (await userReq.locator('.ticket-key').textContent()).trim();

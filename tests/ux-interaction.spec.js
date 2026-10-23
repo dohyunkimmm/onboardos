@@ -86,7 +86,7 @@ test('[U4] admin drawer keeps actionable focus, touch target and visual evidence
   await stabilize(page);
   await login(page);
   await openOfficeRequest(page);
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
   await expect(page.locator('#drawerBackdrop')).toHaveClass(/show/);
   await expect(page.locator('.drawer-close')).toBeFocused();
@@ -112,7 +112,7 @@ test('[U5] dynamic completion and request messages are exposed through the live 
   await expect(page.locator('#loginScreen')).toBeHidden();
   await expect(toast).toContainText('가상 SSO 로그인 완료');
   await openOfficeRequest(page);
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await expect(toast).toContainText('신청이 접수되었습니다');
 });
 
@@ -165,14 +165,14 @@ test('[U7] responsive boundaries 320-768px avoid horizontal overflow and preserv
   const wide = page.locator('#commonGrid .card');
   const wideFirst = await rect(wide.nth(0));
   const wideSecond = await rect(wide.nth(1));
-  expect(wideSecond.x).toBeGreaterThan(wideFirst.x + 1);
+  expect(Math.abs(wideSecond.x-wideFirst.x)).toBeLessThanOrEqual(0.5);
 });
 
 test('[U8] rejection to remediation resubmission preserves ticket continuity and captures the transition state', async ({ page }) => {
   await stabilize(page);
   await login(page);
   await openOfficeRequest(page);
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
   const originalTicket = (await page.locator('.request-item').filter({hasText:'Microsoft Office'}).locator('.ticket-key').textContent()).trim();
   await page.locator('.request-item').filter({hasText:'Microsoft Office'}).getByRole('button',{name:'반려'}).click();

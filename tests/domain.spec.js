@@ -41,7 +41,7 @@ test('요청 상태는 request → pending → approved → completed이며 티�
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   expect(await page.evaluate(() => findLicenseByName('Microsoft Office').status)).toBe('request');
   await card.getByRole('button', {name:'신청하기'}).click();
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   const pending = await page.evaluate(() => ({status:requestState['Microsoft Office'].status, ticket:requestState['Microsoft Office'].ticket}));
   expect(pending.status).toBe('pending');
   await page.locator('#adminBtn').click();
@@ -62,7 +62,7 @@ test('반려 후 보완 재신청은 동일 ITSM 티켓의 이력을 이어간�
   await page.locator('#requestNote').fill('디자인 제작 업무용');
   await page.locator('#requestScope').selectOption({label:'Photoshop'});
   await page.locator('#requestPeriod').selectOption({label:'3개월'});
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   const original = await page.evaluate(() => requestState['Adobe Creative Cloud'].ticket);
   await page.locator('#adminBtn').click();
   await page.locator('.request-item').filter({hasText:'Adobe Creative Cloud'}).getByRole('button', {name:'반려'}).click();

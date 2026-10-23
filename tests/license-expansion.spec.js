@@ -22,7 +22,7 @@ test('new role licenses load icons and support AI-led requests',async({page},tes
     await expect(page.locator('#aiRecommendationResults')).toContainText(name);
     await page.getByRole('button',{name:'신청 내용 확인',exact:true}).click();
     await page.getByLabel('신청 사유를 확인했습니다').check();
-    await page.getByRole('button',{name:'신청 완료',exact:true}).click();
+    await page.getByRole('button',{name:'신청 제출',exact:true}).click();
     await expect(card).toContainText('검토 대기');
     await page.unroute('**/api/recommend');
   }

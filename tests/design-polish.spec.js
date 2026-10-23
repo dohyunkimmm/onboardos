@@ -30,7 +30,7 @@ test('[D1] dashboard hierarchy increases readable width and headline contrast af
   const main = await css(page.locator('main'));
   expect(parseFloat(main.maxWidth)).toBeGreaterThanOrEqual(1180);
   const title = await css(page.locator('.section-head h2').first());
-  expect(parseFloat(title.fontSize)).toBe(18);
+  expect(parseFloat(title.fontSize)).toBe(20);
   expect(Number(title.fontWeight)).toBeGreaterThanOrEqual(700);
   await shot(page,'D1-dashboard-hierarchy.png');
 });
@@ -47,13 +47,13 @@ test('[D2] overview panel uses layered surface and tighter information hierarchy
   expect(parseFloat(name.fontSize)).toBeGreaterThanOrEqual(28);
 });
 
-test('[D3] 1920 desktop uses the same six-column rhythm for both license groups', async ({page}) => {
+test('[D3] 1920 desktop fills each group with its actual license count', async ({page}) => {
   await page.setViewportSize({width:1920,height:1080});
   await stabilize(page); await login(page);
   const common = await css(page.locator('#commonGrid'));
-  expect(common.gridTemplateColumns.split(' ').length).toBe(6);
+  expect(common.gridTemplateColumns.split(' ').length).toBe(5);
   const role = await css(page.locator('#roleGrid'));
-  expect(role.gridTemplateColumns.split(' ').length).toBe(6);
+  expect(role.gridTemplateColumns.split(' ').length).toBe(4);
 });
 
 test('[D4] role cards use consistent elevated surfaces and stronger primary CTA', async ({page}) => {
@@ -88,15 +88,15 @@ test('[D6] request modal has stronger hierarchy without changing the request flo
   expect(state.backgroundColor).toBe('rgb(255, 255, 255)');
   const h3 = await css(modal.locator('h3'));
   expect(parseFloat(h3.fontSize)).toBeGreaterThanOrEqual(23);
-  await expect(modal.getByRole('button',{name:'신청 완료'})).toBeVisible();
+  await expect(modal.getByRole('button',{name:'신청 제출'})).toBeVisible();
   await shot(modal,'D6-request-modal-polish.png');
 });
 
-test('[D7] mobile density keeps two-column common cards, single-column role cards and no overflow', async ({page}) => {
+test('[D7] mobile density keeps compact single-column common cards, single-column role cards and no overflow', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await stabilize(page); await login(page);
   const common = await css(page.locator('#commonGrid'));
-  expect(common.gridTemplateColumns.split(' ').length).toBe(2);
+  expect(common.gridTemplateColumns.split(' ').length).toBe(1);
   const role = await css(page.locator('#roleGrid'));
   expect(role.gridTemplateColumns.split(' ').length).toBe(1);
   const overflow = await page.evaluate(() => ({scrollWidth:document.documentElement.scrollWidth,innerWidth}));

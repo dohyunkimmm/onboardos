@@ -91,7 +91,7 @@ test('모바일 drawer의 닫기와 처리 액션은 터치 목표 크기를 유
 
   const card = page.locator('#roleGrid .card').filter({ hasText:'Microsoft Office' });
   await card.getByRole('button', { name:'신청하기' }).click();
-  await page.getByRole('button', { name:'신청 완료' }).click();
+  await page.getByRole('button', { name:'신청 제출' }).click();
   await page.locator('#adminBtn').click();
 
   const closeBox = await rect(page.locator('.drawer-close'));

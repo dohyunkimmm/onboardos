@@ -66,15 +66,15 @@ test('[X3] request execution controls remain separated and business copy remains
   await expect(page.locator('#requestDetails')).toContainText('담당 부서');
   await expect(page.locator('#requestDetails')).toContainText('예상 지급일');
   await expect(page.locator('#requestDetails')).toContainText('Jira Service Management');
-  await expect(page.locator('#submitRequestBtn')).toHaveText('신청 완료');
+  await expect(page.locator('#submitRequestBtn')).toHaveText('신청 제출');
   const actions = await page.locator('.request-modal .modal-actions').evaluate(el => ({position:getComputedStyle(el).position,border:getComputedStyle(el).borderTopStyle}));
-  expect(actions.position).toBe('sticky');
+  expect(actions.position).toBe('static');
   expect(actions.border).toBe('solid');
 });
 
 test('[X4] user drawer prioritizes ticket, live SLA, action and latest history', async ({page}) => {
   await stabilize(page); await login(page); await openOfficeRequest(page);
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await page.locator('#statusBtn').click();
 
   const item = page.locator('.request-item').filter({hasText:'Microsoft Office'});
@@ -97,7 +97,7 @@ test('[X4] user drawer prioritizes ticket, live SLA, action and latest history',
 
 test('[X5] admin queue keeps KPI filtering secondary to the execution action', async ({page}) => {
   await stabilize(page); await login(page); await openOfficeRequest(page);
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
 
   const pendingKpi = page.locator('.admin-kpi.pending');
@@ -124,7 +124,7 @@ test('[X6] mobile keeps critical request facts and drawer actions within the vie
   expect(modal.x).toBeGreaterThanOrEqual(0);
   expect(modal.right).toBeLessThanOrEqual(391);
 
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
   const slaDirection = await page.locator('.request-item').filter({hasText:'Microsoft Office'}).locator('.request-sla').evaluate(el => getComputedStyle(el).flexDirection);
   expect(slaDirection).toBe('column');
