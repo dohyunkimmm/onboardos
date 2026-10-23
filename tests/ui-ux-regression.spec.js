@@ -62,6 +62,7 @@ test('진행 안내는 5단계 tracker를 유지하고 별도 숫자 카운트 �
   await login(page);
 
   await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
   await page.locator('.walkthrough > summary').click();
   await expect(page.locator('.demo-step-kicker')).toBeVisible();
   await expect(page.locator('#progressHint .hint-cta')).toBeVisible();

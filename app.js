@@ -196,7 +196,7 @@ function renderCard(item, showCta){
 function renderCommon(){
   document.getElementById('commonGrid').innerHTML = commonLicenses.map(item => renderCard(item, true)).join('');
   const cc = document.getElementById('commonCount');
-  cc.dataset.base = `${commonLicenses.length}종 · 회사 계정으로 바로 사용 가능`;
+  cc.dataset.base = `${commonLicenses.length}개 · 사용 가능`;
   cc.textContent = cc.dataset.base;
 }
 
@@ -225,7 +225,7 @@ function setRole(key){
   const r = roles[key];
   document.getElementById('roleHeading').textContent = r.heading;
   const rc = document.getElementById('roleCount');
-  rc.dataset.base = r.cards.length ? `${r.cards.length}종 · 직무별 추가 항목` : '';
+  rc.dataset.base = r.cards.length ? `${r.cards.length}개` : '';
   rc.textContent = rc.dataset.base;
   document.getElementById('userRoleMeta').textContent = r.exception
     ? '직무 정보 확인 필요'

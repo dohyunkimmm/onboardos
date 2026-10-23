@@ -10,6 +10,8 @@ function activatePostLoginStyles(){
 if(loggedIn) activatePostLoginStyles();
 
 const actionHandlers = {
+  'open-onboarding-help': () => document.getElementById('onboardingHelp')?.showModal(),
+  'close-onboarding-help': () => document.getElementById('onboardingHelp')?.close(),
   'show-common-tools': () => {
     const search=document.getElementById('toolSearch');
     if(search){ search.value=''; search.dispatchEvent(new Event('input',{bubbles:true})); }
@@ -31,7 +33,7 @@ const actionHandlers = {
   'hide-action': () => hideActionModal(),
   'submit-support': () => submitSupportRequest(),
   'toggle-admin-filter': (_event, value) => toggleAdminFilter(value),
-  'demo-next': () => nextDemoAction(),
+  'demo-next': () => { document.getElementById('onboardingHelp')?.close(); nextDemoAction(); },
   'guide-support': (_event,value) => { hideActionModal(); openSupportRequest('other'); const field=document.getElementById('supportRequestNote'); if(field) field.value=value+' 설치·접속 지원 요청'; },
   'license-action': (_event, value) => openLicenseAction(value),
   'confirm-reject': (_event, value) => confirmReject(value),

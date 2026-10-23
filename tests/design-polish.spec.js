@@ -40,6 +40,7 @@ test('[D2] overview panel uses layered surface and tighter information hierarchy
   expect(parseFloat(overview.borderRadius)).toBeGreaterThanOrEqual(20);
   expect(overview.backgroundColor).toBe('rgb(255, 255, 255)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
   await page.locator('.overview-panel > summary').click();
   const name = await css(page.locator('.overview-panel .name-input'));
   expect(parseFloat(name.fontSize)).toBeGreaterThanOrEqual(28);

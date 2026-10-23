@@ -35,6 +35,7 @@ async function style(locator){
 test('[T1] current task instruction is visually presented before the five-step tracker', async ({page}) => {
   await stabilize(page); await login(page);
   await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
   await page.locator('.walkthrough > summary').click();
   await expect(page.locator('#progressHint')).toContainText('필요한 도구의 신청 흐름을 체험하세요');
   await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
