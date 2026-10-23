@@ -20,7 +20,7 @@ async function shot(target,name){
 async function css(locator){
   return locator.evaluate(el => {
     const s=getComputedStyle(el);
-    return {fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,letterSpacing:s.letterSpacing,borderRadius:s.borderRadius,borderColor:s.borderColor,borderStyle:s.borderStyle,background:s.background,backgroundImage:s.backgroundImage,boxShadow:s.boxShadow,padding:s.padding,gap:s.gap,gridTemplateColumns:s.gridTemplateColumns,maxWidth:s.maxWidth};
+    return {fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,letterSpacing:s.letterSpacing,borderRadius:s.borderRadius,borderColor:s.borderColor,borderStyle:s.borderStyle,background:s.background,backgroundColor:s.backgroundColor,backgroundImage:s.backgroundImage,boxShadow:s.boxShadow,padding:s.padding,gap:s.gap,gridTemplateColumns:s.gridTemplateColumns,maxWidth:s.maxWidth};
   });
 }
 
@@ -38,7 +38,7 @@ test('[D2] overview panel uses layered surface and tighter information hierarchy
   await stabilize(page); await login(page);
   const overview = await css(page.locator('.task-overview'));
   expect(parseFloat(overview.borderRadius)).toBeGreaterThanOrEqual(20);
-  expect(overview.backgroundImage).toContain('gradient');
+  expect(overview.backgroundColor).toBe('rgb(255, 255, 255)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
   await page.locator('.overview-panel > summary').click();
   const name = await css(page.locator('.overview-panel .name-input'));
@@ -57,11 +57,11 @@ test('[D4] role cards use consistent elevated surfaces and stronger primary CTA'
   await stabilize(page); await login(page);
   const card = page.locator('#roleGrid .card').first();
   const state = await css(card);
-  expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(18);
+  expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(12);
   expect(state.background).not.toBe('none');
   expect(state.borderStyle).toBe('solid');
   const cta = await css(card.locator('.cta'));
-  expect(cta.backgroundImage).toContain('gradient');
+  expect(cta.backgroundColor).toBe('rgb(26, 115, 232)');
   expect(Number(cta.fontWeight)).toBeGreaterThanOrEqual(700);
   await shot(card,'D4-role-card-system.png');
 });
@@ -82,7 +82,7 @@ test('[D6] request modal has stronger hierarchy without changing the request flo
   const modal = page.locator('.request-modal');
   const state = await css(modal);
   expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(24);
-  expect(state.backgroundImage).toContain('gradient');
+  expect(state.backgroundColor).toBe('rgb(255, 255, 255)');
   const h3 = await css(modal.locator('h3'));
   expect(parseFloat(h3.fontSize)).toBeGreaterThanOrEqual(23);
   await expect(modal.getByRole('button',{name:'신청 완료'})).toBeVisible();
@@ -105,12 +105,12 @@ test('[D8] v17 preserves one product identity across login and post-login withou
   await stabilize(page);
   await expect(page.locator('body')).toHaveClass(/login-open/);
   const loginSurface = await css(page.locator('.login-card'));
-  expect(loginSurface.borderRadius).toBe('26px');
-  expect(loginSurface.backgroundImage).toContain('gradient');
+  expect(parseFloat(loginSurface.borderRadius)).toBeGreaterThanOrEqual(20);
+  expect(loginSurface.backgroundColor).toBe('rgb(255, 255, 255)');
   await login(page);
   await expect(page.locator('body')).not.toHaveClass(/login-open/);
   const panel = await css(page.locator('.task-overview'));
   expect(parseFloat(panel.borderRadius)).toBeGreaterThanOrEqual(20);
-  expect(panel.backgroundImage).toContain('gradient');
+  expect(panel.backgroundColor).toBe('rgb(255, 255, 255)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
 });

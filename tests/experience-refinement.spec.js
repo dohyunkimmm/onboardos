@@ -25,7 +25,7 @@ test('[E1] top navigation separates primary product action from demo utilities',
   await stabilize(page);await login(page);
   const status=await css(page.locator('#statusBtn'));
   const reset=await css(page.locator('#resetBtn'));
-  expect(status.backgroundImage).toContain('gradient');
+  expect(status.backgroundColor).toBe('rgb(26, 115, 232)');
   expect(reset.backgroundImage).toBe('none');
   await shot(page.locator('.topbar'),'E1-navigation-hierarchy.png');
 });
@@ -34,9 +34,11 @@ test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mob
   await stabilize(page);await login(page);
   const task=await css(page.locator('.task-overview'));
   expect(task.display).not.toBe('none');
-  expect(task.backgroundImage).toContain('gradient');
+  expect(task.backgroundColor).toBe('rgb(255, 255, 255)');
   const profile=page.locator('.overview-panel');
   await expect(profile).not.toHaveAttribute('open');
+  await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
+  await revealRolePicker(page);
   await expect(page.locator('.task-overview .role-tab').first()).toBeVisible();
   await profile.locator('summary').click();
   await expect(profile.locator('.name-input')).toBeVisible();
@@ -57,7 +59,7 @@ test('[E4] status filters behave as a sticky command surface with a distinct sel
   const tools=await css(page.locator('.tools-bar'));
   const active=await css(page.locator('.filter-chip.active'));
   expect(tools.position).toBe('static');
-  expect(active.backgroundImage).toContain('gradient');
+  expect(active.backgroundColor).toBe('rgb(232, 240, 254)');
   const selected=page.locator('.filter-chip.active');
   await expect(selected).toHaveAttribute('aria-pressed','true');
   await shot(page.locator('.tools-bar'),'E4-filter-command-surface.png');
@@ -107,14 +109,20 @@ test('[E7] tablet width uses deliberate two-column density with no horizontal ov
 
 test('[E8] empty states are intentionally designed and reduced-motion remains honored',async({page})=>{
   await stabilize(page);await login(page);
+  await revealRolePicker(page);
   await page.locator('.role-tab[data-role="unmapped"]').click();
   const empty=page.locator('#roleGrid .empty-state');
   await expect(empty).toBeVisible();
   const state=await css(empty);
-  expect(state.backgroundImage).toContain('gradient');
+  expect(state.backgroundColor).toBe('rgb(248, 250, 253)');
   const icon=await css(empty,'::before');
   expect(icon.content).not.toBe('none');
   const cardDuration=await page.locator('#commonGrid .card').first().evaluate(el=>getComputedStyle(el).transitionDuration);
   expect(cardDuration.split(',').every(value=>parseFloat(value)===0)).toBeTruthy();
   await shot(empty,'E8-empty-state.png');
 });
+
+async function revealRolePicker(page){
+  const picker = page.locator('details.role-picker');
+  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+}

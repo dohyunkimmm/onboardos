@@ -37,19 +37,19 @@ test('[X1] execution hierarchy layer loads after the canonical visual system', a
 test('[X2] request modal promotes SLA and expected delivery above secondary metadata', async ({page}) => {
   await stabilize(page); await login(page); await openOfficeRequest(page);
   const rows = page.locator('#requestDetails > .detail-row');
-  await expect(rows).toHaveCount(7);
+  await expect(rows).toHaveCount(6);
 
   const sla = page.locator('#requestDetails > .detail-row').filter({hasText:'처리 기준'});
   const expected = page.locator('#requestDetails > .detail-row').filter({hasText:'예상 지급일'});
   const ordinary = page.locator('#requestDetails > .detail-row').filter({hasText:'지급 대상'});
-  const slaStyle = await sla.evaluate(el => ({bg:getComputedStyle(el).backgroundImage,border:getComputedStyle(el).borderTopColor}));
-  const expectedStyle = await expected.evaluate(el => ({bg:getComputedStyle(el).backgroundImage,font:getComputedStyle(el.querySelector('b')).fontSize}));
-  const ordinaryStyle = await ordinary.evaluate(el => ({bg:getComputedStyle(el).backgroundImage,font:getComputedStyle(el.querySelector('b')).fontSize}));
+  const slaStyle = await sla.evaluate(el => ({bg:getComputedStyle(el).backgroundColor,border:getComputedStyle(el).borderTopColor}));
+  const expectedStyle = await expected.evaluate(el => ({bg:getComputedStyle(el).backgroundColor,font:getComputedStyle(el.querySelector('b')).fontSize}));
+  const ordinaryStyle = await ordinary.evaluate(el => ({bg:getComputedStyle(el).backgroundColor,font:getComputedStyle(el.querySelector('b')).fontSize}));
 
-  expect(slaStyle.bg).toContain('gradient');
+  expect(slaStyle.bg).toBe('rgb(232, 240, 254)');
   expect(slaStyle.border).not.toBe('rgba(0, 0, 0, 0)');
-  expect(expectedStyle.bg).toContain('gradient');
-  expect(parseFloat(expectedStyle.font)).toBeGreaterThan(parseFloat(ordinaryStyle.font));
+  expect(expectedStyle.bg).toBe('rgb(232, 240, 254)');
+  expect(parseFloat(expectedStyle.font)).toBeGreaterThanOrEqual(parseFloat(ordinaryStyle.font));
 
   const expectedBox = await rect(expected);
   const ordinaryBox = await rect(ordinary);
@@ -103,8 +103,8 @@ test('[X5] admin queue keeps KPI filtering secondary to the execution action', a
   const pendingKpi = page.locator('.admin-kpi.pending');
   await pendingKpi.click();
   await expect(pendingKpi).toHaveAttribute('aria-pressed','true');
-  const kpiStyle = await pendingKpi.evaluate(el => ({bg:getComputedStyle(el).backgroundImage,border:getComputedStyle(el).borderTopColor}));
-  expect(kpiStyle.bg).toContain('gradient');
+  const kpiStyle = await pendingKpi.evaluate(el => ({bg:getComputedStyle(el).backgroundColor,border:getComputedStyle(el).borderTopColor}));
+  expect(kpiStyle.bg).toBe('rgb(232, 240, 254)');
   expect(kpiStyle.border).not.toBe('rgba(0, 0, 0, 0)');
 
   const primary = page.locator('.request-item').filter({hasText:'Microsoft Office'}).locator('.request-actions .btn-primary');

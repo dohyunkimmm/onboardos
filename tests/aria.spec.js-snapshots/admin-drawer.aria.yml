@@ -13,7 +13,7 @@
   - button "완료 0":
     - text: ""
     - strong: "0"
-  - text: /Interactive Prototype · IT 관리자 역할 미리보기 Microsoft Office ITSM-\d+ 요청자 · 홍길동 \(경영지원·총무 · 신규입사자\) 담당 · IT팀 상태 · 처리 중 SLA 정상 · D-2 처리 예정 9월 \d+일 \(화\) · 기준 D\+1~2 신청일 · 9월 \d+일 승인 판단 정보/
+  - text: /Interactive Prototype · IT 관리자 역할 미리보기 Microsoft Office ITSM-\d+ 요청자 · 홍길동 \(경영지원·총무 · 신규입사자\) 담당 · IT팀 상태 · 검토 대기 SLA 정상 · D-2 처리 예정 9월 \d+일 \(화\) · 기준 D\+1~2 신청일 · 9월 \d+일 승인 판단 정보/
   - paragraph: 프로토타입 · 좌석·비용은 실제 운영 값이 아닙니다.
   - term: 제품·권한 범위
   - definition: 기본 라이선스

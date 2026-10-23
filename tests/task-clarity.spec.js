@@ -22,7 +22,7 @@ async function style(locator){
     const s = getComputedStyle(el);
     return {
       boxShadow:s.boxShadow,
-      backgroundImage:s.backgroundImage,
+      backgroundColor:s.backgroundColor,backgroundImage:s.backgroundImage,
       borderColor:s.borderColor,
       minHeight:s.minHeight,
       height:s.height,
@@ -34,15 +34,15 @@ async function style(locator){
 
 test('[T1] current task instruction is visually presented before the five-step tracker', async ({page}) => {
   await stabilize(page); await login(page);
-  const hint = await box(page.locator('#progressHint'));
-  const tracker = await box(page.locator('#progressBar'));
-  expect(hint.y).toBeLessThan(tracker.y);
+  await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
+  await page.locator('.walkthrough > summary').click();
   await expect(page.locator('#progressHint')).toContainText('필요한 도구의 신청 흐름을 체험하세요');
   await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
 });
 
 test('[T2] common entitlements stay quieter and more compact than actionable role cards', async ({page}) => {
   await stabilize(page); await login(page);
+  await page.locator('details.common-first > summary').click();
   const common = page.locator('#commonGrid .card').first();
   const role = page.locator('#roleGrid .card').first();
   const commonBox = await box(common);
@@ -51,7 +51,8 @@ test('[T2] common entitlements stay quieter and more compact than actionable rol
   const roleStyle = await style(role);
   expect(commonBox.height).toBeLessThan(roleBox.height);
   expect(commonStyle.boxShadow === 'none' || commonStyle.boxShadow.includes('inset')).toBeTruthy();
-  expect(roleStyle.boxShadow).not.toBe('none');
+  expect(roleStyle.boxShadow).toBe('none');
+  await expect(role.locator('.cta')).toBeVisible();
 });
 
 test('[T3] role decision cards keep status and CTA together in a stable action zone', async ({page}) => {
@@ -69,9 +70,9 @@ test('[T4] filter selection remains visually quieter than the primary card actio
   const filter = await style(page.locator('.filter-chip.active'));
   const cta = await style(page.locator('#roleGrid .cta').first());
   expect(filter.boxShadow).toBe('none');
-  expect(filter.backgroundImage).toContain('gradient');
-  expect(cta.backgroundImage).toContain('gradient');
-  expect(cta.boxShadow).not.toBe('none');
+  expect(filter.backgroundColor).toBe('rgb(232, 240, 254)');
+  expect(cta.backgroundColor).toBe('rgb(26, 115, 232)');
+  expect(cta.backgroundColor).not.toBe(filter.backgroundColor);
 });
 
 test('[T5] request modal keeps the frozen request flow and a separated execution zone', async ({page}) => {

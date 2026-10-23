@@ -1,0 +1,21 @@
+const {test,expect}=require('@playwright/test');
+test('Employee search composes with status and finds collapsed common tools',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ const search=page.getByRole('searchbox',{name:'도구 검색'});
+ await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
+ await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
+ await search.fill('Slack');
+ await expect(page.locator('details.common-first')).toHaveAttribute('open');
+ await expect(page.locator('.card:not(.is-hidden)')).toHaveCount(1);
+ await expect(page.locator('.card:not(.is-hidden)')).toHaveAttribute('data-name','Slack');
+ await page.getByRole('button',{name:'해야 할 일',exact:true}).click();
+ await expect(page.locator('.card:not(.is-hidden)')).toHaveCount(0);
+ await page.getByRole('button',{name:'전체',exact:true}).click();
+ await search.fill('office');
+ await expect(page.locator('.card:not(.is-hidden)')).toHaveAttribute('data-name','Microsoft Office');
+ await search.fill('');
+ await expect(page.locator('details.common-first')).not.toHaveAttribute('open');
+ await expect(page.locator('#roleGrid .card:not(.is-hidden)')).toHaveCount(3);
+});

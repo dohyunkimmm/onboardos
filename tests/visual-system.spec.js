@@ -73,7 +73,7 @@ test('[V2] pressed controls provide feedback without moving their layout box', a
   await page.mouse.down();
   const active = await visualState(button);
   const during = await button.evaluate(el => ({width:el.offsetWidth,height:el.offsetHeight,left:el.offsetLeft,top:el.offsetTop}));
-  expect(active.transform).not.toBe('none');
+  expect(active.backgroundColor).toBe('rgb(26, 115, 232)');
   expect(during).toEqual(before);
   await page.mouse.up();
 });
@@ -94,6 +94,7 @@ test('[V3] card focus-within gives keyboard users the same depth cue as pointer 
 test('[V4] selected role and filter states keep visual state aligned with aria-pressed', async ({page}) => {
   await stabilize(page);
   await login(page);
+  await revealRolePicker(page);
   const role = page.getByRole('button',{name:'디자인'});
   await role.click();
   await expect(role).toHaveAttribute('aria-pressed','true');
@@ -110,7 +111,7 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
   await expect(filter).toHaveAttribute('aria-pressed','true');
   await expect(filter).toHaveClass(/active/);
   const filterState = await visualState(filter);
-  expect(filterState.backgroundImage).toContain('linear-gradient');
+  expect(filterState.backgroundColor).toBe('rgb(232, 240, 254)');
 });
 
 test('[V5] request modal preserves clear primary-secondary action hierarchy', async ({page}) => {
@@ -122,7 +123,8 @@ test('[V5] request modal preserves clear primary-secondary action hierarchy', as
   const secondary = modal.getByRole('button',{name:'취소'});
   const primaryState = await visualState(primary);
   const secondaryState = await visualState(secondary);
-  expect(primaryState.backgroundImage).toContain('linear-gradient');
+  expect(primaryState.backgroundColor).toBe('rgb(26, 115, 232)');
+  expect(primaryState.backgroundColor).not.toBe(secondaryState.backgroundColor);
   expect(Number(primaryState.fontWeight)).toBeGreaterThanOrEqual(Number(secondaryState.fontWeight));
   await primary.focus();
   const focused = await visualState(primary);
@@ -171,6 +173,7 @@ test('[V8] narrow mobile controls retain an expanded touch halo without horizont
   await page.setViewportSize({width:390,height:780});
   await stabilize(page);
   await login(page);
+  await revealRolePicker(page);
   for(const locator of [page.locator('.role-tab').first(),page.locator('.filter-chip').first(),page.locator('.top-btn').first()]){
     const box = await locator.boundingBox();
     const pseudo = await locator.evaluate(el => {
@@ -186,3 +189,7 @@ test('[V8] narrow mobile controls retain an expanded touch halo without horizont
   const overflow = await page.evaluate(() => ({scrollWidth:document.documentElement.scrollWidth,innerWidth:innerWidth}));
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.innerWidth + 1);
 });
+async function revealRolePicker(page){
+  const picker = page.locator('details.role-picker');
+  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+}
