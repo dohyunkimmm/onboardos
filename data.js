@@ -85,3 +85,5 @@ const REJECT_REASONS = [
   '권한 범위 또는 관리자 승인 근거가 확인되지 않았습니다.'
 ];
 
+// The server uses the same allowlisted catalog as the employee screen.
+if(typeof module !== 'undefined' && module.exports) module.exports = { commonLicenses, roles };

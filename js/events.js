@@ -10,6 +10,7 @@ function activatePostLoginStyles(){
 if(loggedIn) activatePostLoginStyles();
 
 const actionHandlers = {
+  'ai-recommend': () => openAiRecommendation(),
   'preview-unmapped': () => { document.getElementById('onboardingHelp')?.close(); setRole('unmapped'); },
   'go-home': () => {
     document.getElementById('onboardingHelp')?.close();
