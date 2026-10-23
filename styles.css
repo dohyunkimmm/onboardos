@@ -753,22 +753,3 @@ footer{margin-top:var(--space-7);}
 [hidden]{display:none!important;}
 .action-modal-backdrop.show{display:flex;}
 .login-loader.is-visible{display:block;}
-
-/* AI recommendation: contain long results within the dialog viewport. */
-body:not(.login-open) .action-modal:has(#aiRecommendationForm){max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain;}
-#aiRecommendationForm{display:grid;gap:12px;min-width:0;}
-#aiRecommendationForm .request-note-label{margin:4px 0 0;}
-#aiRoleDetail{display:block;min-width:0;min-height:112px;}
-#aiPrivacyNote{margin:0;font-size:12px;line-height:1.65;overflow-wrap:anywhere;}
-#aiRecommendSubmit{justify-self:start;min-height:44px;}
-#aiRecommendationStatus{font-size:13px;line-height:1.6;overflow-wrap:anywhere;}
-#aiRecommendationStatus:empty{display:none;}
-#aiRecommendationResults{display:grid;gap:12px;min-width:0;}
-.ai-recommendation-card{min-width:0;display:grid;gap:10px;overflow-wrap:anywhere;}
-.ai-recommendation-card h4{margin:0;font-size:15px;line-height:1.5;}
-.ai-recommendation-card p{margin:0;font-size:13px;line-height:1.65;}
-.ai-recommendation-card .ghost-btn{justify-self:start;max-width:100%;min-height:44px;white-space:normal;}
-body:not(.login-open) #requestDetails .request-note{width:calc(100% - 8px);min-width:0;min-height:112px;}
-body:not(.login-open) #requestDetails .recommendation-review{display:flex;align-items:flex-start;gap:8px;line-height:1.6;padding:8px 0;}
-.recommendation-review input{flex:0 0 18px;width:18px;height:18px;margin:1px 0 0;accent-color:var(--purple-soft);}
-@media(max-width:560px){body:not(.login-open) .action-modal:has(#aiRecommendationForm){max-height:calc(100dvh - 32px);}#aiRecommendSubmit,.ai-recommendation-card .ghost-btn{width:100%;}}
