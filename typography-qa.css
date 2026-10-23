@@ -194,7 +194,7 @@ body #onboardingHelp .overview-panel{margin-top:16px;}
 
 body details.common-first{padding:16px!important;border-radius:16px;}
 body #commonGrid .card{padding:12px!important;min-height:112px!important;}
-body #commonGrid .card-title{font-size:15px!important;}
+body #commonGrid .card-title{font-size:16px!important;}
 
 body .task-overview{display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;padding:12px 16px;}
 body .task-overview>h2{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);}
@@ -285,7 +285,7 @@ body #aiPrivacyNote{font-size:13px!important;line-height:1.6!important;}
  body #commonGrid .card-top{flex-wrap:nowrap!important;gap:10px;margin:0;min-width:0;}
  body #commonGrid .card-top>div:last-child{flex-basis:auto;min-width:0;}
  body #commonGrid .card-bottom{margin:0;}
- body #commonGrid .card-title{font-size:15px!important;}
+ body #commonGrid .card-title{font-size:16px!important;}
  body #commonGrid .card-purpose{font-size:13px;}
  body #commonGrid .common-guide{padding:8px 10px;white-space:nowrap;}
 }
