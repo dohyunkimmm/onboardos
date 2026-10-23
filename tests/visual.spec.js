@@ -23,7 +23,7 @@ test('로그인 카드 visual baseline', async ({ page }) => {
 test('기본 대시보드 visual baseline', async ({ page }) => {
   await stabilize(page);
   await login(page);
-  await expect(page.locator('#roleGrid .card')).toHaveCount(3);
+  await expect(page.locator('#roleGrid .card')).toHaveCount(4);
   for(const card of await page.locator('#roleGrid .card').all()){
     await expect(card).toBeVisible();
     await expect(card).toHaveCSS('opacity','1');
