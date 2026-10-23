@@ -150,3 +150,6 @@ body details.common-first>.common-summary h2{font-size:20px;color:#202124;}
  body .task-overview .role-picker[open]{width:500px;max-width:calc(100% - 48px);padding:16px;background:#fff!important;border:1px solid #dadce0;border-radius:12px;box-shadow:0 8px 24px #20212420;}
  body .task-overview .role-picker[open]>summary{margin-left:auto;}
 }
+
+body .common-tools-link{color:#185abc;text-decoration:underline;text-underline-offset:3px;font-weight:600;}
+body #commonTools{scroll-margin-top:100px;}
