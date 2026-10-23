@@ -10,6 +10,7 @@ function activatePostLoginStyles(){
 if(loggedIn) activatePostLoginStyles();
 
 const actionHandlers = {
+  'preview-unmapped': () => { document.getElementById('onboardingHelp')?.close(); setRole('unmapped'); },
   'go-home': () => {
     document.getElementById('onboardingHelp')?.close();
     const loginButton = document.querySelector('.google-btn');

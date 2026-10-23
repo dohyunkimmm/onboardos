@@ -202,7 +202,7 @@ function renderCommon(){
 
 function renderRoleTabs(){
   const wrap = document.getElementById('roleTabs');
-  wrap.innerHTML = Object.keys(roles).map(key => {
+  wrap.innerHTML = Object.keys(roles).filter(key => !roles[key].exception).map(key => {
     const r = roles[key];
     return `<button type="button" class="role-tab${key===currentRole?' active':''}${r.exception?' exception':''}" data-role="${key}" aria-pressed="${key===currentRole?'true':'false'}">${r.exception?'⚠ ':''}${r.label}</button>`;
   }).join('');

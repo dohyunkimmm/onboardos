@@ -110,7 +110,8 @@ test('[E7] tablet width uses deliberate two-column density with no horizontal ov
 test('[E8] empty states are intentionally designed and reduced-motion remains honored',async({page})=>{
   await stabilize(page);await login(page);
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="unmapped"]').click();
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
+  await page.getByRole('button',{name:'직무 정보 확인이 필요한 경우',exact:true}).click();
   const empty=page.locator('#roleGrid .empty-state');
   await expect(empty).toBeVisible();
   const state=await css(empty);
