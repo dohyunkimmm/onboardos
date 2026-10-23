@@ -97,6 +97,8 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
   await revealRolePicker(page);
   const role = page.getByRole('button',{name:'디자인'});
   await role.click();
+  await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
+  await revealRolePicker(page);
   await expect(role).toHaveAttribute('aria-pressed','true');
   await expect(role).toHaveClass(/active/);
   const roleState = await visualState(role);
@@ -106,6 +108,7 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
     roleState.boxShadow !== 'none'
   ).toBeTruthy();
 
+  await page.locator('details.role-picker > summary').click();
   const filter = page.getByRole('button',{name:'해야 할 일'});
   await filter.click();
   await expect(filter).toHaveAttribute('aria-pressed','true');
