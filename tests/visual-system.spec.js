@@ -111,7 +111,7 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
   await expect(filter).toHaveAttribute('aria-pressed','true');
   await expect(filter).toHaveClass(/active/);
   const filterState = await visualState(filter);
-  expect(filterState.backgroundColor).toBe('rgb(232, 240, 254)');
+  await expect(filter).toHaveCSS('background-color','rgb(232, 240, 254)');
 });
 
 test('[V5] request modal preserves clear primary-secondary action hierarchy', async ({page}) => {
