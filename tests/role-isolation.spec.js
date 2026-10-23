@@ -13,7 +13,7 @@ test('직무 Preview의 신청 상태는 역할별로 격리되고 reload 후에
 
   const officeCard = page.locator('#roleGrid .card[data-name="Microsoft Office"]');
   await officeCard.getByRole('button', {name:'신청하기'}).click();
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   await expect(page.locator('#requestCount')).toHaveText('1');
 
   await page.locator('#statusBtn').click();

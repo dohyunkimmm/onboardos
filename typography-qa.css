@@ -194,7 +194,7 @@ body #onboardingHelp .overview-panel{margin-top:16px;}
 
 body details.common-first{padding:16px!important;border-radius:16px;}
 body #commonGrid .card{padding:12px!important;min-height:112px!important;}
-body #commonGrid .card-title{font-size:15px!important;}
+body #commonGrid .card-title{font-size:16px!important;}
 
 body .task-overview{display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;padding:12px 16px;}
 body .task-overview>h2{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);}
@@ -259,3 +259,47 @@ body .logo-home:hover{color:#185abc;}
 body [data-reviewer-only][hidden]{display:none!important;}
 body .help-steps{margin:20px 0 0;padding-left:22px;color:#5f6368;font-size:15px;line-height:1.7;}
 body .help-steps li+li{margin-top:8px;}
+
+/* Catalog QA: count-aware grids, compact shared access and readable hierarchy. */
+body .task-identity>span:first-child{font-size:18px;}
+body .section-head h2,body details.common-first>.common-summary h2{font-size:20px!important;}
+body .card-purpose{font-size:14px;line-height:1.55;color:#5f6368;margin-top:4px;overflow-wrap:anywhere;}
+body .logo-chip{width:40px;height:40px;flex:0 0 40px;display:flex;align-items:center;justify-content:center;}
+body .logo-chip img{width:24px;height:24px;object-fit:contain;}
+body #commonGrid .card{min-height:0!important;}
+body #commonGrid .card-top{margin-bottom:10px;}
+body #commonGrid .common-guide{min-height:44px;background:#fff!important;color:#185abc!important;border:1px solid #dadce0!important;box-shadow:none!important;}
+body #commonGrid .card-action{width:auto;}
+body #aiRecommendationResults .ai-recommendation-card p{font-size:15px;line-height:1.65;}
+body #aiPrivacyNote{font-size:13px!important;line-height:1.6!important;}
+@media(min-width:1200px){
+ body #roleGrid[data-count="4"]{grid-template-columns:repeat(4,minmax(0,1fr))!important;}
+ body #roleGrid[data-count="5"],body #commonGrid{grid-template-columns:repeat(5,minmax(0,1fr))!important;}
+}
+@media(min-width:769px) and (max-width:1199px){
+ body #roleGrid,body #roleGrid.balanced-four,body #commonGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
+@media(max-width:768px){
+ body #roleGrid,body #roleGrid.balanced-four,body #commonGrid{grid-template-columns:1fr!important;}
+ body #commonGrid .card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px!important;}
+ body #commonGrid .card-top{flex-wrap:nowrap!important;gap:10px;margin:0;min-width:0;}
+ body #commonGrid .card-top>div:last-child{flex-basis:auto;min-width:0;}
+ body #commonGrid .card-bottom{margin:0;}
+ body #commonGrid .card-title{font-size:16px!important;}
+ body #commonGrid .card-purpose{font-size:13px;}
+ body #commonGrid .common-guide{padding:8px 10px;white-space:nowrap;}
+}
+/* All application variants share a scrollable body and stable submit zone. */
+body:not(.login-open) .request-modal{display:flex;flex-direction:column;overflow:hidden;}
+body:not(.login-open) .request-modal>h3,body:not(.login-open) .request-modal>p{flex:0 0 auto;}
+body:not(.login-open) .request-modal #requestDetails{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;align-content:start;}
+body:not(.login-open) .request-modal #requestDetails .approval-fields{grid-column:1/-1;}
+body:not(.login-open) .request-modal .modal-actions{position:static;flex:0 0 auto;margin:0;padding:14px 0 0;}
+
+body #roleGrid .card-bottom{display:flex;flex-direction:column;align-items:stretch;gap:12px;}
+body #roleGrid .card-status-group{display:flex;flex-wrap:wrap;gap:6px;}
+body #roleGrid .card-action,body #roleGrid .cta{width:100%;}
+body:not(.login-open) .action-modal{max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain;}
+
+body #commonGrid .card-top{display:flex!important;align-items:center;gap:10px;}
+body #commonGrid .card-top>div:last-child{display:block!important;flex:1;min-width:0;}

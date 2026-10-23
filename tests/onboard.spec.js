@@ -37,7 +37,7 @@ test('신청 → IT 검토 → 지급 완료가 동일 티켓으로 연결되고
   const officeCard = await card(page, 'Microsoft Office');
   await officeCard.getByRole('button', { name: '신청하기' }).click();
   await page.locator('#requestNote').fill('신규 입사 업무용 문서 편집');
-  await page.getByRole('button', { name: '신청 완료' }).click();
+  await page.getByRole('button', { name: '신청 제출' }).click();
   await expect(page.locator('#statusBtn')).toBeFocused();
 
   await page.locator('#statusBtn').click();
@@ -74,7 +74,7 @@ test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리�
   await page.locator('#requestNote').fill('디자인 제작 업무용');
   await page.locator('#requestScope').selectOption({label:'Photoshop'});
   await page.locator('#requestPeriod').selectOption({label:'3개월'});
-  await page.getByRole('button', { name: '신청 완료' }).click();
+  await page.getByRole('button', { name: '신청 제출' }).click();
 
   await page.locator('#adminBtn').click();
   const request = page.locator('.request-item').filter({ hasText: 'Adobe Creative Cloud' });
@@ -139,7 +139,7 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
   await page.locator('#requestNote').fill('이 내용은 Analytics에 전송되면 안 됩니다');
   await page.locator('#requestScope').selectOption({label:'Photoshop'});
   await page.locator('#requestPeriod').selectOption({label:'3개월'});
-  await page.getByRole('button', { name: '신청 완료' }).click();
+  await page.getByRole('button', { name: '신청 제출' }).click();
 
   const events = await page.evaluate(() => (window.vaq || [])
     .filter(entry => entry[0] === 'event')

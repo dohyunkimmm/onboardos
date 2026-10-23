@@ -5,4 +5,4 @@
   - textbox "신청 사유 (선택)":
     - /placeholder: 사용 목적 또는 필요 기간
   - button "취소"
-  - button "신청 완료"
+  - button "신청 제출"

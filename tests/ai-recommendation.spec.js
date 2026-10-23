@@ -19,12 +19,12 @@ test('AI recommends allowlisted tools and reuses the existing application flow',
   await expect(page.locator('#requestBackdrop')).toHaveAttribute('aria-hidden','false');
   await expect(page.locator('#requestNote')).toHaveValue(/담당 역할: 계약서 PDF 검토를 담당합니다\./);
   await expect(page.locator('#requestNote')).toHaveValue(/활용 목적: 계약서 PDF 검토에 활용합니다\./);
-  await page.getByRole('button',{name:'신청 완료',exact:true}).click();
+  await page.getByRole('button',{name:'신청 제출',exact:true}).click();
   await expect(page.locator('#requestCount')).toHaveText('0');
   await expect(page.locator('#requestBackdrop')).toHaveAttribute('aria-hidden','false');
   await page.locator('#requestNote').fill('계약서 PDF 검토와 주석 작성에 사용합니다.');
   await page.getByLabel('신청 사유를 확인했습니다').check();
-  await page.getByRole('button',{name:'신청 완료',exact:true}).click();
+  await page.getByRole('button',{name:'신청 제출',exact:true}).click();
   await expect(page.locator('#roleGrid .card[data-name="Adobe Acrobat Pro DC"]')).toContainText('검토 대기');
   await page.locator('#statusBtn').click();
   await expect(page.locator('.request-note-view')).toContainText('계약서 PDF 검토와 주석 작성에 사용합니다.');

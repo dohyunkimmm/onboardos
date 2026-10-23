@@ -164,13 +164,15 @@ function toggleAdminFilter(status){
   requestAnimationFrame(()=>document.querySelector(`.admin-kpi.${status}`)?.focus({preventScroll:true}));
 }
 
+const LICENSE_PURPOSES = {"SL":"팀 메시지·업무 소통","NT":"문서 작성·지식 정리","CF":"팀 문서·지식 공유","JR":"프로젝트·이슈 관리","JSM":"IT 문의·라이선스 요청","CC":"이미지·영상 콘텐츠 제작","FG":"UI 디자인·프로토타입","FJ":"아이디어 정리·워크숍","MZ":"사용성 테스트·리서치","GH":"소스 코드·리뷰 관리","JB":"코드 작성·디버깅","AWS":"클라우드 리소스 접근","CP":"AI 코드 작성 지원","PM":"API 개발·테스트·협업","SF":"데이터 조회·분석","DB":"데이터베이스 연결·조회","GPT":"AI 분석·문서 작성 지원","PBI":"대시보드·데이터 시각화","PX":"자료 검색·출처 조사","HG":"한글 문서 작성·편집","MO":"문서·표·프레젠테이션","MD":"전자계약 발송·서명 관리","AD":"PDF 검토·편집"};
+
 function renderCard(item, showCta){
   const effectiveStatus = getEffectiveStatus(item);
   const sc = statusConfig[effectiveStatus];
   const sla = getSlaMeta(item.status);
   const isApplied = !!requestState[item.name];
   const isAuto = item.status === 'auto';
-  const ctaBtn = (showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${['auto','completed'].includes(effectiveStatus) ? startLabel(item) : sc.cta}</button>` : '';
+  const ctaBtn = (showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${['auto','completed'].includes(effectiveStatus) ? startLabel(item) : sc.cta}</button>` : `<button class="cta common-guide" data-action="license-action" data-value="${escapeHTML(item.name)}">사용 안내</button>`;
   const slaPill = isAuto ? '' : `<span class="sla-pill employee-timing">${escapeHTML(employeeTiming(item))}</span>`;
   const ownerRow = isAuto ? '' : `<div class="card-owner">담당 · <b>${item.owner}</b></div>`;
   const bottomRight = ctaBtn ? `<div class="card-action">${ctaBtn}</div>` : '';
@@ -180,7 +182,7 @@ function renderCard(item, showCta){
         <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${item.mono}</div>`}</div>
         <div>
           <div class="card-title">${item.name}</div>
-          <div class="card-cat">${item.cat}</div>${isAuto ? '' : `<span class="requirement-pill ${requirementFor(item)==='필수'?'required':'optional'}">${requirementFor(item)} 라이선스</span>`}
+          <div class="card-purpose">${escapeHTML(LICENSE_PURPOSES[item.mono] || item.cat)}</div>${isAuto ? '' : `<span class="requirement-pill ${requirementFor(item)==='필수'?'required':'optional'}">${requirementFor(item)} 라이선스</span>`}
         </div>
       </div>
       ${ownerRow}
@@ -230,6 +232,7 @@ function setRole(key){
 
   const grid = document.getElementById('roleGrid');
   grid.classList.remove('balanced-four');
+  grid.dataset.count = String(r.cards.length);
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
       ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>기본 제공 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`
@@ -528,7 +531,7 @@ function openRequestModal(name, recommendationContext){
     review.append(checkbox,document.createTextNode(' 신청 사유를 확인했습니다'));
     note.after(notice,review);
   }
-  document.getElementById('submitRequestBtn').textContent = isResubmit ? '재신청하기' : '신청 완료';
+  document.getElementById('submitRequestBtn').textContent = isResubmit ? '재신청하기' : '신청 제출';
   document.getElementById('requestBackdrop').classList.add('show');
   activateOverlay('requestBackdrop','#requestNote');
 }

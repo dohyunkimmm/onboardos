@@ -116,7 +116,7 @@ test.describe('Fault injection & recovery contract', () => {
     await completeLogin(page);
     const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
     await card.getByRole('button',{name:'신청하기'}).click();
-    await page.getByRole('button',{name:'신청 완료'}).click();
+    await page.getByRole('button',{name:'신청 제출'}).click();
     await page.locator('#statusBtn').click();
     await expect(page.locator('.request-item').filter({hasText:'Microsoft Office'})).toContainText(/ITSM-\d+/);
     expect(pageErrors).toEqual([]);
@@ -161,7 +161,7 @@ test.describe('Fault injection & recovery contract', () => {
     await completeLogin(page);
     const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
     await card.getByRole('button',{name:'신청하기'}).click();
-    await page.getByRole('button',{name:'신청 완료'}).click();
+    await page.getByRole('button',{name:'신청 제출'}).click();
     const before = JSON.parse(await page.evaluate(() => sessionStorage.getItem('onboard-os:v4')));
     const ticket = before.requestStateByRole.office['Microsoft Office'].ticket;
     await page.reload();

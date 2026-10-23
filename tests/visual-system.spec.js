@@ -114,7 +114,7 @@ test('[V5] request modal preserves clear primary-secondary action hierarchy', as
   await login(page);
   await openOfficeRequest(page);
   const modal = page.locator('.request-modal');
-  const primary = modal.getByRole('button',{name:/신청 완료|재신청하기/});
+  const primary = modal.getByRole('button',{name:/신청 제출|재신청하기/});
   const secondary = modal.getByRole('button',{name:'취소'});
   const primaryState = await visualState(primary);
   const secondaryState = await visualState(secondary);
@@ -131,7 +131,7 @@ test('[V6] admin drawer keeps scan hierarchy and focused queue actions visible',
   await stabilize(page);
   await login(page);
   await openOfficeRequest(page);
-  await page.getByRole('button',{name:'신청 완료'}).click();
+  await page.getByRole('button',{name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
   await expect(page.locator('#drawerBackdrop')).toHaveClass(/show/);
   const drawer = page.locator('.drawer');

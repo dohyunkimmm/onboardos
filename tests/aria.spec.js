@@ -25,7 +25,7 @@ test('관리자 Drawer ARIA snapshot', async ({ page }) => {
   await fixed(page);
   await login(page);
   await page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'}).getByRole('button', {name:'신청하기'}).click();
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
   await expect(page.locator('#drawerPanel')).toMatchAriaSnapshot({name:'admin-drawer.aria.yml'});
 });

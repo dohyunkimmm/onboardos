@@ -39,7 +39,7 @@ test('사용자 신청현황 Drawer에 WCAG A/AA axe 위반이 없다', async ({
   await login(page);
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   await card.getByRole('button', {name:'신청하기'}).click();
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   await page.locator('#statusBtn').click();
   await assertA11y(page, 'user-drawer');
 });
@@ -48,7 +48,7 @@ test('관리자 체험 Drawer에 WCAG A/AA axe 위반이 없다', async ({ page 
   await login(page);
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   await card.getByRole('button', {name:'신청하기'}).click();
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
   await assertA11y(page, 'admin-drawer');
 });

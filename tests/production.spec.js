@@ -102,7 +102,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   const card = page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'});
   await card.getByRole('button', {name:'신청하기'}).click();
   await page.locator('#requestNote').fill('Production smoke verification');
-  await page.getByRole('button', {name:'신청 완료'}).click();
+  await page.getByRole('button', {name:'신청 제출'}).click();
   await page.locator('#adminBtn').click();
   const request = page.locator('.request-item').filter({hasText:'Microsoft Office'});
   const ticket = (await request.locator('.ticket-key').textContent()).trim();

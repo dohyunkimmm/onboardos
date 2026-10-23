@@ -89,7 +89,7 @@ test('[E6] request modal keeps execution controls in a clearly separated action 
   await card.getByRole('button',{name:'신청하기'}).click();
   const actions=page.locator('.request-modal .modal-actions');
   const state=await css(actions);
-  expect(state.position).toBe('sticky');
+  expect(state.position).toBe('static');
   expect(state.borderTopStyle).toBe('solid');
   expect(state.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
   await shot(page.locator('.request-modal'),'E6-modal-action-zone.png');
