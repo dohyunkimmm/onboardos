@@ -3,7 +3,6 @@
   "profile": "production-critical-public-assets",
   "requiredFiles": [
     "index.html",
-    "production-demo.html",
     "version.txt",
     "release.json",
     "integrity-assets.json",
