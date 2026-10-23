@@ -6,7 +6,7 @@
 
 | 항목 | 현재 상태 | 근거 |
 | --- | --- | --- |
-| 최근 런타임 기준 | PR #135 병합 후 `main` SHA `5f4d0e5f838e052bd5e54200b786e053b4f4cb99` | [병합 커밋](https://github.com/dohyunkimmm/onboardos/commit/5f4d0e5f838e052bd5e54200b786e053b4f4cb99) |
+| 최신 검증 기준 | 문서 동기화 포함 `main` SHA `13f85148d890a84f19c653ae669351fca99130e3`에서 E2E·문서 검증 모두 성공. Production 실행 코드는 `5f4d0e5` 배포 | [성공한 E2E](https://github.com/dohyunkimmm/onboardos/actions/runs/39969874660) |
 | 의존성·QA | Playwright 1.64.1, `actions/upload-artifact` 7.0.2, axe-core 4.14 및 setup-node 7.1.0. 버튼 accessible name·focus-within 회귀 복원 | [#111](https://github.com/dohyunkimmm/onboardos/pull/111), [#108](https://github.com/dohyunkimmm/onboardos/pull/108), [#115](https://github.com/dohyunkimmm/onboardos/pull/115) |
 | 기본 브랜치 보호 | [`protect-main` #24772212](https://github.com/dohyunkimmm/onboardos/settings/rules/24772212) **active**: PR 필수, 삭제/강제 푸시 금지, 최신 브랜치 strict 필수 CI, **Require linear history 활성** | GitHub ruleset 조회 |
 | 중복 보호 정리 | 오래된 [`main` #22980900](https://github.com/dohyunkimmm/onboardos/settings/rules/22980900)은 **disabled**, 삭제하지 않아 되돌리기 가능 | [#114](https://github.com/dohyunkimmm/onboardos/issues/114) |
@@ -34,10 +34,10 @@
 
 - **기능 통합:** 직원용 직무 선택·라이선스 카탈로그, AI 추천·신청 초안, 직무별 Power BI/Postman/모두싸인, 추천 API 요청 제한·세션 복구를 포함한 [PR #120–#133](https://github.com/dohyunkimmm/onboardos/pull/133)까지 `main`에 통합됨.
 - **검증 오류 보정:** [PR #134](https://github.com/dohyunkimmm/onboardos/pull/134)에서 API `api/recommend.js`의 정상적인 GET 405를 정적 소스 다운로드 실패로 취급하던 검사 오류를 수정. 매니페스트 v2는 HTTP로 SHA-256 비교하는 공개 자산과 로컬 소스 존재/릴리스 계약으로 확인하는 서버·스크립트 파일을 구분하고, API는 POST 전용 응답 계약을 별도 확인.
-- **Vercel 배포·검증:** Production 도메인 [onboardos-rho.vercel.app](https://onboardos-rho.vercel.app/)의 READY 배포가 `9ec650d`와 일치함을 확인. [main E2E #39967159908](https://github.com/dohyunkimmm/onboardos/actions/runs/39967159908)의 11개 선행 게이트 성공 및 **공개 파일 139/139 SHA-256 일치 + POST 전용 API 계약 통과**. 그러나 Production 모바일 WebKit은 기존 native `<select>` CSP 엔진 오류가 3회 재현되어 최종 Smoke 실패(Chromium 및 나머지 Production 테스트는 성공). [PR #135](https://github.com/dohyunkimmm/onboardos/pull/135)을 병합해 Production WebKit 테스트 컨텍스트에만 기존 엔진 우회를 적용했음. 실제 사이트 CSP는 수정하지 않았으며 최신 [main E2E](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)의 **병합 이후 결과**를 기준으로 Production 완료 여부를 판단해야 함.
+- **Vercel 배포·검증 (최종 확인):** [PR #135](https://github.com/dohyunkimmm/onboardos/pull/135)의 테스트 전용 WebKit 우회를 병합한 후 Production 배포는 SHA `5f4d0e5`로 **READY**. [main E2E #39969112576](https://github.com/dohyunkimmm/onboardos/actions/runs/39969112576)와 문서 동기화 [#136](https://github.com/dohyunkimmm/onboardos/pull/136) 이후 최신 [main E2E #39969874660](https://github.com/dohyunkimmm/onboardos/actions/runs/39969874660)에서 **13개 작업 전체 성공**. 공개 정적 자산 139/139 SHA-256 무결성, POST 전용 API 계약, Production Desktop Chromium·iPhone WebKit Smoke, 릴리스 검증 증빙 모두 성공. 구형 WebKit native `<select>`의 `style-src-attr` 엔진 회귀는 기능 테스트 컨텍스트에만 `bypassCSP:true`를 사용하며, 실제 배포 CSP는 그대로 유지하고 별도 엄격 CSP 재현 및 보안 게이트를 유지함. WebKit 기능 성공을 WebKit의 CSP 강제 실행 자체를 검증한 것으로 해석하지 않음.
 - **저장소 보호:** `protect-main` active, strict 필수 검사 3개, PR 필수 및 선형 이력 정책을 GitHub에서 재확인함. 구형 중복 규칙은 disabled. `Require signed commits` 규칙은 포함되어 있지 않음.
 - **브랜치 정리:** 작업 전 확인한 기존 비기본 브랜치 24개는 모두 `main`과 diverged이며 고유 commit 기준 `ahead_by > 0`. Squash 병합된 이력도 포함될 수 있어 무조건 삭제하거나 강제 동기화하지 않음. 열린 PR·이슈는 작업 착수 시 0개였음.
-- **문서 동기화:** README·체험 안내·CHANGELOG에서 현재 직무/AI/리뷰어 흐름을 반영하고, 영상이 아닌 메인 페이지로 이동하던 `/production-demo` 링크를 역사적 v18.0.0 실제 릴리스 영상 링크로 교체하는 문서 PR을 준비함.
+- **문서 동기화:** [PR #136](https://github.com/dohyunkimmm/onboardos/pull/136) 병합 완료. README·체험 안내·CHANGELOG에서 현재 직무/AI/리뷰어 흐름 및 과거 릴리스 영상 링크를 정리함. 문서 변경은 런타임 배포 없이 기존 Production을 재검증함.
 - **릴리스 상태:** `release.json`의 v18.0.0/P6 `candidate`는 유지. 기존 불변 릴리스 영상과 새 버전의 운영 검증 증거를 섞지 않음. Gemini 실계정 추천 품질·비용·인증은 별도 미검증.
 
 ## 미완료 — 서명 **강제** 전환
