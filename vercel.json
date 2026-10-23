@@ -6,18 +6,8 @@
       "main": true
     }
   },
-
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':!*.md' ':!docs/**' ':!.github/**' ':!tests/**' ':!scripts/**' ':!playwright*.js' ':!lighthouserc*.cjs' ':!package*.json'",
-  "rewrites": [
-    {
-      "source": "/production-demo",
-      "destination": "/production-demo.html"
-    },
-    {
-      "source": "/production-demo-viewer",
-      "destination": "/production-demo.html"
-    }
-  ],
+  "rewrites": [],
   "headers": [
     {
       "source": "/(.*)",
@@ -40,7 +30,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://vercel.live; script-src-attr 'none'; style-src 'self' https://vercel.live 'unsafe-inline'; style-src-attr 'none'; font-src 'self' data: https://vercel.live https://assets.vercel.com; img-src 'self' data: blob: https://vercel.live https://vercel.com; media-src 'self' https://github.com https://release-assets.githubusercontent.com https://objects.githubusercontent.com; connect-src 'self' https://vitals.vercel-analytics.com https://vercel.live wss://ws-us3.pusher.com; frame-src https://vercel.live; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' https://vercel.live; script-src-attr 'none'; style-src 'self' https://vercel.live 'unsafe-inline'; style-src-attr 'none'; font-src 'self' data: https://vercel.live https://assets.vercel.com; img-src 'self' data: blob: https://vercel.live https://vercel.com; media-src 'self'; connect-src 'self' https://vitals.vercel-analytics.com https://vercel.live wss://ws-us3.pusher.com; frame-src https://vercel.live; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
         }
       ]
     }
