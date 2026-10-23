@@ -6,7 +6,6 @@ test-results/
 playwright-report-cross-browser/
 playwright-report-production/
 verification/
-demo-output/
 
 # Logs
 *.log

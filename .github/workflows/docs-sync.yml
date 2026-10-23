@@ -22,7 +22,6 @@ jobs:
           VERSION="$(node -p "require('./release.json').version")"
           TAG="v${VERSION}"
           STATUS="$(node -p "require('./release.json').releaseStatus || 'verified'")"
-          VIDEO="ONBOARD_OS_${TAG}_P6_production_demo.mp4"
 
           if [ "${STATUS}" = "verified" ]; then
             grep -Fq "Portfolio release — ${TAG} / P6 Production verified." README.md
@@ -36,11 +35,9 @@ jobs:
           fi
           grep -Fq "## ${TAG}" CHANGELOG.md
           grep -Fq "${TAG}" docs/DEMO_WALKTHROUGH.md
-          grep -Fq "${VIDEO}" docs/DEMO_WALKTHROUGH.md
-          # Retired video URLs must forward to the interactive demo.
-          grep -Fq 'http-equiv="refresh" content="0;url=/"' production-demo.html
-          if grep -Eq '<video|36초|releases/download/' production-demo.html; then
-            echo "Retired video player must not be published" >&2
+          # Reject stale recording references in representative public documents.
+          if grep -Eiq 'production-demo|\.mp4' README.md docs/DEMO_WALKTHROUGH.md release.json; then
+            echo "Obsolete recording reference in public documents" >&2
             exit 1
           fi
           if grep -q '^releaseStatus=' version.txt; then

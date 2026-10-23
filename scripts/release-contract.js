@@ -143,10 +143,7 @@ function validateReleaseContract(){
   }
 
   const expectedTag = `v${release.version}`;
-  const productionDemo = fs.readFileSync('production-demo.html', 'utf8');
   const readme = fs.readFileSync('README.md', 'utf8');
-  if(!productionDemo.includes('http-equiv="refresh" content="0;url=/"')) fail('retired demo must redirect to interactive demo');
-  if(['<video', '36초', 'releases/download/'].some(token => productionDemo.includes(token))) fail('retired video player must not be published');
   if(release.releaseStatus === 'verified'){
     if(!readme.includes(`Portfolio release — ${expectedTag} / P6 Production verified.`)) fail(`README verified release block is not aligned to ${expectedTag}`);
     if(!readme.includes(`releases/tag/${expectedTag}`)) fail(`README verified release link is not aligned to ${expectedTag}`);

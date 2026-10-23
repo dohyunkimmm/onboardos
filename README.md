@@ -4,11 +4,11 @@
 
 **신규 입사자가 직무별 업무 도구를 확인하고, 라이선스 신청부터 승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다.**
 
-[직접 체험](https://onboardos-rho.vercel.app/) · [2–3분 체험 안내](docs/DEMO_WALKTHROUGH.md) · [v18.0.0 당시 36초 영상](https://github.com/dohyunkimmm/onboardos/releases/download/v18.0.0/ONBOARD_OS_v18.0.0_P6_production_demo.mp4) · [Case Study](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
+[직접 체험](https://onboardos-rho.vercel.app/) · [2–3분 체험 안내](docs/DEMO_WALKTHROUGH.md) · [Case Study](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
 
 > **Portfolio release — v18.0.0 / P6 product-review candidate.**
 >
-> 2026-10-08 제품 검토 1~7을 반영한 후보 상태입니다. 기존 v18.0.0 릴리스 영상과 검증 자료는 당시 버전의 기록입니다. 이 자료를 이번 후보 변경 전체의 E2E·시각 회귀·Production 검증 완료로 해석하지 않습니다.
+> 2026-10-08 제품 검토 1~7을 반영한 후보 상태입니다. 기존 v18.0.0 릴리스 검증 자료는 당시 버전의 기록입니다. 이 자료를 이번 후보 변경 전체의 E2E·시각 회귀·Production 검증 완료로 해석하지 않습니다.
 
 ## 핵심 사용자 흐름
 

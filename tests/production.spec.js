@@ -4,10 +4,6 @@ const path = require('path');
 
 const expectedRelease = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'release.json'), 'utf8'));
 const expectedIntegrityManifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', expectedRelease.integrityManifest), 'utf8'));
-const expectedReleaseTag = `v${expectedRelease.version}`;
-const expectedDemoFile = `ONBOARD_OS_${expectedReleaseTag}_P6_production_demo.mp4`;
-const expectedDemoUrl = `https://github.com/dohyunkimmm/onboardos/releases/download/${expectedReleaseTag}/${expectedDemoFile}`;
-const expectedReleaseUrl = `https://github.com/dohyunkimmm/onboardos/releases/tag/${expectedReleaseTag}`;
 
 test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·console 상태가 정상이다', async ({ page }, testInfo) => {
   const pageErrors = [];
@@ -28,7 +24,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   const csp = response.headers()['content-security-policy'] || '';
   expect(csp).toContain("script-src-attr 'none'");
   expect(csp).toContain("style-src-attr 'none'");
-  expect(csp).toContain("media-src 'self' https://github.com https://release-assets.githubusercontent.com https://objects.githubusercontent.com");
+  expect(csp).toContain("media-src 'self'");
 
   const productionOrigin = new URL(page.url()).origin;
   const versionResponse = await page.request.get(`${productionOrigin}/version.txt`, {headers:{'cache-control':'no-cache'}});
@@ -111,9 +107,6 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   await page.getByRole('button', {name:'지급 완료 처리'}).click();
   await expect(page.locator('.request-item').filter({hasText:'Microsoft Office'})).toContainText('지급 완료');
 
-  await page.goto('/production-demo', {waitUntil:'domcontentloaded'});
-  await expect(page).toHaveURL(/\/$/);
-  await expect(page.locator('video')).toHaveCount(0);
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors.filter(text => /Content Security Policy|Refused to|TypeError|ReferenceError/i.test(text))).toEqual([]);

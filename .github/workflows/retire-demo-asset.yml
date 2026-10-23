@@ -1,0 +1,93 @@
+name: Retire obsolete release recordings (one-time)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/retire-demo-asset.yml
+
+permissions:
+  contents: write
+
+jobs:
+  remove-old-release-assets:
+    if: github.repository == 'dohyunkimmm/onboardos'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete only reviewed recording assets and obsolete release-note references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" > /tmp/onboard-releases.json
+          mkdir -p /tmp/onboard-release-patches
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import re
+
+          releases=json.loads(pathlib.Path('/tmp/onboard-releases.json').read_text())
+          allow={
+            'v18.0.0': (391379775, 572366309),
+            'v17.0.0': (390647773, 570101816),
+            'v16.0.0': (390428878, 569425393),
+            'v15.0.0': (390325207, 568960468),
+            'v13.0.0': (389517161, 566628251),
+            'v12.0.0': (389486351, 566529616),
+            'v1.7.0': (387067255, 559102891),
+          }
+          targets=[]
+          patches=[]
+          pattern=re.compile(r'^ONBOARD_OS_(v[0-9]+\.[0-9]+\.[0-9]+)_P6_production_demo\.mp4$')
+          for release in releases:
+              tag=release['tag_name']
+              release_id=release['id']
+              for asset in release.get('assets', []):
+                  match=pattern.fullmatch(asset['name'])
+                  if not match:
+                      continue
+                  if tag not in allow or match.group(1)!=tag or allow[tag]!=(release_id,asset['id']):
+                      raise SystemExit('Unexpected recording asset; manual review required: '+tag+'/'+asset['name'])
+                  if release.get('immutable'):
+                      print('Preserving locked release asset:', tag, asset['id'])
+                  else:
+                      targets.append(str(asset['id']))
+
+              body=release.get('body') or ''
+              filtered=''.join(line for line in body.splitlines(keepends=True)
+                  if not re.search(r'36\s*초|production[-_]demo|releases/download/|36.second',line,re.I))
+              if filtered!=body:
+                  pathlib.Path(f'/tmp/onboard-release-patches/{release_id}.json').write_text(
+                      json.dumps({'body':filtered},ensure_ascii=False))
+                  patches.append(str(release_id))
+          if len(targets)>len(allow):
+              raise SystemExit('Unexpected duplicate recording assets')
+          pathlib.Path('/tmp/onboard-asset-ids.txt').write_text('\n'.join(targets)+'\n')
+          pathlib.Path('/tmp/onboard-patch-ids.txt').write_text('\n'.join(patches)+'\n')
+          print(f'Approved for deletion: {len(targets)} exact MP4 assets; update {len(patches)} release descriptions')
+          PY
+          while read -r ASSET_ID; do
+            [ -n "$ASSET_ID" ] || continue
+            gh api --method DELETE "repos/${GITHUB_REPOSITORY}/releases/assets/${ASSET_ID}"
+            echo "Deleted reviewed asset ${ASSET_ID}"
+          done < /tmp/onboard-asset-ids.txt
+          while read -r RELEASE_ID; do
+            [ -n "$RELEASE_ID" ] || continue
+            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" \
+              --input "/tmp/onboard-release-patches/${RELEASE_ID}.json" >/dev/null
+          done < /tmp/onboard-patch-ids.txt
+          gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" > /tmp/onboard-releases-after.json
+          python3 - <<'PY'
+          import json,re,pathlib
+          releases=json.loads(pathlib.Path('/tmp/onboard-releases-after.json').read_text())
+          for release in releases:
+              for asset in release.get('assets',[]):
+                  if re.fullmatch(r'ONBOARD_OS_v[0-9]+\.[0-9]+\.[0-9]+_P6_production_demo\.mp4',asset['name']):
+                      if not release.get('immutable'):
+                          raise SystemExit('Mutable recording asset still exists: '+asset['name'])
+                      print('Immutable release asset retained under GitHub protection:',release['tag_name'])
+              if re.search(r'36\s*초|production[-_]demo|releases/download/|36.second',release.get('body') or '',re.I):
+                  raise SystemExit('Release notes still reference retired recording: '+release['tag_name'])
+          print('All obsolete recordings and release-note references are absent')
+          PY

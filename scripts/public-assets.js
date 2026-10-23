@@ -92,7 +92,7 @@ function validateIntegrityManifest(manifest = readJson(MANIFEST_PATH)){
     if(!sourceOnlyFiles.has(critical)) fail(`server source coverage missing ${critical}`);
   }
 
-  for(const required of [MANIFEST_PATH, 'release.json', 'version.txt', 'index.html', 'production-demo.html']){
+  for(const required of [MANIFEST_PATH, 'release.json', 'version.txt', 'index.html']){
     if(!assets.has(required)) fail(`canonical coverage missing ${required}`);
   }
   if(assets.size < 20) fail(`unexpectedly small asset surface: ${assets.size}`);

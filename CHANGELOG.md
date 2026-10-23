@@ -4,7 +4,7 @@
 
 PR #102 후보 변경으로 직무별 필수 도구 준비 상태, 완료 필터의 실제 비노출·키보드 제외, 설치·계정 시작 가이드, 승인 요청의 목적·범위·기간 입력 및 관리자 판단 정보를 추가했습니다. 공통 도구와 대표 신청 체험은 필수 도구 준비 상태와 구분합니다. 실제 기업의 SSO·좌석·비용·설치 포털은 연결되지 않았습니다.
 
-**검증 상태(2026-10-23 갱신):** 10월 8일 최초 후보 설명은 당시 검증 범위의 기록입니다. 이후 변경은 개별 PR의 전체 CI를 거쳐 순차적으로 병합되었으며, 최신 Production 검증은 [main E2E #39967159908](https://github.com/dohyunkimmm/onboardos/actions/runs/39967159908)에서 확인해야 합니다. 기존 v18.0.0 불변 Release 영상·증빙은 과거 릴리스 기록으로 남으며, 이후 후보 코드의 검증으로 소급하지 않습니다. 상세 내용은 [`docs/PRODUCT_REVIEW_2026-10-08.md`](./docs/PRODUCT_REVIEW_2026-10-08.md)를 참고하세요.
+**검증 상태(2026-10-23 갱신):** 10월 8일 최초 후보 설명은 당시 검증 범위의 기록입니다. 이후 변경은 개별 PR의 전체 CI를 거쳐 순차적으로 병합되었으며, 최신 Production 검증은 [main E2E #39967159908](https://github.com/dohyunkimmm/onboardos/actions/runs/39967159908)에서 확인해야 합니다. 기존 v18.0.0 릴리스 검증 자료은 과거 릴리스 기록으로 남으며, 이후 후보 코드의 검증으로 소급하지 않습니다. 상세 내용은 [`docs/PRODUCT_REVIEW_2026-10-08.md`](./docs/PRODUCT_REVIEW_2026-10-08.md)를 참고하세요.
 
 ### 사용자 경험·AI 추천·검증 경로 정리 — 2026-10-23
 
@@ -12,7 +12,6 @@ PR #102 후보 변경으로 직무별 필수 도구 준비 상태, 완료 필터
 - [#128–#133](https://github.com/dohyunkimmm/onboardos/pull/133): 직무별 선택형 Gemini 추천·허용 목록 검증, 라이선스 확장, 추천 기반 신청 초안, 요청 빈도 제한, 입력 변경/포커스/세션 복원 안정성 강화. 기본 SSO·승인·발급은 계속 모의 흐름.
 - [#134](https://github.com/dohyunkimmm/onboardos/pull/134): 서버 함수와 내부 스크립트를 공개 정적 자산 무결성 목록에서 분리. 공개 자산 SHA-256과 POST 전용 API 응답을 별도 검증하고 매니페스트 회귀 테스트 추가.
 - [#135](https://github.com/dohyunkimmm/onboardos/pull/135): Production 모바일 WebKit 기능 테스트만 알려진 native select/CSP 엔진 오류와 분리. 실제 사이트 CSP 설정과 독립적인 보안 게이트 및 엄격 CSP 원인 재현 검사는 유지.
-- 사용 안내에서 영상으로 연결되지 않던 `/production-demo` 링크를 이전 릴리스의 실제 영상 파일 링크로 교체하고, 최신 Live 체험·리뷰어 모드 접근을 명시.
 - 위 개선은 `releaseStatus: candidate` 상태를 변경하거나, 과거 v18.0.0 릴리스의 증빙으로 최신 화면을 검증했다고 주장하지 않습니다.
 
 ### 문서·CI 유지보수 — 2026-10-09
@@ -100,8 +99,6 @@ P6에서 동결한 Business Flow와 상태 모델은 유지하면서, Production
 
 ### Release/link synchronization
 - `release.json`, `version.txt`, `package.json`, `package-lock.json`을 v14.0.0으로 동기화
-- `README.md`, `production-demo.html`, release notes와 GitHub Release 링크를 v14.0.0으로 동기화
-- release evidence의 36초 Production Demo asset 이름을 `ONBOARD_OS_v14.0.0_P6_production_demo.mp4`로 동기화
 - canonical release contract와 Production provenance가 일치하지 않으면 release workflow가 발행을 차단하는 규칙 유지
 
 ### Preserved contracts
@@ -119,8 +116,6 @@ P6에서 동결한 Business Flow와 상태 모델은 유지하면서, Production
 
 ### Release/link synchronization
 - `release.json`, `version.txt`, `package.json`, `package-lock.json`을 v13.0.0으로 동기화
-- `README.md`, `production-demo.html`, release notes와 GitHub Release 링크를 v13.0.0으로 동기화
-- release evidence의 36초 Production Demo asset 이름을 `ONBOARD_OS_v13.0.0_P6_production_demo.mp4`로 동기화
 - canonical `release.json`과 Production provenance가 일치하지 않으면 release contract가 차단하도록 기존 규칙 유지
 
 ### Preserved contracts
@@ -138,8 +133,6 @@ P6에서 동결한 Business Flow와 상태 모델은 유지하면서, v11 후보
 
 ### Release/link synchronization
 - `release.json`, `version.txt`, `package.json`, `package-lock.json`을 v12.0.0으로 동기화
-- `production-demo.html`의 설명·ARIA·MP4 asset·GitHub Release 링크를 v12.0.0으로 동기화
-- Release workflow가 canonical tag에서 36초 Production Demo를 녹화해 동일 immutable GitHub Release에 evidence와 함께 발행하도록 통합
 - 기존 v1.7.0 전용 demo workflow/request 파일 제거
 - release contract가 Production Demo와 README의 canonical 버전 링크 불일치를 자동으로 차단
 
@@ -388,7 +381,6 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 ### Accessibility & reviewer experience
 - 관리자 Drawer 접근성 트리 변경에 맞춰 ARIA snapshot contract를 갱신하고 기존 axe/keyboard/focus 기준은 유지
 - `version.txt`에 `releaseChannel=production`을 명시해 사람이 읽는 provenance와 canonical `release.json` contract를 일치시킴
-- 기존 36초 Demo → 2–3분 Live Production → Case Study reviewer route는 유지
 
 ### Delivery hardening
 - Vercel 자동 배포를 `main` 중심으로 제한해 feature/PR Preview가 Hobby deployment quota를 소모하지 않도록 정리
@@ -430,7 +422,6 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 ### Contract-driven Production verification
 - Production smoke가 사람용 버전 설명 문구에 의존하지 않고 checkout의 `release.json`·`integrity-assets.json`과 실제 Production 응답을 직접 비교
 - `version.txt`·`package.json`은 `release.json` v3.0.0과 일치하도록 유지하고, P6 `businessFlowChanged=false` contract를 그대로 보존
-- 기존 CSP, login font metric, 36초 Demo, 사용자/관리자 핵심 Business Flow, Desktop Chromium + iPhone WebKit smoke를 그대로 유지
 
 ### Scope
 - 새 SaaS·직무·상태·승인 Flow 추가 없음
@@ -467,7 +458,6 @@ P6에서 동결한 제품 기능과 사용자·관리자 Business Flow는 그대
 - Fast Quality Gate가 별도 중복 로직 대신 canonical release contract validator를 호출하도록 통합
 - Production smoke에서 특정 버전을 하드코딩하지 않고 checkout의 `release.json` 전체와 Production `/release.json`을 직접 비교
 - 공개되는 `release.json`·`version.txt`·`scripts/release-contract.js`를 Production SHA-256 integrity로 검증하고, 공개되지 않는 `package.json`은 CI release-contract consistency gate에서 검증
-- 기존 Desktop Chromium + iPhone WebKit Production smoke, CSP, login font metric, 36초 Demo, Business Flow 검증은 유지
 
 ### Scope
 - 새 SaaS·직무·상태·승인 Flow 추가 없음
@@ -501,7 +491,6 @@ P6에서 동결한 제품 기능 범위와 사용자·관리자 Business Flow는
 ### Production verification
 - SHA-256 Production source integrity 대상에 `version.txt`와 `release.json`을 추가
 - Production Desktop Chromium + iPhone WebKit smoke에서 `/version.txt`와 `/release.json` HTTP 200 및 v1.9.0 provenance contract를 실제 Production 기준으로 검증한 뒤 기존 핵심 신청·관리자 Flow를 확인
-- 기존 36초 Production Demo, login font metric, CSP, 핵심 static/font asset 검증은 유지
 
 ### Scope
 - 새 SaaS·직무·상태·승인 Flow 추가 없음
@@ -528,8 +517,6 @@ v1.9.0은 제품 기능 확장이 아닌 **release provenance & verification har
 P6에서 동결한 제품 기능 범위는 그대로 유지하면서, v1.7.0 이후 채용 리뷰어의 진입 경험과 UX·접근성·코드 품질을 고도화했습니다. 새 SaaS·직무·상태·승인 Flow는 추가하지 않았습니다.
 
 ### Reviewer experience
-- README 진입 동선을 **36초 Production Demo → 2–3분 Live Production → Case Study** 순으로 재구성
-- 로그인 화면 바깥에 36초 Demo와 Case Study 빠른 진입 링크를 추가해 기존 로그인 카드 visual baseline은 유지
 - `docs/DEMO_WALKTHROUGH.md`를 리뷰어의 사용 가능 시간과 확인 목적 기준으로 재구성
 
 ### UX & accessibility
