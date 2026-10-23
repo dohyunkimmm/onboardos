@@ -3,7 +3,7 @@
 // Catalog policy examples for this prototype; production policy comes from IT/HR.
 const REQUIRED_ROLE_TOOLS = new Set(['FG','GH','SF','DB','HG']);
 const INSTALLED_TOOLS = new Set(['CC','JB','DB','HG','MO','AD']);
-const INVITED_TOOLS = new Set(['SL','NT','CF','JR','JSM','GH','FG','FJ','MZ','GPT']);
+const INVITED_TOOLS = new Set(['SL','NT','CF','JR','JSM','GH','FG','FJ','MZ','GPT','PM','PBI','MD']);
 
 function requirementFor(item){
   return item.status === 'auto' || REQUIRED_ROLE_TOOLS.has(item.mono) ? '필수' : '선택';

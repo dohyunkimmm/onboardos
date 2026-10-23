@@ -39,6 +39,15 @@ test('each role can access common tools and only its own additional catalog',()=
   assert.ok(!catalogFor('office').some(item=>item.toolId==='GW'));
   for(const invalid of ['unmapped','unknown','__proto__','constructor']) assert.equal(catalogFor(invalid),null);
 });
+test('new licenses are scoped to their owning role and requestable',()=>{
+  for(const [role,id] of [['data','PBI'],['dev','PM'],['office','MD']]){
+    for(const other of ['office','design','dev','data']){
+      assert.equal(catalogFor(other).some(item=>item.toolId===id),other===role);
+    }
+    assert.equal(catalogFor(role).find(item=>item.toolId===id).provision,'request');
+    assert.equal(validateRecommendation({recommendations:[{toolId:id,reason:'담당 직무에 활용합니다.'}],followUpQuestion:null},catalogFor(role)).recommendations[0].toolId,id);
+  }
+});
 test('unknown, duplicate and cross-role model results fail closed',()=>{
   const catalog=catalogFor('office');
   for(const recommendations of [[{toolId:'FG',reason:'wrong role'}],[{toolId:'UNKNOWN',reason:'invented'}],[valid.recommendations[0],valid.recommendations[0]]]){
