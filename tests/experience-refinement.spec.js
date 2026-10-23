@@ -40,6 +40,7 @@ test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mob
   await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
   await revealRolePicker(page);
   await expect(page.locator('.task-overview .role-tab').first()).toBeVisible();
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
   await profile.locator('summary').click();
   await expect(profile.locator('.name-input')).toBeVisible();
   await shot(page.locator('.task-overview'),'E2-overview-composition.png');

@@ -34,6 +34,7 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await picker.click();
  await page.getByRole('button',{name:'개발',exact:true}).click();
  await expect(page.locator('#currentRoleLabel')).toHaveText('개발 직군');
+ await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
  await expect(page.locator('#roleGrid .card')).toHaveCount(4);
  const common=page.locator('#commonTools');
  await expect(common).toHaveAttribute('open');
@@ -41,4 +42,34 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await page.getByRole('link',{name:/공통 도구 6개 사용 가능/}).click();
  await expect(common).toHaveAttribute('open');
  await expect(common.getByRole('heading',{name:'모든 직원이 사용하는 도구'})).toBeVisible();
+});
+
+test('Shared-tool shortcut clears conflicting filters and exposes start guidance',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await page.getByRole('searchbox',{name:'도구 검색'}).fill('없는도구');
+ await expect(page.locator('#globalEmpty')).toContainText('검색 결과가 없습니다');
+ await page.getByRole('button',{name:'해야 할 일',exact:true}).click();
+ await page.getByRole('link',{name:/공통 도구 6개 사용 가능/}).click();
+ await expect(page.getByRole('searchbox',{name:'도구 검색'})).toHaveValue('');
+ await expect(page.getByRole('button',{name:'전체',exact:true})).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#commonGrid .card:not(.is-hidden)')).toHaveCount(6);
+ const slack=page.locator('#commonGrid .card[data-name="Slack"]');
+ await slack.getByRole('button',{name:'계정·초대 안내'}).click();
+ await expect(page.locator('#actionModalBackdrop')).toHaveClass(/show/);
+ await expect(page.locator('#actionModalTitle')).toContainText('Slack');
+});
+
+test('Instructions stay outside the catalog and help closes with Escape',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await expect(page.locator('main .walkthrough, main .overview-panel')).toHaveCount(0);
+ await page.getByRole('button',{name:'도움말',exact:true}).click();
+ const help=page.getByRole('dialog',{name:'사용 안내'});
+ await expect(help).toBeVisible();
+ await help.getByRole('button',{name:'도움말 닫기'}).press('Escape');
+ await expect(help).not.toBeVisible();
+ await expect(page.getByRole('button',{name:'도움말',exact:true})).toBeFocused();
 });

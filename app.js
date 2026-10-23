@@ -196,7 +196,7 @@ function renderCard(item, showCta){
 function renderCommon(){
   document.getElementById('commonGrid').innerHTML = commonLicenses.map(item => renderCard(item, true)).join('');
   const cc = document.getElementById('commonCount');
-  cc.dataset.base = `${commonLicenses.length}종 · 회사 계정으로 바로 사용 가능`;
+  cc.dataset.base = `${commonLicenses.length}개 · 사용 가능`;
   cc.textContent = cc.dataset.base;
 }
 
@@ -210,6 +210,7 @@ function renderRoleTabs(){
     btn.addEventListener('click', () => {
       trackEvent('Role Preview',{role:btn.dataset.role});
       setRole(btn.dataset.role);
+      document.querySelector('details.role-picker')?.removeAttribute('open');
     });
   });
 }
@@ -225,7 +226,7 @@ function setRole(key){
   const r = roles[key];
   document.getElementById('roleHeading').textContent = r.heading;
   const rc = document.getElementById('roleCount');
-  rc.dataset.base = r.cards.length ? `${r.cards.length}종 · 직무별 추가 항목` : '';
+  rc.dataset.base = r.cards.length ? `${r.cards.length}개` : '';
   rc.textContent = rc.dataset.base;
   document.getElementById('userRoleMeta').textContent = r.exception
     ? '직무 정보 확인 필요'
@@ -468,7 +469,10 @@ function updateSectionEmptyStates(){
   });
   const globalEmpty = document.getElementById('globalEmpty');
   const hasRoleException = !!document.querySelector('#roleGrid .empty-state:not(.no-result)');
-  if(globalEmpty) globalEmpty.hidden = !(filtering && totalVisible === 0 && !hasRoleException);
+  if(globalEmpty){
+    globalEmpty.hidden = !(filtering && totalVisible === 0 && !hasRoleException);
+    if(!globalEmpty.hidden) globalEmpty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>검색어나 필터를 바꿔 주세요.' : '<b>조건에 맞는 도구가 없습니다</b>다른 상태를 선택해 주세요.';
+  }
 }
 
 function openRequestModal(name){
@@ -843,6 +847,8 @@ document.addEventListener('keydown', e => {
   if(request && request.classList.contains('show')){ closeRequestModal(); return; }
   if(drawer && drawer.classList.contains('show')){ closeDrawer(); return; }
   if(!document.getElementById('moreMenu')?.hidden){ closeMoreMenu(); document.getElementById('moreBtn')?.focus(); }
+  const picker=document.querySelector('details.role-picker[open]');
+  if(picker){ picker.removeAttribute('open'); picker.querySelector('summary')?.focus(); }
 });
 
 document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEvent('Case Study CTA',{source:'footer'}));

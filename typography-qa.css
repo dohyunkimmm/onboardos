@@ -156,3 +156,51 @@ body #commonTools{scroll-margin-top:100px;}
 
 body #commonGrid .card-title{font-size:16px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere;line-height:1.4!important;}
 @media(max-width:768px){body #commonGrid .card-top{flex-wrap:wrap!important;}body #commonGrid .card-top>div:last-child{flex-basis:100%;}body #commonGrid .card-title{-webkit-line-clamp:unset!important;}}
+
+/* Keep the employee catalog ahead of explanatory demo content. */
+body #roleGrid .card-cat{display:none!important;}
+body .walkthrough{margin-top:20px;padding:12px 20px;background:#fff;border:1px solid #dadce0;border-radius:12px;color:#5f6368;font-size:14px;}
+body .walkthrough>summary{cursor:pointer;min-height:24px;}
+body .walkthrough #progressHint{margin-top:12px;padding:12px;background:#f8fafd;border:1px solid #e8eaed;border-radius:8px;}
+body #commonGrid .cta{display:inline-flex!important;align-items:center;justify-content:center;min-height:44px;background:#fff!important;border:1px solid #dadce0!important;color:#185abc!important;font-size:14px!important;border-radius:8px;padding:8px 12px;}
+body #commonGrid .card-bottom{gap:10px;flex-wrap:wrap;}
+
+/* Compact catalog: instructions live in the entry screen and help dialog. */
+body .topbar .sub{display:none;}
+body:not(.login-open) main{padding-top:20px;}
+body .task-overview{padding:16px 20px;border-radius:12px;}
+body .task-overview h2{font-size:22px;margin:8px 0;}
+body #readinessSummary strong{font-size:16px;}
+body #readinessSummary p{margin:4px 0 0;}
+body .task-overview .task-identity{font-size:13px;}
+body .task-overview .role-picker{top:16px;right:20px;}
+body .section-head h2{font-size:18px!important;}
+body #roleGrid .card{padding:16px!important;min-height:176px!important;}
+body #roleGrid .card-title{font-size:16px!important;}
+body #roleGrid .card-owner{display:none!important;}
+body #roleGrid .card-top{margin-bottom:12px;}
+body #roleGrid .card-bottom{margin-top:auto;}
+body .licenses.role-secondary{padding:16px!important;}
+body .section-head{margin-bottom:12px;}
+body footer .help>b,body footer .help>br{display:none;}
+body footer .help{font-size:0;}
+body footer .jsm-btn{font-size:14px;}
+body #onboardingHelp{width:min(720px,calc(100% - 32px));max-height:calc(100dvh - 48px);padding:24px;border:1px solid #dadce0;border-radius:16px;background:#fff;color:#202124;box-shadow:0 16px 60px #20212426;}
+body #onboardingHelp::backdrop{background:#20212466;}
+body .help-dialog-head{display:flex;justify-content:space-between;align-items:center;gap:16px;}
+body .help-dialog-head h2{font-size:22px;margin:0;}
+body #onboardingHelp .overview-panel{margin-top:16px;}
+@media(max-width:768px){body .task-overview{padding:16px;}body #roleGrid .card{min-height:0!important;}body .task-overview .role-picker{margin-top:12px;}body .top-actions{gap:6px;}}
+
+body details.common-first{padding:16px!important;border-radius:16px;}
+body #commonGrid .card{padding:12px!important;min-height:112px!important;}
+body #commonGrid .card-title{font-size:15px!important;}
+
+body .task-overview{display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;padding:12px 16px;}
+body .task-overview>h2{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);}
+body .task-overview .task-identity{padding:0;display:flex;gap:8px;align-items:center;}
+body #readinessSummary{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+body #readinessSummary p{margin:0;}
+body .task-overview .role-picker{position:static;margin:0 0 0 auto;border:0;padding:0;}
+body .task-overview .role-picker[open]{position:absolute;top:12px;right:16px;}
+@media(max-width:959px){body .task-overview .role-picker[open]{position:static;width:100%;}body .task-overview .role-picker{margin-left:0;}body #readinessSummary strong{font-size:14px;}}

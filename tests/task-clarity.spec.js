@@ -35,12 +35,13 @@ async function style(locator){
 test('[T1] current task instruction is visually presented before the five-step tracker', async ({page}) => {
   await stabilize(page); await login(page);
   await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
   await page.locator('.walkthrough > summary').click();
   await expect(page.locator('#progressHint')).toContainText('필요한 도구의 신청 흐름을 체험하세요');
   await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
 });
 
-test('[T2] common entitlements stay quieter and more compact than actionable role cards', async ({page}) => {
+test('[T2] common entitlements use less card area than actionable role cards', async ({page}) => {
   await stabilize(page); await login(page);
   await expect(page.locator('details.common-first')).toHaveAttribute('open');
   const common = page.locator('#commonGrid .card').first();
@@ -49,7 +50,7 @@ test('[T2] common entitlements stay quieter and more compact than actionable rol
   const roleBox = await box(role);
   const commonStyle = await style(common);
   const roleStyle = await style(role);
-  expect(commonBox.height).toBeLessThan(roleBox.height);
+  expect(commonBox.width * commonBox.height).toBeLessThan(roleBox.width * roleBox.height);
   expect(commonStyle.boxShadow === 'none' || commonStyle.boxShadow.includes('inset')).toBeTruthy();
   expect(roleStyle.boxShadow).toBe('none');
   await expect(role.locator('.cta')).toBeVisible();
