@@ -4,7 +4,7 @@ const statusConfig = {
   auto:     { label:'자동 지급',  cls:'status-auto',     cta:'',                 timing:'계정 생성 후 1시간 이내 자동 지급' },
   request:  { label:'신청 필요',  cls:'status-request',  cta:'신청하기',        timing:'신청 후 영업일 기준 1~2일 이내 처리' },
   approval: { label:'승인 필요',  cls:'status-approval', cta:'승인 요청하기',   timing:'담당 부서 확인·관리자 승인 후 영업일 기준 2~3일 이내 처리' },
-  pending:  { label:'처리 중',    cls:'status-pending',  cta:'상태 보기',          timing:'담당자 처리 대기 중' },
+  pending:  { label:'검토 대기',  cls:'status-pending',  cta:'상태 보기',          timing:'담당자 처리 대기 중' },
   approved: { label:'지급 대기',  cls:'status-approved', cta:'상태 보기', timing:'검토 또는 승인 완료 · 라이선스 지급 대기' },
   rejected: { label:'반려',      cls:'status-rejected', cta:'사유 확인·재신청', timing:'반려 사유 확인 후 재신청 가능' },
   completed:{ label:'지급 완료',  cls:'status-completed',cta:'접속하기',        timing:'라이선스 지급 완료' }
@@ -84,3 +84,4 @@ const REJECT_REASONS = [
   '예산 코드 또는 비용 부담 부서가 확인되지 않았습니다.',
   '권한 범위 또는 관리자 승인 근거가 확인되지 않았습니다.'
 ];
+
