@@ -195,3 +195,12 @@ body #onboardingHelp .overview-panel{margin-top:16px;}
 body details.common-first{padding:16px!important;border-radius:16px;}
 body #commonGrid .card{padding:12px!important;min-height:112px!important;}
 body #commonGrid .card-title{font-size:15px!important;}
+
+body .task-overview{display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;padding:12px 16px;}
+body .task-overview>h2{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);}
+body .task-overview .task-identity{padding:0;display:flex;gap:8px;align-items:center;}
+body #readinessSummary{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+body #readinessSummary p{margin:0;}
+body .task-overview .role-picker{position:static;margin:0 0 0 auto;border:0;padding:0;}
+body .task-overview .role-picker[open]{position:absolute;top:12px;right:16px;}
+@media(max-width:959px){body .task-overview .role-picker[open]{position:static;width:100%;}body .task-overview .role-picker{margin-left:0;}body #readinessSummary strong{font-size:14px;}}
