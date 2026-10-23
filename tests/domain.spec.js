@@ -56,7 +56,7 @@ test('요청 상태는 request → pending → approved → completed이며 티�
 test('반려 후 보완 재신청은 동일 ITSM 티켓의 이력을 이어간다', async ({ page }) => {
   await login(page);
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="design"]').click();
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');
   const card = page.locator('#roleGrid .card').filter({hasText:'Adobe Creative Cloud'});
   await card.getByRole('button', {name:'승인 요청하기'}).click();
   await page.locator('#requestNote').fill('디자인 제작 업무용');
@@ -79,5 +79,5 @@ test('반려 후 보완 재신청은 동일 ITSM 티켓의 이력을 이어간�
 });
 
 async function revealRolePicker(page){
-  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
+  await expect(page.getByRole('combobox',{name:'직군 선택'})).toBeVisible();
 }

@@ -27,9 +27,9 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
  await expect(page.locator('main a').filter({hasText:'Case Study'})).toHaveCount(0);
- const picker=page.getByRole('group',{name:'직무 필터'});
+ const picker=page.getByRole('combobox',{name:'직군 선택'});
  await expect(picker).toBeVisible();
- await page.getByRole('button',{name:'개발',exact:true}).click();
+ await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
  await expect(page.locator('#currentRoleLabel')).toHaveText('개발 직군');
  await expect(page.locator('#roleGrid .card')).toHaveCount(4);
  const common=page.locator('#commonTools');
@@ -76,7 +76,7 @@ test('First page return preserves the role and allows SSO again',async({page})=>
  await page.goto('/');
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
- await page.getByRole('button',{name:'개발',exact:true}).click();
+ await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
  await page.getByRole('button',{name:'첫 페이지',exact:true}).click();
  await expect(page.locator('#loginScreen')).toBeVisible();
  await expect(page.getByRole('button',{name:'Google SSO로 시작하기'})).toBeEnabled();
@@ -90,13 +90,13 @@ test('Role filters stay in normal flow and do not jump the page at desktop width
  await page.goto('/');
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
- const group=page.getByRole('group',{name:'직무 필터'});
+ const group=page.getByRole('combobox',{name:'직군 선택'});
  await expect(group).toBeVisible();
  const before=await group.boundingBox();
  const scroll=await page.evaluate(()=>window.scrollY);
  for(const name of ['개발','디자인','데이터','경영지원·총무']){
-   await group.getByRole('button',{name,exact:true}).click();
-   await expect(group.getByRole('button',{name,exact:true})).toHaveAttribute('aria-pressed','true');
+   await group.selectOption({label:name});
+   await expect(group.locator('option:checked')).toHaveText(name);
    const after=await group.boundingBox();
    expect(Math.abs(after.y-before.y)).toBeLessThanOrEqual(1);
    expect(await page.evaluate(()=>window.scrollY)).toBe(scroll);

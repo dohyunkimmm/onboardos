@@ -201,27 +201,19 @@ function renderCommon(){
 }
 
 function renderRoleTabs(){
-  const wrap = document.getElementById('roleTabs');
-  wrap.innerHTML = Object.keys(roles).filter(key => !roles[key].exception).map(key => {
-    const r = roles[key];
-    return `<button type="button" class="role-tab${key===currentRole?' active':''}${r.exception?' exception':''}" data-role="${key}" aria-pressed="${key===currentRole?'true':'false'}">${r.exception?'⚠ ':''}${r.label}</button>`;
-  }).join('');
-  wrap.querySelectorAll('.role-tab').forEach(btn=>{
-    btn.addEventListener('click', () => {
-      trackEvent('Role Preview',{role:btn.dataset.role});
-      setRole(btn.dataset.role);
-    });
-  });
+  const select = document.getElementById('roleSelect');
+  select.innerHTML = '<option value="unmapped" disabled hidden>직군 확인 필요</option>' +
+    Object.keys(roles).filter(key => !roles[key].exception).map(key =>
+      '<option value="'+key+'">'+escapeHTML(roles[key].label)+'</option>'
+    ).join('');
+  select.value = currentRole;
 }
 
 function setRole(key){
   currentRole = roles[key] ? key : 'office';
   activateRoleState(currentRole);
   key = currentRole;
-  document.querySelectorAll('.role-tab').forEach(b=>{
-    b.classList.toggle('active', b.dataset.role === key);
-    b.setAttribute('aria-pressed', b.dataset.role === key ? 'true' : 'false');
-  });
+  document.getElementById('roleSelect').value = currentRole;
   const r = roles[key];
   document.getElementById('roleHeading').textContent = r.heading;
   const rc = document.getElementById('roleCount');

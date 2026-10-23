@@ -82,3 +82,8 @@ document.getElementById('toolSearch')?.addEventListener('input', event => {
   applyFilters();
 });
 
+
+document.getElementById('roleSelect')?.addEventListener('change', event => {
+  trackEvent('Role Preview',{role:event.target.value});
+  setRole(event.target.value);
+});

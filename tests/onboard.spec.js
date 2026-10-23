@@ -67,7 +67,7 @@ test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리�
   await page.goto('/');
   await login(page);
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="design"]').click();
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');
 
   const designCard = await card(page, 'Adobe Creative Cloud');
   await designCard.getByRole('button', { name: '승인 요청하기' }).click();
@@ -133,7 +133,7 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
   await page.goto('/');
   await login(page);
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="design"]').click();
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');
   const designCard = await card(page, 'Adobe Creative Cloud');
   await designCard.getByRole('button', { name: '승인 요청하기' }).click();
   await page.locator('#requestNote').fill('이 내용은 Analytics에 전송되면 안 됩니다');
@@ -156,5 +156,5 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
 });
 
 async function revealRolePicker(page){
-  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
+  await expect(page.getByRole('combobox',{name:'직군 선택'})).toBeVisible();
 }

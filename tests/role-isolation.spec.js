@@ -23,7 +23,7 @@ test('직무 Preview의 신청 상태는 역할별로 격리되고 reload 후에
   await page.locator('.drawer-close').click();
 
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="design"]').click();
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');
   await expect(page.locator('#requestCount')).toHaveText('0');
   await page.locator('#statusBtn').click();
   await expect(page.locator('#drawerBody')).not.toContainText('Microsoft Office');
@@ -31,11 +31,11 @@ test('직무 Preview의 신청 상태는 역할별로 격리되고 reload 후에
 
   await page.reload();
   await expect(page.locator('#loginScreen')).toBeHidden();
-  await expect(page.locator('.role-tab[data-role="design"]')).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('combobox',{name:'직군 선택'})).toHaveValue('design');
   await expect(page.locator('#requestCount')).toHaveText('0');
 
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="office"]').click();
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('office');
   await expect(page.locator('#requestCount')).toHaveText('1');
   await page.locator('#statusBtn').click();
   const restored = page.locator('.request-item').filter({hasText:'Microsoft Office'});
@@ -43,5 +43,5 @@ test('직무 Preview의 신청 상태는 역할별로 격리되고 reload 후에
 });
 
 async function revealRolePicker(page){
-  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
+  await expect(page.getByRole('combobox',{name:'직군 선택'})).toBeVisible();
 }
