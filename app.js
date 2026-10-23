@@ -334,6 +334,11 @@ function resetDemo(){
   adminStatusFilter = 'all';
   supportRequestContext = null;
   clearSession();
+  const search = document.getElementById('toolSearch');
+  if(search){
+    search.value = '';
+    search.dispatchEvent(new Event('input', {bubbles:true}));
+  }
 
 
   syncFilterUI();
