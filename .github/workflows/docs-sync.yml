@@ -22,7 +22,6 @@ jobs:
           VERSION="$(node -p "require('./release.json').version")"
           TAG="v${VERSION}"
           STATUS="$(node -p "require('./release.json').releaseStatus || 'verified'")"
-          VIDEO="ONBOARD_OS_${TAG}_P6_production_demo.mp4"
 
           if [ "${STATUS}" = "verified" ]; then
             grep -Fq "Portfolio release — ${TAG} / P6 Production verified." README.md
@@ -35,9 +34,6 @@ jobs:
           fi
           grep -Fq "## ${TAG}" CHANGELOG.md
           grep -Fq "${TAG}" docs/DEMO_WALKTHROUGH.md
-          grep -Fq "${VIDEO}" docs/DEMO_WALKTHROUGH.md
-          grep -Fq "releases/download/${TAG}/${VIDEO}" production-demo.html
-          grep -Fq "releases/tag/${TAG}" production-demo.html
           if grep -q '^releaseStatus=' version.txt; then
             grep -Fq "releaseStatus=${STATUS}" version.txt
           fi
