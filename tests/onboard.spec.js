@@ -66,6 +66,7 @@ test('신청 → IT 검토 → 지급 완료가 동일 티켓으로 연결되고
 test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리자 승인으로 이어진다', async ({ page }) => {
   await page.goto('/');
   await login(page);
+  await revealRolePicker(page);
   await page.locator('.role-tab[data-role="design"]').click();
 
   const designCard = await card(page, 'Adobe Creative Cloud');
@@ -97,6 +98,7 @@ test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리�
 test('직무 미매핑 Fallback이 실제 데모 ITSM 요청으로 생성된다', async ({ page }) => {
   await page.goto('/');
   await login(page);
+  await revealRolePicker(page);
   await page.locator('.role-tab[data-role="unmapped"]').click();
   await page.locator('#roleGrid').getByRole('button', { name: '직무 정보 확인 요청' }).click();
   await page.getByRole('button', { name: '요청 접수' }).click();
@@ -129,6 +131,7 @@ test('목록에 없는 라이선스도 IT 헬프데스크 요청으로 추적된
 test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된다', async ({ page }) => {
   await page.goto('/');
   await login(page);
+  await revealRolePicker(page);
   await page.locator('.role-tab[data-role="design"]').click();
   const designCard = await card(page, 'Adobe Creative Cloud');
   await designCard.getByRole('button', { name: '승인 요청하기' }).click();
@@ -150,3 +153,8 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
   expect(serialized).not.toContain('홍길동');
   expect(serialized).not.toContain('이 내용은 Analytics에 전송되면 안 됩니다');
 });
+
+async function revealRolePicker(page){
+  const picker = page.locator('details.role-picker');
+  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+}

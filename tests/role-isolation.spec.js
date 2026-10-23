@@ -22,6 +22,7 @@ test('직무 Preview의 신청 상태는 역할별로 격리되고 reload 후에
   expect(ticket).toMatch(/^ITSM-\d+$/);
   await page.locator('.drawer-close').click();
 
+  await revealRolePicker(page);
   await page.locator('.role-tab[data-role="design"]').click();
   await expect(page.locator('#requestCount')).toHaveText('0');
   await page.locator('#statusBtn').click();
@@ -33,9 +34,15 @@ test('직무 Preview의 신청 상태는 역할별로 격리되고 reload 후에
   await expect(page.locator('.role-tab[data-role="design"]')).toHaveAttribute('aria-pressed','true');
   await expect(page.locator('#requestCount')).toHaveText('0');
 
+  await revealRolePicker(page);
   await page.locator('.role-tab[data-role="office"]').click();
   await expect(page.locator('#requestCount')).toHaveText('1');
   await page.locator('#statusBtn').click();
   const restored = page.locator('.request-item').filter({hasText:'Microsoft Office'});
   await expect(restored.locator('.ticket-key')).toHaveText(ticket);
 });
+
+async function revealRolePicker(page){
+  const picker = page.locator('details.role-picker');
+  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+}

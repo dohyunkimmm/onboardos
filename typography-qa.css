@@ -1,22 +1,135 @@
-/* Final typography and surface tokens, shared by desktop and mobile. */
-body{--qa-bg:#0d1017;--qa-panel:#121620;--qa-card:#191f2b;--qa-line:#303847;--qa-muted:#b8c0d1;}
-body:not(.login-open){background:var(--qa-bg)!important;}
+/* White workplace theme. Loaded last; shared across login, catalog and overlays. */
+:root{
+ color-scheme:light;
+ --ink:#202124;--ink-soft:#3c4043;--paper:#f7f8fa;--paper-mid:#f7f8fa;--paper-rise:#fff;
+ --card:#fff;--card-strong:#f8faff;--slate:#5f6368;--slate-light:#5f6368;
+ --line:#dadce0;--line-soft:#e8eaed;--indigo:#1a73e8;--indigo-soft:#185abc;
+ --purple:#1a73e8;--purple-soft:#185abc;--accent:#1a73e8;--accent-soft:#e8f0fe;
+ --success:#137333;--success-bg:#e6f4ea;--warn:#8a4b00;--warn-bg:#fef7e0;--alert:#b3261e;--alert-bg:#fce8e6;
+ --grad-brand:linear-gradient(#1a73e8,#1a73e8);--grad-action:linear-gradient(#1a73e8,#1a73e8);
+ --vs-text:#202124;--vs-muted:#5f6368;--vs-dim:#5f6368;--vs-line:#dadce0;--vs-line-strong:#9aa0a6;
+ --vs-accent:#185abc;--vs-positive:#137333;--vs-warning:#8a4b00;--vs-danger:#b3261e;
+ --v14-text:#202124;--v14-muted:#5f6368;--v14-dim:#5f6368;--v14-brand:#1a73e8;--v14-brand-strong:#185abc;
+ --v15-muted:#5f6368;--v15-dim:#5f6368;--ui-focus:#185abc;--ui-focus-ring:#d2e3fc;
+ --shadow-soft:0 2px 8px #2021240a;--shadow-glow:0 12px 40px #20212418;
+}
+html,body,body:not(.login-open){background:#f7f8fa!important;color:#202124;font-size:16px;line-height:1.6;}
+body{--qa-bg:#f7f8fa;--qa-panel:#fff;--qa-card:#fff;--qa-line:#dadce0;--qa-muted:#5f6368;}
 body button,body input,body select,body textarea{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,sans-serif!important;}
-body:not(.login-open) .licenses,body:not(.login-open) details.overview-panel{background:var(--qa-panel)!important;border-color:var(--qa-line)!important;}
-body:not(.login-open) #roleGrid .card,body:not(.login-open) #commonGrid .card{background:var(--qa-card)!important;border-color:var(--qa-line)!important;}
-body:not(.login-open) .card:hover,body:not(.login-open) .card:focus-within{border-color:#8c79da!important;}
-body:not(.login-open) .card-title{font-size:17px!important;font-weight:700!important;line-height:1.4!important;}
-body:not(.login-open) .card-cat,body:not(.login-open) .card-owner,body:not(.login-open) .count{font-size:12px!important;line-height:1.6!important;color:var(--qa-muted)!important;}
-body:not(.login-open) .card-owner :is(b,strong){color:#d9deea!important;font-weight:600!important;}
-body:not(.login-open) .requirement-pill,body:not(.login-open) .employee-timing,body:not(.login-open) .status-pill{font-size:12px!important;line-height:1.5!important;font-weight:600!important;}
-body:not(.login-open) #readinessSummary p,body:not(.login-open) .optional-summary,body:not(.login-open) .policy-note,body:not(.login-open) .hint-copy{font-size:14px!important;line-height:1.6!important;}
-body:not(.login-open) .task-overview h2{line-height:1.4;}
-body:not(.login-open) .cta,body:not(.login-open) .hint-cta,body:not(.login-open) .top-btn,body:not(.login-open) .filter-chip,body:not(.login-open) .btn-primary,body:not(.login-open) .btn-secondary,body:not(.login-open) .ghost-btn{font-size:14px!important;font-weight:650!important;line-height:1.4!important;min-height:44px;}
-body:not(.login-open) #roleGrid .cta{font-weight:700!important;}
-body:not(.login-open) .request-modal label,body:not(.login-open) .approval-fields label{font-size:14px!important;line-height:1.5!important;}
-body:not(.login-open) .request-modal input,body:not(.login-open) .request-modal textarea,body:not(.login-open) .request-modal select{font-size:16px!important;line-height:1.5!important;}
-body:not(.login-open) .request-modal textarea::placeholder,body:not(.login-open) .request-modal input::placeholder{color:#b8c0d1;opacity:1;}
-@media(max-width:560px){body:not(.login-open) .top-btn{font-size:13px!important;}body:not(.login-open) .hint-copy{min-width:0;}body:not(.login-open) .task-overview h2{font-size:22px;}}
+.bg-atmosphere,.bg-grid{display:none;}
+body .login-screen{background:#f7f8fa!important;flex-direction:column;gap:24px;padding:40px 24px;}
+body #loginScreen .login-card{width:min(1000px,100%);padding:48px;gap:48px;border:1px solid #dadce0;background:#fff!important;border-radius:20px;box-shadow:0 8px 32px #20212408;transform:none;}
+body #loginScreen .login-card,body #loginScreen .login-card *{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;}
+body .login-card .login-title{font-size:32px;line-height:1.35;font-weight:700;letter-spacing:-.025em;color:#202124;}
+body .login-card p{font-size:16px;line-height:1.7;color:#5f6368;}
+body .login-brand,body .scenario-item b{color:#202124;}
+body .login-panel{background:#f8fafd!important;border-color:#e8eaed;box-shadow:none;padding:24px;}
+body .login-account{background:#fff!important;border-color:#dadce0;}
+body .login-account-mail{font-size:14px;color:#202124;}
+body .login-account-label,body .login-note,body .login-meta,body .login-eyebrow{font-size:14px;color:#5f6368;}
+body .scenario-item{font-size:15px;color:#5f6368;}
+body .scenario-check{background:#e8f0fe;color:#185abc;border-color:#d2e3fc;}
+body .google-btn{background:#1a73e8!important;color:#fff!important;box-shadow:none;border:1px solid #1a73e8;min-height:48px;font-size:15px;border-radius:8px;}
+body .reviewer-entry{position:static;transform:none;margin:0 auto;background:transparent!important;border:0;box-shadow:none;font-size:14px;}
+body .reviewer-entry a,body .reviewer-entry a:first-of-type{color:#185abc;}
+body .topbar,body:not(.login-open) .topbar{background:#fff!important;border-color:#e8eaed;box-shadow:none;backdrop-filter:none;}
+body .logo{color:#202124;}
+body .topbar .sub{color:#5f6368!important;font-size:14px;}
+body:not(.login-open) main{max-width:1240px;padding:24px 32px 64px;}
+body .task-overview{background:#fff!important;border:1px solid #dadce0;border-radius:16px;padding:24px;}
+body .task-identity{color:#5f6368;font-size:14px;}
+body .task-overview h2{font-size:26px;line-height:1.35;margin:8px 0 12px;font-weight:700;}
+body #readinessSummary strong{color:#202124;font-size:20px;font-weight:650;}
+body #readinessSummary p,body .optional-summary,body .policy-note,body .hint-copy{font-size:14px!important;color:#5f6368!important;line-height:1.6!important;}
+body #readinessSummary p{margin:4px 0;}
+body .role-picker{background:transparent!important;}
+body .task-overview .role-picker{padding:0;margin-top:16px;border-top:1px solid #e8eaed;}
+body .task-overview .role-picker>summary{cursor:pointer;padding:12px 0 0;color:#5f6368;font-size:14px;}
+body .preview-scroll-note,body .demo-tracker-label{color:#5f6368;font-size:14px;}
+body .task-overview .demo-preview-note{display:none;}
+body .role-tab,body .filter-chip,body .top-btn,body .btn-secondary,body .ghost-btn,body .jsm-btn{background:#fff!important;color:#3c4043!important;border:1px solid #dadce0!important;box-shadow:none!important;}
+body .role-tab.active,body .filter-chip.active{background:#e8f0fe!important;color:#185abc!important;border-color:#a8c7fa!important;}
+body .role-tab.exception:not(.active){color:#8a4b00!important;}
+body .task-overview #progressHint{margin:16px 0 0!important;padding:12px 16px!important;background:#f8fafd!important;border:1px solid #e8eaed!important;color:#3c4043!important;}
+body .task-overview #progressHint .demo-step-kicker{color:#185abc!important;-webkit-text-fill-color:#185abc;background:#e8f0fe;font-size:14px;}
+body .hint-cta,body .btn-primary,body .primary-btn,body #roleGrid .cta,body #statusBtn{background:#1a73e8!important;color:#fff!important;border:1px solid #1a73e8!important;box-shadow:none!important;border-radius:8px;}
+body button:hover,body .cta:hover{filter:none!important;transform:none!important;}
+body .hint-cta:hover,body .btn-primary:hover,body #roleGrid .cta:hover{background:#185abc!important;}
+body .tools-bar{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+body .tool-search{display:flex;align-items:center;gap:10px;font-size:14px;color:#5f6368;}
+body .tool-search input{width:260px;max-width:100%;min-height:44px;border:1px solid #dadce0;border-radius:8px;padding:10px 14px;background:#fff;color:#202124;font-size:16px;}
+body .licenses,body details.overview-panel,body .complete-box,body #pendingSummary{background:#fff!important;border-color:#dadce0!important;box-shadow:none!important;}
+body .licenses.role-secondary{padding:20px!important;margin-top:16px!important;}
+body .section-head{border-color:#e8eaed!important;}
+body .section-head h2{font-size:22px!important;color:#202124!important;font-weight:650!important;letter-spacing:-.02em!important;}
+body #roleGrid .card,body #commonGrid .card{background:#fff!important;border:1px solid #dadce0!important;box-shadow:none!important;border-radius:12px!important;padding:20px!important;}
+body #roleGrid .card{min-height:200px!important;}
+body .card::before{display:none;}
+body .card-title{font-size:18px!important;font-weight:650!important;line-height:1.45!important;color:#202124!important;}
+body .card-cat,body .card-owner,body .count,body .emp-meta{font-size:14px!important;line-height:1.6!important;color:#5f6368!important;}
+body .card-owner b,body .card-owner strong{color:#3c4043!important;}
+body .logo-chip{background:#f8fafd!important;border-color:#e8eaed!important;box-shadow:none!important;}
+body .requirement-pill,body .status-pill,body .employee-timing{font-size:13px!important;line-height:1.5!important;opacity:1!important;}
+body .requirement-pill{color:#5f6368!important;background:#f1f3f4!important;border-color:#e8eaed;}
+body .requirement-pill.required{color:#185abc!important;background:#e8f0fe!important;border-color:#d2e3fc;}
+body .status-request,body .status-pending,body .sla-health-warn{color:#8a4b00!important;background:#fef7e0!important;border-color:#f9e3aa!important;}
+body .status-auto,body .status-approved,body .status-completed,body .sla-health-good,body .sla-health-done{color:#137333!important;background:#e6f4ea!important;border-color:#ceead6!important;}
+body .status-approval,body .status-rejected,body .sla-health-over,body .sla-health-paused{color:#b3261e!important;background:#fce8e6!important;border-color:#fad2cf!important;}
+body .employee-timing{background:#f1f3f4!important;color:#5f6368!important;}
+body .cta,body .hint-cta,body .top-btn,body .filter-chip,body .btn-primary,body .btn-secondary,body .ghost-btn{font-size:14px!important;font-weight:600!important;line-height:1.4!important;min-height:44px;}
+body .request-backdrop,body .action-modal-backdrop,body .drawer-backdrop{background:#20212466!important;backdrop-filter:none!important;}
+body .request-modal,body .action-modal,body .drawer{background:#fff!important;color:#202124!important;border-color:#dadce0!important;box-shadow:0 16px 60px #20212426!important;}
+body .request-modal{width:min(640px,100%)!important;padding:28px!important;max-height:calc(100dvh - 48px)!important;}
+body .drawer{width:min(520px,100%)!important;}
+body .drawer-head,body .admin-kpis,body .request-actions,body .modal-actions{background:#fff!important;border-color:#e8eaed!important;box-shadow:none!important;}
+body .drawer h3,body .request-modal h3,body .action-modal h3{font-size:24px;color:#202124;}
+body .request-item,body .decision-context,body .action-info,body .detail-list,body .request-note-view,body .rejection-reason{background:#f8fafd!important;color:#202124!important;border-color:#e8eaed!important;box-shadow:none!important;}
+body .request-item{padding:20px!important;}
+body .request-item-title{font-size:18px!important;color:#202124;}
+body .request-item-meta,body .request-item-meta>b,body .request-sla .sla-target,body .request-history,body .request-history .history-row:last-child,body .admin-demo-note,body .decision-context dt,body .decision-context p,body .field-note,body .detail-hint,body #pendingSummary>div{color:#5f6368!important;font-size:14px!important;opacity:1!important;}
+body .decision-context dl>div{font-size:14px;grid-template-columns:120px 1fr;}
+body .request-sla,body .ticket-key,body .admin-kpi{background:#f1f3f4!important;border-color:#dadce0!important;color:#3c4043!important;}
+body .admin-kpi.is-active{background:#e8f0fe!important;border-color:#a8c7fa!important;}
+body .admin-kpi-value{color:#185abc!important;}
+body .detail-row{background:transparent!important;border-color:#e8eaed!important;padding:8px 10px!important;}
+body #requestDetails>.detail-row span:first-child{color:#5f6368!important;font-size:14px!important;letter-spacing:0!important;}
+body #requestDetails>.detail-row b{color:#202124!important;font-size:15px!important;font-weight:600;}
+body #requestDetails>.detail-row:has(.sla-detail),body #requestDetails>.detail-row:has(.sla-detail)+.detail-row{background:#e8f0fe!important;border-color:#d2e3fc!important;}
+body .request-note-label,body .approval-fields label{color:#202124!important;font-size:14px!important;}
+body input,body textarea,body select{background:#fff!important;color:#202124!important;border-color:#9aa0a6!important;font-size:16px!important;}
+body input::placeholder,body textarea::placeholder{color:#5f6368!important;opacity:1;}
+body .action-guide-copy,body .start-guide,body .guide-notice,body .support-request-lead,body #requestDesc{color:#5f6368!important;font-size:15px!important;}
+body .guide-notice{background:#f1f3f4;}
+body details.overview-panel>summary,body details.common-first>summary{color:#3c4043!important;font-size:15px!important;}
+body .drawer-close,body .action-modal-close{background:#f1f3f4!important;color:#3c4043!important;}
+body .progress-wrap,body .progress-bar{background:#f8fafd!important;}
+body .progress-step,body .progress-step.done{opacity:1!important;}
+body .progress-step .step-label{color:#5f6368!important;}
+body .progress-step.current .step-label{color:#185abc!important;}
+body .complete-box h3{color:#202124;}
+body .notion-cta{background:#e8f0fe!important;color:#185abc!important;box-shadow:none!important;border-color:#d2e3fc!important;}
+body .empty-state{background:#f8fafd!important;color:#5f6368!important;border-color:#dadce0!important;}
+body .empty-state b,body footer .help b{color:#202124!important;}
+body footer{border-color:#e8eaed!important;}
+body :where(button,input,select,textarea,a,summary):focus-visible{outline:2px solid #185abc!important;outline-offset:3px;box-shadow:0 0 0 4px #d2e3fc!important;}
+body #roleGrid .card:focus-within{border-color:#1a73e8!important;box-shadow:0 0 0 3px #d2e3fc!important;}
+@media(min-width:960px){body .task-overview{display:grid;grid-template-columns:1fr auto;gap:0 24px;}body .task-identity,body .task-overview h2,body #readinessSummary,body #pendingSummary,body #progressHint{grid-column:1/-1;}body .task-overview .role-picker{grid-column:1/-1;}}
+@media(max-width:768px){body #loginScreen .login-card{padding:28px;gap:24px;grid-template-columns:1fr;}body .login-card .login-title{font-size:26px;}body:not(.login-open) main{padding:20px 16px 48px;}body .task-overview{padding:20px;}body .task-overview h2{font-size:23px;}body .tool-search,body .tool-search input{width:100%;}body .tool-search{flex-wrap:wrap;}body .drawer{width:100%!important;}body .request-modal{padding:20px!important;}body .login-screen{padding:24px 16px;}}
+/* Keep employee identity and readiness ahead of the demo-only walkthrough. */
+body .task-overview > *{order:0!important;}
+/* Keep login font metrics stable before and after the deferred brand font loads. */
+body #loginScreen .login-card,body #loginScreen .login-card *{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;}
+body .task-overview #progressHint{order:1!important;}
+body .task-overview .walkthrough{grid-column:1/-1;margin-top:8px;font-size:14px;color:#5f6368;}
+body .task-overview .walkthrough>summary{cursor:pointer;padding:8px 0;}
+body .task-overview .walkthrough #progressHint{margin-top:8px!important;}
+body #requestDetails>.detail-row:has(.sla-detail){grid-column:auto;}
+body .reject-recap{padding:12px;border:1px solid #dadce0;border-radius:8px;}
+body .task-overview{border-radius:20px;}
+body .section-head h2,body #roleGrid .cta{font-weight:700!important;}
+body .reason-item,body .reason-item span,body .reject-recap{color:#3c4043!important;background:#f8fafd!important;border-color:#dadce0!important;}
+body .request-note-label{color:#202124!important;}
+@media(max-width:768px){body #roleGrid .card{min-height:0!important;}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;}}
+@media(forced-colors:active){body :where(.card,.role-tab,.filter-chip,.request-modal,.admin-kpi){border:1px solid CanvasText!important;}}
 
-/* Keyboard focus must remain visually distinct from the resting card, even when QA styles load last. */
-body:not(.login-open) #roleGrid .card:focus-within{box-shadow:0 0 0 3px rgba(167,139,250,.18),0 24px 58px -42px rgba(124,58,237,.30)!important;}

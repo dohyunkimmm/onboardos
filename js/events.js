@@ -49,3 +49,17 @@ document.addEventListener('click', event => {
 document.getElementById('requestBackdrop')?.addEventListener('click', backdropClose);
 document.getElementById('drawerBackdrop')?.addEventListener('click', drawerBackdropClose);
 document.getElementById('actionModalBackdrop')?.addEventListener('click', closeActionModal);
+// Search composes with the active status filter without changing request state.
+let commonWasOpenBeforeSearch = null;
+document.getElementById('toolSearch')?.addEventListener('input', event => {
+  const common = document.querySelector('details.common-first');
+  if(event.target.value.trim()){
+    if(commonWasOpenBeforeSearch === null) commonWasOpenBeforeSearch = common?.open || false;
+    if(common) common.open = true;
+  } else if(commonWasOpenBeforeSearch !== null){
+    if(common) common.open = commonWasOpenBeforeSearch;
+    commonWasOpenBeforeSearch = null;
+  }
+  applyFilters();
+});
+

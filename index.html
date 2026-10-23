@@ -6,7 +6,7 @@
 <title>직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모 | 김도현</title>
 <meta content="신규입사자가 직무별 SaaS·업무 도구를 확인하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 인터랙티브 온보딩 포털 프로토타입입니다." name="description"/>
 <link href="https://onboardos-rho.vercel.app/" rel="canonical"/>
-<meta content="#080A0F" name="theme-color"/>
+<meta content="#f7f8fa" name="theme-color"/>
 <meta content="website" property="og:type"/>
 <meta content="직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모" property="og:title"/>
 <meta content="Google Workspace 조직·직무 정보를 기반으로 SaaS·업무 도구를 개인화하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 온보딩 포털 프로토타입입니다." property="og:description"/>
@@ -80,13 +80,11 @@
 <div class="login-loader" id="loginLoader">Google SSO 인증 중…
         <div class="loader-bar"><span></span></div>
 </div>
-<div class="login-note" id="loginNote">Google SSO 연동을 가정한 가상 데이터 기반 프로토타입입니다.</div>
+<div class="login-note" id="loginNote">회사 Google SSO를 가정한 데모입니다. 가상 계정으로 진행됩니다.</div>
 </div>
 </div>
 <nav aria-label="리뷰어 빠른 보기" class="reviewer-entry">
 <span class="reviewer-entry-label">빠르게 보기</span>
-<a href="/production-demo">36초 영상</a>
-<span aria-hidden="true">·</span>
 <a href="https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a" rel="noopener noreferrer" target="_blank">Case Study</a>
 </nav>
 </div>
@@ -96,12 +94,12 @@
 <h2 id="taskOverviewTitle">지금 필요한 도구부터 준비하세요</h2>
 <div id="readinessSummary" aria-live="polite"></div>
 <div id="pendingSummary" hidden></div>
-<div class="role-picker">
-<label>직무 미리보기</label><p class="preview-scroll-note">아래에서 체험할 직무를 선택하세요. 실제 운영에서는 본인 직무가 자동 적용됩니다.</p>
+<details class="role-picker">
+<summary>다른 직무 체험하기</summary><p class="preview-scroll-note">실제 운영에서는 회사 계정의 직무가 자동 적용됩니다.</p>
 <div aria-label="직무 미리보기" class="role-tabs" id="roleTabs" role="group"><button aria-pressed="false" class="role-tab" data-role="design" type="button">디자인</button><button aria-pressed="false" class="role-tab" data-role="dev" type="button">개발</button><button aria-pressed="false" class="role-tab" data-role="data" type="button">데이터</button><button aria-pressed="true" class="role-tab active" data-role="office" type="button">경영지원·총무</button><button aria-pressed="false" class="role-tab exception" data-role="unmapped" type="button">⚠ 직무 미매핑</button></div>
 <div class="demo-preview-note">실제 운영에서는 Google Workspace 조직·직무 정보에 따라 <b>본인 직무의 SaaS·업무 도구만</b> 자동 노출됩니다.</div>
-</div>
-<div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div>
+</details>
+<details class="walkthrough"><summary>신청·승인 과정 체험하기</summary><div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div></details>
 </section>
 <details class="badge-wrap overview-panel"><summary>사용자 정보 · 대표 신청 진행</summary>
 
@@ -143,6 +141,7 @@
 <!-- 진행 상태 트래커 (현재 단계 + 다음 할 일 안내) -->
 
 <div class="tools-bar">
+<label class="tool-search" for="toolSearch">도구 검색<input id="toolSearch" type="search" placeholder="도구 이름 검색" autocomplete="off" aria-controls="roleGrid commonGrid"></label>
 <div aria-label="현재 상태 필터" class="filter-tabs" id="filterTabs" role="group">
 <button aria-pressed="true" class="filter-chip active" data-filter="all" type="button">전체</button>
 <button aria-pressed="false" class="filter-chip" data-filter="todo" type="button">해야 할 일</button>
@@ -229,3 +228,4 @@
 <script defer="" src="/_vercel/insights/script.js"></script>
 <script defer="" src="/_vercel/speed-insights/script.js"></script>
 </body></html>
+

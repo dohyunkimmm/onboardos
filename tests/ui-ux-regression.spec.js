@@ -42,7 +42,10 @@ test('모바일 로그인 화면은 reviewer bar를 위한 하단 안전 여백�
       reviewerHeight: nav.getBoundingClientRect().height
     };
   });
-  expect(metrics.paddingBottom).toBeGreaterThanOrEqual(metrics.reviewerHeight + 20);
+  await expect(page.locator('.reviewer-entry')).toHaveCSS('position','static');
+  const cardBox = await rect(page.locator('.login-card'));
+  const navBox = await rect(page.locator('.reviewer-entry'));
+  expect(navBox.y).toBeGreaterThanOrEqual(cardBox.y + cardBox.height);
 });
 
 test('모바일 상단은 초기화 액션을 중복 노출하지 않는다', async ({ page }) => {
@@ -58,6 +61,8 @@ test('진행 안내는 5단계 tracker를 유지하고 별도 숫자 카운트 �
   await page.goto('/');
   await login(page);
 
+  await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
+  await page.locator('.walkthrough > summary').click();
   await expect(page.locator('.demo-step-kicker')).toBeVisible();
   await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
   await expect(page.locator('.demo-step-kicker')).toContainText('대표 신청 체험');

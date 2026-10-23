@@ -111,18 +111,9 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   await page.getByRole('button', {name:'지급 완료 처리'}).click();
   await expect(page.locator('.request-item').filter({hasText:'Microsoft Office'})).toContainText('지급 완료');
 
-  const demoResponse = await page.goto('/production-demo', {waitUntil:'domcontentloaded'});
-  expect(demoResponse.status()).toBe(200);
-  await expect(page.getByRole('heading', {name:'ONBOARD·OS Production Demo'})).toBeVisible();
-  const video = page.locator('video');
-  await expect(video).toBeVisible();
-  await expect(video).toHaveAttribute('aria-label', new RegExp(`${expectedReleaseTag}.*36초`));
-  await expect(video.locator('source')).toHaveAttribute('src', expectedDemoUrl);
-  await expect(page.getByRole('link', {name:`GitHub Release ${expectedReleaseTag}`})).toHaveAttribute('href', expectedReleaseUrl);
-
-  // Production may point at the canonical release URL immediately before the immutable
-  // GitHub Release is published. The release workflow owns post-publication availability
-  // and exact 36-second remote-asset verification, avoiding a release/evidence cycle here.
+  await page.goto('/production-demo', {waitUntil:'domcontentloaded'});
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator('video')).toHaveCount(0);
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors.filter(text => /Content Security Policy|Refused to|TypeError|ReferenceError/i.test(text))).toEqual([]);
