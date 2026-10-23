@@ -47,12 +47,13 @@ test('[D2] overview panel uses layered surface and tighter information hierarchy
   expect(parseFloat(name.fontSize)).toBeGreaterThanOrEqual(28);
 });
 
-test('[D3] desktop content density uses three-column license grids where space allows', async ({page}) => {
+test('[D3] 1920 desktop uses the same six-column rhythm for both license groups', async ({page}) => {
+  await page.setViewportSize({width:1920,height:1080});
   await stabilize(page); await login(page);
   const common = await css(page.locator('#commonGrid'));
-  expect(common.gridTemplateColumns.split(' ').length).toBe(3);
+  expect(common.gridTemplateColumns.split(' ').length).toBe(6);
   const role = await css(page.locator('#roleGrid'));
-  expect(role.gridTemplateColumns.split(' ').length).toBe(3);
+  expect(role.gridTemplateColumns.split(' ').length).toBe(6);
 });
 
 test('[D4] role cards use consistent elevated surfaces and stronger primary CTA', async ({page}) => {

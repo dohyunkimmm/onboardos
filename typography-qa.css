@@ -249,3 +249,5 @@ body #commonGrid .card{min-height:96px!important;}
  body #roleGrid .card-action{width:100%;}
  body #roleGrid .cta{width:100%;}
 }
+
+body .shared-access{margin-right:8px;}
