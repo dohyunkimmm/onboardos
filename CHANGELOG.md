@@ -4,7 +4,16 @@
 
 PR #102 후보 변경으로 직무별 필수 도구 준비 상태, 완료 필터의 실제 비노출·키보드 제외, 설치·계정 시작 가이드, 승인 요청의 목적·범위·기간 입력 및 관리자 판단 정보를 추가했습니다. 공통 도구와 대표 신청 체험은 필수 도구 준비 상태와 구분합니다. 실제 기업의 SSO·좌석·비용·설치 포털은 연결되지 않았습니다.
 
-**검증 상태:** 후보 브랜치의 Node 회귀 검사와 일부 브라우저 확인만 반영했습니다. 기존 v18.0.0 Release 영상·증빙은 과거 정식 배포 자료이며, 이 후보의 전체 E2E·시각 회귀·Production 검증으로 간주하지 않습니다. 상세 내용은 [`docs/PRODUCT_REVIEW_2026-10-08.md`](./docs/PRODUCT_REVIEW_2026-10-08.md)를 참고하세요.
+**검증 상태(2026-10-23 갱신):** 10월 8일 최초 후보 설명은 당시 검증 범위의 기록입니다. 이후 변경은 개별 PR의 전체 CI를 거쳐 순차적으로 병합되었으며, 최신 Production 검증은 [main E2E #39967159908](https://github.com/dohyunkimmm/onboardos/actions/runs/39967159908)에서 확인해야 합니다. 기존 v18.0.0 불변 Release 영상·증빙은 과거 릴리스 기록으로 남으며, 이후 후보 코드의 검증으로 소급하지 않습니다. 상세 내용은 [`docs/PRODUCT_REVIEW_2026-10-08.md`](./docs/PRODUCT_REVIEW_2026-10-08.md)를 참고하세요.
+
+### 사용자 경험·AI 추천·검증 경로 정리 — 2026-10-23
+
+- [#120–#127](https://github.com/dohyunkimmm/onboardos/pull/127): 밝은 업무용 UI, 직원용 간결한 라이선스 카탈로그, 중복 안내 정리, 직무 선택 메뉴 및 키보드/반응형 회귀 보정.
+- [#128–#133](https://github.com/dohyunkimmm/onboardos/pull/133): 직무별 선택형 Gemini 추천·허용 목록 검증, 라이선스 확장, 추천 기반 신청 초안, 요청 빈도 제한, 입력 변경/포커스/세션 복원 안정성 강화. 기본 SSO·승인·발급은 계속 모의 흐름.
+- [#134](https://github.com/dohyunkimmm/onboardos/pull/134): 서버 함수와 내부 스크립트를 공개 정적 자산 무결성 목록에서 분리. 공개 자산 SHA-256과 POST 전용 API 응답을 별도 검증하고 매니페스트 회귀 테스트 추가.
+- [#135](https://github.com/dohyunkimmm/onboardos/pull/135): Production 모바일 WebKit 기능 테스트만 알려진 native select/CSP 엔진 오류와 분리. 실제 사이트 CSP 설정과 독립적인 보안 게이트 및 엄격 CSP 원인 재현 검사는 유지.
+- 사용 안내에서 영상으로 연결되지 않던 `/production-demo` 링크를 이전 릴리스의 실제 영상 파일 링크로 교체하고, 최신 Live 체험·리뷰어 모드 접근을 명시.
+- 위 개선은 `releaseStatus: candidate` 상태를 변경하거나, 과거 v18.0.0 릴리스의 증빙으로 최신 화면을 검증했다고 주장하지 않습니다.
 
 ### 문서·CI 유지보수 — 2026-10-09
 
