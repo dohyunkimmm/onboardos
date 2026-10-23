@@ -4,12 +4,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>OnboardOS · 라이선스</title>
-<meta content="신규입사자가 직무별 SaaS·업무 도구를 확인하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 인터랙티브 온보딩 포털 프로토타입입니다." name="description"/>
+<meta content="신규입사자가 직무별 SaaS 라이선스를 확인하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 인터랙티브 온보딩 포털 프로토타입입니다." name="description"/>
 <link href="https://onboardos-rho.vercel.app/" rel="canonical"/>
 <meta content="#f7f8fa" name="theme-color"/>
 <meta content="website" property="og:type"/>
 <meta content="직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모" property="og:title"/>
-<meta content="Google Workspace 조직·직무 정보를 기반으로 SaaS·업무 도구를 개인화하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 온보딩 포털 프로토타입입니다." property="og:description"/>
+<meta content="Google Workspace 조직·직무 정보를 기반으로 SaaS 라이선스를 개인화하고, 라이선스 신청부터 검토·승인·지급 완료까지 체험할 수 있는 온보딩 포털 프로토타입입니다." property="og:description"/>
 <meta content="https://onboardos-rho.vercel.app/" property="og:url"/>
 <meta content="김도현 포트폴리오" property="og:site_name"/>
 <meta content="ko_KR" property="og:locale"/>
@@ -19,7 +19,7 @@
 <meta content="ONBOARD·OS 직무별 SaaS 라이선스 온보딩 포털 데모" property="og:image:alt"/>
 <meta content="summary_large_image" name="twitter:card"/>
 <meta content="직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모" name="twitter:title"/>
-<meta content="직무별 SaaS·업무 도구 확인부터 라이선스 신청·검토·승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다." name="twitter:description"/>
+<meta content="직무별 SaaS 라이선스 확인부터 라이선스 신청·검토·승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다." name="twitter:description"/>
 <meta content="https://onboardos-rho.vercel.app/og-image.png" name="twitter:image"/>
 <link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235B21B6'/%3E%3Ctext x='32' y='43' font-family='sans-serif' font-size='30' font-weight='700' fill='white' text-anchor='middle'%3EOB%3C/text%3E%3C/svg%3E" rel="icon"/>
 <link as="style" href="fonts/pretendard.css" id="brandFontStylesheet" media="print" rel="stylesheet"/>
@@ -42,7 +42,7 @@
 <div class="topbar" inert="">
 <div>
 <h1 class="logo"><span class="sr-only">직무별 라이선스 온보딩 포털 — </span><button class="logo-home" type="button" data-action="go-home" aria-label="ONBOARD·OS 첫 페이지" title="첫 페이지로 이동">ONBOARD<span>·</span>OS</button></h1>
-<div class="sub">신규입사자 SaaS·업무 도구 가이드</div>
+<div class="sub">신규입사자 SaaS 라이선스 가이드</div>
 </div>
 <div class="top-actions">
 <button class="top-btn secondary" type="button" data-action="open-onboarding-help">도움말</button>
@@ -64,7 +64,7 @@
 <span class="login-eyebrow">Interactive Prototype</span>
 </div>
 <div class="login-title" id="loginTitle">업무 라이선스</div>
-<p id="loginIntro">직무에 필요한 도구를 신청하세요.</p>
+<p id="loginIntro">직무에 필요한 라이선스를 신청하세요.</p>
 
 </div>
 <div class="login-panel">
@@ -91,13 +91,14 @@
 <div id="readinessSummary" aria-live="polite"></div>
 <div id="pendingSummary" hidden></div>
 <label class="role-picker" for="roleSelect"><span>직군</span><select id="roleSelect" aria-label="직군 선택"></select></label>
+<button class="top-btn secondary" type="button" data-action="ai-recommend">AI 추천</button>
 
 </section>
 
 <!-- 진행 상태 트래커 (현재 단계 + 다음 할 일 안내) -->
 
 <div class="tools-bar">
-<label class="tool-search" for="toolSearch">도구 검색<input id="toolSearch" type="search" placeholder="이름 입력" autocomplete="off" aria-controls="roleGrid commonGrid"></label>
+<label class="tool-search" for="toolSearch">라이선스 검색<input id="toolSearch" type="search" placeholder="이름 입력" autocomplete="off" aria-controls="roleGrid commonGrid"></label>
 <div aria-label="현재 상태 필터" class="filter-tabs" id="filterTabs" role="group">
 <button aria-pressed="true" class="filter-chip active" data-filter="all" type="button">전체</button>
 <button aria-pressed="false" class="filter-chip" data-filter="todo" type="button">해야 할 일</button>
@@ -117,8 +118,8 @@
 </section>
 <details class="licenses common-first" id="commonTools" open>
 <summary class="common-summary">
-<h2>전사 공통 도구</h2>
-<span class="shared-access">자동 지급</span><span class="count mono" data-base="6개" id="commonCount">6개</span>
+<h2>기본 제공 라이선스</h2>
+<span class="shared-access">자동 지급</span><span class="count mono" data-base="5개" id="commonCount">5개</span>
 </summary>
 <div class="card-grid" id="commonGrid"></div>
 <div class="empty-state no-result" hidden="" id="commonEmpty"><b>조건에 맞는 라이선스가 없습니다</b>상태 필터를 바꿔 다시 확인해 보세요.</div>
@@ -137,7 +138,7 @@
 <div class="credit">기획·설계·프로토타입 구현 김도현</div>
 </footer>
 </main>
-<dialog id="onboardingHelp" aria-labelledby="onboardingHelpTitle"><div class="help-dialog-head"><h2 id="onboardingHelpTitle">사용 안내</h2><button type="button" class="top-btn secondary" data-action="close-onboarding-help" aria-label="도움말 닫기">닫기</button></div><button class="top-btn secondary" type="button" data-action="ai-recommend">AI 추천</button><ol class="help-steps"><li>필요한 도구에서 신청하기를 누르세요.</li><li>처리 상태는 신청현황에서 확인하세요.</li><li>목록에 없는 도구는 IT 헬프데스크에 문의하세요.</li></ol><div data-reviewer-only hidden><button class="top-btn secondary" type="button" data-action="preview-unmapped">직무 정보 확인이 필요한 경우</button><details class="walkthrough"><summary>승인 과정 체험</summary><div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div></details><details class="badge-wrap overview-panel"><summary>계정 정보 · 진행 단계</summary>
+<dialog id="onboardingHelp" aria-labelledby="onboardingHelpTitle"><div class="help-dialog-head"><h2 id="onboardingHelpTitle">사용 안내</h2><button type="button" class="top-btn secondary" data-action="close-onboarding-help" aria-label="도움말 닫기">닫기</button></div><ol class="help-steps"><li>필요한 라이선스에서 신청하기를 누르세요.</li><li>처리 상태는 신청현황에서 확인하세요.</li><li>목록에 없는 라이선스는 IT 헬프데스크에 문의하세요.</li></ol><div data-reviewer-only hidden><button class="top-btn secondary" type="button" data-action="preview-unmapped">직무 정보 확인이 필요한 경우</button><details class="walkthrough"><summary>승인 과정 체험</summary><div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>기본 제공 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div></details><details class="badge-wrap overview-panel"><summary>계정 정보 · 진행 단계</summary>
 
 <div class="badge-top">
 <div class="avatar" id="avatarInitial">H</div>
@@ -209,14 +210,14 @@
 </div>
 </div>
 <div aria-atomic="true" aria-live="polite" class="toast" id="toast" role="status">프로토타입 화면입니다 — 실제 운영에서는 JSM 문의 요청으로 접수됩니다</div>
-<script src="data.js"></script>
-<script src="js/state.js"></script>
-<script src="js/analytics.js"></script>
-<script src="js/a11y.js"></script>
-<script src="js/product-readiness.js"></script>
-<script src="app.js"></script>
-<script src="js/ai-recommendation.js"></script>
-<script src="js/events.js"></script>
+<script defer src="data.js"></script>
+<script defer src="js/state.js"></script>
+<script defer src="js/analytics.js"></script>
+<script defer src="js/a11y.js"></script>
+<script defer src="js/product-readiness.js"></script>
+<script defer src="app.js"></script>
+<script defer src="js/ai-recommendation.js"></script>
+<script defer src="js/events.js"></script>
 <script defer="" src="/_vercel/insights/script.js"></script>
 <script defer="" src="/_vercel/speed-insights/script.js"></script>
 </body></html>

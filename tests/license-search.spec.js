@@ -3,7 +3,7 @@ test('Employee search composes with status and preserves common-tool visibility'
  await page.goto('/');
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
- const search=page.getByRole('searchbox',{name:'도구 검색'});
+ const search=page.getByRole('searchbox',{name:'라이선스 검색'});
  await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
  await expect(page.locator('details.common-first')).toHaveAttribute('open');
  await page.locator('details.common-first > summary').click();
@@ -37,21 +37,21 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await common.locator('summary').click();
  await common.locator('summary').click();
  await expect(common).toHaveAttribute('open');
- await expect(common.getByRole('heading',{name:'전사 공통 도구'})).toBeVisible();
+ await expect(common.getByRole('heading',{name:'기본 제공 라이선스'})).toBeVisible();
 });
 
 test('Catalog has no repeated shared-tool summary or guidance buttons',async({page})=>{
  await page.goto('/');
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
- await expect(page.locator('#readinessSummary')).not.toContainText('공통 도구');
- await expect(page.locator('#commonGrid .card')).toHaveCount(6);
+ await expect(page.locator('#readinessSummary')).not.toContainText('공통 라이선스');
+ await expect(page.locator('#commonGrid .card')).toHaveCount(5);
  await expect(page.locator('#commonGrid button')).toHaveCount(0);
  await expect(page.locator('#roleHeading')).toHaveCSS('font-size','18px');
  await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','18px');
  await expect(page.locator('#roleGrid .card-title').first()).toHaveCSS('font-size','16px');
  await expect(page.locator('#commonGrid .card-title').first()).toHaveCSS('font-size','16px');
- await page.getByRole('searchbox',{name:'도구 검색'}).fill('Slack');
+ await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('Slack');
  await expect(page.locator('.card:not(.is-hidden)')).toHaveCount(1);
  await page.getByRole('button',{name:'해야 할 일',exact:true}).click();
  await expect(page.locator('.card:not(.is-hidden)')).toHaveCount(0);

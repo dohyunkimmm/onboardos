@@ -12,7 +12,6 @@ const statusConfig = {
 
 
 const commonLicenses = [
-  { mono:'GW', icon:'icons/google-workspace.svg', name:'Google Workspace', cat:'협업툴', owner:'IT팀', audience:'전사 구성원', status:'auto', url:'https://workspace.google.com' },
   { mono:'SL', icon:'icons/slack.svg',  name:'Slack',            cat:'협업툴', owner:'IT팀', audience:'전사 구성원', status:'auto', url:'https://slack.com' },
   { mono:'NT', icon:'icons/notion.svg',  name:'Notion',              cat:'협업툴', owner:'IT팀', audience:'전사 구성원', status:'auto', url:'https://notion.so' },
   { mono:'CF', icon:'icons/confluence.svg', name:'Confluence',       cat:'협업툴', owner:'IT팀', audience:'전사 구성원', status:'auto', url:'https://confluence.atlassian.com' },

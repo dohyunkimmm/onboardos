@@ -52,7 +52,7 @@ function renderReadiness(){
   const required = role.cards.filter(item=>requirementFor(item)==='필수');
   const ready = required.filter(item=>['auto','completed'].includes(getEffectiveStatus(item))).length;
   document.getElementById('currentRoleLabel').textContent = role.exception ? '직무 확인 필요' : role.label+' 직군';
-  el.textContent = role.exception ? '직무 확인 필요' : `필수 도구 ${ready}/${required.length}개 준비 완료`;
+  el.textContent = role.exception ? '직무 확인 필요' : `필수 라이선스 ${ready}/${required.length}개 준비 완료`;
   const queue = document.getElementById('pendingSummary');
   queue.hidden = true;
   queue.replaceChildren();
