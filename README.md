@@ -4,7 +4,7 @@
 
 **신규 입사자가 직무별 업무 도구를 확인하고, 라이선스 신청부터 승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다.**
 
-[직접 체험](https://onboardos-rho.vercel.app/) · [2–3분 체험 안내](docs/DEMO_WALKTHROUGH.md) · [Case Study](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
+[직접 체험](https://onboardos-rho.vercel.app/) · [2–3분 체험 안내](docs/DEMO_WALKTHROUGH.md) · [Case Study](https://app.notion.com/p/08d21460c934838cb66601b681e85d8c)
 
 > **Portfolio release — v18.0.0 / P6 product-review candidate.**
 >
