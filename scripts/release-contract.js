@@ -176,8 +176,11 @@ function validateReleaseContract(){
   } catch (error) {
     fail(error.message);
   }
-  for(const critical of ['release.json','version.txt','integrity-assets.json','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/ux-summary.js','scripts/visual-system-summary.js','scripts/public-assets.js','experience-refinement.css']){
-    if(!manifestResult.assets.includes(critical)) fail(`integrity manifest missing critical asset ${critical}`);
+  for(const critical of ['release.json','version.txt','integrity-assets.json','experience-refinement.css']){
+    if(!manifestResult.assets.includes(critical)) fail(`integrity manifest missing public asset ${critical}`);
+  }
+  for(const critical of ['api/recommend.js','lib/recommendation.js','lib/recommendation-rate-limit.js','scripts/release-contract.js','scripts/release-evidence.js','scripts/resilience-summary.js','scripts/security-summary.js','scripts/ux-summary.js','scripts/visual-system-summary.js','scripts/public-assets.js']){
+    if(!manifestResult.sourceOnlyFiles.includes(critical)) fail(`integrity manifest missing source-only file ${critical}`);
   }
 
   return release;
