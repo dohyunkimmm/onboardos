@@ -263,7 +263,14 @@ body:not(.login-open) .action-modal:has(#aiRecommendationForm){max-height:calc(1
 .ai-recommendation-card h4{margin:0;font-size:15px;line-height:1.5;}
 .ai-recommendation-card p{margin:0;font-size:13px;line-height:1.65;}
 .ai-recommendation-card .ghost-btn{justify-self:start;max-width:100%;min-height:44px;white-space:normal;}
-body:not(.login-open) #requestDetails .request-note{width:calc(100% - 8px);min-width:0;min-height:112px;}
+body:not(.login-open) #requestDetails .request-note{width:calc(100% - 8px);min-width:0;}
 body:not(.login-open) #requestDetails .recommendation-review{display:flex;align-items:flex-start;gap:8px;line-height:1.6;padding:8px 0;}
 .recommendation-review input{flex:0 0 18px;width:18px;height:18px;margin:1px 0 0;accent-color:var(--purple-soft);}
 @media(max-width:560px){body:not(.login-open) .action-modal:has(#aiRecommendationForm){max-height:calc(100dvh - 32px);}#aiRecommendSubmit,.ai-recommendation-card .ghost-btn{width:100%;}}
+
+/* Keep AI draft review reachable above the pinned submit actions. */
+body:not(.login-open) .request-modal:has(.recommendation-review){display:flex;flex-direction:column;overflow:hidden;}
+body:not(.login-open) .request-modal:has(.recommendation-review)>h3,body:not(.login-open) .request-modal:has(.recommendation-review)>p{flex:0 0 auto;}
+body:not(.login-open) .request-modal:has(.recommendation-review) #requestDetails{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;align-content:start;}
+body:not(.login-open) .request-modal:has(.recommendation-review) #requestNote{min-height:112px;}
+body:not(.login-open) .request-modal:has(.recommendation-review) .modal-actions{position:static;flex:0 0 auto;margin:0;padding:14px 0 0;}
