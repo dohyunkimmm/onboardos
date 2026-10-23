@@ -25,6 +25,7 @@ async function css(locator){
 }
 
 test('[D1] dashboard hierarchy increases readable width and headline contrast after login', async ({page}) => {
+  await page.setViewportSize({width:1920,height:1080});
   await stabilize(page); await login(page);
   const main = await css(page.locator('main'));
   expect(parseFloat(main.maxWidth)).toBeGreaterThanOrEqual(1180);

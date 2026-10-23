@@ -37,7 +37,6 @@ test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mob
   expect(task.backgroundColor).toBe('rgb(255, 255, 255)');
   const profile=page.locator('.overview-panel');
   await expect(profile).not.toHaveAttribute('open');
-  await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
   await revealRolePicker(page);
   await expect(page.locator('.task-overview .role-tab').first()).toBeVisible();
   await page.getByRole('button',{name:'도움말',exact:true}).click();
@@ -111,7 +110,8 @@ test('[E7] tablet width uses deliberate two-column density with no horizontal ov
 test('[E8] empty states are intentionally designed and reduced-motion remains honored',async({page})=>{
   await stabilize(page);await login(page);
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="unmapped"]').click();
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
+  await page.getByRole('button',{name:'직무 정보 확인이 필요한 경우',exact:true}).click();
   const empty=page.locator('#roleGrid .empty-state');
   await expect(empty).toBeVisible();
   const state=await css(empty);
@@ -124,6 +124,5 @@ test('[E8] empty states are intentionally designed and reduced-motion remains ho
 });
 
 async function revealRolePicker(page){
-  const picker = page.locator('details.role-picker');
-  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
 }

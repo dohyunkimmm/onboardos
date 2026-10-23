@@ -99,7 +99,8 @@ test('직무 미매핑 Fallback이 실제 데모 ITSM 요청으로 생성된다'
   await page.goto('/');
   await login(page);
   await revealRolePicker(page);
-  await page.locator('.role-tab[data-role="unmapped"]').click();
+  await page.getByRole('button',{name:'도움말',exact:true}).click();
+  await page.getByRole('button',{name:'직무 정보 확인이 필요한 경우',exact:true}).click();
   await page.locator('#roleGrid').getByRole('button', { name: '직무 정보 확인 요청' }).click();
   await page.getByRole('button', { name: '요청 접수' }).click();
   await expect(page.locator('#statusBtn')).toBeFocused();
@@ -155,6 +156,5 @@ test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된
 });
 
 async function revealRolePicker(page){
-  const picker = page.locator('details.role-picker');
-  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
 }

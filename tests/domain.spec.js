@@ -79,6 +79,5 @@ test('반려 후 보완 재신청은 동일 ITSM 티켓의 이력을 이어간�
 });
 
 async function revealRolePicker(page){
-  const picker = page.locator('details.role-picker');
-  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
 }

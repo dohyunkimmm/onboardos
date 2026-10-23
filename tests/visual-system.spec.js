@@ -97,7 +97,6 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
   await revealRolePicker(page);
   const role = page.getByRole('button',{name:'디자인'});
   await role.click();
-  await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
   await revealRolePicker(page);
   await expect(role).toHaveAttribute('aria-pressed','true');
   await expect(role).toHaveClass(/active/);
@@ -107,8 +106,6 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
     roleState.backgroundImage !== 'none' ||
     roleState.boxShadow !== 'none'
   ).toBeTruthy();
-
-  await page.locator('details.role-picker > summary').click();
   const filter = page.getByRole('button',{name:'해야 할 일'});
   await filter.click();
   await expect(filter).toHaveAttribute('aria-pressed','true');
@@ -193,6 +190,5 @@ test('[V8] narrow mobile controls retain an expanded touch halo without horizont
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.innerWidth + 1);
 });
 async function revealRolePicker(page){
-  const picker = page.locator('details.role-picker');
-  if(!(await picker.getAttribute('open') !== null)) await picker.locator('summary').click();
+  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
 }

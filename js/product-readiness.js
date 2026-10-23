@@ -54,8 +54,8 @@ function renderReadiness(){
   const openRequests = Object.values(requestState).filter(req=>['pending','approved','rejected'].includes(req.status));
   document.getElementById('currentRoleLabel').textContent = role.exception ? '직무 확인 필요' : role.label+' 직군';
   el.innerHTML = role.exception
-    ? '<strong>직무 확인 후 필수 도구를 안내합니다</strong><p><a class="common-tools-link" data-action="show-common-tools" href="#commonTools">공통 도구 6개 사용 가능</a></p>'
-    : `<strong>필수 도구 ${ready}/${required.length}개 준비 완료</strong><p><a class="common-tools-link" data-action="show-common-tools" href="#commonTools">공통 도구 ${commonLicenses.length}개 사용 가능</a></p>`;
+    ? '<strong>직무 확인 필요</strong>'
+    : `<strong>필수 도구 ${ready}/${required.length}개 준비 완료</strong>`;
   const queue = document.getElementById('pendingSummary');
   queue.hidden = openRequests.length === 0;
   queue.innerHTML = openRequests.length ? `<b>처리·보완 중 ${openRequests.length}건</b>${openRequests.map(req=>`<div><span>${escapeHTML(req.name)} · ${escapeHTML(statusConfig[req.status].label)}</span><span>${escapeHTML(req.status==='rejected'?'보완 후 재신청':req.expected+'까지 처리 예정')}</span></div>`).join('')}<button class="btn-secondary" data-action="open-user-drawer">요청 상세 보기</button>` : '';
