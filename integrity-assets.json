@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "profile": "production-critical-public-assets",
   "requiredFiles": [
     "index.html",
@@ -12,23 +12,13 @@
     "experience-refinement.css",
     "visual-system.css",
     "data.js",
-    "api/recommend.js",
-    "lib/recommendation.js",
     "app.js",
     "og-image.png",
-    "scripts/release-contract.js",
-    "scripts/release-evidence.js",
-    "scripts/resilience-summary.js",
-    "scripts/security-summary.js",
-    "scripts/ux-summary.js",
-    "scripts/visual-system-summary.js",
-    "scripts/public-assets.js",
     "fonts/pretendard.css",
     "fonts/PRETENDARD-LICENSE.txt",
     "execution-hierarchy.css",
     "product-readiness.css",
-    "typography-qa.css",
-    "lib/recommendation-rate-limit.js"
+    "typography-qa.css"
   ],
   "recursiveSets": [
     {
@@ -49,5 +39,17 @@
         ".woff2"
       ]
     }
+  ],
+  "sourceOnlyFiles": [
+    "api/recommend.js",
+    "lib/recommendation.js",
+    "lib/recommendation-rate-limit.js",
+    "scripts/release-contract.js",
+    "scripts/release-evidence.js",
+    "scripts/resilience-summary.js",
+    "scripts/security-summary.js",
+    "scripts/ux-summary.js",
+    "scripts/visual-system-summary.js",
+    "scripts/public-assets.js"
   ]
 }

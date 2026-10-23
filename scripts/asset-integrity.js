@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { collectPublicAssets } = require('./public-assets');
+const { validateIntegrityManifest } = require('./public-assets');
 
 const baseUrl = process.argv[2] || process.env.PRODUCTION_URL;
 if(!baseUrl){
@@ -10,7 +10,7 @@ if(!baseUrl){
   process.exit(2);
 }
 
-const assets = collectPublicAssets();
+const {assets, sourceOnlyFiles} = validateIntegrityManifest();
 const hash = buffer => crypto.createHash('sha256').update(buffer).digest('hex');
 const verificationDir = 'verification';
 fs.mkdirSync(verificationDir, {recursive:true});
@@ -32,6 +32,24 @@ async function fetchAsset(asset){
   throw new Error(`${asset}: ${lastError?.message || 'fetch failed'}`);
 }
 
+async function verifyApiContract(){
+  const target = new URL('/api/recommend', baseUrl);
+  const response = await fetch(target, {
+    headers: {'cache-control':'no-cache'},
+    signal: AbortSignal.timeout(15000)
+  });
+  const allow = response.headers.get('allow') || '';
+  const body = await response.json().catch(() => null);
+  return {
+    route: '/api/recommend',
+    method: 'GET',
+    status: response.status,
+    allow,
+    error: body?.error || null,
+    passed: response.status === 405 && allow.split(',').map(s => s.trim().toUpperCase()).includes('POST') && body?.error === 'method_not_allowed'
+  };
+}
+
 (async()=>{
   const results = [];
   const concurrency = 8;
@@ -47,6 +65,7 @@ async function fetchAsset(asset){
     }));
     results.push(...rows);
   }
+  const apiContract = await verifyApiContract();
   const report = {
     schemaVersion:2,
     manifest:'integrity-assets.json',
@@ -54,16 +73,19 @@ async function fetchAsset(asset){
     commit:process.env.GITHUB_SHA || null,
     productionUrl:baseUrl,
     assetCount:results.length,
-    allMatch:results.every(row => row.match),
+    sourceOnlyFileCount:sourceOnlyFiles.length,
+    apiContract,
+    allMatch:results.every(row => row.match) && apiContract.passed,
     assets:results
   };
   fs.writeFileSync(path.join(verificationDir,'asset-integrity.json'), JSON.stringify(report,null,2) + '\n');
   const mismatches = results.filter(row => !row.match);
   if(mismatches.length){
     for(const row of mismatches) console.error(`HASH MISMATCH ${row.asset}\n  local  ${row.localSha256}\n  remote ${row.remoteSha256}`);
-    process.exit(1);
   }
-  console.log(`Production source integrity PASS: ${results.length}/${results.length} manifest assets match SHA-256`);
+  if(!apiContract.passed) console.error(`API CONTRACT MISMATCH: GET ${apiContract.route} returned ${apiContract.status}, Allow=${apiContract.allow}, error=${apiContract.error}`);
+  if(!report.allMatch) process.exit(1);
+  console.log(`Production integrity PASS: ${results.length}/${results.length} public assets match SHA-256; POST-only API contract verified`);
 })().catch(error => {
   console.error(`Production source integrity FAILED: ${error.message}`);
   process.exit(1);

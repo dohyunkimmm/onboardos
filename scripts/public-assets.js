@@ -53,10 +53,11 @@ const walk = (root, extensions) => {
 };
 
 function validateIntegrityManifest(manifest = readJson(MANIFEST_PATH)){
-  if(manifest.schemaVersion !== 1) fail(`schemaVersion must be 1, found ${manifest.schemaVersion}`);
+  if(manifest.schemaVersion !== 2) fail(`schemaVersion must be 2, found ${manifest.schemaVersion}`);
   if(manifest.profile !== 'production-critical-public-assets') fail(`unexpected profile: ${manifest.profile}`);
   if(!Array.isArray(manifest.requiredFiles) || !manifest.requiredFiles.length) fail('requiredFiles must be non-empty');
   if(!Array.isArray(manifest.recursiveSets) || !manifest.recursiveSets.length) fail('recursiveSets must be non-empty');
+  if(!Array.isArray(manifest.sourceOnlyFiles) || !manifest.sourceOnlyFiles.length) fail('sourceOnlyFiles must be non-empty');
 
   const assets = new Set();
   for(const raw of manifest.requiredFiles){
@@ -79,12 +80,24 @@ function validateIntegrityManifest(manifest = readJson(MANIFEST_PATH)){
     }
   }
 
+  // API handlers, bundled helpers and CI scripts have no public source URL.
+  const sourceOnlyFiles = new Set();
+  for(const raw of manifest.sourceOnlyFiles){
+    const file = normalizeRelative(raw);
+    assertRegularFile(file);
+    if(assets.has(file) || sourceOnlyFiles.has(file)) fail(`asset appears in multiple manifest groups: ${file}`);
+    sourceOnlyFiles.add(file);
+  }
+  for(const critical of ['api/recommend.js', 'lib/recommendation.js', 'lib/recommendation-rate-limit.js']){
+    if(!sourceOnlyFiles.has(critical)) fail(`server source coverage missing ${critical}`);
+  }
+
   for(const required of [MANIFEST_PATH, 'release.json', 'version.txt', 'index.html', 'production-demo.html']){
     if(!assets.has(required)) fail(`canonical coverage missing ${required}`);
   }
   if(assets.size < 20) fail(`unexpectedly small asset surface: ${assets.size}`);
 
-  return { manifest, assets:[...assets].sort() };
+  return { manifest, assets:[...assets].sort(), sourceOnlyFiles:[...sourceOnlyFiles].sort() };
 }
 
 function collectPublicAssets(){
@@ -93,8 +106,8 @@ function collectPublicAssets(){
 
 if(require.main === module){
   try {
-    const { manifest, assets } = validateIntegrityManifest();
-    console.log(`Integrity manifest PASS: ${assets.length} assets · ${manifest.profile}`);
+    const { manifest, assets, sourceOnlyFiles } = validateIntegrityManifest();
+    console.log(`Integrity manifest PASS: ${assets.length} public assets + ${sourceOnlyFiles.length} source-only files · ${manifest.profile}`);
   } catch (error) {
     console.error(`INTEGRITY MANIFEST FAILED: ${error.message}`);
     process.exit(1);
