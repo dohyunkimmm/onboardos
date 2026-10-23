@@ -1,8 +1,8 @@
 'use strict';
 const {test,afterEach} = require('node:test');
 const assert = require('node:assert/strict');
-const {catalogFor,validateRecommendation} = require('../lib/recommendation');
-const handler = require('../api/recommend');
+const {catalogFor,validateRecommendation} = require('../../lib/recommendation');
+const handler = require('../../api/recommend');
 const originalFetch = global.fetch;
 const originalEnv = {...process.env};
 afterEach(()=>{
