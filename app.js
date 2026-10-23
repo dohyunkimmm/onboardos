@@ -432,7 +432,8 @@ function setFilter(filter){
 function applyFilters(){
   const group = FILTER_GROUPS[selectedFilter];
   document.querySelectorAll('.card').forEach(card => {
-    const matchesFilter = !group || group.has(card.dataset.status);
+    const query = (document.getElementById('toolSearch')?.value || '').trim().toLocaleLowerCase();
+    const matchesFilter = (!group || group.has(card.dataset.status)) && (!query || card.dataset.name.toLocaleLowerCase().includes(query));
     card.classList.toggle('is-hidden', !matchesFilter);
     card.hidden = !matchesFilter;
     card.inert = !matchesFilter;
@@ -442,7 +443,8 @@ function applyFilters(){
 
 // 상태 필터로 카드가 모두 숨겨진 섹션에 안내와 개수 표시를 맞춘다.
 function updateSectionEmptyStates(){
-  const filtering = selectedFilter !== 'all';
+  const searching = !!document.getElementById('toolSearch')?.value.trim();
+  const filtering = selectedFilter !== 'all' || searching;
   let totalVisible = 0;
   [['commonGrid','commonEmpty','commonCount'],['roleGrid','roleEmpty','roleCount']].forEach(([gridId,emptyId,countId])=>{
     const grid = document.getElementById(gridId);
@@ -453,7 +455,7 @@ function updateSectionEmptyStates(){
     const visible = grid.querySelectorAll('.card:not(.is-hidden)').length;
     totalVisible += visible;
     empty.hidden = !(filtering && cards.length > 0 && visible === 0);
-    if(!empty.hidden) empty.innerHTML = `<b>${selectedFilter==='processing'?'처리 중인 요청이 없습니다':selectedFilter==='done'?'지급 완료된 도구가 없습니다':'신청하거나 보완할 항목이 없습니다'}</b>다른 상태 필터에서 도구를 확인할 수 있습니다.`;
+    if(!empty.hidden) empty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>도구 이름이나 상태 필터를 바꿔 주세요.' : `<b>${selectedFilter==='processing'?'처리 중인 요청이 없습니다':selectedFilter==='done'?'지급 완료된 도구가 없습니다':'신청하거나 보완할 항목이 없습니다'}</b>다른 상태 필터에서 도구를 확인할 수 있습니다.`;
     grid.closest('.licenses')?.classList.toggle('is-filter-empty', filtering && cards.length > 0 && visible === 0);
     if(countEl && countEl.dataset.base){
       countEl.textContent = filtering ? `${visible}종 표시 중 · 전체 ${cards.length}종` : countEl.dataset.base;
@@ -491,7 +493,6 @@ function openRequestModal(name){
     <div class="detail-row"><span>담당 부서</span><b>${selectedRequestItem.owner}</b></div>
     <div class="detail-row"><span>지급 대상</span><b>${selectedRequestItem.audience || roles[currentRole].label + ' 직군'}</b></div>
     <div class="detail-row"><span>상태</span><b>${sc.label}</b></div>
-    <div class="detail-row"><span>예상 처리 시간</span><b>${sc.timing}</b></div>
     <div class="detail-row"><span>처리 기준</span><b class="sla-detail">${sla.detail}</b></div>
     <div class="detail-row"><span>예상 지급일</span><b>${expected}</b></div>
     <div class="detail-row"><span>신청 경로</span><b>Jira Service Management</b></div>
@@ -815,7 +816,7 @@ function updateProgressHint({state}){
   let step='대표 신청 체험 1/3',msg='필요한 도구의 신청 흐름을 체험하세요.',cta=suggested?suggested.name+' 신청하기':'사용 시작 안내';
   if(currentRole==='unmapped'){msg='직무 정보를 확인한 뒤 맞춤 도구를 안내합니다.';cta='직무 정보 확인 요청';}
   if(state==='rejected'){step='대표 신청 체험 · 보완';msg='신청현황에서 반려 사유를 확인하고 보완해 주세요.';cta='보완 요청 확인';}
-  else if(state==='pending'){step='대표 신청 체험 2/3';msg='접수된 요청을 관리자 역할로 검토해 보세요.';cta='관리자 검토 체험';}
+  else if(state==='pending'){step='대표 신청 체험 2/3';msg='신청이 접수되었습니다. 다음은 IT 담당자 역할로 검토합니다.';cta='관리자 검토 체험';}
   else if(state==='approved'){step='대표 신청 체험 3/3';msg='검토된 요청의 지급 완료를 관리자 역할로 처리해 보세요.';cta='지급 처리 체험';}
   else if(state==='completed'){step='대표 신청 체험 완료';msg='대표 요청 처리가 끝났습니다. 필수 도구 준비 상태는 위에서 별도로 확인하세요.';const missing=(roles[currentRole]?.cards||[]).find(item=>requirementFor(item)==='필수'&&!['auto','completed'].includes(getEffectiveStatus(item)));cta=missing?missing.name+' 신청하기':'필수 도구 시작 안내';}
   el.innerHTML=`<span class="demo-step-kicker${state==='completed'?' is-done':''}">${step}</span><span class="hint-copy">${escapeHTML(msg)}</span><button class="hint-cta" data-action="demo-next">${escapeHTML(cta)}</button>`;
@@ -858,3 +859,4 @@ syncPageInert();
 if(loggedIn) requestAnimationFrame(()=>document.getElementById('mainContent')?.focus({preventScroll:true}));
 else requestAnimationFrame(()=>document.querySelector('.login-card')?.focus({preventScroll:true}));
 // sessionStorage에 체험 상태를 유지하고, 초기화 버튼으로 명시적으로 리셋한다.
+
