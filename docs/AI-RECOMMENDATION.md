@@ -8,25 +8,25 @@
 
 ## 실행 설정
 
-기존 정적 화면에 Vercel Node.js Function `api/recommend.js`를 추가했다. 브라우저는 같은 출처의 `/api/recommend`만 호출한다. 서버는 `data.js`의 동일한 카탈로그를 직접 읽고 OpenAI Responses API의 JSON Schema 출력을 검증한다. 별도 패키지 설치는 필요 없다.
+기존 정적 화면에 Vercel Node.js Function `api/recommend.js`를 추가했다. 브라우저는 같은 출처의 `/api/recommend`만 호출한다. 서버는 `data.js`의 동일한 카탈로그를 직접 읽고 Gemini Generate Content API의 JSON Schema 출력을 검증한다. 별도 패키지 설치는 필요 없다.
 
 서버 환경변수:
 
 | 이름 | 값 |
 | --- | --- |
-| `OPENAI_API_KEY` | 운영자가 관리하는 OpenAI API 키. 프런트엔드에 포함하지 않는다. |
-| `OPENAI_MODEL` | 해당 프로젝트에서 사용 가능한 Structured Outputs 지원 모델 ID |
+| `GEMINI_API_KEY` | Google AI Studio에서 발급한 Gemini API 키. 프런트엔드에 포함하지 않는다. |
+| 모델 | 코드에서 `gemini-3.5-flash-lite`로 고정. 무료 등급 지원 모델이며 유료 모델로 자동 전환하지 않는다. |
 | `AI_RECOMMENDATIONS_ENABLED` | 실제 호출을 활성화할 때만 `true` |
 
 기본값은 비활성이다. 설정이 없으면 503을 반환하고 화면에 미연결 안내를 표시한다. 규칙 기반 응답을 AI 결과로 대체하지 않는다. `python -m http.server` 같은 정적 서버에서는 API가 실행되지 않는다. 실제 호출은 Vercel 배포 환경이나 Vercel 로컬 개발 환경에서 검증한다.
 
-이 프로젝트의 Google SSO는 모의 로그인이다. 이 API도 사내 인증이 적용된 서비스가 아니며, 동일 출처 검사는 인증이나 사용량 제한이 아니다. 공개 배포에서 유료 AI를 활성화하기 전에는 플랫폼 요청 제한과 AI 프로젝트의 예산 제한을 설정해야 한다. 실제 사내 운영 시에는 서버에서 직원 인증과 직군을 검증해야 한다. 현재 `role`은 체험용 직군 선택값이다.
+이 프로젝트의 Google SSO는 모의 로그인이다. 이 API도 사내 인증이 적용된 서비스가 아니며, 동일 출처 검사는 인증이나 사용량 제한이 아니다. 무료 포트폴리오용으로는 결제 계정을 연결하지 않은 Free Tier 프로젝트의 키를 사용한다. API 키만으로 서버가 결제 등급을 판별할 수 없으므로 Google AI Studio에서 Free Tier임을 확인한다. 유료 등급으로 전환하지 않는다. 무료 호출 한도 초과는 429로 표시하고 자동 재시도나 다른 공급자·모델로의 전환은 하지 않는다. 공개 배포 시 플랫폼 요청 제한도 적용한다. 실제 사내 운영 시에는 서버에서 직원 인증과 직군을 검증해야 한다. 현재 `role`은 체험용 직군 선택값이다.
 
 ## 처리 범위와 데이터
 
 - 입력 5~500자, 요청 본문 4KB 제한. 공급자 요청 20초·클라이언트 대기 25초 제한.
 - AI에 전달하는 값은 직군 키, 입력한 담당 역할, 해당 직군·공통 카탈로그뿐이다. 이메일·이름·신청 이력을 전송하지 않는다.
-- 입력과 결과를 별도로 저장하거나 분석 이벤트로 수집하지 않는다. OpenAI 요청은 `store:false`를 사용한다. 이것이 공급자의 모든 보존 정책을 없애는 의미는 아니다.
+- 입력과 결과를 별도로 저장하거나 분석 이벤트로 수집하지 않는다. 무료 등급에서는 Google이 입력·응답을 제품 개선에 사용할 수 있다. 실제 직원 정보나 회사 기밀을 사용하지 않고 가상 직무 정보로 체험한다.
 - 브라우저에서 외부 AI 전송 안내를 먼저 표시한다. API 오류·거절·시간 초과 시 기존 목록을 계속 이용할 수 있다.
 - 직군 외 ID, 중복 도구, 잘못된 형식, 미완료 응답은 거부한다. AI 문장은 텍스트로만 표시하고 HTML로 실행하지 않는다.
 - 닫기·직군 변경·초기화 시 진행 중 요청을 취소하고 늦은 응답은 무시한다. 결과 버튼은 현재 신청 상태를 다시 확인하는 기존 흐름을 사용한다.
@@ -47,4 +47,13 @@ WebKit의 신청·승인 기능 검사 컨텍스트에만 공식 임시 대응�
 
 기존 목록 탐색과 비교해 도구 선택 소요 시간, 추천 적합도, 추천 후 신청 전환율을 측정한다. 추천 도구 수나 신청 수 증가만을 성공으로 보지 않는다. 공통 지급 도구만으로 충분한 상황에서 추가 신청을 유도하지 않는지도 함께 평가한다. 개선 수치는 아직 측정하지 않았다.
 
-공식 구현 참고: https://developers.openai.com/api/docs/guides/structured-outputs · https://vercel.com/docs/functions/runtimes/node-js
+공식 구현 참고: https://ai.google.dev/gemini-api/docs/generate-content/structured-output · https://vercel.com/docs/functions/runtimes/node-js
+
+## Gemini 무료 등급 연결 순서
+
+1. https://aistudio.google.com/api-keys 에서 Google 계정으로 로그인하고 프로젝트·API 키를 생성한다. 화면 안내에 따라 약관·프로젝트 생성을 완료한다.
+2. 프로젝트가 Free Tier인지 확인하고 결제 계정을 연결하거나 유료 업그레이드를 하지 않는다. 모델별 실제 한도는 계정에서 확인한다.
+3. Vercel Preview 환경변수에 `GEMINI_API_KEY`와 `AI_RECOMMENDATIONS_ENABLED=true`를 등록한다. 키를 소스·채팅에 넣지 않는다. 기존 OpenAI/Groq 키는 이 코드에서 사용하지 않는다.
+4. 미리보기 재배포 후 실제 추천 품질과 한도 초과 안내를 확인한다. 키가 없으면 503 안내를 유지한다.
+
+공식 무료 등급 안내: https://ai.google.dev/gemini-api/docs/pricing · https://ai.google.dev/gemini-api/docs/billing

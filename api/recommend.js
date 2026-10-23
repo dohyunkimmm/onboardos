@@ -22,25 +22,30 @@ module.exports = async function handler(req,res){
   }catch(_error){ return res.status(400).json({error:'invalid_input'}); }
   const catalog = typeof body?.role === 'string' ? catalogFor(body.role) : null;
   if(!catalog || typeof body.detail !== 'string' || body.detail.trim().length < 5 || body.detail.length > 500) return res.status(400).json({error:'invalid_input'});
-  if(process.env.AI_RECOMMENDATIONS_ENABLED !== 'true' || !process.env.OPENAI_API_KEY || !process.env.OPENAI_MODEL) return res.status(503).json({error:'ai_not_configured'});
+  if(process.env.AI_RECOMMENDATIONS_ENABLED !== 'true' || !process.env.GEMINI_API_KEY) return res.status(503).json({error:'ai_not_configured'});
+  // Use one documented free-tier model; never fall back to a paid provider/model.
+  const model = 'gemini-3.5-flash-lite';
   try{
-    const response = await fetch('https://api.openai.com/v1/responses',{
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,{
       method:'POST',
-      headers:{Authorization:`Bearer ${process.env.OPENAI_API_KEY}`,'Content-Type':'application/json'},
+      headers:{'x-goog-api-key':process.env.GEMINI_API_KEY,'Content-Type':'application/json'},
       signal:AbortSignal.timeout(20000),
       body:JSON.stringify({
-        model:process.env.OPENAI_MODEL,store:false,max_output_tokens:1200,
-        instructions,
-        input:JSON.stringify({role:body.role,detail:body.detail.trim(),catalog}),
-        text:{format:{type:'json_schema',name:'role_tool_recommendation',strict:true,schema:schemaFor(catalog)}}
+        systemInstruction:{parts:[{text:instructions}]},
+        contents:[{role:'user',parts:[{text:JSON.stringify({role:body.role,detail:body.detail.trim(),catalog})}]}],
+        generationConfig:{
+          maxOutputTokens:1200,
+          responseFormat:{text:{mimeType:'APPLICATION_JSON',schema:schemaFor(catalog)}}
+        }
       })
     });
     if(!response.ok) return res.status(response.status === 429 ? 429 : 502).json({error:'provider_unavailable'});
     const data = await response.json();
-    if(data.status !== 'completed') throw new Error('Incomplete model response');
-    const parts = (data.output || []).filter(item=>item.type === 'message').flatMap(item=>item.content || []);
-    if(parts.some(part=>part.type === 'refusal')) return res.status(422).json({error:'cannot_recommend'});
-    const raw = parts.filter(part=>part.type === 'output_text').map(part=>part.text).join('');
+    if(data.promptFeedback?.blockReason) return res.status(422).json({error:'cannot_recommend'});
+    const candidate = data.candidates?.[0];
+    if(['SAFETY','RECITATION','BLOCKLIST','PROHIBITED_CONTENT'].includes(candidate?.finishReason)) return res.status(422).json({error:'cannot_recommend'});
+    if(candidate?.finishReason !== 'STOP') throw new Error('Incomplete model response');
+    const raw = (candidate.content?.parts || []).filter(part=>typeof part.text === 'string' && !part.thought).map(part=>part.text).join('');
     const result = validateRecommendation(JSON.parse(raw),catalog);
     return res.status(200).json(result);
   }catch(_error){

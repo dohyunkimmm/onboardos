@@ -7,7 +7,7 @@ const originalFetch = global.fetch;
 const originalEnv = {...process.env};
 afterEach(()=>{
   global.fetch = originalFetch;
-  for(const name of ['OPENAI_API_KEY','OPENAI_MODEL','AI_RECOMMENDATIONS_ENABLED']){
+  for(const name of ['GEMINI_API_KEY','AI_RECOMMENDATIONS_ENABLED']){
     if(originalEnv[name] === undefined) delete process.env[name];
     else process.env[name] = originalEnv[name];
   }
@@ -22,11 +22,10 @@ async function call(req=request()){
 }
 function enable(){
   process.env.AI_RECOMMENDATIONS_ENABLED='true';
-  process.env.OPENAI_API_KEY='test-key-never-live';
-  process.env.OPENAI_MODEL='configured-test-model';
+  process.env.GEMINI_API_KEY='test-key-never-live';
 }
 function provider(value,overrides={}){
-  return {ok:true,json:async()=>({status:'completed',output:[{type:'message',content:[{type:'output_text',text:JSON.stringify(value)}]}],...overrides})};
+  return {ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(value)}]}}],...overrides})};
 }
 const valid={recommendations:[{toolId:'AD',reason:'계약서 PDF 검토에 활용할 수 있습니다.'}],followUpQuestion:null};
 
@@ -63,16 +62,18 @@ test('method, origin, media type, malformed and oversized input fail before AI',
   assert.equal((await call(request({body:'x'.repeat(4097)}))).code,413);
   for(const body of [{role:'unmapped',detail:'test detail'},{role:'constructor',detail:'test detail'},{role:'office',detail:'x'.repeat(501)},{role:'office',detail:'  '}]) assert.equal((await call(request({body}))).code,400);
 });
-test('real API request uses server catalog, bounded output and no response storage',async()=>{
+test('Gemini request uses the fixed free-tier model, server catalog and bounded output',async()=>{
   enable();
   global.fetch=async(url,options)=>{
-    assert.equal(url,'https://api.openai.com/v1/responses');
+    assert.equal(url,'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent');
+    assert.equal(options.headers['x-goog-api-key'],'test-key-never-live');
+    assert.ok(!url.includes('test-key'));
     const payload=JSON.parse(options.body);
-    assert.equal(payload.store,false);
-    assert.equal(payload.text.format.strict,true);
-    assert.equal(payload.model,'configured-test-model');
-    assert.ok(payload.max_output_tokens<=1200);
-    assert.ok(!JSON.parse(payload.input).catalog.some(item=>item.toolId==='FG'));
+    assert.equal(payload.generationConfig.responseFormat.text.mimeType,'APPLICATION_JSON');
+    assert.ok(payload.generationConfig.responseFormat.text.schema.properties.recommendations);
+    assert.ok(payload.generationConfig.maxOutputTokens<=1200);
+    assert.ok(!JSON.parse(payload.contents[0].parts[0].text).catalog.some(item=>item.toolId==='FG'));
+    assert.ok(payload.systemInstruction.parts[0].text);
     return provider(valid);
   };
   const result=await call(request({body:{role:'office',detail:'계약서 PDF를 검토합니다.',catalog:[{toolId:'FG'}]}}));
@@ -90,8 +91,10 @@ test('invalid, incomplete, refused, failed and rate-limited provider outputs are
   enable();
   for(const [mock,code] of [
     [provider({recommendations:[{toolId:'FG',reason:'wrong role'}],followUpQuestion:null}),502],
-    [provider(valid,{status:'incomplete'}),502],
-    [provider(valid,{output:[{type:'message',content:[{type:'refusal',refusal:'no'}]}]}),422],
+    [provider(valid,{candidates:[{finishReason:'MAX_TOKENS',content:{parts:[{text:'{}'}]}}]}),502],
+    [provider(valid,{promptFeedback:{blockReason:'SAFETY'}}),422],
+    [provider(valid,{candidates:[{finishReason:'SAFETY'}]}),422],
+    [provider(valid,{candidates:[]}),502],
     [{ok:false,status:429},429],
     [{ok:false,status:401},502]
   ]){
@@ -102,4 +105,12 @@ test('invalid, incomplete, refused, failed and rate-limited provider outputs are
   }
   global.fetch=async()=>{throw new Error('secret provider error');};
   assert.deepEqual((await call()).body,{error:'recommendation_unavailable'});
+});
+
+test('free quota exhaustion returns 429 without retrying or switching provider',async()=>{
+  enable();
+  let calls=0;
+  global.fetch=async()=>{calls++;return {ok:false,status:429};};
+  assert.equal((await call()).code,429);
+  assert.equal(calls,1);
 });
