@@ -6,6 +6,14 @@ PR #102 후보 변경으로 직무별 필수 도구 준비 상태, 완료 필터
 
 **검증 상태:** 후보 브랜치의 Node 회귀 검사와 일부 브라우저 확인만 반영했습니다. 기존 v18.0.0 Release 영상·증빙은 과거 정식 배포 자료이며, 이 후보의 전체 E2E·시각 회귀·Production 검증으로 간주하지 않습니다. 상세 내용은 [`docs/PRODUCT_REVIEW_2026-10-08.md`](./docs/PRODUCT_REVIEW_2026-10-08.md)를 참고하세요.
 
+### 사용자 경험·AI 추천·검증 경로 정리 — 2026-10-23
+
+- [#120–#127](https://github.com/dohyunkimmm/onboardos/pull/127): 밝은 업무용 UI, 직원용 간결한 라이선스 카탈로그, 중복 안내 정리, 직무 선택 메뉴 및 키보드/반응형 회귀 보정.
+- [#128–#133](https://github.com/dohyunkimmm/onboardos/pull/133): 직무별 선택형 Gemini 추천·허용 목록 검증, 라이선스 확장, 추천 기반 신청 초안, 요청 빈도 제한, 입력 변경/포커스/세션 복원 안정성 강화. 기본 SSO·승인·발급은 계속 모의 흐름.
+- [#134](https://github.com/dohyunkimmm/onboardos/pull/134): 서버 함수와 내부 스크립트를 공개 정적 자산 무결성 목록에서 분리. 공개 자산 SHA-256과 POST 전용 API 응답을 별도 검증하고 매니페스트 회귀 테스트 추가.
+- 사용 안내에서 영상으로 연결되지 않던 `/production-demo` 링크를 이전 릴리스의 실제 영상 파일 링크로 교체하고, 최신 Live 체험·리뷰어 모드 접근을 명시.
+- 위 개선은 `releaseStatus: candidate` 상태를 변경하거나, 과거 v18.0.0 릴리스의 증빙으로 최신 화면을 검증했다고 주장하지 않습니다.
+
 ### 문서·CI 유지보수 — 2026-10-09
 
 - [#105](https://github.com/dohyunkimmm/onboardos/pull/105)에서 README를 간소화했습니다. 자세한 검증 안내는 [DEMO_WALKTHROUGH](docs/DEMO_WALKTHROUGH.md)와 현재 GitHub Actions 실행 내역을 참고합니다.
