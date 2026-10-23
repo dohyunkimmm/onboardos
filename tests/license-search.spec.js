@@ -42,3 +42,20 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await expect(common).toHaveAttribute('open');
  await expect(common.getByRole('heading',{name:'모든 직원이 사용하는 도구'})).toBeVisible();
 });
+
+test('Shared-tool shortcut clears conflicting filters and exposes start guidance',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await page.getByRole('searchbox',{name:'도구 검색'}).fill('없는도구');
+ await expect(page.locator('#globalEmpty')).toContainText('검색 결과가 없습니다');
+ await page.getByRole('button',{name:'해야 할 일',exact:true}).click();
+ await page.getByRole('link',{name:/공통 도구 6개 사용 가능/}).click();
+ await expect(page.getByRole('searchbox',{name:'도구 검색'})).toHaveValue('');
+ await expect(page.getByRole('button',{name:'전체',exact:true})).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#commonGrid .card:not(.is-hidden)')).toHaveCount(6);
+ const slack=page.locator('#commonGrid .card[data-name="Slack"]');
+ await slack.getByRole('button',{name:'계정·초대 안내'}).click();
+ await expect(page.locator('#actionModalBackdrop')).toHaveClass(/show/);
+ await expect(page.locator('#actionModalTitle')).toContainText('Slack');
+});

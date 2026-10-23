@@ -10,7 +10,13 @@ function activatePostLoginStyles(){
 if(loggedIn) activatePostLoginStyles();
 
 const actionHandlers = {
-  'show-common-tools': () => { const common=document.getElementById('commonTools'); if(common) common.open=true; },
+  'show-common-tools': () => {
+    const search=document.getElementById('toolSearch');
+    if(search){ search.value=''; search.dispatchEvent(new Event('input',{bubbles:true})); }
+    setFilter('all');
+    const common=document.getElementById('commonTools');
+    if(common) common.open=true;
+  },
   'open-user-drawer': () => openDrawer('user'),
   'open-admin-drawer': () => openDrawer('admin'),
   'reset-demo': () => resetDemo(),

@@ -468,7 +468,10 @@ function updateSectionEmptyStates(){
   });
   const globalEmpty = document.getElementById('globalEmpty');
   const hasRoleException = !!document.querySelector('#roleGrid .empty-state:not(.no-result)');
-  if(globalEmpty) globalEmpty.hidden = !(filtering && totalVisible === 0 && !hasRoleException);
+  if(globalEmpty){
+    globalEmpty.hidden = !(filtering && totalVisible === 0 && !hasRoleException);
+    if(!globalEmpty.hidden) globalEmpty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>검색어나 필터를 바꿔 주세요.' : '<b>조건에 맞는 도구가 없습니다</b>다른 상태를 선택해 주세요.';
+  }
 }
 
 function openRequestModal(name){
