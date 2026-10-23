@@ -14,6 +14,7 @@ const reviewerMode = new URLSearchParams(location.search).get('review') === '1';
 document.querySelectorAll('[data-reviewer-only]').forEach(el => { el.hidden = !reviewerMode; });
 
 const actionHandlers = {
+  'ai-recommend': () => { document.getElementById('onboardingHelp')?.close(); openAiRecommendation(); },
   'preview-unmapped': () => { document.getElementById('onboardingHelp')?.close(); setRole('unmapped'); },
   'go-home': () => {
     document.getElementById('onboardingHelp')?.close();

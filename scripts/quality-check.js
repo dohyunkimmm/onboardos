@@ -2,13 +2,15 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const {execFileSync} = require('child_process');
+execFileSync(process.execPath,['--test','scripts/tests/ai-recommendation.test.cjs'],{stdio:'inherit'});
 const { validateReleaseContract } = require('./release-contract');
 const { collectPublicAssets } = require('./public-assets');
 
 const read = p => fs.readFileSync(p, 'utf8');
 const fail = message => { console.error(`QUALITY GATE FAILED: ${message}`); process.exit(1); };
 
-const runtimeFiles = ['index.html','app.js','js/a11y.js','js/analytics.js','js/events.js'];
+const runtimeFiles = ['index.html','app.js','js/a11y.js','js/analytics.js','js/events.js','js/ai-recommendation.js'];
 for(const file of runtimeFiles){
   const text = read(file);
   if(/\son[a-z]+\s*=/i.test(text)) fail(`${file} still contains an inline event handler`);

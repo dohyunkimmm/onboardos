@@ -1,6 +1,29 @@
 const { test, expect } = require('@playwright/test');
 
-test('Firefox/WebKit에서 신청 → 사용자/관리자 동일 티켓 핵심 Flow가 동작한다', async ({ page }) => {
+test('WebKit native select CSP regression is isolated from application code', async ({browser,browserName})=>{
+  test.skip(browserName !== 'webkit','WebKit upstream regression only');
+  // This fresh context deliberately enforces CSP, unlike the functional smoke.
+  const context = await browser.newContext({bypassCSP:false});
+  try{
+    const page = await context.newPage();
+    await page.addInitScript(()=>{
+      window.__nativeSelectViolations=[];
+      document.addEventListener('securitypolicyviolation',event=>window.__nativeSelectViolations.push({directive:event.effectiveDirective,blocked:event.blockedURI}));
+    });
+    await page.route('**/webkit-native-select-repro',route=>route.fulfill({
+      contentType:'text/html',
+      headers:{'Content-Security-Policy':"default-src 'none'; style-src 'self'; style-src-attr 'none'"},
+      body:'<!doctype html><html><head><title>Native select CSP regression</title></head><body><select aria-label="Native control"><option>Example</option></select></body></html>'
+    }));
+    await page.goto('http://127.0.0.1:4173/webkit-native-select-repro');
+    await expect(page.locator('style,[style],script,link')).toHaveCount(0);
+    // Fails when upstream is fixed, prompting removal of the temporary workaround.
+    await expect.poll(()=>page.evaluate(()=>window.__nativeSelectViolations)).toEqual([{directive:'style-src-attr',blocked:'inline'}]);
+  }finally{ await context.close(); }
+});
+
+test('Firefox/WebKit에서 신청 → 사용자/관리자 동일 티켓 핵심 Flow가 동작한다', async ({ page,browserName }) => {
+  if(browserName === 'webkit') test.info().annotations.push({type:'upstream-workaround',description:'Functional smoke uses bypassCSP only for WebKit 27.2 native select regression (#43416); this is not a WebKit CSP validation.'});
   const pageErrors = [];
   const consoleErrors = [];
   page.on('pageerror', e => pageErrors.push(e.message));

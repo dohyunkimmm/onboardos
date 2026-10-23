@@ -50,6 +50,7 @@ function showActionGuideModal(item){
 
 
 function hideActionModal(){
+  if(typeof cancelAiRecommendation === 'function') cancelAiRecommendation();
   document.getElementById('actionModalBackdrop').classList.remove('show');
   deactivateOverlay('actionModalBackdrop');
 }
@@ -210,6 +211,10 @@ function renderRoleTabs(){
 }
 
 function setRole(key){
+  if(key !== currentRole && typeof cancelAiRecommendation === 'function'){
+    cancelAiRecommendation();
+    if(document.getElementById('aiRecommendationForm')) hideActionModal();
+  }
   currentRole = roles[key] ? key : 'office';
   activateRoleState(currentRole);
   key = currentRole;
@@ -313,6 +318,7 @@ function submitSupportRequest(){
 }
 
 function resetDemo(){
+  if(typeof cancelAiRecommendation === 'function') cancelAiRecommendation();
   trackEvent('Demo Reset',{role:currentRole});
   requestStateByRole = {};
   cancelledHistoryByRole = {};
@@ -859,4 +865,3 @@ syncPageInert();
 if(loggedIn) requestAnimationFrame(()=>document.getElementById('mainContent')?.focus({preventScroll:true}));
 else requestAnimationFrame(()=>document.querySelector('.login-card')?.focus({preventScroll:true}));
 // sessionStorage에 체험 상태를 유지하고, 초기화 버튼으로 명시적으로 리셋한다.
-

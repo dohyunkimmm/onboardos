@@ -12,6 +12,8 @@
     "experience-refinement.css",
     "visual-system.css",
     "data.js",
+    "api/recommend.js",
+    "lib/recommendation.js",
     "app.js",
     "og-image.png",
     "scripts/release-contract.js",
