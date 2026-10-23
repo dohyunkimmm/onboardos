@@ -41,17 +41,15 @@
 </div>
 <div class="topbar" inert="">
 <div>
-<h1 class="logo"><span class="sr-only">직무별 라이선스 온보딩 포털 — </span>ONBOARD<span>·</span>OS</h1>
+<h1 class="logo"><span class="sr-only">직무별 라이선스 온보딩 포털 — </span><button class="logo-home" type="button" data-action="go-home" aria-label="ONBOARD·OS 첫 페이지" title="첫 페이지로 이동">ONBOARD<span>·</span>OS</button></h1>
 <div class="sub">신규입사자 SaaS·업무 도구 가이드</div>
 </div>
 <div class="top-actions">
-<button class="top-btn secondary" type="button" data-action="go-home">첫 페이지</button>
 <button class="top-btn secondary" type="button" data-action="open-onboarding-help">도움말</button>
-<button class="top-btn secondary" type="button" data-action="ai-recommend">AI 추천</button>
 <button aria-controls="drawerPanel" aria-expanded="false" class="top-btn" id="statusBtn" data-action="open-user-drawer">신청현황 <span class="notif-dot is-empty" id="requestCount">0</span></button>
-<button aria-controls="drawerPanel" aria-expanded="false" aria-label="관리자 체험 — IT 관리자 역할" class="top-btn" id="adminBtn" data-action="open-admin-drawer"><span class="desktop-label">관리자 체험</span><span class="mobile-label">관리자</span> </button>
-<button aria-label="체험 초기화" class="top-btn secondary" id="resetBtn" data-action="reset-demo">↺ <span class="desktop-label">체험 초기화</span><span class="mobile-label">초기화</span></button>
-<button aria-controls="moreMenu" aria-expanded="false" aria-label="더보기" class="top-btn secondary more-btn" id="moreBtn" data-action="toggle-more" type="button">⋯</button>
+<button aria-controls="drawerPanel" aria-expanded="false" aria-label="관리자 체험 — IT 관리자 역할" class="top-btn" data-reviewer-only hidden id="adminBtn" data-action="open-admin-drawer"><span class="desktop-label">관리자 체험</span><span class="mobile-label">관리자</span> </button>
+<button aria-label="체험 초기화" class="top-btn secondary" data-reviewer-only hidden id="resetBtn" data-action="reset-demo">↺ <span class="desktop-label">체험 초기화</span><span class="mobile-label">초기화</span></button>
+<button aria-controls="moreMenu" aria-expanded="false" aria-label="더보기" class="top-btn secondary more-btn" data-reviewer-only hidden id="moreBtn" data-action="toggle-more" type="button">⋯</button>
 <div class="more-menu" hidden="" id="moreMenu">
 <button data-action="reset-demo-close-more" type="button">↺ 체험 초기화</button>
 </div>
@@ -81,7 +79,7 @@
 <div class="login-note" id="loginNote">회사 Google SSO 체험 · 가상 계정</div>
 </div>
 </div>
-<nav aria-label="리뷰어 빠른 보기" class="reviewer-entry">
+<nav data-reviewer-only hidden aria-label="리뷰어 빠른 보기" class="reviewer-entry">
 
 <a href="https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a" rel="noopener noreferrer" target="_blank">Case Study</a>
 </nav>
@@ -139,7 +137,7 @@
 <div class="credit">기획·설계·프로토타입 구현 김도현</div>
 </footer>
 </main>
-<dialog id="onboardingHelp" aria-labelledby="onboardingHelpTitle"><div class="help-dialog-head"><h2 id="onboardingHelpTitle">사용 안내</h2><button type="button" class="top-btn secondary" data-action="close-onboarding-help" aria-label="도움말 닫기">닫기</button></div><button class="top-btn secondary" type="button" data-action="preview-unmapped">직무 정보 확인이 필요한 경우</button><details class="walkthrough"><summary>승인 과정 체험</summary><div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div></details><details class="badge-wrap overview-panel"><summary>계정 정보 · 진행 단계</summary>
+<dialog id="onboardingHelp" aria-labelledby="onboardingHelpTitle"><div class="help-dialog-head"><h2 id="onboardingHelpTitle">사용 안내</h2><button type="button" class="top-btn secondary" data-action="close-onboarding-help" aria-label="도움말 닫기">닫기</button></div><button class="top-btn secondary" type="button" data-action="ai-recommend">AI 추천</button><ol class="help-steps"><li>필요한 도구에서 신청하기를 누르세요.</li><li>처리 상태는 신청현황에서 확인하세요.</li><li>목록에 없는 도구는 IT 헬프데스크에 문의하세요.</li></ol><div data-reviewer-only hidden><button class="top-btn secondary" type="button" data-action="preview-unmapped">직무 정보 확인이 필요한 경우</button><details class="walkthrough"><summary>승인 과정 체험</summary><div aria-live="polite" class="progress-hint" id="progressHint"><span class="demo-step-kicker">체험 1/3</span><span class="hint-arrow">→</span><span>전사 공통 항목을 확인한 뒤, 아래 추가 라이선스를 신청해 보세요.</span></div></details><details class="badge-wrap overview-panel"><summary>계정 정보 · 진행 단계</summary>
 
 <div class="badge-top">
 <div class="avatar" id="avatarInitial">H</div>
@@ -175,7 +173,7 @@
 </div>
 </div>
 
-</div></details></dialog>
+</div></details></div></dialog>
 <div aria-hidden="true" class="request-backdrop" id="requestBackdrop" inert="">
 <div aria-describedby="requestDesc" aria-labelledby="requestTitle" aria-modal="true" class="request-modal" role="dialog" tabindex="-1">
 <h3 id="requestTitle">라이선스 신청</h3>
