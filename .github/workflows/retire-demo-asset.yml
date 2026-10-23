@@ -52,7 +52,7 @@ jobs:
                   targets.append(str(asset['id']))
 
               body=release.get('body') or ''
-              filtered='\n'.join(line for line in body.splitlines()
+              filtered=''.join(line for line in body.splitlines(keepends=True)
                   if not re.search(r'36\s*초|production[-_]demo|releases/download/|36.second',line,re.I))
               if filtered!=body:
                   pathlib.Path(f'/tmp/onboard-release-patches/{release_id}.json').write_text(
