@@ -185,7 +185,7 @@ function renderCard(item, showCta){
       ${ownerRow}
       <div class="card-bottom">
         <div class="card-status-group">
-          <span class="status-pill ${sc.cls}">${sc.label}</span>
+          ${showCta === false ? '' : `<span class="status-pill ${sc.cls}">${sc.label}</span>`}
           ${slaPill}
         </div>
         ${bottomRight}
@@ -215,7 +215,7 @@ function setRole(key){
   key = currentRole;
   document.getElementById('roleSelect').value = currentRole;
   const r = roles[key];
-  document.getElementById('roleHeading').textContent = r.heading;
+  document.getElementById('roleHeading').textContent = r.exception ? '직무 확인' : '직군별 라이선스';
   const rc = document.getElementById('roleCount');
   rc.dataset.base = r.cards.length ? `${r.cards.length}개` : '';
   rc.textContent = rc.dataset.base;
@@ -224,7 +224,7 @@ function setRole(key){
     : `${r.label} 직군`;
 
   const grid = document.getElementById('roleGrid');
-  grid.classList.toggle('balanced-four', r.cards.length === 4);
+  grid.classList.remove('balanced-four');
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
       ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`

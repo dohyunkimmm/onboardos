@@ -154,7 +154,7 @@ test('[V7] forced-colors mode preserves visible boundaries for status and select
   await page.emulateMedia({forcedColors:'active'});
   await stabilize(page);
   await login(page);
-  const status = page.locator('#commonGrid .status-pill').first();
+  const status = page.locator('#roleGrid .status-pill').first();
   const statusState = await visualState(status);
   expect(statusState.borderStyle).not.toBe('none');
   expect(parseFloat(statusState.borderWidth)).toBeGreaterThanOrEqual(1);

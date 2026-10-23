@@ -102,3 +102,39 @@ test('Role filters stay in normal flow and do not jump the page at desktop width
    expect(await page.evaluate(()=>window.scrollY)).toBe(scroll);
  }
 });
+
+test('1920 catalog fits every role and shared tools above the fold without repeated labels',async({page})=>{
+ await page.setViewportSize({width:1920,height:1080});
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await expect(page.locator('#currentRoleLabel')).toBeHidden();
+ await expect(page.locator('#commonGrid .status-pill')).toHaveCount(0);
+ await expect(page.locator('#commonTools .shared-access')).toHaveText('자동 지급');
+ await expect(page.locator('.task-identity>span').first()).toHaveCSS('font-size','22px');
+ await expect(page.locator('#readinessSummary')).toHaveCSS('font-weight','400');
+ for(const role of ['office','design','dev','data']){
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption(role);
+  for(const selector of ['#roleGrid','#commonGrid']){
+   const cards=await page.locator(selector+' .card').evaluateAll(items=>items.map(el=>{const b=el.getBoundingClientRect();return {top:b.top,bottom:b.bottom,right:b.right};}));
+   expect(new Set(cards.map(b=>Math.round(b.top))).size).toBe(1);
+   expect(cards.every(b=>b.bottom<=1080 && b.right<=1920)).toBeTruthy();
+  }
+  await expect(page.locator('#roleHeading')).toHaveText('직군별 라이선스');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(1920);
+ }
+});
+
+test('Submitting a request updates its card without repeating the request in the identity toolbar',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ const card=page.locator('#roleGrid .card[data-name="Microsoft Office"]');
+ await card.getByRole('button',{name:'신청하기',exact:true}).click();
+ await page.getByRole('button',{name:'신청 완료',exact:true}).click();
+ await expect(card).toContainText('검토 대기');
+ await expect(page.locator('#pendingSummary')).toBeHidden();
+ await expect(page.locator('.task-overview')).not.toContainText('Microsoft Office');
+ await card.getByRole('button',{name:'상태 보기',exact:true}).click();
+ await expect(page.getByRole('dialog',{name:'신청현황',exact:true})).toContainText('Microsoft Office');
+});

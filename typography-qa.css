@@ -231,3 +231,23 @@ body .skip-link:not(:focus){box-shadow:none;}
 body .task-overview .role-picker{display:flex;align-items:center;gap:8px;width:auto!important;max-width:100%;margin-left:auto!important;color:#5f6368;font-size:14px;white-space:nowrap;}
 body .role-picker select{width:176px;max-width:100%;min-height:44px;padding:8px 12px;background:#fff;border:1px solid #dadce0;border-radius:8px;color:#202124;font-size:14px!important;line-height:1.4;cursor:pointer;}
 @media(max-width:480px){body .task-overview .role-picker{margin-left:0!important;}body .role-picker select{width:168px;}}
+
+/* Employee catalog: one grid rhythm and one visible role indicator. */
+body .task-identity>span:first-child{font-size:22px;font-weight:600;color:#202124;line-height:1.4;}
+body #currentRoleLabel[hidden]{display:none!important;}
+body #readinessSummary{font-size:14px;font-weight:400;color:#5f6368;font-variant-numeric:tabular-nums;}
+body .shared-access{font-size:13px;font-weight:400;color:#5f6368;}
+body #commonGrid .card-bottom:empty,body #commonGrid .card-status-group:empty{display:none;}
+body #commonGrid .card{min-height:96px!important;}
+@media(min-width:1440px){
+ body:not(.login-open) main{max-width:1640px;padding:24px 32px 32px;}
+ body #roleGrid,body #roleGrid.balanced-four,body #commonGrid{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px;}
+ body #roleGrid .card{min-height:176px!important;}
+ body #roleGrid .card-top,body #commonGrid .card-top{gap:10px;}
+ body #roleGrid .card-top>div:last-child,body #commonGrid .card-top>div:last-child{min-width:0;}
+ body #roleGrid .card-bottom{flex-wrap:wrap;gap:8px;}
+ body #roleGrid .card-action{width:100%;}
+ body #roleGrid .cta{width:100%;}
+}
+
+body .shared-access{margin-right:8px;}
