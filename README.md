@@ -4,7 +4,7 @@
 
 **신규 입사자가 직무별 업무 도구를 확인하고, 라이선스 신청부터 승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다.**
 
-[직접 체험](https://onboardos-rho.vercel.app/) · [2–3분 체험 안내](docs/DEMO_WALKTHROUGH.md) · [Case Study](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a)
+[직접 체험](https://onboardos-rho.vercel.app/) · [2–3분 체험 안내](docs/DEMO_WALKTHROUGH.md) · [Case Study](https://app.notion.com/p/08d21460c934838cb66601b681e85d8c)
 
 > **Portfolio release — v18.0.0 / P6 product-review candidate.**
 >
@@ -14,7 +14,7 @@
 
 `가상 SSO → 직무 선택 → 공통·직무별 라이선스 확인 → 신청 → IT 검토·관리자 승인 → 지급 완료`
 
-- **직무별 도구:** 간결한 직무 선택 메뉴, 전사 공통·직무별 라이선스, 필수·선택 및 준비 상태 구분
+- **직무별 도구:** 간결한 직무 선택 메뉴, 전사 공통·직무별 라이선스, 필수·선택 및 준비 상태 구분. **공통 5개 + 직무별 18개 = 총 23개** (디자인 4·개발 5·데이터 5·경영지원·총무 4; 중복 없이 집계)
 - **AI 추천(선택):** 직무 설명을 입력하면 등록된 라이선스 내에서 최대 3개를 추천하며, 신청 초안 검토 후 기존 절차로 진행
 - **신청·추적:** 신청 목적·권한·기간 입력, 요청번호·상태·SLA·처리 이력 확인
 - **관리자 체험:** [리뷰어 모드](https://onboardos-rho.vercel.app/?review=1)에서 검토, 승인·반려, 보완 재신청, 지급 완료 처리

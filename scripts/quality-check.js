@@ -51,6 +51,12 @@ vm.runInContext(read('data.js') + '\n;globalThis.__catalog={commonLicenses,roles
 const { commonLicenses, roles } = sandbox.__catalog;
 const cards = [...commonLicenses, ...Object.values(roles).flatMap(role => role.cards || [])];
 if(cards.length !== 23) fail(`expected 23 licenses, found ${cards.length}`);
+const publicCatalogCount = `공통 ${commonLicenses.length}개 + 직무별 ${cards.length-commonLicenses.length}개 = 총 ${cards.length}개`;
+for(const file of ['README.md','docs/DEMO_WALKTHROUGH.md']){
+  const publicText = read(file);
+  if(!publicText.includes(publicCatalogCount)) fail(`${file} catalog count is not synchronized with data.js: ${publicCatalogCount}`);
+  if(/21개\s*(도구|SaaS)|공통\s*6종/.test(publicText)) fail(`${file} still advertises an outdated catalog count`);
+}
 const names = new Set();
 for(const item of cards){
   for(const key of ['name','cat','owner','audience','status','url']) if(!item[key]) fail(`${item.name || 'unknown'} missing ${key}`);
