@@ -50,7 +50,7 @@ vm.createContext(sandbox);
 vm.runInContext(read('data.js') + '\n;globalThis.__catalog={commonLicenses,roles};', sandbox);
 const { commonLicenses, roles } = sandbox.__catalog;
 const cards = [...commonLicenses, ...Object.values(roles).flatMap(role => role.cards || [])];
-if(cards.length !== 20) fail(`expected 20 tools, found ${cards.length}`);
+if(cards.length !== 23) fail(`expected 23 licenses, found ${cards.length}`);
 const names = new Set();
 for(const item of cards){
   for(const key of ['name','cat','owner','audience','status','url']) if(!item[key]) fail(`${item.name || 'unknown'} missing ${key}`);

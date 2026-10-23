@@ -18,7 +18,7 @@ test('Employee search composes with status and preserves common-tool visibility'
  await expect(page.locator('.card:not(.is-hidden)')).toHaveAttribute('data-name','Microsoft Office');
  await search.fill('');
  await expect(page.locator('details.common-first')).not.toHaveAttribute('open');
- await expect(page.locator('#roleGrid .card:not(.is-hidden)')).toHaveCount(3);
+ await expect(page.locator('#roleGrid .card:not(.is-hidden)')).toHaveCount(4);
 });
 
 test('First screen exposes role control and shared tools without duplicate Case Study',async({page})=>{
@@ -31,7 +31,7 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await expect(picker).toBeVisible();
  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
  await expect(page.locator('#currentRoleLabel')).toHaveText('개발 직군');
- await expect(page.locator('#roleGrid .card')).toHaveCount(4);
+ await expect(page.locator('#roleGrid .card')).toHaveCount(5);
  const common=page.locator('#commonTools');
  await expect(common).toHaveAttribute('open');
  await common.locator('summary').click();
