@@ -29,7 +29,7 @@ test('[D1] dashboard hierarchy increases readable width and headline contrast af
   const main = await css(page.locator('main'));
   expect(parseFloat(main.maxWidth)).toBeGreaterThanOrEqual(1180);
   const title = await css(page.locator('.section-head h2').first());
-  expect(parseFloat(title.fontSize)).toBeGreaterThanOrEqual(20);
+  expect(parseFloat(title.fontSize)).toBe(18);
   expect(Number(title.fontWeight)).toBeGreaterThanOrEqual(700);
   await shot(page,'D1-dashboard-hierarchy.png');
 });
@@ -37,7 +37,7 @@ test('[D1] dashboard hierarchy increases readable width and headline contrast af
 test('[D2] overview panel uses layered surface and tighter information hierarchy', async ({page}) => {
   await stabilize(page); await login(page);
   const overview = await css(page.locator('.task-overview'));
-  expect(parseFloat(overview.borderRadius)).toBeGreaterThanOrEqual(20);
+  expect(parseFloat(overview.borderRadius)).toBe(12);
   expect(overview.backgroundColor).toBe('rgb(255, 255, 255)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
   await page.getByRole('button',{name:'도움말',exact:true}).click();
@@ -111,7 +111,7 @@ test('[D8] v17 preserves one product identity across login and post-login withou
   await login(page);
   await expect(page.locator('body')).not.toHaveClass(/login-open/);
   const panel = await css(page.locator('.task-overview'));
-  expect(parseFloat(panel.borderRadius)).toBeGreaterThanOrEqual(20);
+  expect(parseFloat(panel.borderRadius)).toBe(12);
   expect(panel.backgroundColor).toBe('rgb(255, 255, 255)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
 });

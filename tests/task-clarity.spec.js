@@ -41,7 +41,7 @@ test('[T1] current task instruction is visually presented before the five-step t
   await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
 });
 
-test('[T2] common entitlements stay quieter and more compact than actionable role cards', async ({page}) => {
+test('[T2] common entitlements use less card area than actionable role cards', async ({page}) => {
   await stabilize(page); await login(page);
   await expect(page.locator('details.common-first')).toHaveAttribute('open');
   const common = page.locator('#commonGrid .card').first();
@@ -50,7 +50,7 @@ test('[T2] common entitlements stay quieter and more compact than actionable rol
   const roleBox = await box(role);
   const commonStyle = await style(common);
   const roleStyle = await style(role);
-  expect(commonBox.height).toBeLessThan(roleBox.height);
+  expect(commonBox.width * commonBox.height).toBeLessThan(roleBox.width * roleBox.height);
   expect(commonStyle.boxShadow === 'none' || commonStyle.boxShadow.includes('inset')).toBeTruthy();
   expect(roleStyle.boxShadow).toBe('none');
   await expect(role.locator('.cta')).toBeVisible();

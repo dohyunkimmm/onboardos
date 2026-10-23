@@ -34,6 +34,7 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await picker.click();
  await page.getByRole('button',{name:'개발',exact:true}).click();
  await expect(page.locator('#currentRoleLabel')).toHaveText('개발 직군');
+ await expect(page.locator('details.role-picker')).not.toHaveAttribute('open');
  await expect(page.locator('#roleGrid .card')).toHaveCount(4);
  const common=page.locator('#commonTools');
  await expect(common).toHaveAttribute('open');

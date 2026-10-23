@@ -210,6 +210,7 @@ function renderRoleTabs(){
     btn.addEventListener('click', () => {
       trackEvent('Role Preview',{role:btn.dataset.role});
       setRole(btn.dataset.role);
+      document.querySelector('details.role-picker')?.removeAttribute('open');
     });
   });
 }
@@ -846,6 +847,8 @@ document.addEventListener('keydown', e => {
   if(request && request.classList.contains('show')){ closeRequestModal(); return; }
   if(drawer && drawer.classList.contains('show')){ closeDrawer(); return; }
   if(!document.getElementById('moreMenu')?.hidden){ closeMoreMenu(); document.getElementById('moreBtn')?.focus(); }
+  const picker=document.querySelector('details.role-picker[open]');
+  if(picker){ picker.removeAttribute('open'); picker.querySelector('summary')?.focus(); }
 });
 
 document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEvent('Case Study CTA',{source:'footer'}));
