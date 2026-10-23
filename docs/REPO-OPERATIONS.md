@@ -34,7 +34,7 @@
 
 - **기능 통합:** 직원용 직무 선택·라이선스 카탈로그, AI 추천·신청 초안, 직무별 Power BI/Postman/모두싸인, 추천 API 요청 제한·세션 복구를 포함한 [PR #120–#133](https://github.com/dohyunkimmm/onboardos/pull/133)까지 `main`에 통합됨.
 - **검증 오류 보정:** [PR #134](https://github.com/dohyunkimmm/onboardos/pull/134)에서 API `api/recommend.js`의 정상적인 GET 405를 정적 소스 다운로드 실패로 취급하던 검사 오류를 수정. 매니페스트 v2는 HTTP로 SHA-256 비교하는 공개 자산과 로컬 소스 존재/릴리스 계약으로 확인하는 서버·스크립트 파일을 구분하고, API는 POST 전용 응답 계약을 별도 확인.
-- **Vercel 배포:** Production 도메인 [onboardos-rho.vercel.app](https://onboardos-rho.vercel.app/)의 READY 배포가 `9ec650d`와 일치함을 확인. [main E2E #39967159908](https://github.com/dohyunkimmm/onboardos/actions/runs/39967159908)의 11개 선행 품질·보안·브라우저 게이트 성공 및 **Production 정적 자산 무결성 단계 성공**을 확인했으며, 마지막 데스크톱/모바일 Smoke 및 증빙 최종 완료는 해당 실행 내역에서 별도 확인해야 함.
+- **Vercel 배포·잔여 검사:** Production 도메인 [onboardos-rho.vercel.app](https://onboardos-rho.vercel.app/)의 READY 배포가 `9ec650d`와 일치함을 확인. [main E2E #39967159908](https://github.com/dohyunkimmm/onboardos/actions/runs/39967159908)의 11개 선행 게이트 성공 및 **공개 파일 139/139 SHA-256 일치 + POST 전용 API 계약 통과**. 그러나 Production 모바일 WebKit은 기존 native `<select>` CSP 엔진 오류가 3회 재현되어 최종 Smoke 실패(Chromium 및 나머지 Production 테스트는 성공). [PR #135](https://github.com/dohyunkimmm/onboardos/pull/135)에서 테스트 컨텍스트만 분리; 최신 main Production 완료 여부는 후속 CI를 기준으로 확인해야 함.
 - **저장소 보호:** `protect-main` active, strict 필수 검사 3개, PR 필수 및 선형 이력 정책을 GitHub에서 재확인함. 구형 중복 규칙은 disabled. `Require signed commits` 규칙은 포함되어 있지 않음.
 - **브랜치 정리:** 작업 전 확인한 기존 비기본 브랜치 24개는 모두 `main`과 diverged이며 고유 commit 기준 `ahead_by > 0`. Squash 병합된 이력도 포함될 수 있어 무조건 삭제하거나 강제 동기화하지 않음. 열린 PR·이슈는 작업 착수 시 0개였음.
 - **문서 동기화:** README·체험 안내·CHANGELOG에서 현재 직무/AI/리뷰어 흐름을 반영하고, 영상이 아닌 메인 페이지로 이동하던 `/production-demo` 링크를 역사적 v18.0.0 실제 릴리스 영상 링크로 교체하는 문서 PR을 준비함.
