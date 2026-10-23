@@ -8,11 +8,10 @@
 
 | 보고 싶은 것 | 바로 보기 | 핵심 확인 포인트 |
 | --- | --- | --- |
-| **36초 핵심 Flow** | [Production Demo →](https://onboardos-rho.vercel.app/production-demo) | 직무 선택 → 신청 → ITSM/SLA → 관리자 처리 → 지급 완료 |
 | **2–3분 직접 체험** | [Live Production →](https://onboardos-rho.vercel.app/) | 사용자/관리자 상태 일관성, 반려·재신청, 예외 Flow |
-| **설계·운영 근거** | [Case Study →](https://dohyunkimm.notion.site/SaaS-38521460c93481498afce73336d4a17a) | 문제 정의, 운영 정책, QA·Production evidence |
+| **설계·운영 근거** | [Case Study →](https://app.notion.com/p/08d21460c934838cb66601b681e85d8c) | 문제 정의, 운영 정책, QA·Production evidence |
 
-**추천 순서:** 36초 영상으로 핵심을 먼저 확인한 뒤 → Live Production에서 직접 체험 → 필요하면 Case Study와 검증 근거를 확인합니다. [2–3분 Demo Walkthrough](./docs/DEMO_WALKTHROUGH.md) · [Latest main verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain+event%3Apush) · [Verification Matrix](#verification-matrix) · [Manual Production Verify](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml) · [Release Notes](./CHANGELOG.md)
+**추천 순서:** [최신 제품 직접 체험](https://onboardos-rho.vercel.app/) → [현재 가이드](https://github.com/dohyunkimmm/onboardos/blob/main/docs/DEMO_WALKTHROUGH.md)
 
 > **Portfolio release — v14.0.0 / P6 Production verified.** 제품 기능 범위와 사용자·관리자 Business Flow는 P6에서 그대로 동결하고, v14.0.0은 로그인 이후 화면을 Operational Command Center로 고도화했습니다. identity/role/progress hierarchy, full-width filter command shelf, work-zone section surfaces, card state rail·CTA lane, modal·drawer execution surface와 mobile task prioritization을 정리했으며 R/S/U/V/D/E 1–8 계약과 Production integrity/smoke를 유지합니다. [GitHub Release v14.0.0](https://github.com/dohyunkimmm/onboardos/releases/tag/v14.0.0) · [Live Production](https://onboardos-rho.vercel.app/)
 
@@ -27,7 +26,6 @@
 3. **예외·상태 일관성** — 반려→보완 재신청, 직무 미매핑/목록 외 Fallback, 직무 전환 후 상태 격리·복원 확인
 4. **검증 Evidence** — README Verification Matrix와 최신 `main` GitHub Actions에서 54개 회귀·Desktop/Mobile Lighthouse·Production smoke·SHA-256 integrity 확인
 
-[**36초 Production Demo**](https://onboardos-rho.vercel.app/production-demo)는 Vercel의 웹 플레이어에서 바로 재생되며, 영상 원본은 `v14.0.0` GitHub Release asset으로 유지합니다. GitHub Actions가 실제 Vercel Production URL을 Playwright Chromium으로 조작해 녹화하고, Release asset은 FFmpeg/ffprobe로 **정확히 36초**인지 검증합니다. 제품 Flow 이후의 Verification Evidence 화면은 영상에서 제외했고, 녹화 중 Analytics·Speed Insights endpoint는 intercept하여 synthetic 트래픽이 실제 사용 지표에 섞이지 않도록 합니다. 화면 녹화용 shot list와 설명 문구는 [`docs/DEMO_WALKTHROUGH.md`](./docs/DEMO_WALKTHROUGH.md)에 정리했습니다.
 
 ## 주요 기능
 
@@ -105,7 +103,6 @@ stateDiagram-v2
 ```text
 .
 ├── index.html
-├── production-demo.html
 ├── version.txt
 ├── release.json
 ├── integrity-assets.json
@@ -136,7 +133,6 @@ stateDiagram-v2
 │   ├── verification-summary.js
 │   ├── release-evidence.js
 │   ├── resilience-summary.js
-│   └── record-demo.mjs
 ├── tests/
 │   ├── onboard.spec.js
 │   ├── accessibility.spec.js
@@ -229,7 +225,7 @@ Vercel 배포가 GitHub Actions보다 늦게 완료되거나 배포 후 Producti
 | Desktop Performance | Lighthouse 13.4.1 | Desktop profile 3회 모두 Performance/A11y/Best Practices/SEO·Web Vitals/byte budget 통과 |
 | Mobile Performance | Lighthouse 13.4.1 | Mobile profile 3회 모두 동일 quality budget 통과 |
 | Supply Chain | npm audit + PR Dependency Delta | high 이상 advisory·비HTTPS/무결성 누락 차단·GitHub Actions SHA pin·Dependabot |
-| Production | Playwright + runtime-aware Vercel status | Runtime 변경은 해당 commit 배포 success 강제, non-runtime 변경은 기존 Production 검증 · Desktop Chromium + iPhone WebKit 실제 Flow·CSP·asset·로그인 font metric 안정성·36초 Demo player/duration·canonical release/integrity contract |
+| Production | Playwright + runtime-aware Vercel status | Runtime 변경은 해당 commit 배포 success 강제, non-runtime 변경은 기존 Production 검증 · Desktop Chromium + iPhone WebKit 실제 Flow·CSP·asset·로그인 font metric 안정성·canonical release/integrity contract |
 | Deployment Integrity | SHA-256 + canonical manifest | `integrity-assets.json`의 필수 asset + `js`·`icons`·Pretendard font 재귀 자동 발견 · 검증된 v4.0.0 Production **131/131 manifest asset** GitHub checkout ↔ Production hash 일치 |
 | Evidence | GitHub Actions Summary + artifact + public/manual workflow | commit/run별 JSON·Markdown·Production integrity report + 공개 main status/run + 수동 Production 재검증 진입점 |
 
