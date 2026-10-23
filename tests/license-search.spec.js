@@ -59,3 +59,16 @@ test('Shared-tool shortcut clears conflicting filters and exposes start guidance
  await expect(page.locator('#actionModalBackdrop')).toHaveClass(/show/);
  await expect(page.locator('#actionModalTitle')).toContainText('Slack');
 });
+
+test('Instructions stay outside the catalog and help closes with Escape',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
+ await expect(page.locator('#loginScreen')).toBeHidden();
+ await expect(page.locator('main .walkthrough, main .overview-panel')).toHaveCount(0);
+ await page.getByRole('button',{name:'도움말',exact:true}).click();
+ const help=page.getByRole('dialog',{name:'사용 안내'});
+ await expect(help).toBeVisible();
+ await help.getByRole('button',{name:'도움말 닫기'}).press('Escape');
+ await expect(help).not.toBeVisible();
+ await expect(page.getByRole('button',{name:'도움말',exact:true})).toBeFocused();
+});

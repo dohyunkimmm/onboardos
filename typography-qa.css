@@ -191,3 +191,7 @@ body .help-dialog-head{display:flex;justify-content:space-between;align-items:ce
 body .help-dialog-head h2{font-size:22px;margin:0;}
 body #onboardingHelp .overview-panel{margin-top:16px;}
 @media(max-width:768px){body .task-overview{padding:16px;}body #roleGrid .card{min-height:0!important;}body .task-overview .role-picker{margin-top:12px;}body .top-actions{gap:6px;}}
+
+body details.common-first{padding:16px!important;border-radius:16px;}
+body #commonGrid .card{padding:12px!important;min-height:112px!important;}
+body #commonGrid .card-title{font-size:15px!important;}
