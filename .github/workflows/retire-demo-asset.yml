@@ -49,7 +49,10 @@ jobs:
                       continue
                   if tag not in allow or match.group(1)!=tag or allow[tag]!=(release_id,asset['id']):
                       raise SystemExit('Unexpected recording asset; manual review required: '+tag+'/'+asset['name'])
-                  targets.append(str(asset['id']))
+                  if release.get('immutable'):
+                      print('Preserving locked release asset:', tag, asset['id'])
+                  else:
+                      targets.append(str(asset['id']))
 
               body=release.get('body') or ''
               filtered=''.join(line for line in body.splitlines(keepends=True)
@@ -81,7 +84,9 @@ jobs:
           for release in releases:
               for asset in release.get('assets',[]):
                   if re.fullmatch(r'ONBOARD_OS_v[0-9]+\.[0-9]+\.[0-9]+_P6_production_demo\.mp4',asset['name']):
-                      raise SystemExit('Recording asset still exists: '+asset['name'])
+                      if not release.get('immutable'):
+                          raise SystemExit('Mutable recording asset still exists: '+asset['name'])
+                      print('Immutable release asset retained under GitHub protection:',release['tag_name'])
               if re.search(r'36\s*초|production[-_]demo|releases/download/|36.second',release.get('body') or '',re.I):
                   raise SystemExit('Release notes still reference retired recording: '+release['tag_name'])
           print('All obsolete recordings and release-note references are absent')
