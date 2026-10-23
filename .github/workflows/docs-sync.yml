@@ -37,8 +37,12 @@ jobs:
           grep -Fq "## ${TAG}" CHANGELOG.md
           grep -Fq "${TAG}" docs/DEMO_WALKTHROUGH.md
           grep -Fq "${VIDEO}" docs/DEMO_WALKTHROUGH.md
-          grep -Fq "releases/download/${TAG}/${VIDEO}" production-demo.html
-          grep -Fq "releases/tag/${TAG}" production-demo.html
+          # Retired video URLs must forward to the interactive demo.
+          grep -Fq 'http-equiv="refresh" content="0;url=/"' production-demo.html
+          if grep -Eq '<video|36초|releases/download/' production-demo.html; then
+            echo "Retired video player must not be published" >&2
+            exit 1
+          fi
           if grep -q '^releaseStatus=' version.txt; then
             grep -Fq "releaseStatus=${STATUS}" version.txt
           fi
