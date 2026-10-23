@@ -15,7 +15,7 @@ async function rect(locator){
 
 async function stabilize(page){
   await page.clock.setFixedTime(new Date('2026-09-10T12:00:00+09:00'));
-  await page.goto('/');
+  await page.goto('/?review=1');
 }
 
 async function login(page){
@@ -137,7 +137,7 @@ test('[U7] responsive boundaries 320-768px avoid horizontal overflow and preserv
   const widths = [320,340,359,360,390,768];
   for(const width of widths){
     await page.setViewportSize({width,height:760});
-    await page.goto('/');
+    await page.goto('/?review=1');
     await page.evaluate(() => sessionStorage.clear());
     await page.reload();
     const layout = await page.evaluate(() => ({scrollWidth:document.documentElement.scrollWidth,innerWidth:window.innerWidth}));
@@ -151,7 +151,7 @@ test('[U7] responsive boundaries 320-768px avoid horizontal overflow and preserv
   }
 
   await page.setViewportSize({width:359,height:760});
-  await page.goto('/');
+  await page.goto('/?review=1');
   await page.evaluate(() => sessionStorage.clear());
   await page.reload();
   await login(page);
@@ -161,7 +161,7 @@ test('[U7] responsive boundaries 320-768px avoid horizontal overflow and preserv
   expect(Math.abs(first.x-second.x)).toBeLessThanOrEqual(0.5);
 
   await page.setViewportSize({width:360,height:760});
-  await page.goto('/');
+  await page.goto('/?review=1');
   const wide = page.locator('#commonGrid .card');
   const wideFirst = await rect(wide.nth(0));
   const wideSecond = await rect(wide.nth(1));

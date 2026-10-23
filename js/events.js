@@ -9,6 +9,10 @@ function activatePostLoginStyles(){
 }
 if(loggedIn) activatePostLoginStyles();
 
+// Optional prototype reviewer controls stay outside the employee navigation.
+const reviewerMode = new URLSearchParams(location.search).get('review') === '1';
+document.querySelectorAll('[data-reviewer-only]').forEach(el => { el.hidden = !reviewerMode; });
+
 const actionHandlers = {
   'preview-unmapped': () => { document.getElementById('onboardingHelp')?.close(); setRole('unmapped'); },
   'go-home': () => {

@@ -13,7 +13,7 @@ async function rect(locator){
 }
 
 test('SSO 인증 중에도 로그인 카드 geometry가 변하지 않는다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   const card = page.locator('.login-card');
   const note = page.locator('.login-note');
   const before = await rect(card);
@@ -32,7 +32,7 @@ test('SSO 인증 중에도 로그인 카드 geometry가 변하지 않는다', as
 
 test('모바일 로그인 화면은 reviewer bar를 위한 하단 안전 여백을 확보한다', async ({ page }) => {
   await page.setViewportSize({ width:390, height:700 });
-  await page.goto('/');
+  await page.goto('/?review=1');
 
   const metrics = await page.locator('#loginScreen').evaluate(screen => {
     const nav = screen.querySelector('.reviewer-entry');
@@ -50,7 +50,7 @@ test('모바일 로그인 화면은 reviewer bar를 위한 하단 안전 여백�
 
 test('모바일 상단은 초기화 액션을 중복 노출하지 않는다', async ({ page }) => {
   await page.setViewportSize({ width:390, height:844 });
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
 
   await expect(page.locator('#resetBtn')).toBeHidden();
@@ -58,7 +58,7 @@ test('모바일 상단은 초기화 액션을 중복 노출하지 않는다', as
 });
 
 test('진행 안내는 5단계 tracker를 유지하고 별도 숫자 카운트 대신 다음 행동으로 보인다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
 
   await expect(page.locator('.walkthrough')).not.toHaveAttribute('open');
@@ -73,7 +73,7 @@ test('진행 안내는 5단계 tracker를 유지하고 별도 숫자 카운트 �
 
 test('초소형 모바일에서는 전사 공통 라이선스를 1열로 표시한다', async ({ page }) => {
   await page.setViewportSize({ width:340, height:740 });
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
 
   const cards = page.locator('#commonGrid .card');
@@ -86,7 +86,7 @@ test('초소형 모바일에서는 전사 공통 라이선스를 1열로 표시�
 
 test('모바일 drawer의 닫기와 처리 액션은 터치 목표 크기를 유지한다', async ({ page }) => {
   await page.setViewportSize({ width:390, height:844 });
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
 
   const card = page.locator('#roleGrid .card').filter({ hasText:'Microsoft Office' });

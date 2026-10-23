@@ -5,7 +5,7 @@ const { test, expect } = require('@playwright/test');
 async function stabilize(page){
   await page.clock.setFixedTime(new Date('2026-09-18T12:00:00+09:00'));
   await page.emulateMedia({ reducedMotion:'reduce' });
-  await page.goto('/');
+  await page.goto('/?review=1');
 }
 
 async function login(page){

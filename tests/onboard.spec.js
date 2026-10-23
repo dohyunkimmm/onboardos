@@ -31,7 +31,7 @@ async function card(page, name) {
 test('신청 → IT 검토 → 지급 완료가 동일 티켓으로 연결되고 세션이 유지된다', async ({ page }) => {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
 
   const officeCard = await card(page, 'Microsoft Office');
@@ -64,7 +64,7 @@ test('신청 → IT 검토 → 지급 완료가 동일 티켓으로 연결되고
 });
 
 test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리자 승인으로 이어진다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
   await revealRolePicker(page);
   await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');
@@ -96,7 +96,7 @@ test('승인 필요 항목은 반려 사유 → 보완 → 재신청 → 관리�
 });
 
 test('직무 미매핑 Fallback이 실제 데모 ITSM 요청으로 생성된다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
   await revealRolePicker(page);
   await page.getByRole('button',{name:'도움말',exact:true}).click();
@@ -117,7 +117,7 @@ test('직무 미매핑 Fallback이 실제 데모 ITSM 요청으로 생성된다'
 });
 
 test('목록에 없는 라이선스도 IT 헬프데스크 요청으로 추적된다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
   await page.getByRole('button', { name: 'IT 헬프데스크 문의하기' }).click();
   await page.locator('#supportRequestNote').fill('Tableau Creator · 대시보드 제작 목적');
@@ -130,7 +130,7 @@ test('목록에 없는 라이선스도 IT 헬프데스크 요청으로 추적된
 
 
 test('핵심 사용자 Flow 이벤트가 Analytics queue에 PII 없이 기록된다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   await login(page);
   await revealRolePicker(page);
   await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');

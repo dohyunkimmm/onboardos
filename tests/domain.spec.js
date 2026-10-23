@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 async function login(page){
-  await page.goto('/');
+  await page.goto('/?review=1');
   await page.getByRole('button', { name: 'Google SSO로 시작하기' }).click();
   await expect(page.locator('#loginScreen')).toBeHidden();
 }
@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('영업일 계산이 주말·월말·연말 경계에서 일관된다', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?review=1');
   const result = await page.evaluate(() => ({
     fridayPlus1: businessDate(1, new Date('2026-09-11T12:00:00+09:00')).toISOString(),
     fridayPlus2: businessDate(2, new Date('2026-09-11T12:00:00+09:00')).toISOString(),
