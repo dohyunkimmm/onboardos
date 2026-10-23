@@ -42,7 +42,7 @@ test('[T1] current task instruction is visually presented before the five-step t
 
 test('[T2] common entitlements stay quieter and more compact than actionable role cards', async ({page}) => {
   await stabilize(page); await login(page);
-  await page.locator('details.common-first > summary').click();
+  await expect(page.locator('details.common-first')).toHaveAttribute('open');
   const common = page.locator('#commonGrid .card').first();
   const role = page.locator('#roleGrid .card').first();
   const commonBox = await box(common);
