@@ -1,0 +1,54 @@
+name: Retire obsolete release recording (one-time)
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/retire-demo-asset.yml
+permissions:
+  contents: write
+jobs:
+  remove-old-release-asset:
+    if: github.repository == 'dohyunkimmm/onboardos'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove only the retired v18.0.0 recording and its references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          RELEASE_PATH="repos/${GITHUB_REPOSITORY}/releases/tags/v18.0.0"
+          gh api "$RELEASE_PATH" > /tmp/onboard-release.json
+          ASSET_ID="$(jq -r '.assets[] | select(.name == "ONBOARD_OS_v18.0.0_P6_production_demo.mp4") | .id' /tmp/onboard-release.json | head -n1)"
+          if [ -n "$ASSET_ID" ]; then
+            if [ "$ASSET_ID" != "572366309" ]; then
+              echo "Refusing unexpected asset ID $ASSET_ID" >&2
+              exit 1
+            fi
+            gh api --method DELETE "repos/${GITHUB_REPOSITORY}/releases/assets/${ASSET_ID}"
+          fi
+          python3 - <<'PY'
+          import json,re
+          with open('/tmp/onboard-release.json',encoding='utf-8') as f:
+              data=json.load(f)
+          original=data.get('body') or ''
+          filtered='\n'.join(line for line in original.splitlines()
+                              if not re.search(r'36\s*초|production[-_]demo|releases/download/|36.second',line,re.I))
+          with open('/tmp/onboard-release-clean.json','w',encoding='utf-8') as f:
+              json.dump({'body':filtered},f,ensure_ascii=False)
+          print('Release description updated:',original!=filtered)
+          PY
+          RELEASE_ID="$(jq -r '.id' /tmp/onboard-release.json)"
+          if [ "$RELEASE_ID" != "391379775" ]; then
+            echo "Unexpected release ID $RELEASE_ID" >&2
+            exit 1
+          fi
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" --input /tmp/onboard-release-clean.json >/dev/null
+          gh api "$RELEASE_PATH" > /tmp/onboard-release-after.json
+          if jq -e '.assets[] | select(.name == "ONBOARD_OS_v18.0.0_P6_production_demo.mp4")' /tmp/onboard-release-after.json >/dev/null; then
+            exit 1
+          fi
+          if jq -r '.body' /tmp/onboard-release-after.json | grep -Eiq '36[[:space:]]*초|production[-_]demo|releases/download/'; then
+            exit 1
+          fi
+          echo "Release recording cleanup verified"
