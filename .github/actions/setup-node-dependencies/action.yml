@@ -7,5 +7,12 @@ runs:
       with:
         node-version: '22'
         cache: npm
+    - name: Use the official Ubuntu archive for browser dependencies
+      shell: bash
+      run: |
+        if [[ "$RUNNER_OS" == "Linux" && -f /etc/apt/apt-mirrors.txt ]]; then
+          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/apt-mirrors.txt
+          printf '%s\n' 'Acquire::Retries "2";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/80-browser-download-retry >/dev/null
+        fi
     - shell: bash
       run: npm ci
