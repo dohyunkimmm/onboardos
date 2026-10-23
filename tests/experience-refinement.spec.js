@@ -38,7 +38,7 @@ test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mob
   const profile=page.locator('.overview-panel');
   await expect(profile).not.toHaveAttribute('open');
   await revealRolePicker(page);
-  await expect(page.locator('.task-overview .role-tab').first()).toBeVisible();
+  await expect(page.getByRole('combobox',{name:'직군 선택'})).toBeVisible();
   await page.getByRole('button',{name:'도움말',exact:true}).click();
   await profile.locator('summary').click();
   await expect(profile.locator('.name-input')).toBeVisible();
@@ -124,5 +124,5 @@ test('[E8] empty states are intentionally designed and reduced-motion remains ho
 });
 
 async function revealRolePicker(page){
-  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
+  await expect(page.getByRole('combobox',{name:'직군 선택'})).toBeVisible();
 }

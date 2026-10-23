@@ -95,17 +95,12 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
   await stabilize(page);
   await login(page);
   await revealRolePicker(page);
-  const role = page.getByRole('button',{name:'디자인'});
-  await role.click();
+  const role = page.getByRole('combobox',{name:'직군 선택'});
+  await role.selectOption('design');
   await revealRolePicker(page);
-  await expect(role).toHaveAttribute('aria-pressed','true');
-  await expect(role).toHaveClass(/active/);
-  const roleState = await visualState(role);
-  expect(
-    roleState.backgroundColor !== 'rgba(0, 0, 0, 0)' ||
-    roleState.backgroundImage !== 'none' ||
-    roleState.boxShadow !== 'none'
-  ).toBeTruthy();
+  await expect(role).toHaveValue('design');
+  await expect(role.locator('option:checked')).toHaveText('디자인');
+
   const filter = page.getByRole('button',{name:'해야 할 일'});
   await filter.click();
   await expect(filter).toHaveAttribute('aria-pressed','true');
@@ -174,7 +169,7 @@ test('[V8] narrow mobile controls retain an expanded touch halo without horizont
   await stabilize(page);
   await login(page);
   await revealRolePicker(page);
-  for(const locator of [page.locator('.role-tab').first(),page.locator('.filter-chip').first(),page.locator('.top-btn').first()]){
+  for(const locator of [page.locator('.filter-chip').first(),page.locator('.top-btn').first()]){
     const box = await locator.boundingBox();
     const pseudo = await locator.evaluate(el => {
       const s = getComputedStyle(el,'::after');
@@ -186,9 +181,11 @@ test('[V8] narrow mobile controls retain an expanded touch halo without horizont
     expect(pseudo.left).toBe('-6px');
     expect(box.height + 12).toBeGreaterThanOrEqual(44);
   }
+  const roleBox = await page.getByRole('combobox',{name:'직군 선택'}).boundingBox();
+  expect(roleBox.height).toBeGreaterThanOrEqual(44);
   const overflow = await page.evaluate(() => ({scrollWidth:document.documentElement.scrollWidth,innerWidth:innerWidth}));
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.innerWidth + 1);
 });
 async function revealRolePicker(page){
-  await expect(page.getByRole('group',{name:'직무 필터'})).toBeVisible();
+  await expect(page.getByRole('combobox',{name:'직군 선택'})).toBeVisible();
 }

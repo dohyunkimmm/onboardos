@@ -47,7 +47,7 @@ test.describe('Fault injection & recovery contract', () => {
     await page.goto('/');
     await expect(page.locator('#loginScreen')).toBeHidden();
     await expect(page.locator('#requestCount')).toHaveText('0');
-    await expect(page.locator('.role-tab[data-role="office"]')).toHaveAttribute('aria-pressed','true');
+    await expect(page.getByRole('combobox',{name:'직군 선택'})).toHaveValue('office');
     await expect(page.locator('#roleGrid .card').filter({hasText:'Microsoft Office'}).getByRole('button',{name:'신청하기'})).toBeVisible();
     expect(pageErrors).toEqual([]);
   });
