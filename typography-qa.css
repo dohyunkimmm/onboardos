@@ -204,3 +204,5 @@ body #readinessSummary p{margin:0;}
 body .task-overview .role-picker{position:static;margin:0 0 0 auto;border:0;padding:0;}
 body .task-overview .role-picker[open]{position:absolute;top:12px;right:16px;}
 @media(max-width:959px){body .task-overview .role-picker[open]{position:static;width:100%;}body .task-overview .role-picker{margin-left:0;}body #readinessSummary strong{font-size:14px;}}
+
+@media(max-width:768px){body .top-actions{flex-wrap:wrap!important;}}
