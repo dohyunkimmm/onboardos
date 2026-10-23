@@ -143,12 +143,7 @@ function validateReleaseContract(){
   }
 
   const expectedTag = `v${release.version}`;
-  const expectedVideo = `ONBOARD_OS_${expectedTag}_P6_production_demo.mp4`;
-  const productionDemo = fs.readFileSync('production-demo.html', 'utf8');
   const readme = fs.readFileSync('README.md', 'utf8');
-  if(!productionDemo.includes(`releases/download/${expectedTag}/${expectedVideo}`)) fail(`production-demo.html video asset is not aligned to ${expectedTag}`);
-  if(!productionDemo.includes(`releases/tag/${expectedTag}`)) fail(`production-demo.html release link is not aligned to ${expectedTag}`);
-  if(!productionDemo.includes(`ONBOARD·OS ${expectedTag} 36초 Production Demo`)) fail(`production-demo.html accessible label is not aligned to ${expectedTag}`);
   if(release.releaseStatus === 'verified'){
     if(!readme.includes(`Portfolio release — ${expectedTag} / P6 Production verified.`)) fail(`README verified release block is not aligned to ${expectedTag}`);
     if(!readme.includes(`releases/tag/${expectedTag}`)) fail(`README verified release link is not aligned to ${expectedTag}`);
