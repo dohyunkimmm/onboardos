@@ -77,7 +77,7 @@ test('초소형 모바일에서는 전사 공통 라이선스를 1열로 표시�
   await login(page);
 
   const cards = page.locator('#commonGrid .card');
-  await expect(cards).toHaveCount(6);
+  await expect(cards).toHaveCount(5);
   const first = await rect(cards.nth(0));
   const second = await rect(cards.nth(1));
   expect(Math.abs(first.x - second.x)).toBeLessThanOrEqual(0.5);

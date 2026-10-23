@@ -33,9 +33,10 @@ test('each role can access common tools and only its own additional catalog',()=
   for(const role of ['office','design','dev','data']){
     const ids=catalogFor(role).map(item=>item.toolId);
     assert.equal(ids.length,new Set(ids).size);
-    for(const common of ['GW','SL','NT','CF','JR','JSM']) assert.ok(ids.includes(common));
+    for(const common of ['SL','NT','CF','JR','JSM']) assert.ok(ids.includes(common));
   }
   assert.ok(!catalogFor('office').some(item=>item.toolId==='FG'));
+  assert.ok(!catalogFor('office').some(item=>item.toolId==='GW'));
   for(const invalid of ['unmapped','unknown','__proto__','constructor']) assert.equal(catalogFor(invalid),null);
 });
 test('unknown, duplicate and cross-role model results fail closed',()=>{

@@ -24,8 +24,8 @@ function openAiRecommendation(){
   document.getElementById('actionModalTitle').textContent = '내 직무에 맞는 도구 찾기';
   const body = document.getElementById('actionModalBody');
   body.innerHTML = role.exception
-    ? '<p>직군 확인 후 맞춤 추천을 받을 수 있습니다. 전사 공통 도구는 먼저 이용할 수 있습니다.</p>'
-    : `<p class="action-guide-copy">${escapeHTML(role.label)} 직군의 추가 라이선스와 전사 공통 도구 안에서 추천합니다.</p>
+    ? '<p>직군 확인 후 맞춤 추천을 받을 수 있습니다. 기본 제공 도구는 먼저 이용할 수 있습니다.</p>'
+    : `<p class="action-guide-copy">${escapeHTML(role.label)} 직군의 추가 라이선스와 기본 제공 도구 안에서 추천합니다.</p>
        <form id="aiRecommendationForm">
          <label class="request-note-label" for="aiRoleDetail">세부 직무·담당 역할</label>
          <textarea class="request-note" id="aiRoleDetail" rows="3" minlength="5" maxlength="500" required placeholder="예: 월별 예산을 정리하고 계약서 PDF를 검토합니다." aria-describedby="aiPrivacyNote"></textarea>
@@ -92,7 +92,7 @@ async function submitAiRecommendation(event){
       reason.textContent = recommendation.reason;
       const meta = document.createElement('p');
       const effective = getEffectiveStatus(item);
-      meta.textContent = `${commonLicenses.includes(item) ? '전사 공통' : roles[role].label+' 직군'} · ${statusConfig[effective].label}`;
+      meta.textContent = `${commonLicenses.includes(item) ? '기본 제공' : roles[role].label+' 직군'} · ${statusConfig[effective].label}`;
       const action = document.createElement('button');
       action.className = 'ghost-btn';
       action.type = 'button';

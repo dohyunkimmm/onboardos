@@ -232,8 +232,8 @@ function setRole(key){
   grid.classList.remove('balanced-four');
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
-      ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>전사 공통 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`
-      : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 전사 공통 도구를 이용하세요.</div>`;
+      ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>기본 제공 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`
+      : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 기본 제공 도구를 이용하세요.</div>`;
   } else {
     grid.innerHTML = [...r.cards].sort((a,b)=>(requirementFor(a)==='필수'?0:1)-(requirementFor(b)==='필수'?0:1)).map(item => renderCard(item, true)).join('');
   }

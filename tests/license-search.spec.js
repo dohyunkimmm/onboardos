@@ -37,7 +37,7 @@ test('First screen exposes role control and shared tools without duplicate Case 
  await common.locator('summary').click();
  await common.locator('summary').click();
  await expect(common).toHaveAttribute('open');
- await expect(common.getByRole('heading',{name:'전사 공통 도구'})).toBeVisible();
+ await expect(common.getByRole('heading',{name:'기본 제공 도구'})).toBeVisible();
 });
 
 test('Catalog has no repeated shared-tool summary or guidance buttons',async({page})=>{
@@ -45,7 +45,7 @@ test('Catalog has no repeated shared-tool summary or guidance buttons',async({pa
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
  await expect(page.locator('#readinessSummary')).not.toContainText('공통 도구');
- await expect(page.locator('#commonGrid .card')).toHaveCount(6);
+ await expect(page.locator('#commonGrid .card')).toHaveCount(5);
  await expect(page.locator('#commonGrid button')).toHaveCount(0);
  await expect(page.locator('#roleHeading')).toHaveCSS('font-size','18px');
  await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','18px');

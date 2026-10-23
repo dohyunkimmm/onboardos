@@ -60,7 +60,7 @@ test('common recommendations show usage guidance without a new application',asyn
   await openRecommendation(page);
   await page.getByLabel('세부 직무·담당 역할').fill('사내 업무 문서를 정리합니다.');
   await page.getByRole('button',{name:'추천 받기',exact:true}).click();
-  await expect(page.locator('#aiRecommendationResults')).toContainText('전사 공통 · 자동 지급');
+  await expect(page.locator('#aiRecommendationResults')).toContainText('기본 제공 · 자동 지급');
   await page.locator('#aiRecommendationResults').getByRole('button',{name:'사용 안내',exact:true}).click();
   await expect(page.locator('#actionModalTitle')).toHaveText('Notion');
   await expect(page.locator('#requestCount')).toHaveText('0');
