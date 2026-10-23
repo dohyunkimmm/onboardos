@@ -1,5 +1,6 @@
 'use strict';
 
+const {acquireRecommendation}=require('../lib/recommendation-rate-limit');
 const {catalogFor,schemaFor,validateRecommendation,instructions} = require('../lib/recommendation');
 
 module.exports = async function handler(req,res){
@@ -23,6 +24,11 @@ module.exports = async function handler(req,res){
   const catalog = typeof body?.role === 'string' ? catalogFor(body.role) : null;
   if(!catalog || typeof body.detail !== 'string' || body.detail.trim().length < 5 || body.detail.length > 500) return res.status(400).json({error:'invalid_input'});
   if(process.env.AI_RECOMMENDATIONS_ENABLED !== 'true' || !process.env.GEMINI_API_KEY) return res.status(503).json({error:'ai_not_configured'});
+  const lease=acquireRecommendation(req);
+  if(!lease.ok){
+    res.setHeader('Retry-After',String(lease.retryAfter));
+    return res.status(429).json({error:'rate_limited'});
+  }
   // Use one documented free-tier model; never fall back to a paid provider/model.
   const model = 'gemini-3.5-flash-lite';
   try{
@@ -51,5 +57,7 @@ module.exports = async function handler(req,res){
   }catch(_error){
     // No provider payload, input text, or credentials are returned or logged.
     return res.status(502).json({error:'recommendation_unavailable'});
+  }finally{
+    lease.release();
   }
 };

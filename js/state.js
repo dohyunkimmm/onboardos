@@ -26,6 +26,9 @@ const FILTER_GROUPS = {
 const REQUEST_STATUSES = new Set(['pending','approved','rejected','completed']);
 let currentRole = 'office';
 
+function isKnownRole(value){
+  return typeof value==='string' && Object.prototype.hasOwnProperty.call(roles,value);
+}
 function isPlainObject(value){
   return !!value && typeof value === 'object' && !Array.isArray(value);
 }
@@ -123,7 +126,8 @@ function ensureRoleBucket(store, role){
 }
 
 function activateRoleState(role=currentRole){
-  currentRole = role;
+  currentRole = isKnownRole(role) ? role : 'office';
+  role = currentRole;
   requestState = ensureRoleBucket(requestStateByRole, role);
   cancelledHistory = ensureRoleBucket(cancelledHistoryByRole, role);
   cancelledTickets = ensureRoleBucket(cancelledTicketsByRole, role);
@@ -158,7 +162,7 @@ function restoreSession(){
       throw new Error(`Unsupported future session schema ${saved.schemaVersion}`);
     }
 
-    currentRole = roles[saved.currentRole] ? saved.currentRole : 'office';
+    currentRole = isKnownRole(saved.currentRole) ? saved.currentRole : 'office';
     if(saved.requestStateByRole && isPlainObject(saved.requestStateByRole)){
       requestStateByRole = sanitizeRequestStore(saved.requestStateByRole);
       cancelledHistoryByRole = sanitizeHistoryStore(saved.cancelledHistoryByRole);
