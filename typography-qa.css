@@ -117,6 +117,8 @@ body #roleGrid .card:focus-within{border-color:#1a73e8!important;box-shadow:0 0 
 @media(max-width:768px){body #loginScreen .login-card{padding:28px;gap:24px;grid-template-columns:1fr;}body .login-card .login-title{font-size:26px;}body:not(.login-open) main{padding:20px 16px 48px;}body .task-overview{padding:20px;}body .task-overview h2{font-size:23px;}body .tool-search,body .tool-search input{width:100%;}body .tool-search{flex-wrap:wrap;}body .drawer{width:100%!important;}body .request-modal{padding:20px!important;}body .login-screen{padding:24px 16px;}}
 /* Keep employee identity and readiness ahead of the demo-only walkthrough. */
 body .task-overview > *{order:0!important;}
+/* Keep login font metrics stable before and after the deferred brand font loads. */
+body #loginScreen .login-card,body #loginScreen .login-card *{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;}
 body .task-overview #progressHint{order:1!important;}
 body .task-overview .walkthrough{grid-column:1/-1;margin-top:8px;font-size:14px;color:#5f6368;}
 body .task-overview .walkthrough>summary{cursor:pointer;padding:8px 0;}
