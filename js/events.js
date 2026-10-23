@@ -12,6 +12,10 @@ if(loggedIn) activatePostLoginStyles();
 const actionHandlers = {
   'go-home': () => {
     document.getElementById('onboardingHelp')?.close();
+    const loginButton = document.querySelector('.google-btn');
+    loginButton.disabled = false;
+    loginButton.removeAttribute('aria-busy');
+    document.getElementById('loginLoader').classList.remove('is-visible');
     loggedIn = false;
     saveSession();
     const screen = document.getElementById('loginScreen');
