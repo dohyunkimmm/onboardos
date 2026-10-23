@@ -21,15 +21,15 @@ function openAiRecommendation(){
   cancelAiRecommendation();
   const role = roles[currentRole];
   document.getElementById('actionModalEyebrow').textContent = 'AI 추천';
-  document.getElementById('actionModalTitle').textContent = '내 직무에 맞는 도구 찾기';
+  document.getElementById('actionModalTitle').textContent = '내 직무에 맞는 라이선스 찾기';
   const body = document.getElementById('actionModalBody');
   body.innerHTML = role.exception
-    ? '<p>직군 확인 후 맞춤 추천을 받을 수 있습니다. 기본 제공 도구는 먼저 이용할 수 있습니다.</p>'
-    : `<p class="action-guide-copy">${escapeHTML(role.label)} 직군의 추가 라이선스와 기본 제공 도구 안에서 추천합니다.</p>
+    ? '<p>직군 확인 후 맞춤 추천을 받을 수 있습니다. 기본 제공 라이선스는 먼저 이용할 수 있습니다.</p>'
+    : `<p class="action-guide-copy">${escapeHTML(role.label)} 직군의 추가 라이선스와 기본 제공 라이선스 안에서 추천합니다.</p>
        <form id="aiRecommendationForm">
          <label class="request-note-label" for="aiRoleDetail">세부 직무·담당 역할</label>
          <textarea class="request-note" id="aiRoleDetail" rows="3" minlength="5" maxlength="500" required placeholder="예: 월별 예산을 정리하고 계약서 PDF를 검토합니다." aria-describedby="aiPrivacyNote"></textarea>
-         <p class="guide-notice" id="aiPrivacyNote">입력한 역할과 직군·도구 목록을 외부 AI에 전송합니다. 개인정보나 회사 기밀은 입력하지 마세요. 추천이 자동 신청이나 승인을 의미하지는 않습니다.</p>
+         <p class="guide-notice" id="aiPrivacyNote">입력한 역할과 직군·라이선스 목록을 외부 AI에 전송합니다. 개인정보나 회사 기밀은 입력하지 마세요. 추천이 자동 신청이나 승인을 의미하지는 않습니다.</p>
          <button class="primary-btn" id="aiRecommendSubmit" type="submit">추천 받기</button>
        </form>
        <p id="aiRecommendationStatus" role="status" aria-live="polite"></p>
@@ -56,7 +56,7 @@ async function submitAiRecommendation(event){
   const timeout = setTimeout(()=>controller.abort(),25000);
   button.disabled = true;
   button.setAttribute('aria-busy','true');
-  status.textContent = '직무와 담당 역할에 맞는 도구를 찾고 있습니다…';
+  status.textContent = '직무와 담당 역할에 맞는 라이선스를 찾고 있습니다…';
   results.replaceChildren();
   try{
     const response = await fetch('/api/recommend',{
@@ -67,7 +67,7 @@ async function submitAiRecommendation(event){
       const messages = {
         400:'세부 직무와 담당 역할을 다시 확인해 주세요.',
         429:'요청이 많습니다. 잠시 후 다시 시도해 주세요.',
-        503:'AI 추천이 아직 연결되지 않았습니다. 기존 직군별 목록에서 도구를 확인해 주세요.'
+        503:'AI 추천이 아직 연결되지 않았습니다. 기존 직군별 목록에서 라이선스를 확인해 주세요.'
       };
       throw new Error(messages[response.status] || '추천을 가져오지 못했습니다. 다시 시도하거나 기존 목록을 이용해 주세요.');
     }
@@ -81,7 +81,7 @@ async function submitAiRecommendation(event){
       if(!item || seen.has(item.mono) || typeof recommendation.reason !== 'string') throw new Error('추천 정보를 확인하지 못했습니다. 다시 시도해 주세요.');
       seen.add(item.mono);
     }
-    status.textContent = data.followUpQuestion || (data.recommendations.length ? '추천 이유와 현재 지급 상태를 확인해 주세요.' : '적합한 도구를 찾지 못했습니다. 담당 역할을 구체적으로 적거나 IT 헬프데스크에 문의해 주세요.');
+    status.textContent = data.followUpQuestion || (data.recommendations.length ? '추천 이유와 현재 지급 상태를 확인해 주세요.' : '적합한 라이선스를 찾지 못했습니다. 담당 역할을 구체적으로 적거나 IT 헬프데스크에 문의해 주세요.');
     for(const recommendation of data.recommendations){
       const item = catalog.find(tool=>tool.mono === recommendation.toolId);
       const card = document.createElement('section');

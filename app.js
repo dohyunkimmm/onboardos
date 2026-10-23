@@ -39,7 +39,7 @@ function showActionGuideModal(item){
     ? ['회사 메일로 받은 조직·워크스페이스 초대를 확인합니다.','hong.gildong@company.com 계정 또는 회사 SSO로 로그인합니다.','올바른 회사 조직과 권한이 보이는지 확인한 뒤 업무를 시작합니다.']
     : ['회사 계정 또는 SSO로 로그인합니다.','담당팀이 안내한 조직·업무 공간과 권한을 확인합니다.','로그인이 안 되거나 권한이 없으면 담당팀에 문의합니다.'];
   document.getElementById('actionModalBody').innerHTML = `
-    <p class="action-guide-copy">${available?'사용 준비가 완료된 도구입니다.':'지급 상태를 먼저 확인해 주세요.'} 아래 순서로 사용을 시작하세요.</p>
+    <p class="action-guide-copy">${available?'사용 준비가 완료된 라이선스입니다.':'지급 상태를 먼저 확인해 주세요.'} 아래 순서로 사용을 시작하세요.</p>
     <ol class="start-guide">${steps.map(text=>'<li>'+text+'</li>').join('')}</ol>
     <div class="action-grid"><div class="action-info"><label>담당 부서</label><div>${escapeHTML(item.owner)}</div></div><div class="action-info"><label>사용 계정</label><div>hong.gildong@company.com</div></div></div>
     <p class="guide-notice">가상 데이터 기반 안내입니다. 실제 회사의 설치 파일·조직 URL·초대 메일은 연결되어 있지 않습니다. 아래 링크는 공식 서비스 안내 페이지로 이동합니다.</p>`;
@@ -180,7 +180,7 @@ function renderCard(item, showCta){
         <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${item.mono}</div>`}</div>
         <div>
           <div class="card-title">${item.name}</div>
-          <div class="card-cat">${item.cat}</div>${isAuto ? '' : `<span class="requirement-pill ${requirementFor(item)==='필수'?'required':'optional'}">${requirementFor(item)} 도구</span>`}
+          <div class="card-cat">${item.cat}</div>${isAuto ? '' : `<span class="requirement-pill ${requirementFor(item)==='필수'?'required':'optional'}">${requirementFor(item)} 라이선스</span>`}
         </div>
       </div>
       ${ownerRow}
@@ -233,7 +233,7 @@ function setRole(key){
   if(r.cards.length === 0){
     grid.innerHTML = r.exception
       ? `<div class="empty-state span-full"><b>직무 매핑 확인이 필요합니다</b>기본 제공 라이선스는 우선 이용할 수 있습니다.<br><button class="jsm-btn" data-action="support-role">직무 정보 확인 요청</button></div>`
-      : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 기본 제공 도구를 이용하세요.</div>`;
+      : `<div class="empty-state span-full"><b>맞춤 라이선스가 없습니다</b>현재 직무에는 별도 라이선스가 없습니다. 기본 제공 라이선스를 이용하세요.</div>`;
   } else {
     grid.innerHTML = [...r.cards].sort((a,b)=>(requirementFor(a)==='필수'?0:1)-(requirementFor(b)==='필수'?0:1)).map(item => renderCard(item, true)).join('');
   }
@@ -265,12 +265,12 @@ function openSupportRequest(kind){
   document.getElementById('actionModalBody').innerHTML = `
     <p class="support-request-lead">${roleRequest
       ? 'Google Workspace 조직·직무 정보가 매핑되지 않은 상황을 가정한 Fallback Flow입니다. 접수 후 사용자와 IT 관리자 화면에서 같은 요청번호로 추적됩니다.'
-      : '필요한 SaaS·업무 도구가 목록에 없는 상황을 가정한 IT 헬프데스크 Flow입니다. 필요한 도구와 사용 목적을 입력해 주세요.'}</p>
+      : '필요한 SaaS 라이선스가 목록에 없는 상황을 가정한 IT 헬프데스크 Flow입니다. 필요한 라이선스와 사용 목적을 입력해 주세요.'}</p>
     <div class="action-grid">
       <div class="action-info"><label>담당 부서</label><div>IT팀</div></div>
       <div class="action-info"><label>SLA 기준</label><div>영업일 기준 1~2일 이내</div></div>
     </div>
-    <label class="request-note-label" for="supportRequestNote">${roleRequest ? '확인 요청 내용 (선택)' : '필요한 도구 · 사용 목적 (필수)'}</label>
+    <label class="request-note-label" for="supportRequestNote">${roleRequest ? '확인 요청 내용 (선택)' : '필요한 라이선스 · 사용 목적 (필수)'}</label>
     <textarea id="supportRequestNote" class="request-note" rows="3" maxlength="200" placeholder="${roleRequest ? '예: 신규 입사자 직무 정보가 포털에 매핑되지 않습니다' : '예: Tableau Creator · 데이터 시각화 대시보드 제작 목적'}"></textarea>
     <div class="detail-hint">접수 시 데모 ITSM 요청번호가 발급되며 신청현황과 관리자 체험에서 동일하게 표시됩니다.</div>`;
   document.getElementById('actionModalActions').innerHTML =
@@ -286,7 +286,7 @@ function submitSupportRequest(){
   const noteEl = document.getElementById('supportRequestNote');
   let note = (noteEl?.value || '').trim();
   if(kind === 'other' && !note){
-    showToast('필요한 도구와 사용 목적을 입력해 주세요.');
+    showToast('필요한 라이선스와 사용 목적을 입력해 주세요.');
     noteEl?.focus();
     return;
   }
@@ -458,7 +458,7 @@ function updateSectionEmptyStates(){
     const visible = grid.querySelectorAll('.card:not(.is-hidden)').length;
     totalVisible += visible;
     empty.hidden = !(filtering && cards.length > 0 && visible === 0);
-    if(!empty.hidden) empty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>도구 이름이나 상태 필터를 바꿔 주세요.' : `<b>${selectedFilter==='processing'?'처리 중인 요청이 없습니다':selectedFilter==='done'?'지급 완료된 도구가 없습니다':'신청하거나 보완할 항목이 없습니다'}</b>다른 상태 필터에서 도구를 확인할 수 있습니다.`;
+    if(!empty.hidden) empty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>라이선스 이름이나 상태 필터를 바꿔 주세요.' : `<b>${selectedFilter==='processing'?'처리 중인 요청이 없습니다':selectedFilter==='done'?'지급 완료된 라이선스가 없습니다':'신청하거나 보완할 항목이 없습니다'}</b>다른 상태 필터에서 라이선스를 확인할 수 있습니다.`;
     grid.closest('.licenses')?.classList.toggle('is-filter-empty', filtering && cards.length > 0 && visible === 0);
     if(countEl && countEl.dataset.base){
       countEl.textContent = filtering ? `${visible}종 표시 중 · 전체 ${cards.length}종` : countEl.dataset.base;
@@ -468,7 +468,7 @@ function updateSectionEmptyStates(){
   const hasRoleException = !!document.querySelector('#roleGrid .empty-state:not(.no-result)');
   if(globalEmpty){
     globalEmpty.hidden = !(filtering && totalVisible === 0 && !hasRoleException);
-    if(!globalEmpty.hidden) globalEmpty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>검색어나 필터를 바꿔 주세요.' : '<b>조건에 맞는 도구가 없습니다</b>다른 상태를 선택해 주세요.';
+    if(!globalEmpty.hidden) globalEmpty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>검색어나 필터를 바꿔 주세요.' : '<b>조건에 맞는 라이선스가 없습니다</b>다른 상태를 선택해 주세요.';
   }
 }
 
@@ -781,7 +781,7 @@ function updateDemoCompleteState({requests,completed}){
   box.classList.toggle('is-complete',done);
   title.textContent = done ? '🎉 대표 신청 흐름 체험 완료' : '기획 배경 · 운영 정책';
   lead.textContent = done
-    ? '대표 요청의 신청 → 검토·승인 → 지급 완료를 확인했습니다. 직원의 필수 도구 준비 상태는 상단에서 별도로 확인하세요.'
+    ? '대표 요청의 신청 → 검토·승인 → 지급 완료를 확인했습니다. 직원의 필수 라이선스 준비 상태는 상단에서 별도로 확인하세요.'
     : '프로토타입의 설계 기준과 운영 시나리오를 정리했습니다.';
 }
 
@@ -848,12 +848,12 @@ function updateProgressHint({state}){
   const el=document.getElementById('progressHint');
   if(!el) return;
   const suggested=getSuggestedRoleLicense();
-  let step='대표 신청 체험 1/3',msg='필요한 도구의 신청 흐름을 체험하세요.',cta=suggested?suggested.name+' 신청하기':'사용 시작 안내';
-  if(currentRole==='unmapped'){msg='직무 정보를 확인한 뒤 맞춤 도구를 안내합니다.';cta='직무 정보 확인 요청';}
+  let step='대표 신청 체험 1/3',msg='필요한 라이선스의 신청 흐름을 체험하세요.',cta=suggested?suggested.name+' 신청하기':'사용 시작 안내';
+  if(currentRole==='unmapped'){msg='직무 정보를 확인한 뒤 맞춤 라이선스를 안내합니다.';cta='직무 정보 확인 요청';}
   if(state==='rejected'){step='대표 신청 체험 · 보완';msg='신청현황에서 반려 사유를 확인하고 보완해 주세요.';cta='보완 요청 확인';}
   else if(state==='pending'){step='대표 신청 체험 2/3';msg='신청이 접수되었습니다. 다음은 IT 담당자 역할로 검토합니다.';cta='관리자 검토 체험';}
   else if(state==='approved'){step='대표 신청 체험 3/3';msg='검토된 요청의 지급 완료를 관리자 역할로 처리해 보세요.';cta='지급 처리 체험';}
-  else if(state==='completed'){step='대표 신청 체험 완료';msg='대표 요청 처리가 끝났습니다. 필수 도구 준비 상태는 위에서 별도로 확인하세요.';const missing=(roles[currentRole]?.cards||[]).find(item=>requirementFor(item)==='필수'&&!['auto','completed'].includes(getEffectiveStatus(item)));cta=missing?missing.name+' 신청하기':'필수 도구 시작 안내';}
+  else if(state==='completed'){step='대표 신청 체험 완료';msg='대표 요청 처리가 끝났습니다. 필수 라이선스 준비 상태는 위에서 별도로 확인하세요.';const missing=(roles[currentRole]?.cards||[]).find(item=>requirementFor(item)==='필수'&&!['auto','completed'].includes(getEffectiveStatus(item)));cta=missing?missing.name+' 신청하기':'필수 라이선스 시작 안내';}
   el.innerHTML=`<span class="demo-step-kicker${state==='completed'?' is-done':''}">${step}</span><span class="hint-copy">${escapeHTML(msg)}</span><button class="hint-cta" data-action="demo-next">${escapeHTML(cta)}</button>`;
 }
 
