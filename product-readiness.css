@@ -77,3 +77,8 @@ body:not(.login-open) .request-modal .modal-actions{position:sticky;bottom:0;bac
 }
 @media(forced-colors:active){.task-overview,.hint-cta,.requirement-pill,.decision-context{border:1px solid CanvasText;}}
 
+/* Minimal AI modal suggestions; reuse the existing neutral light theme. */
+.ai-starter-tools{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px;}
+.ai-starter-tool{display:inline-block;padding:7px 11px;border:1px solid #cbd1dc;border-radius:999px;background:#f6f7f9;color:#202124;font-size:12px;font-weight:600;line-height:1.45;}
+.ai-modal-optional{font-weight:400;color:#5f6368;}
+@media(forced-colors:active){.ai-starter-tool{border-color:CanvasText;}}
