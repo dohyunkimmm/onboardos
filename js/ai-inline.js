@@ -91,7 +91,7 @@ function aiInlineStatusText(){
 }
 function aiInlineShowExceptionRequest(item,reason){
   // Use the existing optional helpdesk demo request rather than granting another role's license.
-  openSupportRequest('other');
+  openSupportRequest('other',item);
   const field = document.getElementById('supportRequestNote');
   if(field) field.value = `${item.name} 예외 라이선스 검토 요청 · ${reason}`.slice(0,200);
 }
