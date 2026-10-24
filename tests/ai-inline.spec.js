@@ -16,7 +16,7 @@ test('inline AI never sends user input before consent; then recommends and hands
     return route.fulfill({json:{recommendations:[{toolId:'AD',reason:'계약서 PDF 검토에 필요합니다.'}],followUpQuestion:null}});
   });
   await login(page);
-  await panel(page).getByLabel('담당 업무 설명').fill('계약서 PDF 검토를 담당합니다.');
+  await panel(page).getByLabel('업무·케이스 검색').fill('계약서 PDF 검토를 담당합니다.');
   await page.waitForTimeout(1250);
   expect(requests).toBe(0);
   await consent(page).check();
@@ -49,9 +49,9 @@ test('editing input invalidates a pending response and renders only the latest r
   });
   await login(page);
   await consent(page).check();
-  await panel(page).getByLabel('담당 업무 설명').fill('이전 계약서 자료를 검토합니다.');
+  await panel(page).getByLabel('업무·케이스 검색').fill('이전 계약서 자료를 검토합니다.');
   await started;
-  await panel(page).getByLabel('담당 업무 설명').fill('최신 계약서 PDF를 검토합니다.');
+  await panel(page).getByLabel('업무·케이스 검색').fill('최신 계약서 PDF를 검토합니다.');
   await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
   await expect(panel(page)).toContainText('최신 업무 결과');
   release();
@@ -66,7 +66,7 @@ test('consent removal and role change clear output, and no new request is sent w
     return route.fulfill({json:{recommendations:[{toolId:'NT',reason:'공통 문서 작성에 사용합니다.'}],followUpQuestion:null}});
   });
   await login(page);
-  await panel(page).getByLabel('담당 업무 설명').fill('업무 문서를 정리합니다.');
+  await panel(page).getByLabel('업무·케이스 검색').fill('업무 문서를 정리합니다.');
   await consent(page).check();
   await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
   await consent(page).uncheck();
@@ -78,16 +78,16 @@ test('consent removal and role change clear output, and no new request is sent w
   await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
   expect(calls).toBe(2);
   await page.locator('[data-action="reset-demo"]').first().evaluate(el=>el.click());
-  await expect(panel(page).getByLabel('담당 업무 설명')).toHaveValue('');
+  await expect(panel(page).getByLabel('업무·케이스 검색')).toHaveValue('');
   await expect(consent(page)).not.toBeChecked();
 });
 
 test('inline AI errors leave the normal catalog available and never execute returned markup',async({page})=>{
   await page.route('**/api/recommend',route=>route.fulfill({status:503,json:{error:'ai_not_configured'}}));
   await login(page);
-  await panel(page).getByLabel('담당 업무 설명').fill('계약서 PDF 자료를 검토합니다.');
+  await panel(page).getByLabel('업무·케이스 검색').fill('계약서 PDF 자료를 검토합니다.');
   await consent(page).check();
-  await expect(panel(page).locator('#aiInlineStatus')).toContainText('아직 연결되지 않았습니다');
+  await expect(panel(page).locator('#aiInlineStatus')).toContainText('연결되지 않았습니다');
   await expect(page.locator('#roleGrid .card')).toHaveCount(4);
   await page.unroute('**/api/recommend');
   await page.route('**/api/recommend',route=>route.fulfill({json:{recommendations:[{toolId:'AD',reason:'<img src=x onerror="alert(1)">'}],followUpQuestion:null}}));
@@ -99,10 +99,10 @@ test('inline AI errors leave the normal catalog available and never execute retu
 
 test('inline AI does not persist input or consent across reload',async({page})=>{
   await login(page);
-  await panel(page).getByLabel('담당 업무 설명').fill('월별 예산 보고서를 정리합니다.');
+  await panel(page).getByLabel('업무·케이스 검색').fill('월별 예산 보고서를 정리합니다.');
   await consent(page).check();
   await page.reload();
-  await expect(panel(page).getByLabel('담당 업무 설명')).toHaveValue('');
+  await expect(panel(page).getByLabel('업무·케이스 검색')).toHaveValue('');
   await expect(consent(page)).not.toBeChecked();
 });
 
