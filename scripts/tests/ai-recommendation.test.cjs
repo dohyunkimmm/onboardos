@@ -37,7 +37,7 @@ test('each role can access common tools and only its own additional catalog',()=
     for(const common of ['SL','NT','CF','JR','JSM']) assert.ok(ids.includes(common));
   }
   assert.ok(!catalogFor('office').some(item=>item.toolId==='FG'));
-  assert.ok(!catalogFor('office').some(item=>item.toolId==='GW'));
+  assert.ok(catalogFor('office').some(item=>item.toolId==='GW')); // Added collaboration option
   for(const invalid of ['unmapped','unknown','__proto__','constructor']) assert.equal(catalogFor(invalid),null);
 });
 test('new licenses are scoped to their owning role and requestable',()=>{
@@ -57,6 +57,69 @@ test('unknown, duplicate and cross-role model results fail closed',()=>{
   assert.throws(()=>validateRecommendation({...valid,followUpQuestion:'question'},catalog));
   assert.throws(()=>validateRecommendation({recommendations:[{toolId:'AD',reason:''}],followUpQuestion:null},catalog));
 });
+
+test('expanded catalog has at least five additional tools per job and category filtering metadata',()=>{
+  const {commonLicenses,roles,recommendationCases,detectRecommendationCase}=require('../../data');
+  const ids=[...commonLicenses];
+  for(const role of ['design','dev','data','office']){
+    assert.ok((roles[role].extras||[]).length>=5);
+    ids.push(...roles[role].cards,...roles[role].extras);
+  }
+  assert.equal(ids.length,43);
+  assert.equal(new Set(ids.map(item=>item.name)).size,43);
+  assert.ok(ids.some(item=>item.bucket==='AI'));
+  assert.ok(ids.some(item=>item.bucket==='협업툴'));
+  assert.ok(ids.some(item=>item.bucket==='PM툴'));
+  assert.ok(ids.some(item=>item.bucket==='기타'));
+  assert.ok(recommendationCases.shared.length>=10);
+  assert.equal(detectRecommendationCase('PDF'),'pdf-edit');
+  assert.equal(detectRecommendationCase('디자인 편집'),'design-edit');
+  assert.equal(detectRecommendationCase('AI'),'ai-work');
+  assert.equal(detectRecommendationCase('프로젝트'),'pm-work');
+});
+
+test('cross-role task cases allow relevant tools without granting cross-role entitlements',()=>{
+  const {catalogFor,caseFor}=require('../../lib/recommendation');
+  const officeDesign=catalogFor('office','design-edit');
+  assert.ok(caseFor('office','design-edit'));
+  assert.ok(officeDesign.some(item=>item.toolId==='FG'&&item.crossRole));
+  assert.ok(!catalogFor('office').some(item=>item.toolId==='FG'));
+  const designPdf=catalogFor('design','pdf-edit');
+  assert.ok(designPdf.some(item=>item.toolId==='AD'&&item.crossRole));
+  assert.equal(catalogFor('office','unknown-case'),null);
+  assert.ok(!catalogFor('design','pdf-edit').some(item=>item.toolId==='GH'));
+});
+
+test('no minimum typed length: office design editing and design PDF invoke Gemini with scoped cases',async()=>{
+  enable();
+  const seen=[];
+  global.fetch=async(_url,options)=>{
+    const payload=JSON.parse(options.body);
+    const input=JSON.parse(payload.contents[0].parts[0].text);
+    seen.push(input);
+    const desired=input.role==='office' ? 'FG' : 'AD';
+    assert.ok(input.catalog.some(item=>item.toolId===desired && item.crossRole));
+    return provider({recommendations:[{toolId:desired,reason:'해당 업무에 필요한 도구입니다.'}],followUpQuestion:null});
+  };
+  const office=await call(request({body:{role:'office',detail:'디자인 편집'}}));
+  assert.equal(office.code,200);
+  assert.equal(office.body.recommendations[0].toolId,'FG');
+  const design=await call(request({body:{role:'design',detail:'PDF'}}));
+  assert.equal(design.code,200);
+  assert.equal(design.body.recommendations[0].toolId,'AD');
+  assert.equal(seen[0].case.id,'design-edit');
+  assert.equal(seen[1].case.id,'pdf-edit');
+});
+
+test('empty text and selected PM case are valid, but unknown case IDs are rejected',async()=>{
+  enable();
+  global.fetch=async()=>provider({recommendations:[],followUpQuestion:null});
+  assert.equal((await call(request({body:{role:'office',detail:''}}))).code,200);
+  assert.equal((await call(request({body:{role:'office',detail:'AI',caseId:'ai-work'}}))).code,200);
+  assert.equal((await call(request({body:{role:'office',detail:'',caseId:'pm-work'}}))).code,200);
+  assert.equal((await call(request({body:{role:'office',detail:'PDF',caseId:'invalid'}}))).code,400);
+});
+
 test('missing AI configuration does not invoke a provider or simulate AI',async()=>{
   delete process.env.AI_RECOMMENDATIONS_ENABLED;
   global.fetch=()=>{throw new Error('Must not fetch');};
@@ -71,7 +134,7 @@ test('method, origin, media type, malformed and oversized input fail before AI',
   assert.equal((await call(request({headers:{host:'example.com',origin:'https://example.com','content-type':'text/plain'}}))).code,415);
   assert.equal((await call(request({body:'{broken'}))).code,400);
   assert.equal((await call(request({body:'x'.repeat(4097)}))).code,413);
-  for(const body of [{role:'unmapped',detail:'test detail'},{role:'constructor',detail:'test detail'},{role:'office',detail:'x'.repeat(501)},{role:'office',detail:'  '}]) assert.equal((await call(request({body}))).code,400);
+  for(const body of [{role:'unmapped',detail:'test detail'},{role:'constructor',detail:'test detail'},{role:'office',detail:'x'.repeat(501)},{role:'office',detail:null}]) assert.equal((await call(request({body}))).code,400);
 });
 test('Gemini request uses the fixed free-tier model, server catalog and bounded output',async()=>{
   enable();
