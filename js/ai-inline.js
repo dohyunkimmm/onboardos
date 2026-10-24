@@ -34,6 +34,12 @@ const aiInlineRoleDefaults = {
     {toolId:'MD',reason:'업무 관련 계약과 전자서명에 활용합니다.'}
   ]
 };
+const aiInlineRolePrompts = {
+  design:'디자인 직군에서 일반적으로 필요한 도구를 추천해 주세요. 구체적인 업무 설명은 제공되지 않았습니다.',
+  dev:'개발 직군에서 일반적으로 필요한 도구를 추천해 주세요. 구체적인 업무 설명은 제공되지 않았습니다.',
+  data:'데이터 직군에서 일반적으로 필요한 도구를 추천해 주세요. 구체적인 업무 설명은 제공되지 않았습니다.',
+  office:'경영지원·총무 직군에서 일반적으로 필요한 도구를 추천해 주세요. 구체적인 업무 설명은 제공되지 않았습니다.'
+};
 const aiInlineRoleHints = [
   ['design',/디자인|디자이너|피그마|figma|figjam|fig jam/i],
   ['dev',/개발|프론트엔드|백엔드|코딩|깃허브|github/i],
@@ -112,7 +118,7 @@ function renderAiInlineCards(recommendations, role, detail, sequence, source){
     action.addEventListener('click',()=>{
       if(!loggedIn || sequence !== aiInlineSequence || currentRole !== role) return;
       if(source === 'ai' && (!aiInlineConsent.checked || aiInlineDetail.value.trim() !== detail)) return;
-      openLicenseAction(item.name,source === 'ai'
+      openLicenseAction(item.name,source === 'ai' && detail.length >= 5
         ? {role,toolId:item.mono,draft:recommendationRequestDraft(detail,recommendation.reason)}
         : undefined);
     });
@@ -142,29 +148,22 @@ function queueAiInlineRecommendation(){
   }
 
   const sequence = aiInlineSequence;
-  renderAiInlineCards(aiInlineRoleDefaults[role],role,'',sequence,'default');
   const otherRole = aiInlineDifferentRole(detail,role);
   if(otherRole){
-    // Do not send a mismatched detail to the wrong role's AI catalog.
+    // Do not show recommendations from a selected role that conflicts with the input.
     aiInlineStatusWithSwitch(otherRole);
     return;
   }
-  if(!detail){
-    aiInlineStatus.textContent = '직군 기준 기본 추천입니다. 자세한 업무를 입력하면 Gemini로 추천을 정교하게 조정할 수 있습니다.';
-    return;
-  }
-  if(detail.length < 5){
-    aiInlineStatus.textContent = '직군 기본 추천입니다. Gemini 맞춤 추천은 세부 업무를 5자 이상 입력하면 이용할 수 있습니다.';
-    return;
-  }
+  renderAiInlineCards(aiInlineRoleDefaults[role],role,'',sequence,'default');
   if(!consent){
-    aiInlineStatus.textContent = '직군 기본 추천입니다. Gemini 맞춤 추천을 받으려면 외부 전송에 동의해 주세요.';
+    aiInlineStatus.textContent = '직군 기본 추천입니다. Gemini로 자동 추천하려면 외부 전송에 동의해 주세요. 세부 업무 입력은 선택사항입니다.';
     return;
   }
-  aiInlineStatus.textContent = '기본 추천을 표시하고 있습니다. Gemini가 맞춤 추천을 준비합니다…';
+  const apiDetail = detail.length >= 5 ? detail : aiInlineRolePrompts[role];
+  aiInlineStatus.textContent = '직군 기본 추천을 표시하고 있습니다. Gemini가 추천을 준비합니다…';
   aiInlineTimer = setTimeout(()=>{
     aiInlineTimer = null;
-    void requestAiInlineRecommendation(role,detail,sequence);
+    void requestAiInlineRecommendation(role,detail,apiDetail,sequence);
   },1000);
 }
 
@@ -208,7 +207,7 @@ function showAiInlineResults(data,role,detail,sequence){
   }
 }
 
-async function requestAiInlineRecommendation(role,detail,sequence){
+async function requestAiInlineRecommendation(role,detail,apiDetail,sequence){
   if(sequence !== aiInlineSequence || currentRole !== role || !loggedIn
     || !aiInlineConsent.checked || aiInlineDetail.value.trim() !== detail
     || aiInlineDifferentRole(detail,role)) return;
@@ -220,7 +219,7 @@ async function requestAiInlineRecommendation(role,detail,sequence){
     const response = await fetch('/api/recommend',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({role,detail}),
+      body:JSON.stringify({role,detail:apiDetail}),
       signal:controller.signal
     });
     if(!response.ok) throw new Error(aiInlineError(response));
