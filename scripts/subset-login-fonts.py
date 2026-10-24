@@ -45,7 +45,7 @@ for part in [86,87,88,89,90,91]:
 source_css=(root/'fonts/pretendard.css').read_text()
 rules=[]
 for part in [86,87,88,89,90,91]:
-    for rule in re.findall(r'@font-face\\s*\\{[\\s\\S]*?\\}',source_css):
+    for rule in re.findall(r'@font-face\s*\{[\s\S]*?\}',source_css):
         marker=f'./pretendard/PretendardVariable.subset.{part}.woff2'
         if marker not in rule:
             continue
@@ -54,4 +54,4 @@ for part in [86,87,88,89,90,91]:
         rule=rule.replace(f'url({marker})',f'url("data:font/woff2;base64,{data}")')
         rules.append(rule)
         break
-(root/'fonts/pretendard-login.css').write_text('/* Login subset from Pretendard. Modified font name: ToolFlow UI. See PRETENDARD-LICENSE.txt and login/NOTICE.txt. */\\n'+'\\n'.join(rules)+'\\n')
+(root/'fonts/pretendard-login.css').write_text('/* Login subset from Pretendard. Modified font name: ToolFlow UI. See PRETENDARD-LICENSE.txt and login/NOTICE.txt. */\n'+'\n'.join(rules)+'\n')
