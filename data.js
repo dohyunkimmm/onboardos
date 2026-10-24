@@ -71,6 +71,217 @@ const roles = {
 };
 
 // Role-first use cases: the UI and Gemini API share this allowlisted source of truth.
+
+// Optional licenses are shown in the expanded category catalog; no entitlement is implied.
+roles.design.extras = [
+  {
+    "mono": "CV",
+    "name": "Canva",
+    "cat": "디자인·콘텐츠 제작",
+    "owner": "디자인팀 라이선스 담당",
+    "audience": "디자인 직군",
+    "status": "request",
+    "url": "https://www.canva.com",
+    "bucket": "AI"
+  },
+  {
+    "mono": "MI",
+    "name": "Miro",
+    "cat": "화이트보드·워크숍",
+    "owner": "디자인팀 라이선스 담당",
+    "audience": "디자인 직군",
+    "status": "request",
+    "url": "https://miro.com",
+    "bucket": "협업툴"
+  },
+  {
+    "mono": "FR",
+    "name": "Framer",
+    "cat": "인터랙티브 웹 시안·퍼블리싱",
+    "owner": "디자인팀 라이선스 담당",
+    "audience": "디자인 직군",
+    "status": "approval",
+    "url": "https://www.framer.com",
+    "bucket": "기타"
+  },
+  {
+    "mono": "ZP",
+    "name": "Zeplin",
+    "cat": "디자인·개발 핸드오프",
+    "owner": "디자인팀 라이선스 담당",
+    "audience": "디자인 직군",
+    "status": "request",
+    "url": "https://zeplin.io",
+    "bucket": "협업툴"
+  },
+  {
+    "mono": "RW",
+    "name": "Runway",
+    "cat": "AI 영상·이미지 제작",
+    "owner": "디자인팀 라이선스 담당",
+    "audience": "디자인 직군",
+    "status": "approval",
+    "url": "https://runwayml.com",
+    "bucket": "AI"
+  }
+];
+roles.dev.extras = [
+  {
+    "mono": "LN",
+    "name": "Linear",
+    "cat": "이슈·프로젝트 관리",
+    "owner": "개발팀 라이선스 담당",
+    "audience": "개발 직군",
+    "status": "request",
+    "url": "https://linear.app",
+    "bucket": "PM툴"
+  },
+  {
+    "mono": "SE",
+    "name": "Sentry",
+    "cat": "오류 추적·모니터링",
+    "owner": "개발팀 라이선스 담당",
+    "audience": "개발 직군",
+    "status": "request",
+    "url": "https://sentry.io",
+    "bucket": "기타"
+  },
+  {
+    "mono": "GL",
+    "name": "GitLab",
+    "cat": "코드 저장소·CI 협업",
+    "owner": "개발팀 라이선스 담당",
+    "audience": "개발 직군",
+    "status": "request",
+    "url": "https://gitlab.com",
+    "bucket": "협업툴"
+  },
+  {
+    "mono": "DH",
+    "name": "Docker Hub",
+    "cat": "컨테이너 이미지 관리",
+    "owner": "개발팀 라이선스 담당",
+    "audience": "개발 직군",
+    "status": "request",
+    "url": "https://hub.docker.com",
+    "bucket": "기타"
+  },
+  {
+    "mono": "CR",
+    "name": "Cursor",
+    "cat": "AI 코딩·코드 편집",
+    "owner": "개발팀 라이선스 담당",
+    "audience": "개발 직군",
+    "status": "approval",
+    "url": "https://cursor.com",
+    "bucket": "AI"
+  }
+];
+roles.data.extras = [
+  {
+    "mono": "TB",
+    "name": "Tableau",
+    "cat": "데이터 분석·시각화",
+    "owner": "데이터팀 라이선스 담당",
+    "audience": "데이터 직군",
+    "status": "approval",
+    "url": "https://www.tableau.com",
+    "bucket": "기타"
+  },
+  {
+    "mono": "DT",
+    "name": "dbt Cloud",
+    "cat": "데이터 모델링·변환",
+    "owner": "데이터팀 라이선스 담당",
+    "audience": "데이터 직군",
+    "status": "approval",
+    "url": "https://www.getdbt.com",
+    "bucket": "기타"
+  },
+  {
+    "mono": "HX",
+    "name": "Hex",
+    "cat": "분석 노트북·협업",
+    "owner": "데이터팀 라이선스 담당",
+    "audience": "데이터 직군",
+    "status": "request",
+    "url": "https://hex.tech",
+    "bucket": "협업툴"
+  },
+  {
+    "mono": "LK",
+    "name": "Looker Studio",
+    "cat": "대시보드·리포트",
+    "owner": "데이터팀 라이선스 담당",
+    "audience": "데이터 직군",
+    "status": "request",
+    "url": "https://lookerstudio.google.com",
+    "bucket": "기타"
+  },
+  {
+    "mono": "CL",
+    "name": "Claude",
+    "cat": "AI 기반 데이터·문서 보조",
+    "owner": "IT팀·데이터팀",
+    "audience": "데이터 직군",
+    "status": "request",
+    "url": "https://claude.ai",
+    "bucket": "AI"
+  }
+];
+roles.office.extras = [
+  {
+    "mono": "AS",
+    "name": "Asana",
+    "cat": "업무·프로젝트 관리",
+    "owner": "경영지원팀 라이선스 담당",
+    "audience": "경영지원·총무 직군",
+    "status": "request",
+    "url": "https://asana.com",
+    "bucket": "PM툴"
+  },
+  {
+    "mono": "TR",
+    "name": "Trello",
+    "cat": "칸반 업무·프로젝트 관리",
+    "owner": "경영지원팀 라이선스 담당",
+    "audience": "경영지원·총무 직군",
+    "status": "request",
+    "url": "https://trello.com",
+    "bucket": "PM툴"
+  },
+  {
+    "mono": "ZM",
+    "name": "Zoom",
+    "cat": "화상회의·원격 협업",
+    "owner": "IT팀",
+    "audience": "경영지원·총무 직군",
+    "status": "request",
+    "url": "https://zoom.us",
+    "bucket": "협업툴"
+  },
+  {
+    "mono": "GW",
+    "name": "Google Workspace",
+    "cat": "문서·메일·캘린더 협업",
+    "owner": "IT팀",
+    "audience": "경영지원·총무 직군",
+    "status": "approval",
+    "url": "https://workspace.google.com",
+    "bucket": "협업툴"
+  },
+  {
+    "mono": "GM",
+    "name": "Grammarly",
+    "cat": "AI 글쓰기·영문 교정",
+    "owner": "경영지원팀 라이선스 담당",
+    "audience": "경영지원·총무 직군",
+    "status": "request",
+    "url": "https://www.grammarly.com",
+    "bucket": "AI"
+  }
+];
+
 const recommendationCases = {
   "shared": [
   {
