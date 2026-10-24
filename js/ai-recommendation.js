@@ -122,7 +122,7 @@ async function submitAiRecommendation(event){
         hideActionModal();
         // Another team's tool can be suggested, never automatically issued or applied for.
         if(exception){
-          openSupportRequest('other');
+          openSupportRequest('other',item);
           const note = document.getElementById('supportRequestNote');
           if(note) note.value = `${item.name} 예외 검토 요청 · ${recommendation.reason}`.slice(0,200);
         }else{
