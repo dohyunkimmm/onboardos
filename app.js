@@ -282,9 +282,10 @@ function showToast(message){
 }
 
 
-function openSupportRequest(kind){
+function openSupportRequest(kind,license=null){
   const roleRequest = kind === 'role';
-  const name = roleRequest ? '직무 정보 확인 요청' : '기타 라이선스 요청';
+  const name = roleRequest ? '직무 정보 확인 요청'
+    : license ? `${license.name} 직군 외 라이선스 검토` : '기타 라이선스 요청';
   const existing = requestState[name];
   if(existing){
     showToast(`${name}은 이미 접수되어 있습니다. 신청현황에서 같은 ITSM 번호로 상태를 확인해 주세요.`);
@@ -293,7 +294,8 @@ function openSupportRequest(kind){
   }
   supportRequestContext = {kind,name};
   document.getElementById('actionModalEyebrow').textContent = 'IT HELPDESK';
-  document.getElementById('actionModalTitle').textContent = roleRequest ? '직무 정보 확인 요청' : '목록에 없는 라이선스 요청';
+  document.getElementById('actionModalTitle').textContent = roleRequest ? '직무 정보 확인 요청'
+    : license ? `${license.name} 예외 검토 요청` : '목록에 없는 라이선스 요청';
   document.getElementById('actionModalBody').innerHTML = `
     <p class="support-request-lead">${roleRequest
       ? 'Google Workspace 조직·직무 정보가 매핑되지 않은 상황을 가정한 Fallback Flow입니다. 접수 후 사용자와 IT 관리자 화면에서 같은 요청번호로 추적됩니다.'
