@@ -213,6 +213,7 @@ function renderRoleTabs(){
 }
 
 function setRole(key){
+  const previousRole = currentRole;
   if(key !== currentRole && typeof cancelAiRecommendation === 'function'){
     cancelAiRecommendation();
     if(document.getElementById('aiRecommendationForm')) hideActionModal();
@@ -242,6 +243,7 @@ function setRole(key){
   }
   applyFilters();
   updateDashboard();
+  if(previousRole !== currentRole && typeof updateAiInlineRole === 'function') updateAiInlineRole();
 }
 
 function showToast(message){
@@ -362,6 +364,7 @@ function resetDemo(){
   renderCommon();
   renderRoleTabs();
   setRole('office');
+  if(typeof resetAiInlineRecommendation === 'function') resetAiInlineRecommendation();
   applyFilters();
   updateDashboard();
   showToast('체험 상태가 초기화되었습니다. 경영지원·총무 직무부터 다시 시작할 수 있습니다.');
