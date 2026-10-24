@@ -177,7 +177,7 @@ function renderCard(item, showCta){
   const ownerRow = isAuto ? '' : `<div class="card-owner">담당 · <b>${item.owner}</b></div>`;
   const bottomRight = ctaBtn ? `<div class="card-action">${ctaBtn}</div>` : '';
   return `
-    <div class="card${isApplied ? ' applied' : ''}" data-name="${item.name}" data-status="${effectiveStatus}">
+    <div class="card${isApplied ? ' applied' : ''}" data-name="${escapeHTML(item.name)}" data-status="${effectiveStatus}" data-category="${escapeHTML(item.bucket||item.cat)}">
       <div class="card-top">
         <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${item.mono}</div>`}</div>
         <div>
@@ -201,6 +201,31 @@ function renderCommon(){
   const cc = document.getElementById('commonCount');
   cc.dataset.base = `${commonLicenses.length}개`;
   cc.textContent = cc.dataset.base;
+}
+
+let extraCategory = 'all';
+function syncExtraCategoryUI(){
+  document.querySelectorAll('#roleExtraTools [data-extra-category]').forEach(button=>{
+    const active = button.dataset.extraCategory === extraCategory;
+    button.classList.toggle('active',active);
+    button.setAttribute('aria-pressed',String(active));
+  });
+}
+function setExtraCategory(value){
+  extraCategory = ['all','AI','협업툴','PM툴','기타'].includes(value) ? value : 'all';
+  syncExtraCategoryUI();
+  applyFilters();
+}
+function renderRoleExtras(){
+  const section = document.getElementById('roleExtraTools');
+  const grid = document.getElementById('extraGrid');
+  const count = document.getElementById('extraCount');
+  const extras = roles[currentRole]?.extras || [];
+  section.hidden = !extras.length;
+  grid.innerHTML = extras.map(item=>renderCard(item,true)).join('');
+  count.dataset.base = `${extras.length}개 · 카테고리별 보기`;
+  count.textContent = count.dataset.base;
+  syncExtraCategoryUI();
 }
 
 function renderRoleTabs(){
@@ -241,6 +266,8 @@ function setRole(key){
   } else {
     grid.innerHTML = [...r.cards].sort((a,b)=>(requirementFor(a)==='필수'?0:1)-(requirementFor(b)==='필수'?0:1)).map(item => renderCard(item, true)).join('');
   }
+  if(previousRole !== currentRole) extraCategory = 'all';
+  renderRoleExtras();
   applyFilters();
   updateDashboard();
   if(previousRole !== currentRole && typeof updateAiInlineRole === 'function') updateAiInlineRole();
@@ -428,7 +455,7 @@ function fakeLogin(){
 
 function findLicenseByName(name){
   const all = [...commonLicenses];
-  Object.values(roles).forEach(r => all.push(...r.cards));
+  Object.values(roles).forEach(r => all.push(...r.cards,...(r.extras || [])));
   return all.find(x => x.name === name);
 }
 
@@ -443,7 +470,9 @@ function applyFilters(){
   const group = FILTER_GROUPS[selectedFilter];
   document.querySelectorAll('.card').forEach(card => {
     const query = (document.getElementById('toolSearch')?.value || '').trim().toLocaleLowerCase();
-    const matchesFilter = (!group || group.has(card.dataset.status)) && (!query || card.dataset.name.toLocaleLowerCase().includes(query));
+    const matchesCategory = !card.closest('#roleExtraTools') || extraCategory === 'all' || card.dataset.category===extraCategory;
+    const matchesFilter = matchesCategory && (!group || group.has(card.dataset.status))
+      && (!query || (card.dataset.name+' '+card.dataset.category).toLocaleLowerCase().includes(query));
     card.classList.toggle('is-hidden', !matchesFilter);
     card.hidden = !matchesFilter;
     card.inert = !matchesFilter;
@@ -456,7 +485,7 @@ function updateSectionEmptyStates(){
   const searching = !!document.getElementById('toolSearch')?.value.trim();
   const filtering = selectedFilter !== 'all' || searching;
   let totalVisible = 0;
-  [['commonGrid','commonEmpty','commonCount'],['roleGrid','roleEmpty','roleCount']].forEach(([gridId,emptyId,countId])=>{
+  [['commonGrid','commonEmpty','commonCount'],['roleGrid','roleEmpty','roleCount'],['extraGrid','extraEmpty','extraCount']].forEach(([gridId,emptyId,countId])=>{
     const grid = document.getElementById(gridId);
     const empty = document.getElementById(emptyId);
     const countEl = document.getElementById(countId);
