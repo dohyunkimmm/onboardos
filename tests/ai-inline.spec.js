@@ -70,7 +70,7 @@ test('consent removal and role change clear output, and no new request is sent w
   await consent(page).check();
   await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
   await consent(page).uncheck();
-  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(0);
+  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(3);
   await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
   await page.waitForTimeout(1250);
   expect(calls).toBe(1);
@@ -104,4 +104,74 @@ test('inline AI does not persist input or consent across reload',async({page})=>
   await page.reload();
   await expect(panel(page).getByLabel('담당 업무 설명')).toHaveValue('');
   await expect(consent(page)).not.toBeChecked();
+});
+
+
+test('office design editing recommends Figma as an exception without changing employee role',async({page})=>{
+  let calls=0;
+  await page.route('**/api/recommend',route=>{calls++;return route.fulfill({json:{recommendations:[],followUpQuestion:null}});});
+  await login(page);
+  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(3);
+  await panel(page).getByLabel('업무·케이스 검색').fill('디자인 편집');
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Figma');
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('예외 검토 필요');
+  await expect(page.locator('#roleSelect')).toHaveValue('office');
+  await expect.poll(()=>calls,{timeout:2500}).toBe(0);
+  await panel(page).locator('.ai-inline-result').first().getByRole('button',{name:'예외 요청 작성'}).click();
+  await expect(page.locator('#actionModalBackdrop')).toHaveClass(/show/);
+  await expect(page.locator('#supportRequestNote')).toHaveValue(/Figma.*예외/);
+  await expect(page.locator('#requestBackdrop')).not.toHaveClass(/show/);
+});
+
+test('design role PDF editing recommends Acrobat as an exception and short text triggers Gemini only after consent',async({page})=>{
+  const seen=[];
+  await page.route('**/api/recommend',route=>{
+    const body=JSON.parse(route.request().postData());
+    seen.push(body);
+    return route.fulfill({json:{recommendations:[{toolId:'AD',reason:'PDF 편집 용도'}],followUpQuestion:null}});
+  });
+  await login(page);
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');
+  await panel(page).getByLabel('업무·케이스 검색').fill('PDF');
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Adobe Acrobat Pro DC');
+  await expect(panel(page)).toContainText('직군 외 · 예외 검토 필요');
+  expect(seen).toHaveLength(0);
+  await consent(page).check();
+  await expect.poll(()=>seen.length).toBe(1);
+  expect(seen[0]).toMatchObject({role:'design',detail:'PDF',caseId:'pdf-edit'});
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Gemini 추천');
+  await panel(page).locator('.ai-inline-result').first().getByRole('button',{name:'예외 요청 작성'}).click();
+  await expect(page.locator('#supportRequestNote')).toHaveValue(/Adobe Acrobat Pro DC/);
+});
+
+test('shared and selected case works across roles with no task description',async({page})=>{
+  await login(page);
+  await panel(page).locator('#aiInlineCase').selectOption('pm-work');
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Asana');
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('예외 검토 필요');
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
+  await expect(panel(page).locator('#aiInlineCase')).toHaveValue('pm-work');
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Asana');
+  await expect(consent(page)).not.toBeChecked();
+});
+
+test('expanded license categories contain five optional tools per role and are searchable',async({page})=>{
+  await login(page);
+  const extra=page.locator('#roleExtraTools');
+  await expect(extra.locator('#extraGrid .card')).toHaveCount(5);
+  await extra.locator('summary').click();
+  await extra.getByRole('button',{name:'PM툴',exact:true}).click();
+  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toHaveCount(2);
+  await expect(extra).toContainText('Asana');
+  await expect(extra).toContainText('Trello');
+  await extra.getByRole('button',{name:'전체',exact:true}).click();
+  await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('Zoom');
+  await expect(extra).toHaveAttribute('open');
+  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toHaveCount(1);
+  await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('');
+  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
+  await expect(extra.locator('#extraGrid .card')).toHaveCount(5);
+  await extra.getByRole('button',{name:'AI',exact:true}).click();
+  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toHaveCount(1);
+  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toContainText('Cursor');
 });
