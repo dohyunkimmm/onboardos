@@ -308,6 +308,15 @@ const recommendationCases = {
   ],
   "office": [
     {
+      "id": "design-edit",
+      "label": "디자인·이미지 편집",
+      "description": "디자인 편집·화면 시안 제작·간단한 그래픽 작업. 경영지원 직군이라도 직군 외 라이선스를 검토할 수 있습니다.",
+      "recommendations": [
+        {"toolId":"FG","reason":"디자인 화면과 시안을 제작·편집하고 협업합니다. 현재 직군 외 라이선스이므로 IT 검토가 필요합니다."},
+        {"toolId":"CC","reason":"브랜드 이미지와 그래픽을 편집할 때 활용합니다. 현재 직군 외 라이선스이므로 IT 검토가 필요합니다."}
+      ]
+    },
+    {
       "id": "docs",
       "label": "문서·보고서 작성",
       "description": "문서 작성·스프레드시트·보고서 편집",
