@@ -1,7 +1,7 @@
 'use strict';
 
 const {acquireRecommendation}=require('../lib/recommendation-rate-limit');
-const {catalogFor,caseFor,schemaFor,validateRecommendation,instructions} = require('../lib/recommendation');
+const {catalogFor,caseFor,detectRecommendationCase,schemaFor,validateRecommendation,instructions} = require('../lib/recommendation');
 
 module.exports = async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
@@ -22,13 +22,16 @@ module.exports = async function handler(req,res){
     body = typeof req.body === 'string' ? JSON.parse(raw) : req.body;
   }catch(_error){ return res.status(400).json({error:'invalid_input'}); }
   const detail = body?.detail === undefined ? '' : body.detail;
-  const caseId = body?.caseId === undefined ? null : body.caseId;
-  const catalog = typeof body?.role === 'string' ? catalogFor(body.role,caseId) : null;
-  if(!catalog || typeof detail !== 'string' || detail.length > 500
-    || (caseId !== null && (typeof caseId !== 'string' || !caseFor(body.role,caseId)))) {
+  const requestedCaseId = body?.caseId == null ? null : body.caseId;
+  if(typeof detail !== 'string' || detail.length > 500 || (requestedCaseId !== null
+    && (typeof requestedCaseId !== 'string' || !caseFor(body?.role,requestedCaseId)))){
     return res.status(400).json({error:'invalid_input'});
   }
-  const selectedCase = caseFor(body.role,caseId);
+  const chosenCaseId = requestedCaseId || detectRecommendationCase(detail);
+  const selectedCase = caseFor(body?.role,chosenCaseId);
+  const catalog = typeof body?.role === 'string'
+    ? catalogFor(body.role,selectedCase?.id || null) : null;
+  if(!catalog) return res.status(400).json({error:'invalid_input'});
   if(process.env.AI_RECOMMENDATIONS_ENABLED !== 'true' || !process.env.GEMINI_API_KEY) return res.status(503).json({error:'ai_not_configured'});
   const lease=acquireRecommendation(req);
   if(!lease.ok){
