@@ -49,8 +49,8 @@ const sandbox = {};
 vm.createContext(sandbox);
 vm.runInContext(read('data.js') + '\n;globalThis.__catalog={commonLicenses,roles};', sandbox);
 const { commonLicenses, roles } = sandbox.__catalog;
-const cards = [...commonLicenses, ...Object.values(roles).flatMap(role => role.cards || [])];
-if(cards.length !== 23) fail(`expected 23 licenses, found ${cards.length}`);
+const cards = [...commonLicenses, ...Object.values(roles).flatMap(role => [...(role.cards || []),...(role.extras || [])])];
+if(cards.length !== 43) fail(`expected 43 licenses, found ${cards.length}`);
 const publicCatalogCount = `공통 ${commonLicenses.length}개 + 직무별 ${cards.length-commonLicenses.length}개 = 총 ${cards.length}개`;
 for(const file of ['README.md','docs/DEMO_WALKTHROUGH.md']){
   const publicText = read(file);
