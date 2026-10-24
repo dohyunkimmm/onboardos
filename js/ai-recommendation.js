@@ -71,7 +71,7 @@ async function submitAiRecommendation(event){
   try{
     const response = await fetch('/api/recommend',{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({role,detail}), signal:controller.signal
+      body:JSON.stringify({role,detail,caseId:null}), signal:controller.signal
     });
     if(!response.ok){
       const messages = {
@@ -86,7 +86,7 @@ async function submitAiRecommendation(event){
     const data = await response.json();
     if(sequence !== aiRecommendationSequence || role !== currentRole) return;
     if(!Array.isArray(data.recommendations) || data.recommendations.length > 3) throw new Error('추천 형식을 확인하지 못했습니다. 다시 시도해 주세요.');
-    const chosen = [...recommendationCases.shared,...(recommendationCases[role]||[])].find(entry=>entry.id===detectRecommendationCase(detail));
+    const chosen = null; // Manual modal uses a role-wide catalog; inline AI handles cross-role cases.
     const all = [...commonLicenses,...Object.values(roles).flatMap(group=>[...group.cards,...(group.extras||[])])];
     const catalog = chosen
       ? chosen.recommendations.map(entry=>all.find(tool=>tool.mono===entry.toolId))
