@@ -30,7 +30,7 @@ test('[D1] dashboard hierarchy increases readable width and headline contrast af
   const main = await css(page.locator('main'));
   expect(parseFloat(main.maxWidth)).toBeGreaterThanOrEqual(1180);
   const title = await css(page.locator('.section-head h2').first());
-  expect(parseFloat(title.fontSize)).toBe(20);
+  expect(parseFloat(title.fontSize)).toBe(15);
   expect(Number(title.fontWeight)).toBeGreaterThanOrEqual(700);
   await shot(page,'D1-dashboard-hierarchy.png');
 });
@@ -38,8 +38,8 @@ test('[D1] dashboard hierarchy increases readable width and headline contrast af
 test('[D2] overview panel uses layered surface and tighter information hierarchy', async ({page}) => {
   await stabilize(page); await login(page);
   const overview = await css(page.locator('.task-overview'));
-  expect(parseFloat(overview.borderRadius)).toBe(12);
-  expect(overview.backgroundColor).toBe('rgb(255, 255, 255)');
+  expect(parseFloat(overview.borderRadius)).toBe(0);
+  expect(overview.backgroundColor).toBe('rgba(0, 0, 0, 0)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
   await page.getByRole('button',{name:'도움말',exact:true}).click();
   await page.locator('.overview-panel > summary').click();
@@ -47,25 +47,25 @@ test('[D2] overview panel uses layered surface and tighter information hierarchy
   expect(parseFloat(name.fontSize)).toBeGreaterThanOrEqual(28);
 });
 
-test('[D3] 1920 desktop fills each group with its actual license count', async ({page}) => {
+test('[D3] 1920 desktop presents both groups in three comparable columns', async ({page}) => {
   await page.setViewportSize({width:1920,height:1080});
   await stabilize(page); await login(page);
   const common = await css(page.locator('#commonGrid'));
-  expect(common.gridTemplateColumns.split(' ').length).toBe(5);
+  expect(common.gridTemplateColumns.split(' ').length).toBe(3);
   const role = await css(page.locator('#roleGrid'));
-  expect(role.gridTemplateColumns.split(' ').length).toBe(4);
+  expect(role.gridTemplateColumns.split(' ').length).toBe(3);
 });
 
 test('[D4] role cards use consistent elevated surfaces and stronger primary CTA', async ({page}) => {
   await stabilize(page); await login(page);
   const card = page.locator('#roleGrid .card').first();
   const state = await css(card);
-  expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(12);
+  expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(10);
   expect(state.background).not.toBe('none');
   expect(state.borderStyle).toBe('solid');
   const cta = await css(card.locator('.cta'));
-  expect(cta.backgroundColor).toBe('rgb(26, 115, 232)');
-  expect(Number(cta.fontWeight)).toBeGreaterThanOrEqual(700);
+  expect(cta.backgroundColor).toBe('rgb(255, 255, 255)');
+  expect(Number(cta.fontWeight)).toBeGreaterThanOrEqual(600);
   await shot(card,'D4-role-card-system.png');
 });
 
@@ -113,7 +113,7 @@ test('[D8] v17 preserves one product identity across login and post-login withou
   await login(page);
   await expect(page.locator('body')).not.toHaveClass(/login-open/);
   const panel = await css(page.locator('.task-overview'));
-  expect(parseFloat(panel.borderRadius)).toBe(12);
-  expect(panel.backgroundColor).toBe('rgb(255, 255, 255)');
+  expect(parseFloat(panel.borderRadius)).toBe(0);
+  expect(panel.backgroundColor).toBe('rgba(0, 0, 0, 0)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
 });

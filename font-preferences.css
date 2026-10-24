@@ -1,0 +1,11 @@
+/* User typography choice. Fonts are self-hosted; only UI icons use Tossface SVG. */
+html body,html body button,html body input,html body select,html body textarea,
+html body #loginScreen .login-card,html body #loginScreen .login-card *,
+html body #mainContent,html body #mainContent *,
+html body .topbar,html body .topbar *,
+html body .request-modal,html body .request-modal *,
+html body .drawer,html body .drawer *,
+html body .action-modal,html body .action-modal *,
+html body #onboardingHelp,html body #onboardingHelp *{font-family:"Pretendard Variable",Pretendard,sans-serif!important;}
+
+html body #loginScreen .login-card,html body #loginScreen .login-card *{font-family:"ToolFlow UI","Pretendard Variable",Pretendard,sans-serif!important;}

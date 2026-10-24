@@ -1,0 +1,8 @@
+토스페이스 저작권 안내
+
+토스페이스는 토스 팀에서 제작하고 공개한 이모지입니다.
+공식 원본: https://github.com/toss/tossface
+배포 기준 커밋: 37720aa5cf2ec9a853a9787f29e39002c58cc2e7
+ToolFlow는 dist/svg의 원본 SVG를 변형하지 않고 사용합니다.
+라이선스 전문: TOSSFACE-LICENSE.txt
+저작권 안내 원문: https://toss.im/tossface/copyright

@@ -1,0 +1,197 @@
+/* ToolFlow searchable catalog. The request and approval flows retain their styles. */
+body:not(.login-open){background:#f7f8fa;color:#202124;}
+body:not(.login-open) #mainContent{width:min(1180px,calc(100% - 64px));max-width:1180px;margin:0 auto;padding:40px 0 32px;outline:none;}
+body .catalog-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;margin:0 0 28px;}
+body .catalog-eyebrow{margin:0 0 10px;color:#1a73e8;font-size:11px;font-weight:700;letter-spacing:.12em;}
+body #catalogTitle{margin:0;font-size:32px;font-weight:750;letter-spacing:-.045em;line-height:1.3;}
+body .catalog-description{margin:12px 0 0;color:#6b7280;font-size:15px;line-height:1.6;}
+body .catalog-heading .task-overview{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;flex:0 0 auto;gap:6px;margin:0;padding:0;border:0;background:transparent;box-shadow:none;border-radius:0;}
+body .catalog-heading .task-identity>span:first-child{font-size:14px;font-weight:650;}
+body .catalog-heading #readinessSummary{font-size:12px;font-weight:400;color:#6b7280;}
+body .catalog-controls{background:white;border:1px solid #e1e5eb;border-radius:16px;padding:24px;margin-bottom:26px;}
+body .catalog-search-row.tools-bar{display:flex;align-items:stretch;gap:12px;margin:0 0 25px;padding:0;border:0;background:transparent;box-shadow:none;border-radius:0;}
+body .catalog-controls .tool-search{display:flex;align-items:center;gap:12px;flex:1;min-width:0;height:54px;border:1px solid #cdd4df;border-radius:10px;padding:0 16px;background:#fff;color:#7b8494;}
+body .catalog-controls .tool-search:focus-within{border-color:#1a73e8;outline:3px solid #e8f0fe;}
+body .catalog-controls .tool-search svg{flex:0 0 auto;}
+body .catalog-controls #toolSearch{flex:1;width:100%;min-width:0;max-width:none;margin:0;padding:0;height:50px;border:0!important;outline:0!important;box-shadow:none!important;background:transparent;font:inherit;font-size:15px;color:#202124;}
+body .catalog-controls #toolSearch::placeholder{color:#8a919d;}
+body .catalog-ai{display:flex;align-items:center;justify-content:center;gap:9px;min-width:140px;padding:0 20px;border:1px solid #d5e4fc;border-radius:10px;background:#eff5ff;color:#175fc2;font-size:14px;font-weight:650;cursor:pointer;}
+body .catalog-ai>span{font-size:23px;line-height:1;}
+body .catalog-ai:hover{background:#e4efff;border-color:#a9c9f8;}
+body .catalog-filter-heading{display:flex;justify-content:space-between;align-items:center;margin:0 0 13px;}
+body .catalog-filter-heading h3{margin:0;font-size:14px;font-weight:650;}
+body .catalog-reset{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 2px;border:0;background:none;color:#69717e;font-size:12px;cursor:pointer;}
+body .catalog-reset:hover{color:#1a73e8;}
+body .catalog-filter-row{display:grid;grid-template-columns:minmax(130px,1fr) minmax(140px,1fr) minmax(125px,1fr) minmax(320px,1.7fr);gap:18px;align-items:end;}
+body .catalog-field,body .catalog-field.role-picker{position:static!important;display:flex;flex-direction:column;align-items:stretch;gap:8px;width:auto!important;max-width:100%;margin:0!important;padding:0!important;border:0;background:transparent;color:#646c79;font-size:12px;}
+body .catalog-field>span{font-size:12px;font-weight:500;}
+body .catalog-field select,body .catalog-result-heading select{width:100%;min-width:0;height:42px;min-height:42px;padding:8px 12px;border:1px solid #dfe3e9;border-radius:8px;background-color:white;color:#343a45;font-family:inherit;font-size:13px!important;line-height:1.4;cursor:pointer;}
+body .catalog-status .filter-tabs{display:flex;gap:5px;height:42px;margin:0;padding:0;background:none;border:0;}
+body .catalog-status .filter-chip{flex:1;min-width:0;min-height:42px;padding:7px 9px;border:1px solid #e1e5eb!important;border-radius:8px!important;font-size:12px!important;font-weight:500;background:white;color:#626b78;white-space:nowrap;box-shadow:none;}
+body .catalog-status .filter-chip.active{background:#e8f0fe;color:#1967d2;border-color:#c4d8f8!important;font-weight:650;}
+body .catalog-selected{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 0;margin-top:19px;border-top:1px solid #edf0f4;}
+body .catalog-selected[hidden]{display:none;}
+body .catalog-selected-tag{display:inline-flex;align-items:center;gap:10px;max-width:100%;min-height:32px;padding:6px 10px;border:1px solid #dce7f7;border-radius:6px;background:#f1f6fe;color:#2b61a9;font-size:12px;overflow-wrap:anywhere;cursor:pointer;}
+body .catalog-selected-tag>span{font-size:17px;color:#6f93c3;}
+body .catalog-result-heading{display:flex;align-items:center;justify-content:space-between;margin:0 0 18px;}
+body #catalogResultCount{margin:0;color:#5c6572;font-size:14px;}
+body #catalogResultCount strong{color:#202124;font-size:16px;font-weight:750;}
+body .catalog-result-heading select{width:110px;height:38px;min-height:38px;border-color:transparent;background-color:transparent;font-size:13px!important;}
+body #mainContent .licenses{margin:0 0 30px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+body #mainContent .licenses.is-filter-empty{display:none!important;}
+body #mainContent .section-head,body #mainContent .common-summary{margin:0 0 14px!important;padding:0!important;border:0!important;min-height:24px;}
+body #mainContent .section-head h2,body #mainContent .common-summary h2{font-size:16px!important;color:#4b5563;}
+body #mainContent .count{font-size:12px!important;color:#8a919d;}
+body #mainContent .shared-access{margin-left:10px;font-size:11px;color:#698878;background:#eaf4ee;border:0;padding:3px 7px;border-radius:4px;}
+body #mainContent #roleGrid,body #mainContent #roleGrid.balanced-four,body #mainContent #roleGrid[data-count],body #mainContent #commonGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px;align-items:stretch;}
+body #mainContent #roleGrid .card,body #mainContent #commonGrid .card{display:flex!important;flex-direction:column!important;align-items:stretch;gap:0;min-width:0;min-height:306px!important;height:100%;padding:22px!important;border:1px solid #e1e5eb!important;border-radius:13px!important;background:#fff!important;box-shadow:none!important;transform:none!important;overflow:visible;}
+body #mainContent #roleGrid .card:hover,body #mainContent #commonGrid .card:hover{border-color:#a9c5ee!important;box-shadow:0 4px 16px #1f3d5c0a!important;}
+body #mainContent .card[hidden],body #mainContent .card.is-hidden{display:none!important;}
+body #mainContent .card .card-top{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:flex-start!important;gap:13px!important;margin:0 0 18px!important;min-width:0;}
+body #mainContent .card .card-top>div:last-child{flex:1;min-width:0;display:block!important;}
+body #mainContent .card .logo-chip{width:44px;height:44px;flex:0 0 44px;border:1px solid #eef0f4;border-radius:10px;background:#f8fafc;}
+body #mainContent .card .logo-chip img{width:27px;height:27px;object-fit:contain;}
+body #mainContent .card .card-title{margin:0;color:#232a35;font-size:16px!important;font-weight:700!important;line-height:1.45;letter-spacing:-.025em;overflow-wrap:anywhere;}
+body #mainContent .card .card-purpose{display:block;margin:5px 0 10px;font-size:12px!important;line-height:1.55;color:#7b8491;}
+body #mainContent .card .requirement-pill{display:inline-flex!important;align-items:center;min-height:23px;margin:0;padding:3px 7px;border:0;border-radius:4px;font-size:10px;font-weight:600;line-height:1.4;}
+body #mainContent .card .requirement-pill.required{background:#eaf1ff;color:#3869b0;}
+body #mainContent .card .requirement-pill.optional{background:#f1f3f6;color:#747d8a;}
+body #mainContent .card .requirement-pill.provided{background:#eaf5ee;color:#3b8260;}
+body #mainContent .catalog-card-meta{display:flex;flex-direction:column;gap:9px;margin:auto 0 17px;padding:0;}
+body #mainContent .card .card-owner,body #mainContent .card .card-timing{display:flex!important;justify-content:space-between;align-items:flex-start;gap:12px;margin:0;padding:0;border:0;color:#8a929e;font-size:11px;line-height:1.55;}
+body #mainContent .card .card-owner>span,body #mainContent .card .card-timing>span{flex:0 0 auto;}
+body #mainContent .card .card-owner b,body #mainContent .card .card-timing b{font-size:11px;font-weight:400;line-height:1.55;text-align:right;color:#646e7c;}
+body #mainContent .card .card-bottom{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;margin:0!important;padding:14px 0 0!important;border:0;border-top:1px solid #f0f2f5;}
+body #mainContent .card .card-status-group{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px;min-height:22px;}
+body #mainContent .card .status-pill{font-size:10px;}
+body #mainContent .card .sla-pill{font-size:10px;background:none;border:0;color:#969da7;padding:0;}
+body #mainContent .card .card-action{width:100%;}
+body #mainContent #roleGrid .card .cta,body #mainContent #commonGrid .card .cta{display:flex;align-items:center;justify-content:center;min-height:42px;width:100%;margin:0;padding:10px 14px;border:1px solid #1a73e8!important;border-radius:7px!important;background:#1a73e8!important;color:#fff!important;font-size:13px!important;font-weight:700;line-height:1.4;}
+body #mainContent #commonGrid .card .cta,body #mainContent #roleGrid .card[data-status="auto"] .cta{background:white!important;border-color:#dce3ed!important;color:#486584!important;}
+body #mainContent #globalEmpty{padding:48px 20px;border:1px dashed #d4dce8;border-radius:12px;}
+body #mainContent #globalEmpty p{margin:9px 0 20px;color:#7c8592;}
+body #mainContent footer{margin-top:36px;padding-top:24px;border-top:1px solid #e6e9ef;}
+@media(min-width:1600px){body:not(.login-open) #mainContent{padding-top:48px;}}
+@media(max-width:1023px){
+ body:not(.login-open) #mainContent{width:calc(100% - 40px);padding-top:28px;}
+ body .catalog-filter-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+ body .catalog-status{grid-column:1/-1;}
+ body .catalog-status .filter-tabs{max-width:500px;}
+ body #mainContent #roleGrid,body #mainContent #roleGrid[data-count],body #mainContent #commonGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
+@media(max-width:768px){
+ body:not(.login-open) #mainContent{width:calc(100% - 32px);padding-top:25px;}
+ body .catalog-heading{display:block;margin-bottom:22px;}
+ body #catalogTitle{font-size:27px;}
+ body .catalog-description{font-size:13px;margin-top:8px;}
+ body .catalog-heading .task-overview{flex-direction:row;justify-content:flex-start;align-items:center;gap:12px;margin-top:16px;}
+ body .catalog-heading .task-identity>span:first-child{font-size:12px;}
+ body .catalog-heading #readinessSummary{font-size:11px;}
+ body .catalog-controls{padding:17px;border-radius:12px;margin-bottom:22px;}
+ body .catalog-search-row.tools-bar{gap:8px;margin-bottom:22px;}
+ body .catalog-controls .tool-search{height:48px;gap:8px;padding:0 11px;}
+ body .catalog-controls #toolSearch{height:44px;font-size:12px;}
+ body .catalog-ai{min-width:82px;gap:5px;padding:0 10px;font-size:12px;}
+ body .catalog-ai>span{font-size:18px;}
+ body .catalog-filter-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+ body .catalog-status{grid-column:1/-1;}
+ body .catalog-field select{font-size:12px!important;padding:8px;}
+ body .catalog-status .filter-chip{font-size:11px!important;padding:7px 5px;}
+ body #mainContent #roleGrid,body #mainContent #roleGrid.balanced-four,body #mainContent #roleGrid[data-count],body #mainContent #commonGrid{grid-template-columns:1fr!important;gap:13px;}
+ body #mainContent #roleGrid .card,body #mainContent #commonGrid .card{min-height:300px!important;padding:20px!important;}
+ body #mainContent #roleGrid .card .cta,body #mainContent #commonGrid .card .cta{min-height:44px;}
+}
+@media(prefers-reduced-motion:reduce){body .catalog-controls *,body #mainContent .card{transition:none!important;}}
+/* Final accessibility and mobile checks. */
+body .catalog-heading .task-overview{background:transparent!important;}
+body .catalog-controls .tool-search>.sr-only,body .catalog-result-heading .sr-only{position:absolute!important;width:1px!important;height:1px!important;min-width:0!important;max-width:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;}
+body .catalog-status .filter-tabs{display:flex!important;width:100%!important;max-width:none!important;}
+body .catalog-field select{height:44px;min-height:44px;}
+body #mainContent #roleGrid .card:focus-within,body #mainContent #commonGrid .card:focus-within{border-color:#7aa9ee!important;box-shadow:0 0 0 3px #e8f0fe!important;}
+body #mainContent .card .card-purpose,body #mainContent .card .card-owner,body #mainContent .card .card-timing,body #mainContent .card .sla-pill,body #mainContent .count{color:#667085!important;}
+body #mainContent .card .requirement-pill.provided{color:#286644;}
+@media(max-width:768px){
+ body .catalog-result-heading select{height:44px;min-height:44px;}
+ body .catalog-selected-tag{min-height:44px;}
+ body .catalog-reset{min-height:44px;}
+}
+
+body .catalog-eyebrow{color:#175fc2;}
+body #mainContent .shared-access{color:#38674c;}
+body #mainContent #roleGrid,body #mainContent #commonGrid{padding:0!important;margin:0!important;}
+@media(max-width:768px){body .catalog-field:has(#requirementFilter){grid-column:1/-1;}}
+
+/* Compact discovery cards: Jobplanet job explorer reference, 2026-10-24. */
+body,body *{font-family:"Pretendard Variable",Pretendard,sans-serif!important;}
+body:not(.login-open){background:#fff;}
+body:not(.login-open) #mainContent{padding-top:28px;}
+body .catalog-eyebrow{display:none;}
+body #catalogTitle{font-size:24px;line-height:1.4;letter-spacing:-.035em;}
+body .catalog-description{margin-top:6px;font-size:13px;}
+body .catalog-heading{margin-bottom:20px;}
+body .catalog-controls{padding:0;margin-bottom:20px;border:0;border-radius:0;background:transparent;}
+body .catalog-search-row.tools-bar{margin-bottom:18px;gap:10px;}
+body .catalog-controls .tool-search{height:44px;border-radius:7px;}
+body .catalog-controls #toolSearch{height:40px;font-size:14px;}
+body .catalog-ai{min-width:105px;border-radius:7px;padding:0 15px;font-size:13px;background:#f7faff;}
+body .catalog-filter-heading{margin-bottom:7px;}
+body .catalog-filter-heading h3{display:none;}
+body .catalog-filter-row{gap:8px;grid-template-columns:170px 160px 140px minmax(300px,1fr);}
+body .catalog-field>span{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}
+body .catalog-field select{height:40px;min-height:40px;border-color:#e6e8eb;border-radius:5px;}
+body .catalog-status .filter-tabs{height:40px;}
+body .catalog-status .filter-chip{min-height:40px;height:40px;border-radius:5px!important;}
+body .catalog-selected{padding-top:12px;margin-top:12px;}
+body .catalog-result-heading{margin-bottom:17px;}
+body #mainContent .section-head h2,body #mainContent .common-summary h2{font-size:15px!important;}
+body #mainContent #roleGrid,body #mainContent #commonGrid{gap:16px;}
+body #mainContent #roleGrid .card,body #mainContent #commonGrid .card{min-height:176px!important;height:100%;padding:16px 18px!important;border-color:#e7e9ed!important;border-radius:10px!important;box-shadow:none!important;}
+body #mainContent .card .card-top{align-items:center!important;gap:9px!important;margin:0 0 7px!important;min-height:28px;}
+body #mainContent .card .logo-chip{width:28px;height:28px;flex:0 0 28px;border-radius:6px;border:1px solid #eff0f2;background:#fff;}
+body #mainContent .card .logo-chip img{width:22px;height:22px;}
+body #mainContent .card .card-title{flex:1;min-width:0;font-size:14px!important;font-weight:650!important;line-height:1.4!important;}
+body #mainContent .card .card-purpose{margin:0 0 6px;font-size:13px!important;font-weight:550;color:#303640!important;line-height:1.5;}
+body #mainContent .catalog-card-meta{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;justify-content:flex-start;gap:3px 6px;margin:0 0 12px;padding:0;}
+body #mainContent .card .card-owner,body #mainContent .card .card-timing{display:inline!important;margin:0;padding:0;border:0;font-size:11px!important;line-height:1.5;color:#6b7280!important;}
+body #mainContent .catalog-meta-dot{font-size:11px;color:#9ca3af;}
+body #mainContent .card .card-bottom{display:flex!important;flex-direction:row!important;justify-content:space-between;align-items:flex-end!important;gap:10px!important;margin:auto 0 0!important;padding:9px 0 0!important;border-top:1px solid #f3f4f6;}
+body #mainContent .card .card-status-group{display:flex;flex:1;min-width:0;justify-content:flex-start;align-items:center;gap:5px;min-height:32px;}
+body #mainContent .card .requirement-pill{min-height:21px;font-size:10px;padding:3px 5px;border-radius:3px;}
+body #mainContent .card .status-pill{min-height:21px;padding:3px 5px;font-size:10px;line-height:1.4;}
+body #mainContent .card .card-action{flex:0 0 auto;width:auto!important;max-width:55%;}
+body #mainContent #roleGrid .card .cta,body #mainContent #commonGrid .card .cta,body #mainContent #roleGrid .card[data-status="auto"] .cta{display:inline-flex!important;width:auto!important;min-width:76px;min-height:34px;margin:0;padding:6px 11px;border:1px solid #b8cbeb!important;border-radius:5px!important;background:#fff!important;color:#245da7!important;font-size:12px!important;font-weight:650;line-height:1.4;white-space:nowrap;}
+body #mainContent #commonGrid .card .cta,body #mainContent #roleGrid .card[data-status="auto"] .cta{border-color:#dce1e8!important;color:#576373!important;}
+body #mainContent #roleGrid .card .cta:hover,body #mainContent #commonGrid .card .cta:hover{background:#f3f7ff!important;}
+body .tossface-icon{display:inline-block;flex:0 0 auto;object-fit:contain;vertical-align:middle;}
+body .catalog-controls .tool-search>.tossface-icon{width:19px;height:19px;}
+body .catalog-ai>.tossface-icon{width:18px;height:18px;}
+body .catalog-reset>.tossface-icon{width:14px;height:14px;}
+body .top-btn>.tossface-icon{width:16px;height:16px;margin-right:5px;}
+body .jsm-btn>.tossface-icon{width:17px;height:17px;margin-right:6px;}
+body #mainContent .card .status-pill::before{content:""!important;display:inline-block;width:12px;height:12px;margin-right:4px;background:center/contain no-repeat url('icons/tossface/u1F4DD.svg');}
+body #mainContent .card .status-auto::before,body #mainContent .card .status-completed::before{background-image:url('icons/tossface/u2705.svg');}
+body #mainContent .card .status-approval::before{background-image:url('icons/tossface/u1F512.svg');}
+body #mainContent .card .status-pending::before{background-image:url('icons/tossface/u23F3.svg');}
+body #mainContent .card .status-approved::before{background-image:url('icons/tossface/u1F4E6.svg');}
+body #mainContent .card .status-rejected::before{background-image:url('icons/tossface/u1F504.svg');}
+@media(max-width:1023px){body .catalog-filter-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}}
+@media(max-width:768px){
+ body:not(.login-open) #mainContent{padding-top:20px;}
+ body .catalog-heading{margin-bottom:17px;}
+ body #catalogTitle{font-size:23px;}
+ body .catalog-controls{padding:0;border:0;}
+ body .catalog-controls .tool-search{height:44px;padding:0 10px;}
+ body .catalog-controls #toolSearch{height:40px;font-size:12px;}
+ body .catalog-ai{min-width:84px;padding:0 10px;font-size:12px;}
+ body .catalog-filter-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+ body .catalog-field:has(#requirementFilter){grid-column:auto;}
+ body .catalog-field select{height:44px;min-height:44px;}
+ body .catalog-status{grid-column:1/-1;}
+ body .catalog-status .filter-tabs,body .catalog-status .filter-chip{height:44px;min-height:44px;}
+ body #mainContent #roleGrid .card,body #mainContent #commonGrid .card{min-height:176px!important;padding:15px 16px!important;}
+ body #mainContent #roleGrid .card .cta,body #mainContent #commonGrid .card .cta{min-height:44px;width:auto!important;padding:8px 12px;}
+}
+
+body .catalog-controls #toolSearch{height:40px!important;min-height:0!important;max-height:40px!important;padding:0!important;border-radius:0!important;}
+
+body #mainContent #roleGrid,body #mainContent #roleGrid[data-count],body #mainContent #commonGrid{gap:16px!important;}

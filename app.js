@@ -169,29 +169,24 @@ const LICENSE_PURPOSES = {"SL":"팀 메시지·업무 소통","NT":"문서 작�
 function renderCard(item, showCta){
   const effectiveStatus = getEffectiveStatus(item);
   const sc = statusConfig[effectiveStatus];
-  const sla = getSlaMeta(item.status);
   const isApplied = !!requestState[item.name];
   const isAuto = item.status === 'auto';
-  const ctaBtn = (showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${['auto','completed'].includes(effectiveStatus) ? startLabel(item) : sc.cta}</button>` : `<button class="cta common-guide" data-action="license-action" data-value="${escapeHTML(item.name)}">사용 안내</button>`;
-  const slaPill = isAuto ? '' : `<span class="sla-pill employee-timing">${escapeHTML(employeeTiming(item))}</span>`;
-  const ownerRow = isAuto ? '' : `<div class="card-owner">담당 · <b>${item.owner}</b></div>`;
-  const bottomRight = ctaBtn ? `<div class="card-action">${ctaBtn}</div>` : '';
+  const cta = showCta === false || ['auto','completed'].includes(effectiveStatus) ? '사용 안내' : sc.cta;
+  const timing = isApplied ? employeeTiming(item) : isAuto ? '계정 생성 후 1시간 이내' : getSlaMeta(item.status).detail.replace('영업일 기준','영업일');
   return `
-    <div class="card${isApplied ? ' applied' : ''}" data-name="${item.name}" data-status="${effectiveStatus}">
+    <div class="card${isApplied ? ' applied' : ''}" data-name="${escapeHTML(item.name)}" data-status="${effectiveStatus}">
       <div class="card-top">
-        <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${item.mono}</div>`}</div>
-        <div>
-          <div class="card-title">${item.name}</div>
-          <div class="card-purpose">${escapeHTML(LICENSE_PURPOSES[item.mono] || item.cat)}</div>${isAuto ? '' : `<span class="requirement-pill ${requirementFor(item)==='필수'?'required':'optional'}">${requirementFor(item)} 라이선스</span>`}
-        </div>
+        <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${escapeHTML(item.mono)}</div>`}</div>
+        <div class="card-title">${escapeHTML(item.name)}</div>
       </div>
-      ${ownerRow}
+      <div class="card-purpose">${escapeHTML(LICENSE_PURPOSES[item.mono] || item.cat)}</div>
+      <div class="catalog-card-meta"><div class="card-owner" aria-label="담당 부서">${escapeHTML(item.owner)}</div><span class="catalog-meta-dot" aria-hidden="true">·</span><div class="card-timing" aria-label="처리 기간">${escapeHTML(timing)}</div></div>
       <div class="card-bottom">
         <div class="card-status-group">
-          ${showCta === false ? '' : `<span class="status-pill ${sc.cls}">${sc.label}</span>`}
-          ${slaPill}
+          <span class="requirement-pill ${isAuto ? 'provided' : requirementFor(item)==='필수'?'required':'optional'}">${isAuto ? '기본 제공' : requirementFor(item)}</span>
+          <span class="status-pill ${sc.cls}">${isAuto ? '사용 가능' : sc.label}</span>
         </div>
-        ${bottomRight}
+        <div class="card-action"><button class="cta${showCta === false ? ' common-guide' : ''}" data-action="license-action" data-value="${escapeHTML(item.name)}">${escapeHTML(cta)}</button></div>
       </div>
     </div>`;
 }
@@ -440,20 +435,21 @@ function setFilter(filter){
 
 function applyFilters(){
   const group = FILTER_GROUPS[selectedFilter];
-  document.querySelectorAll('.card').forEach(card => {
-    const query = (document.getElementById('toolSearch')?.value || '').trim().toLocaleLowerCase();
-    const matchesFilter = (!group || group.has(card.dataset.status)) && (!query || card.dataset.name.toLocaleLowerCase().includes(query));
+  document.querySelectorAll('#roleGrid .card, #commonGrid .card').forEach(card => {
+    const matchesFilter = matchesCatalogFilters(findLicenseByName(card.dataset.name), card.dataset.status, group);
     card.classList.toggle('is-hidden', !matchesFilter);
     card.hidden = !matchesFilter;
     card.inert = !matchesFilter;
   });
+  sortCatalogGrids();
   updateSectionEmptyStates();
+  syncCatalogUI();
 }
 
 // 상태 필터로 카드가 모두 숨겨진 섹션에 안내와 개수 표시를 맞춘다.
 function updateSectionEmptyStates(){
   const searching = !!document.getElementById('toolSearch')?.value.trim();
-  const filtering = selectedFilter !== 'all' || searching;
+  const filtering = selectedFilter !== 'all' || searching || !!document.getElementById('workTypeFilter')?.value || !!document.getElementById('requirementFilter')?.value;
   let totalVisible = 0;
   [['commonGrid','commonEmpty','commonCount'],['roleGrid','roleEmpty','roleCount']].forEach(([gridId,emptyId,countId])=>{
     const grid = document.getElementById(gridId);
@@ -474,7 +470,7 @@ function updateSectionEmptyStates(){
   const hasRoleException = !!document.querySelector('#roleGrid .empty-state:not(.no-result)');
   if(globalEmpty){
     globalEmpty.hidden = !(filtering && totalVisible === 0 && !hasRoleException);
-    if(!globalEmpty.hidden) globalEmpty.innerHTML = searching ? '<b>검색 결과가 없습니다</b>검색어나 필터를 바꿔 주세요.' : '<b>조건에 맞는 라이선스가 없습니다</b>다른 상태를 선택해 주세요.';
+    if(!globalEmpty.hidden) globalEmpty.innerHTML = '<b>조건에 맞는 도구가 없습니다</b><p>검색어나 선택한 조건을 바꿔 다시 찾아보세요.</p><button type="button" class="btn-secondary" data-action="reset-catalog-filters">조건 초기화</button>';
   }
 }
 
@@ -886,6 +882,10 @@ document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEven
 restoreSession();
 const loginScreen = document.getElementById('loginScreen');
 if(loggedIn){
+  for(const id of ["baseStylesheet","loginFontLockStylesheet","visualSystemStylesheet","productReadinessStylesheet","typographyStylesheet","experienceRefinementStylesheet","executionHierarchyStylesheet","catalogStylesheet"]){
+    const link = document.getElementById(id);
+    if(link) link.media = 'all';
+  }
   hydrateDashboard();
   loadBrandFont();
   loginScreen.hidden = true;

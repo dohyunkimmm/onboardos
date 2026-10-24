@@ -2,7 +2,7 @@
 
 // Large post-login presentation styles should not block the initial login paint.
 function activatePostLoginStyles(){
-  for(const id of ['experienceRefinementStylesheet','executionHierarchyStylesheet']){
+  for(const id of ["baseStylesheet","loginFontLockStylesheet","visualSystemStylesheet","productReadinessStylesheet","typographyStylesheet","experienceRefinementStylesheet","executionHierarchyStylesheet","catalogStylesheet"]){
     const link = document.getElementById(id);
     if(link) link.media = 'all';
   }

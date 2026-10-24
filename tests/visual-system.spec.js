@@ -101,7 +101,7 @@ test('[V4] selected role and filter states keep visual state aligned with aria-p
   await expect(role).toHaveValue('design');
   await expect(role.locator('option:checked')).toHaveText('디자인');
 
-  const filter = page.getByRole('button',{name:'해야 할 일'});
+  const filter = page.getByRole('button',{name:'해야 할 일',exact:true});
   await filter.click();
   await expect(filter).toHaveAttribute('aria-pressed','true');
   await expect(filter).toHaveClass(/active/);

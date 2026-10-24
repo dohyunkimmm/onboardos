@@ -34,7 +34,7 @@ test('[E2] overview uses a two-zone desktop surface and collapses cleanly on mob
   await stabilize(page);await login(page);
   const task=await css(page.locator('.task-overview'));
   expect(task.display).not.toBe('none');
-  expect(task.backgroundColor).toBe('rgb(255, 255, 255)');
+  expect(task.backgroundColor).toBe('rgba(0, 0, 0, 0)');
   const profile=page.locator('.overview-panel');
   await expect(profile).not.toHaveAttribute('open');
   await revealRolePicker(page);
@@ -73,10 +73,10 @@ test('[E5] role cards keep responsive scan rhythm and status meaning without col
   if((viewport?.width || 0) > 768){
     expect(parseFloat(state.minHeight)).toBeGreaterThanOrEqual(176);
   }else{
-    expect(parseFloat(state.minHeight)).toBeLessThanOrEqual(1);
+    expect(parseFloat(state.minHeight)).toBeGreaterThanOrEqual(160);
   }
-  const divider=await css(card.locator('.card-owner'));
-  expect(divider.borderBottomStyle).toBe('solid');
+  const divider=await css(card.locator('.card-bottom'));
+  expect(divider.borderTopStyle).toBe('solid');
   const pill=card.locator('.status-pill');
   const pseudo=await css(pill,'::before');
   expect(pseudo.content).not.toBe('none');

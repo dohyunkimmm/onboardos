@@ -41,7 +41,7 @@ test('[T1] current task instruction is visually presented before the five-step t
   await expect(page.locator('#progressHint .hint-cta')).toBeVisible();
 });
 
-test('[T2] common entitlements use less card area than actionable role cards', async ({page}) => {
+test('[T2] common entitlements use the same card format as actionable role cards', async ({page}) => {
   await stabilize(page); await login(page);
   await expect(page.locator('details.common-first')).toHaveAttribute('open');
   const common = page.locator('#commonGrid .card').first();
@@ -50,7 +50,9 @@ test('[T2] common entitlements use less card area than actionable role cards', a
   const roleBox = await box(role);
   const commonStyle = await style(common);
   const roleStyle = await style(role);
-  expect(commonBox.width * commonBox.height).toBeLessThan(roleBox.width * roleBox.height);
+  expect(Math.abs(commonBox.width - roleBox.width)).toBeLessThanOrEqual(1);
+  expect(commonBox.height).toBeLessThanOrEqual(210);
+  expect(roleBox.height).toBeLessThanOrEqual(210);
   expect(commonStyle.boxShadow === 'none' || commonStyle.boxShadow.includes('inset')).toBeTruthy();
   expect(roleStyle.boxShadow).toBe('none');
   await expect(role.locator('.cta')).toBeVisible();
@@ -72,7 +74,7 @@ test('[T4] filter selection remains visually quieter than the primary card actio
   const cta = await style(page.locator('#roleGrid .cta').first());
   expect(filter.boxShadow).toBe('none');
   expect(filter.backgroundColor).toBe('rgb(232, 240, 254)');
-  expect(cta.backgroundColor).toBe('rgb(26, 115, 232)');
+  expect(cta.backgroundColor).toBe('rgb(255, 255, 255)');
   expect(cta.backgroundColor).not.toBe(filter.backgroundColor);
 });
 

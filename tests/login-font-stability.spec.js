@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-// Covers the full left login copy surface because the deferred brand-font activation happens before the login screen exits.
+// The selected Pretendard font must already be loaded before SSO and stay stable on activation.
 const selectors = [
   '.login-brand',
   '.login-eyebrow',
@@ -32,9 +32,10 @@ test('Google SSO 클릭 전 brand font activation이 왼쪽 로그인 문구 크
   await page.goto('/');
   await expect(page.getByRole('button', {name:'Google SSO로 시작하기'})).toBeVisible();
 
+  await page.evaluate(async () => { await document.fonts.ready; });
   const before = await readMetrics(page);
   for(const metric of before){
-    expect(metric.fontFamily.toLowerCase(), metric.selector).toContain('system-ui');
+    expect(metric.fontFamily.toLowerCase(), metric.selector).toContain('pretendard');
   }
 
   await page.evaluate(async () => {

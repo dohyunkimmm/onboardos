@@ -17,7 +17,14 @@
     "fonts/PRETENDARD-LICENSE.txt",
     "execution-hierarchy.css",
     "product-readiness.css",
-    "typography-qa.css"
+    "typography-qa.css",
+    "catalog.css",
+    "fonts/TOSSFACE-LICENSE.txt",
+    "fonts/TOSSFACE-NOTICE.txt",
+    "font-preferences.css",
+    "login-shell.css",
+    "fonts/pretendard-login.css",
+    "fonts/login/NOTICE.txt"
   ],
   "recursiveSets": [
     {
@@ -34,6 +41,12 @@
     },
     {
       "root": "fonts/pretendard",
+      "extensions": [
+        ".woff2"
+      ]
+    },
+    {
+      "root": "fonts/login",
       "extensions": [
         ".woff2"
       ]

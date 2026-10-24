@@ -47,10 +47,10 @@ test('Catalog has no repeated shared-tool summary or guidance buttons',async({pa
  await expect(page.locator('#readinessSummary')).not.toContainText('공통 라이선스');
  await expect(page.locator('#commonGrid .card')).toHaveCount(5);
  await expect(page.locator('#commonGrid button')).toHaveCount(5);
- await expect(page.locator('#roleHeading')).toHaveCSS('font-size','20px');
- await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','20px');
- await expect(page.locator('#roleGrid .card-title').first()).toHaveCSS('font-size','16px');
- await expect(page.locator('#commonGrid .card-title').first()).toHaveCSS('font-size','16px');
+ await expect(page.locator('#roleHeading')).toHaveCSS('font-size','15px');
+ await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','15px');
+ await expect(page.locator('#roleGrid .card-title').first()).toHaveCSS('font-size','14px');
+ await expect(page.locator('#commonGrid .card-title').first()).toHaveCSS('font-size','14px');
  await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('Slack');
  await expect(page.locator('.card:not(.is-hidden)')).toHaveCount(1);
  await page.getByRole('button',{name:'해야 할 일',exact:true}).click();
@@ -104,22 +104,23 @@ test('Role filters stay in normal flow and do not jump the page at desktop width
  }
 });
 
-test('1920 catalog fits every role and shared tools above the fold without repeated labels',async({page})=>{
+test('1920 catalog uses three-column groups with consistent metadata',async({page})=>{
  await page.setViewportSize({width:1920,height:1080});
  await page.goto('/');
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
  await expect(page.locator('#loginScreen')).toBeHidden();
  await expect(page.locator('#currentRoleLabel')).toBeHidden();
- await expect(page.locator('#commonGrid .status-pill')).toHaveCount(0);
+ await expect(page.locator('#commonGrid .status-pill')).toHaveCount(5);
  await expect(page.locator('#commonTools .shared-access')).toHaveText('자동 지급');
- await expect(page.locator('.task-identity>span').first()).toHaveCSS('font-size','18px');
+ await expect(page.locator('.task-identity>span').first()).toHaveCSS('font-size','14px');
  await expect(page.locator('#readinessSummary')).toHaveCSS('font-weight','400');
  for(const role of ['office','design','dev','data']){
   await page.getByRole('combobox',{name:'직군 선택'}).selectOption(role);
   for(const selector of ['#roleGrid','#commonGrid']){
    const cards=await page.locator(selector+' .card').evaluateAll(items=>items.map(el=>{const b=el.getBoundingClientRect();return {top:b.top,bottom:b.bottom,right:b.right};}));
-   expect(new Set(cards.map(b=>Math.round(b.top))).size).toBe(1);
-   expect(cards.every(b=>b.bottom<=1080 && b.right<=1920)).toBeTruthy();
+   expect(new Set(cards.slice(0,3).map(b=>Math.round(b.top))).size).toBe(1);
+   expect(new Set(cards.map(b=>Math.round(b.top))).size).toBe(2);
+   expect(cards.every(b=>b.right<=1920)).toBeTruthy();
   }
   await expect(page.locator('#roleHeading')).toHaveText('직군별 라이선스');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(1920);
