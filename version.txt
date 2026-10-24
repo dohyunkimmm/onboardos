@@ -1,4 +1,4 @@
-ONBOARD·OS v18.0.0
+ToolFlow v18.0.0
 P6 feature freeze
 canonicalVersionSource=release.json
 releaseChannel=production

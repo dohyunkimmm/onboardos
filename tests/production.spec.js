@@ -30,7 +30,7 @@ test('실제 Production에서 핵심 Flow·CSP·asset·release provenance·conso
   const versionResponse = await page.request.get(`${productionOrigin}/version.txt`, {headers:{'cache-control':'no-cache'}});
   expect(versionResponse.status()).toBe(200);
   const versionText = await versionResponse.text();
-  expect(versionText).toContain(`ONBOARD·OS v${expectedRelease.version}`);
+  expect(versionText).toContain(`ToolFlow v${expectedRelease.version}`);
   expect(versionText).toContain(`${expectedRelease.freeze} feature freeze`);
   expect(versionText).toContain(expectedRelease.canonicalVersionSource);
   expect(versionText).toContain(expectedRelease.integrityManifest);

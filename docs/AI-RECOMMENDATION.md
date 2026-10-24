@@ -66,7 +66,7 @@ WebKit의 신청·승인 기능 검사 컨텍스트에만 공식 임시 대응�
 
 1. https://aistudio.google.com/api-keys 에서 Google 계정으로 로그인하고 프로젝트·API 키를 생성한다. 화면 안내에 따라 약관·프로젝트 생성을 완료한다.
 2. 프로젝트가 Free Tier인지 확인하고 결제 계정을 연결하거나 유료 업그레이드를 하지 않는다. 모델별 실제 한도는 계정에서 확인한다.
-3. **최초 설치 시에만** Vercel Preview/Production 환경변수에 `GEMINI_API_KEY`와 `AI_RECOMMENDATIONS_ENABLED=true`를 등록한다. 현재 ONBOARD·OS Vercel에는 두 변수 이름이 이미 등록되어 있으므로, 정상 동작 중이라면 재등록·키 재발급이 필요 없다. 보안상 실제 값은 문서에 기록하지 않는다. 기존 OpenAI/Groq 키는 이 코드에서 사용하지 않는다.
+3. **최초 설치 시에만** Vercel Preview/Production 환경변수에 `GEMINI_API_KEY`와 `AI_RECOMMENDATIONS_ENABLED=true`를 등록한다. 현재 ToolFlow Vercel에는 두 변수 이름이 이미 등록되어 있으므로, 정상 동작 중이라면 재등록·키 재발급이 필요 없다. 보안상 실제 값은 문서에 기록하지 않는다. 기존 OpenAI/Groq 키는 이 코드에서 사용하지 않는다.
 4. 미리보기 재배포 후 실제 추천 품질과 한도 초과 안내를 확인한다. 키가 없으면 503 안내를 유지한다.
 
 공식 무료 등급 안내: https://ai.google.dev/gemini-api/docs/pricing · https://ai.google.dev/gemini-api/docs/billing

@@ -75,7 +75,7 @@ fs.mkdirSync(dir,{recursive:true});
 fs.writeFileSync(path.join(dir,'ux-summary.json'),JSON.stringify(summary,null,2)+'\n');
 const lines = [
   '# Interaction UX Evidence','',
-  `- Release: **ONBOARD·OS v${release.version} / ${release.freeze}**`,
+  `- Release: **ToolFlow v${release.version} / ${release.freeze}**`,
   `- Scenarios: **${summary.passedCount}/${summary.scenarioCount} PASS**`,
   `- Visual evidence: **${visualEvidence.length} captured states**`,'',
   '| ID | Scenario | Result |','| --- | --- | --- |',

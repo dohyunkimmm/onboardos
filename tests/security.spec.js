@@ -78,7 +78,7 @@ test.describe('Security & failure-containment contract', () => {
     expect(leak).toEqual({url:false,link:false});
   });
 
-  test('[S5] ONBOARD·OS 상태는 localStorage에 복제하지 않고 session key로 한정한다', async ({ page }) => {
+  test('[S5] ToolFlow 상태는 localStorage에 복제하지 않고 session key로 한정한다', async ({ page }) => {
     await page.goto('/');
     await completeLogin(page);
     await submitOfficeRequest(page,'session-only state');
