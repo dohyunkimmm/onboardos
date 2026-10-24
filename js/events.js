@@ -23,6 +23,7 @@ const actionHandlers = {
     loginButton.removeAttribute('aria-busy');
     document.getElementById('loginLoader').classList.remove('is-visible');
     loggedIn = false;
+    if(typeof resetAiInlineRecommendation === 'function') resetAiInlineRecommendation();
     saveSession();
     const screen = document.getElementById('loginScreen');
     screen.hidden = false;
