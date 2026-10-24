@@ -284,109 +284,249 @@ roles.office.extras = [
 
 const recommendationCases = {
   "shared": [
-  {
-    "id": "pdf-edit",
-    "label": "PDF 편집·검토",
-    "description": "PDF 문서 편집·주석·변환",
-    "recommendations": [
-      {
-        "toolId": "AD",
-        "reason": "PDF 문서를 편집하고 주석·검토 작업에 활용합니다."
-      },
-      {
-        "toolId": "MO",
-        "reason": "원본 문서나 관련 표를 작성할 때 활용합니다."
-      }
-    ]
-  },
-  {
-    "id": "design-edit",
-    "label": "화면·디자인 편집",
-    "description": "디자인 편집·화면 시안·UI·UX 협업",
-    "recommendations": [
-      {
-        "toolId": "FG",
-        "reason": "화면 시안·UI 디자인을 편집하고 협업합니다."
-      },
-      {
-        "toolId": "FJ",
-        "reason": "사용자 흐름과 디자인 아이디어를 정리합니다."
-      },
-      {
-        "toolId": "CC",
-        "reason": "이미지·시각 자산 제작 및 편집에 활용합니다."
-      }
-    ]
-  },
-  {
-    "id": "graphic-edit",
-    "label": "이미지·브랜딩 제작",
-    "description": "사진·이미지·그래픽 편집과 브랜드 시각물 제작",
-    "recommendations": [
-      {
-        "toolId": "CC",
-        "reason": "이미지와 브랜드 그래픽을 제작·편집합니다."
-      },
-      {
-        "toolId": "FG",
-        "reason": "브랜드 시안과 디자인 결과물을 공유합니다."
-      }
-    ]
-  },
-  {
-    "id": "contracts",
-    "label": "계약·전자서명",
-    "description": "계약서 작성·검토·전자서명",
-    "recommendations": [
-      {
-        "toolId": "MD",
-        "reason": "계약 문서의 전자서명을 요청·관리합니다."
-      },
-      {
-        "toolId": "AD",
-        "reason": "계약서 PDF를 검토하고 주석을 작성합니다."
-      }
-    ]
-  },
-  {
-    "id": "coding",
-    "label": "개발·API 테스트",
-    "description": "프로그램 개발·코드 관리·API 테스트",
-    "recommendations": [
-      {
-        "toolId": "GH",
-        "reason": "소스 코드 버전 관리와 협업에 활용합니다."
-      },
-      {
-        "toolId": "PM",
-        "reason": "API 요청과 응답을 테스트합니다."
-      },
-      {
-        "toolId": "JB",
-        "reason": "코드 작성과 디버깅에 활용합니다."
-      }
-    ]
-  },
-  {
-    "id": "analytics",
-    "label": "데이터 분석·대시보드",
-    "description": "데이터 분석·SQL·대시보드 작성",
-    "recommendations": [
-      {
-        "toolId": "PBI",
-        "reason": "분석 결과를 시각화하고 대시보드를 만듭니다."
-      },
-      {
-        "toolId": "DB",
-        "reason": "SQL을 이용해 데이터베이스를 조회합니다."
-      },
-      {
-        "toolId": "SF",
-        "reason": "승인받은 데이터 분석 환경에 접근합니다."
-      }
-    ]
-  }
-],
+    {
+      "id": "pdf-edit",
+      "label": "PDF 편집·검토",
+      "description": "PDF 문서 편집·주석·변환",
+      "recommendations": [
+        {
+          "toolId": "AD",
+          "reason": "PDF 문서를 편집하고 주석·검토 작업에 활용합니다."
+        },
+        {
+          "toolId": "MO",
+          "reason": "원본 문서나 관련 표를 작성할 때 활용합니다."
+        }
+      ]
+    },
+    {
+      "id": "design-edit",
+      "label": "화면·디자인 편집",
+      "description": "디자인 편집·화면 시안·UI·UX 협업",
+      "recommendations": [
+        {
+          "toolId": "FG",
+          "reason": "화면 시안·UI 디자인을 편집하고 협업합니다."
+        },
+        {
+          "toolId": "FJ",
+          "reason": "사용자 흐름과 디자인 아이디어를 정리합니다."
+        },
+        {
+          "toolId": "CC",
+          "reason": "이미지·시각 자산 제작 및 편집에 활용합니다."
+        },
+        {
+          "toolId": "CV",
+          "reason": "기본 디자인 이미지와 콘텐츠 시안을 빠르게 제작합니다."
+        },
+        {
+          "toolId": "FR",
+          "reason": "인터랙티브 디자인 시안과 웹 페이지 프로토타입을 구현합니다."
+        }
+      ]
+    },
+    {
+      "id": "graphic-edit",
+      "label": "이미지·브랜딩 제작",
+      "description": "사진·이미지·그래픽 편집과 브랜드 시각물 제작",
+      "recommendations": [
+        {
+          "toolId": "CC",
+          "reason": "이미지와 브랜드 그래픽을 제작·편집합니다."
+        },
+        {
+          "toolId": "FG",
+          "reason": "브랜드 시안과 디자인 결과물을 공유합니다."
+        },
+        {
+          "toolId": "CV",
+          "reason": "시각 콘텐츠와 브랜드 자료를 편집합니다."
+        },
+        {
+          "toolId": "RW",
+          "reason": "영상·이미지 제작을 AI로 보조합니다."
+        }
+      ]
+    },
+    {
+      "id": "contracts",
+      "label": "계약·전자서명",
+      "description": "계약서 작성·검토·전자서명",
+      "recommendations": [
+        {
+          "toolId": "MD",
+          "reason": "계약 문서의 전자서명을 요청·관리합니다."
+        },
+        {
+          "toolId": "AD",
+          "reason": "계약서 PDF를 검토하고 주석을 작성합니다."
+        }
+      ]
+    },
+    {
+      "id": "coding",
+      "label": "개발·API 테스트",
+      "description": "프로그램 개발·코드 관리·API 테스트",
+      "recommendations": [
+        {
+          "toolId": "GH",
+          "reason": "소스 코드 버전 관리와 협업에 활용합니다."
+        },
+        {
+          "toolId": "PM",
+          "reason": "API 요청과 응답을 테스트합니다."
+        },
+        {
+          "toolId": "JB",
+          "reason": "코드 작성과 디버깅에 활용합니다."
+        },
+        {
+          "toolId": "CR",
+          "reason": "코드 작성과 개발 업무를 AI로 보조합니다."
+        },
+        {
+          "toolId": "GL",
+          "reason": "코드 저장소와 CI 협업에 활용합니다."
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "label": "데이터 분석·대시보드",
+      "description": "데이터 분석·SQL·대시보드 작성",
+      "recommendations": [
+        {
+          "toolId": "PBI",
+          "reason": "분석 결과를 시각화하고 대시보드를 만듭니다."
+        },
+        {
+          "toolId": "DB",
+          "reason": "SQL을 이용해 데이터베이스를 조회합니다."
+        },
+        {
+          "toolId": "SF",
+          "reason": "승인받은 데이터 분석 환경에 접근합니다."
+        },
+        {
+          "toolId": "TB",
+          "reason": "분석 대시보드와 시각화에 활용합니다."
+        },
+        {
+          "toolId": "LK",
+          "reason": "데이터 리포트와 대시보드를 공유합니다."
+        }
+      ]
+    },
+    {
+      "id": "ai-work",
+      "label": "AI 업무 보조",
+      "description": "글쓰기·조사·요약·코딩 등 AI 활용",
+      "recommendations": [
+        {
+          "toolId": "GPT",
+          "reason": "문서 분석과 업무 질문에 활용합니다."
+        },
+        {
+          "toolId": "CL",
+          "reason": "자료를 요약하고 업무 내용을 정리합니다."
+        },
+        {
+          "toolId": "PX",
+          "reason": "웹 자료를 조사하고 비교합니다."
+        },
+        {
+          "toolId": "GM",
+          "reason": "영문 글쓰기와 문장 교정을 보조합니다."
+        },
+        {
+          "toolId": "CP",
+          "reason": "개발·코딩 작업을 보조합니다."
+        }
+      ]
+    },
+    {
+      "id": "pm-work",
+      "label": "프로젝트·일정 관리",
+      "description": "PM 업무·일정·칸반·이슈 관리",
+      "recommendations": [
+        {
+          "toolId": "AS",
+          "reason": "팀별 업무와 마감일을 관리합니다."
+        },
+        {
+          "toolId": "LN",
+          "reason": "개발 프로젝트의 이슈를 추적합니다."
+        },
+        {
+          "toolId": "TR",
+          "reason": "칸반 보드로 협업 상태를 공유합니다."
+        },
+        {
+          "toolId": "JR",
+          "reason": "이슈·스프린트 진행을 추적합니다."
+        },
+        {
+          "toolId": "NT",
+          "reason": "진행 현황과 회의 기록을 정리합니다."
+        }
+      ]
+    },
+    {
+      "id": "collab-work",
+      "label": "회의·협업 운영",
+      "description": "화상회의·화이트보드·문서 협업",
+      "recommendations": [
+        {
+          "toolId": "ZM",
+          "reason": "화상회의와 원격 협업에 활용합니다."
+        },
+        {
+          "toolId": "MI",
+          "reason": "팀 워크숍과 아이디어를 시각화합니다."
+        },
+        {
+          "toolId": "SL",
+          "reason": "팀 메시지와 업무 소통에 활용합니다."
+        },
+        {
+          "toolId": "GW",
+          "reason": "메일·캘린더·문서 협업에 활용합니다."
+        },
+        {
+          "toolId": "NT",
+          "reason": "협업 문서와 회의록을 정리합니다."
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "label": "문서·업무 자료 작성",
+      "description": "보고서·한글·협업 문서·문서 작성",
+      "recommendations": [
+        {
+          "toolId": "MO",
+          "reason": "보고서와 스프레드시트를 작성합니다."
+        },
+        {
+          "toolId": "HG",
+          "reason": "한글 문서를 작성합니다."
+        },
+        {
+          "toolId": "NT",
+          "reason": "업무 문서와 위키를 정리합니다."
+        },
+        {
+          "toolId": "GW",
+          "reason": "공유 문서를 작성하고 협업합니다."
+        },
+        {
+          "toolId": "GM",
+          "reason": "영문 문서와 이메일 문구를 교정합니다."
+        }
+      ]
+    }
+  ],
   "design": [
     {
       "id": "ui",
@@ -404,6 +544,10 @@ const recommendationCases = {
         {
           "toolId": "MZ",
           "reason": "시안의 사용성을 검증하는 데 활용합니다."
+        },
+        {
+          "toolId": "FR",
+          "reason": "인터랙션 시안과 웹 페이지 프로토타입에 활용합니다."
         }
       ]
     },
@@ -461,6 +605,10 @@ const recommendationCases = {
         {
           "toolId": "CF",
           "reason": "디자인 결정 사항과 가이드를 문서화합니다."
+        },
+        {
+          "toolId": "MI",
+          "reason": "워크숍과 화이트보드 협업을 진행합니다."
         }
       ]
     }
@@ -520,6 +668,10 @@ const recommendationCases = {
         {
           "toolId": "JB",
           "reason": "구현과 리팩터링 작업에 활용합니다."
+        },
+        {
+          "toolId": "CR",
+          "reason": "AI 개발 도구로 코드 작성과 리팩터링을 보조합니다."
         }
       ]
     },
@@ -539,6 +691,10 @@ const recommendationCases = {
         {
           "toolId": "CF",
           "reason": "기술 문서와 개발 가이드를 정리합니다."
+        },
+        {
+          "toolId": "LN",
+          "reason": "개발 프로젝트의 이슈와 우선순위를 관리합니다."
         }
       ]
     }
@@ -579,6 +735,10 @@ const recommendationCases = {
         {
           "toolId": "SF",
           "reason": "승인된 데이터 환경에서 분석 자료를 활용합니다."
+        },
+        {
+          "toolId": "TB",
+          "reason": "데이터 시각화와 분석 대시보드를 만듭니다."
         }
       ]
     },
@@ -617,6 +777,10 @@ const recommendationCases = {
         {
           "toolId": "CF",
           "reason": "데이터 활용 가이드를 문서화합니다."
+        },
+        {
+          "toolId": "HX",
+          "reason": "분석 노트북과 인사이트를 공유합니다."
         }
       ]
     }
@@ -638,6 +802,10 @@ const recommendationCases = {
         {
           "toolId": "AD",
           "reason": "PDF 문서를 검토하고 편집합니다."
+        },
+        {
+          "toolId": "GM",
+          "reason": "영문 이메일과 문서 품질을 점검합니다."
         }
       ]
     },
@@ -676,6 +844,10 @@ const recommendationCases = {
         {
           "toolId": "CF",
           "reason": "운영 절차와 가이드를 공유합니다."
+        },
+        {
+          "toolId": "AS",
+          "reason": "팀 운영 프로젝트의 작업과 마감일을 추적합니다."
         }
       ]
     },
@@ -708,8 +880,12 @@ const recommendationCaseRules = [
   ['design-edit',/(?:디자인|피그마|figma|figjam|ui\\b|ux\\b|시안|화면 설계|프로토타입)/i],
   ['contracts',/(?:계약|전자서명|서명)/i],
   ['analytics',/(?:데이터|대시보드|sql\\b|분석|리포트)/i],
-  ['coding',/(?:개발|코딩|github|깃허브|api\\b|프론트엔드|백엔드)/i]
-];
+  ['coding',/(?:개발|코딩|github|깃허브|api\\b|프론트엔드|백엔드)/i],
+  ['pm-work',/(?:프로젝트|업무관리|일정 관리|칸반|PM툴|태스크)/i],
+  ['collab-work',/(?:화상|회의|워크숍|화이트보드|협업|zoom|miro)/i],
+  ['ai-work',/(?:인공지능|AI툴|AI\\b|chatgpt|챗지피티|claude|클로드|생성형)/i],
+  ['writing',/(?:문서 작성|문서 편집|보고서 작성|문서 정리|영문)/i]
+]
 function detectRecommendationCase(text){
   if(typeof text !== 'string') return null;
   return recommendationCaseRules.find(([,pattern])=>pattern.test(text))?.[0] || null;
