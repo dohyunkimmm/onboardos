@@ -416,6 +416,7 @@ function fakeLogin(){
     login.inert = true;
     document.body.classList.remove('login-open');
     loggedIn = true;
+    if(typeof updateAiInlineRole === 'function') updateAiInlineRole();
     saveSession();
     trackEvent('Demo Login',{role:currentRole});
     button.removeAttribute('aria-busy');
