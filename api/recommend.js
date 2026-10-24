@@ -27,7 +27,10 @@ module.exports = async function handler(req,res){
     && (typeof requestedCaseId !== 'string' || !caseFor(body?.role,requestedCaseId)))){
     return res.status(400).json({error:'invalid_input'});
   }
-  const chosenCaseId = requestedCaseId || detectRecommendationCase(detail);
+  // An explicit null caseId requests the original role-wide AI catalog (manual modal).
+  // When caseId is omitted, infer a cross-role task case from the search text.
+  const chosenCaseId = Object.prototype.hasOwnProperty.call(body,'caseId')
+    ? requestedCaseId : detectRecommendationCase(detail);
   const selectedCase = caseFor(body?.role,chosenCaseId);
   const catalog = typeof body?.role === 'string'
     ? catalogFor(body.role,selectedCase?.id || null) : null;
