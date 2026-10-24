@@ -27,7 +27,7 @@ function openAiRecommendation(){
     ? '<p>직군 확인 후 맞춤 추천을 받을 수 있습니다. 기본 제공 라이선스는 먼저 이용할 수 있습니다.</p>'
     : `<p class="action-guide-copy">선택한 직군과 실제 업무를 바탕으로 추천합니다. 다른 직군의 도구도 예외 요청으로 검토할 수 있습니다.</p>
        <form id="aiRecommendationForm">
-         <label class="request-note-label" for="aiRoleDetail">업무 케이스 검색 (선택사항)</label>
+         <label class="request-note-label" for="aiRoleDetail">세부 직무·담당 역할</label>
          <textarea class="request-note" id="aiRoleDetail" rows="3" maxlength="500" placeholder="예: 디자인 편집 / PDF 편집 / 개발" aria-describedby="aiPrivacyNote"></textarea>
          <p class="guide-notice" id="aiPrivacyNote">입력한 역할과 직군·라이선스 목록을 외부 AI에 전송합니다. 개인정보나 회사 기밀은 입력하지 마세요. 추천이 자동 신청이나 승인을 의미하지는 않습니다.</p>
          <button class="primary-btn" id="aiRecommendSubmit" type="submit">추천 받기</button>
