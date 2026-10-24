@@ -10,7 +10,7 @@ test('basic license guidance opens without creating a request',async({page})=>{
  await page.locator('#actionModalActions').getByRole('button',{name:'닫기',exact:true}).click();
  await expect(card.getByRole('button',{name:'사용 안내',exact:true})).toBeFocused();
 });
-test('wide catalogs fill a row for four and five license roles',async({page},testInfo)=>{
+test('wide catalogs use three columns for every role',async({page},testInfo)=>{
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.setViewportSize({width:1280,height:1080});await login(page);
  for(const width of [1280,1920]){
@@ -19,9 +19,10 @@ test('wide catalogs fill a row for four and five license roles',async({page},tes
    await page.getByRole('combobox',{name:'직군 선택'}).selectOption(role);
    const grid=page.locator('#roleGrid');
    const boxes=await grid.locator('.card').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();return {y:r.y,right:r.right};}));
-   expect(new Set(boxes.map(b=>Math.round(b.y))).size).toBe(1);
+   expect(new Set(boxes.slice(0,3).map(b=>Math.round(b.y))).size).toBe(1);
+   expect(new Set(boxes.map(b=>Math.round(b.y))).size).toBe(2);
    const bounds=await grid.boundingBox();
-   expect(Math.abs(boxes.at(-1).right-(bounds.x+bounds.width))).toBeLessThan(2);
+   expect(Math.abs(boxes[2].right-(bounds.x+bounds.width))).toBeLessThan(2);
   }
   await testInfo.attach('catalog-'+width,{body:await page.screenshot({fullPage:true}),contentType:'image/png'});
  }

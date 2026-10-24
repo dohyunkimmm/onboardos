@@ -17,7 +17,8 @@
     "fonts/PRETENDARD-LICENSE.txt",
     "execution-hierarchy.css",
     "product-readiness.css",
-    "typography-qa.css"
+    "typography-qa.css",
+    "catalog.css"
   ],
   "recursiveSets": [
     {

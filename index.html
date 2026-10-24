@@ -18,7 +18,7 @@
 <meta content="630" property="og:image:height"/>
 <meta content="ToolFlow 직무별 SaaS 라이선스 온보딩 포털 데모" property="og:image:alt"/>
 <meta content="summary_large_image" name="twitter:card"/>
-<meta content="직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모" name="twitter:title"/>
+<meta content="ToolFlow · 직무별 SaaS 라이선스 온보딩 포털 — 인터랙티브 데모" name="twitter:title"/>
 <meta content="직무별 SaaS 라이선스 확인부터 라이선스 신청·검토·승인·지급 완료까지 체험하는 온보딩 포털 프로토타입입니다." name="twitter:description"/>
 <meta content="https://onboardos-rho.vercel.app/og-image.png" name="twitter:image"/>
 <link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235B21B6'/%3E%3Ctext x='32' y='43' font-family='sans-serif' font-size='30' font-weight='700' fill='white' text-anchor='middle'%3ETF%3C/text%3E%3C/svg%3E" rel="icon"/>
@@ -30,6 +30,7 @@
 <link href="product-readiness.css" rel="stylesheet"/>
 <link href="execution-hierarchy.css" id="executionHierarchyStylesheet" media="print" rel="stylesheet"/>
 <link href="typography-qa.css" rel="stylesheet"/>
+<link href="catalog.css" rel="stylesheet"/>
 </head>
 <body class="login-open">
 <a class="skip-link" href="#mainContent" id="skipLink" inert="">본문으로 건너뛰기</a>
@@ -85,30 +86,27 @@
 </nav>
 </div>
 <main id="mainContent" inert="" tabindex="-1">
+<div class="catalog-heading">
+<div><p class="catalog-eyebrow">TOOLFLOW CATALOG</p><h2 id="catalogTitle">업무 도구 찾기</h2><p class="catalog-description">내 업무에 필요한 도구를 찾고, 신청부터 이용까지 한곳에서.</p></div>
 <section class="task-overview" aria-labelledby="taskOverviewTitle">
 <div class="task-identity"><span>홍길동</span><span id="currentRoleLabel" hidden>경영지원·총무 직군</span></div>
-<h2 id="taskOverviewTitle">내 라이선스</h2>
-<div id="readinessSummary" aria-live="polite"></div>
-<div id="pendingSummary" hidden></div>
-<label class="role-picker" for="roleSelect"><span>직군</span><select id="roleSelect" aria-label="직군 선택"></select></label>
-<button class="top-btn secondary" type="button" data-action="ai-recommend">AI 추천</button>
-
-</section>
-
-
-
-<!-- 진행 상태 트래커 (현재 단계 + 다음 할 일 안내) -->
-
-<div class="tools-bar">
-<label class="tool-search" for="toolSearch">라이선스 검색<input id="toolSearch" type="search" placeholder="이름 입력" autocomplete="off" aria-controls="roleGrid commonGrid"></label>
-<div aria-label="현재 상태 필터" class="filter-tabs" id="filterTabs" role="group">
-<button aria-pressed="true" class="filter-chip active" data-filter="all" type="button">전체</button>
-<button aria-pressed="false" class="filter-chip" data-filter="todo" type="button">해야 할 일</button>
-<button aria-pressed="false" class="filter-chip" data-filter="processing" type="button">처리 중</button>
-<button aria-pressed="false" class="filter-chip" data-filter="done" type="button">완료</button>
+<h2 id="taskOverviewTitle">내 라이선스</h2><div id="readinessSummary" aria-live="polite"></div><div id="pendingSummary" hidden></div>
+</section></div>
+<div class="catalog-controls">
+<div class="catalog-search-row tools-bar">
+<label class="tool-search" for="toolSearch"><span class="sr-only">라이선스 검색</span><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="toolSearch" type="search" placeholder="도구명 또는 업무 키워드 검색" autocomplete="off" aria-controls="roleGrid commonGrid"></label>
+<button class="catalog-ai" type="button" data-action="ai-recommend"><span aria-hidden="true">✦</span> AI 추천</button>
 </div>
+<div class="catalog-filter-heading"><h3>조건으로 찾기</h3><button type="button" class="catalog-reset" data-action="reset-catalog-filters"><span aria-hidden="true">↻</span> 초기화</button></div>
+<div class="catalog-filter-row">
+<label class="catalog-field role-picker" for="roleSelect"><span>직군</span><select id="roleSelect" aria-label="직군 선택"></select></label>
+<label class="catalog-field" for="workTypeFilter"><span>업무 유형</span><select id="workTypeFilter"><option value="">전체 업무</option><option value="documents">문서·행정</option><option value="collaboration">협업·프로젝트</option><option value="design">디자인·리서치</option><option value="development">개발·클라우드</option><option value="data">데이터·분석</option><option value="ai">AI 활용</option><option value="support">IT 지원</option></select></label>
+<label class="catalog-field" for="requirementFilter"><span>필수/선택</span><select id="requirementFilter"><option value="">전체 도구</option><option value="required">필수</option><option value="optional">선택</option><option value="provided">기본 제공</option></select></label>
+<div class="catalog-field catalog-status"><span id="statusFilterLabel">신청 상태</span><div aria-label="현재 상태 필터" aria-labelledby="statusFilterLabel" class="filter-tabs" id="filterTabs" role="group"><button aria-pressed="true" class="filter-chip active" data-filter="all" type="button">전체</button><button aria-pressed="false" class="filter-chip" data-filter="todo" type="button">해야 할 일</button><button aria-pressed="false" class="filter-chip" data-filter="processing" type="button">처리 중</button><button aria-pressed="false" class="filter-chip" data-filter="done" type="button">완료</button></div></div>
 </div>
-
+<div id="selectedCatalogFilters" class="catalog-selected" aria-label="선택한 조건" hidden></div>
+</div>
+<div class="catalog-result-heading"><p id="catalogResultCount" aria-live="polite">검색 결과 <strong>0</strong>개</p><label for="catalogSort"><span class="sr-only">검색 결과 정렬</span><select id="catalogSort"><option value="recommended">추천순</option><option value="name">이름순</option></select></label></div>
 <section class="licenses role-secondary">
 <div class="section-head">
 <h2 id="roleHeading">경영지원·총무 추가 라이선스</h2>
@@ -219,6 +217,7 @@
 <script defer src="js/analytics.js"></script>
 <script defer src="js/a11y.js"></script>
 <script defer src="js/product-readiness.js"></script>
+<script defer src="js/catalog.js"></script>
 <script defer src="app.js"></script>
 <script defer src="js/ai-recommendation.js"></script>
 <script defer src="js/events.js"></script>

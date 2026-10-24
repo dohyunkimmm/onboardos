@@ -4,7 +4,7 @@ async function openRecommendation(page){
   await page.goto('/');
   await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();
   await expect(page.locator('#loginScreen')).toBeHidden();
-  await expect(page.locator('.task-overview').getByRole('button',{name:'AI 추천',exact:true})).toBeVisible();
+  await expect(page.locator('.catalog-search-row').getByRole('button',{name:'AI 추천',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'AI 추천',exact:true}).click();
 }
 
