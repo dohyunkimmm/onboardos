@@ -148,7 +148,7 @@ test('shared and selected case works across roles with no task description',asyn
   await login(page);
   await panel(page).locator('#aiInlineCase').selectOption('pm-work');
   await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Asana');
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('예외 검토 필요');
+  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('신청 필요');
   await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
   await expect(panel(page).locator('#aiInlineCase')).toHaveValue('pm-work');
   await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Asana');
