@@ -16,7 +16,7 @@ test('keyword, work type, requirement and status compose, tags clear independent
  await expect(page.locator(visible)).toHaveAttribute('data-name','한글(HWP)');
  await expect(page.locator('#catalogResultCount')).toHaveText('검색 결과 1개');
  await page.getByRole('button',{name:'구분 · 필수 해제',exact:true}).click();
- await expect(page.locator(visible)).toHaveCount(2);
+ await expect(page.locator(visible)).toHaveCount(3);
  await expect(page.getByLabel('업무 유형',{exact:true})).toHaveValue('documents');
  await page.getByRole('button',{name:'초기화',exact:true}).click();
  await expect(page.locator(visible)).toHaveCount(9);
@@ -62,4 +62,14 @@ test('three desktop columns and one mobile column use matching card geometry',as
  }
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
  await expect(page.getByRole('button',{name:'AI 추천',exact:true})).toBeVisible();
+});
+
+test('compact card actions stay at the right and never occupy the card width',async({page})=>{
+ await page.setViewportSize({width:1440,height:1000});await login(page);
+ for(const id of ['roleGrid','commonGrid']){
+  const boxes=await page.locator('#'+id+' .card').evaluateAll(els=>els.slice(0,3).map(el=>{const card=el.getBoundingClientRect(),button=el.querySelector('.cta').getBoundingClientRect();return {width:card.width,height:card.height,buttonWidth:button.width,rightInset:card.right-button.right};}));
+  for(const box of boxes){expect(box.height).toBeLessThanOrEqual(210);expect(box.buttonWidth).toBeLessThan(box.width*.5);expect(box.rightInset).toBeLessThanOrEqual(22);}
+ }
+ await expect(page.locator('.tool-search img')).toHaveAttribute('src','icons/tossface/u1F50D.svg');
+ await expect(page.locator('#catalogTitle')).toHaveCSS('font-family',/"Pretendard Variable"/);
 });

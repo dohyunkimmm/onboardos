@@ -120,3 +120,74 @@ body .catalog-eyebrow{color:#175fc2;}
 body #mainContent .shared-access{color:#38674c;}
 body #mainContent #roleGrid,body #mainContent #commonGrid{padding:0!important;margin:0!important;}
 @media(max-width:768px){body .catalog-field:has(#requirementFilter){grid-column:1/-1;}}
+
+/* Compact discovery cards: Jobplanet job explorer reference, 2026-10-24. */
+body,body *{font-family:"Pretendard Variable",Pretendard,sans-serif!important;}
+body:not(.login-open){background:#fff;}
+body:not(.login-open) #mainContent{padding-top:28px;}
+body .catalog-eyebrow{display:none;}
+body #catalogTitle{font-size:24px;line-height:1.4;letter-spacing:-.035em;}
+body .catalog-description{margin-top:6px;font-size:13px;}
+body .catalog-heading{margin-bottom:20px;}
+body .catalog-controls{padding:0;margin-bottom:20px;border:0;border-radius:0;background:transparent;}
+body .catalog-search-row.tools-bar{margin-bottom:18px;gap:10px;}
+body .catalog-controls .tool-search{height:44px;border-radius:7px;}
+body .catalog-controls #toolSearch{height:40px;font-size:14px;}
+body .catalog-ai{min-width:105px;border-radius:7px;padding:0 15px;font-size:13px;background:#f7faff;}
+body .catalog-filter-heading{margin-bottom:7px;}
+body .catalog-filter-heading h3{display:none;}
+body .catalog-filter-row{gap:8px;grid-template-columns:170px 160px 140px minmax(300px,1fr);}
+body .catalog-field>span{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}
+body .catalog-field select{height:40px;min-height:40px;border-color:#e6e8eb;border-radius:5px;}
+body .catalog-status .filter-tabs{height:40px;}
+body .catalog-status .filter-chip{min-height:40px;height:40px;border-radius:5px!important;}
+body .catalog-selected{padding-top:12px;margin-top:12px;}
+body .catalog-result-heading{margin-bottom:17px;}
+body #mainContent .section-head h2,body #mainContent .common-summary h2{font-size:15px!important;}
+body #mainContent #roleGrid,body #mainContent #commonGrid{gap:16px;}
+body #mainContent #roleGrid .card,body #mainContent #commonGrid .card{min-height:176px!important;height:100%;padding:16px 18px!important;border-color:#e7e9ed!important;border-radius:10px!important;box-shadow:none!important;}
+body #mainContent .card .card-top{align-items:center!important;gap:9px!important;margin:0 0 7px!important;min-height:28px;}
+body #mainContent .card .logo-chip{width:28px;height:28px;flex:0 0 28px;border-radius:6px;border:1px solid #eff0f2;background:#fff;}
+body #mainContent .card .logo-chip img{width:22px;height:22px;}
+body #mainContent .card .card-title{flex:1;min-width:0;font-size:14px!important;font-weight:650!important;line-height:1.4!important;}
+body #mainContent .card .card-purpose{margin:0 0 6px;font-size:13px!important;font-weight:550;color:#303640!important;line-height:1.5;}
+body #mainContent .catalog-card-meta{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;justify-content:flex-start;gap:3px 6px;margin:0 0 12px;padding:0;}
+body #mainContent .card .card-owner,body #mainContent .card .card-timing{display:inline!important;margin:0;padding:0;border:0;font-size:11px!important;line-height:1.5;color:#6b7280!important;}
+body #mainContent .catalog-meta-dot{font-size:11px;color:#9ca3af;}
+body #mainContent .card .card-bottom{display:flex!important;flex-direction:row!important;justify-content:space-between;align-items:flex-end!important;gap:10px!important;margin:auto 0 0!important;padding:9px 0 0!important;border-top:1px solid #f3f4f6;}
+body #mainContent .card .card-status-group{display:flex;flex:1;min-width:0;justify-content:flex-start;align-items:center;gap:5px;min-height:32px;}
+body #mainContent .card .requirement-pill{min-height:21px;font-size:10px;padding:3px 5px;border-radius:3px;}
+body #mainContent .card .status-pill{min-height:21px;padding:3px 5px;font-size:10px;line-height:1.4;}
+body #mainContent .card .card-action{flex:0 0 auto;width:auto!important;max-width:55%;}
+body #mainContent #roleGrid .card .cta,body #mainContent #commonGrid .card .cta,body #mainContent #roleGrid .card[data-status="auto"] .cta{display:inline-flex!important;width:auto!important;min-width:76px;min-height:34px;margin:0;padding:6px 11px;border:1px solid #b8cbeb!important;border-radius:5px!important;background:#fff!important;color:#245da7!important;font-size:12px!important;font-weight:650;line-height:1.4;white-space:nowrap;}
+body #mainContent #commonGrid .card .cta,body #mainContent #roleGrid .card[data-status="auto"] .cta{border-color:#dce1e8!important;color:#576373!important;}
+body #mainContent #roleGrid .card .cta:hover,body #mainContent #commonGrid .card .cta:hover{background:#f3f7ff!important;}
+body .tossface-icon{display:inline-block;flex:0 0 auto;object-fit:contain;vertical-align:middle;}
+body .catalog-controls .tool-search>.tossface-icon{width:19px;height:19px;}
+body .catalog-ai>.tossface-icon{width:18px;height:18px;}
+body .catalog-reset>.tossface-icon{width:14px;height:14px;}
+body .top-btn>.tossface-icon{width:16px;height:16px;margin-right:5px;}
+body .jsm-btn>.tossface-icon{width:17px;height:17px;margin-right:6px;}
+body #mainContent .card .status-pill::before{content:""!important;display:inline-block;width:12px;height:12px;margin-right:4px;background:center/contain no-repeat url('icons/tossface/u1F4DD.svg');}
+body #mainContent .card .status-auto::before,body #mainContent .card .status-completed::before{background-image:url('icons/tossface/u2705.svg');}
+body #mainContent .card .status-approval::before{background-image:url('icons/tossface/u1F512.svg');}
+body #mainContent .card .status-pending::before{background-image:url('icons/tossface/u23F3.svg');}
+body #mainContent .card .status-approved::before{background-image:url('icons/tossface/u1F4E6.svg');}
+body #mainContent .card .status-rejected::before{background-image:url('icons/tossface/u1F504.svg');}
+@media(max-width:1023px){body .catalog-filter-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}}
+@media(max-width:768px){
+ body:not(.login-open) #mainContent{padding-top:20px;}
+ body .catalog-heading{margin-bottom:17px;}
+ body #catalogTitle{font-size:23px;}
+ body .catalog-controls{padding:0;border:0;}
+ body .catalog-controls .tool-search{height:44px;padding:0 10px;}
+ body .catalog-controls #toolSearch{height:40px;font-size:12px;}
+ body .catalog-ai{min-width:84px;padding:0 10px;font-size:12px;}
+ body .catalog-filter-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+ body .catalog-field:has(#requirementFilter){grid-column:auto;}
+ body .catalog-field select{height:44px;min-height:44px;}
+ body .catalog-status{grid-column:1/-1;}
+ body .catalog-status .filter-tabs,body .catalog-status .filter-chip{height:44px;min-height:44px;}
+ body #mainContent #roleGrid .card,body #mainContent #commonGrid .card{min-height:176px!important;padding:15px 16px!important;}
+ body #mainContent #roleGrid .card .cta,body #mainContent #commonGrid .card .cta{min-height:44px;width:auto!important;padding:8px 12px;}
+}

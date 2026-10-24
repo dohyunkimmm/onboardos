@@ -73,7 +73,7 @@ test('[T4] filter selection remains visually quieter than the primary card actio
   const cta = await style(page.locator('#roleGrid .cta').first());
   expect(filter.boxShadow).toBe('none');
   expect(filter.backgroundColor).toBe('rgb(232, 240, 254)');
-  expect(cta.backgroundColor).toBe('rgb(26, 115, 232)');
+  expect(cta.backgroundColor).toBe('rgb(255, 255, 255)');
   expect(cta.backgroundColor).not.toBe(filter.backgroundColor);
 });
 

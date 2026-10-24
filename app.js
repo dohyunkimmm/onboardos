@@ -169,29 +169,24 @@ const LICENSE_PURPOSES = {"SL":"팀 메시지·업무 소통","NT":"문서 작�
 function renderCard(item, showCta){
   const effectiveStatus = getEffectiveStatus(item);
   const sc = statusConfig[effectiveStatus];
-  const sla = getSlaMeta(item.status);
   const isApplied = !!requestState[item.name];
   const isAuto = item.status === 'auto';
-  const ctaBtn = (showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${['auto','completed'].includes(effectiveStatus) ? startLabel(item) : sc.cta}</button>` : `<button class="cta common-guide" data-action="license-action" data-value="${escapeHTML(item.name)}">사용 안내</button>`;
-  const slaPill = isApplied ? `<span class="sla-pill employee-timing">${escapeHTML(employeeTiming(item))}</span>` : '';
-  const ownerRow = `<div class="catalog-card-meta"><div class="card-owner"><span>담당 부서</span><b>${escapeHTML(item.owner)}</b></div><div class="card-timing"><span>처리 기간</span><b>${isAuto ? '계정 생성 후 1시간 이내' : escapeHTML(getSlaMeta(item.status).detail.replace('영업일 기준','영업일'))}</b></div></div>`;
-  const bottomRight = ctaBtn ? `<div class="card-action">${ctaBtn}</div>` : '';
+  const cta = showCta === false || ['auto','completed'].includes(effectiveStatus) ? '사용 안내' : sc.cta;
+  const timing = isApplied ? employeeTiming(item) : isAuto ? '계정 생성 후 1시간 이내' : getSlaMeta(item.status).detail.replace('영업일 기준','영업일');
   return `
-    <div class="card${isApplied ? ' applied' : ''}" data-name="${item.name}" data-status="${effectiveStatus}">
+    <div class="card${isApplied ? ' applied' : ''}" data-name="${escapeHTML(item.name)}" data-status="${effectiveStatus}">
       <div class="card-top">
-        <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${item.mono}</div>`}</div>
-        <div>
-          <div class="card-title">${item.name}</div>
-          <div class="card-purpose">${escapeHTML(LICENSE_PURPOSES[item.mono] || item.cat)}</div><span class="requirement-pill ${isAuto ? 'provided' : requirementFor(item)==='필수'?'required':'optional'}">${isAuto ? '기본 제공' : requirementFor(item)+' 라이선스'}</span>
-        </div>
+        <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${escapeHTML(item.mono)}</div>`}</div>
+        <div class="card-title">${escapeHTML(item.name)}</div>
       </div>
-      ${ownerRow}
+      <div class="card-purpose">${escapeHTML(LICENSE_PURPOSES[item.mono] || item.cat)}</div>
+      <div class="catalog-card-meta"><div class="card-owner" aria-label="담당 부서">${escapeHTML(item.owner)}</div><span class="catalog-meta-dot" aria-hidden="true">·</span><div class="card-timing" aria-label="처리 기간">${escapeHTML(timing)}</div></div>
       <div class="card-bottom">
         <div class="card-status-group">
+          <span class="requirement-pill ${isAuto ? 'provided' : requirementFor(item)==='필수'?'required':'optional'}">${isAuto ? '기본 제공' : requirementFor(item)}</span>
           <span class="status-pill ${sc.cls}">${isAuto ? '사용 가능' : sc.label}</span>
-          ${slaPill}
         </div>
-        ${bottomRight}
+        <div class="card-action"><button class="cta${showCta === false ? ' common-guide' : ''}" data-action="license-action" data-value="${escapeHTML(item.name)}">${escapeHTML(cta)}</button></div>
       </div>
     </div>`;
 }

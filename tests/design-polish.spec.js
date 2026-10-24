@@ -30,7 +30,7 @@ test('[D1] dashboard hierarchy increases readable width and headline contrast af
   const main = await css(page.locator('main'));
   expect(parseFloat(main.maxWidth)).toBeGreaterThanOrEqual(1180);
   const title = await css(page.locator('.section-head h2').first());
-  expect(parseFloat(title.fontSize)).toBe(16);
+  expect(parseFloat(title.fontSize)).toBe(15);
   expect(Number(title.fontWeight)).toBeGreaterThanOrEqual(700);
   await shot(page,'D1-dashboard-hierarchy.png');
 });
@@ -64,8 +64,8 @@ test('[D4] role cards use consistent elevated surfaces and stronger primary CTA'
   expect(state.background).not.toBe('none');
   expect(state.borderStyle).toBe('solid');
   const cta = await css(card.locator('.cta'));
-  expect(cta.backgroundColor).toBe('rgb(26, 115, 232)');
-  expect(Number(cta.fontWeight)).toBeGreaterThanOrEqual(700);
+  expect(cta.backgroundColor).toBe('rgb(255, 255, 255)');
+  expect(Number(cta.fontWeight)).toBeGreaterThanOrEqual(600);
   await shot(card,'D4-role-card-system.png');
 });
 

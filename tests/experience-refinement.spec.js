@@ -73,7 +73,7 @@ test('[E5] role cards keep responsive scan rhythm and status meaning without col
   if((viewport?.width || 0) > 768){
     expect(parseFloat(state.minHeight)).toBeGreaterThanOrEqual(176);
   }else{
-    expect(parseFloat(state.minHeight)).toBeGreaterThanOrEqual(300);
+    expect(parseFloat(state.minHeight)).toBeGreaterThanOrEqual(160);
   }
   const divider=await css(card.locator('.card-bottom'));
   expect(divider.borderTopStyle).toBe('solid');

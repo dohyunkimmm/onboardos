@@ -18,7 +18,9 @@
     "execution-hierarchy.css",
     "product-readiness.css",
     "typography-qa.css",
-    "catalog.css"
+    "catalog.css",
+    "fonts/TOSSFACE-LICENSE.txt",
+    "fonts/TOSSFACE-NOTICE.txt"
   ],
   "recursiveSets": [
     {
