@@ -115,3 +115,8 @@ body #mainContent .card .requirement-pill.provided{color:#286644;}
  body .catalog-selected-tag{min-height:44px;}
  body .catalog-reset{min-height:44px;}
 }
+
+body .catalog-eyebrow{color:#175fc2;}
+body #mainContent .shared-access{color:#38674c;}
+body #mainContent #roleGrid,body #mainContent #commonGrid{padding:0!important;margin:0!important;}
+@media(max-width:768px){body .catalog-field:has(#requirementFilter){grid-column:1/-1;}}

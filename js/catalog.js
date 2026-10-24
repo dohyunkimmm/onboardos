@@ -103,6 +103,9 @@ function clearCatalogFilter(key){
 function resetCatalogFilters(){
   for(const id of ['toolSearch','workTypeFilter','requirementFilter']) document.getElementById(id).value = '';
   document.getElementById('catalogSort').value = 'recommended';
+  const common = document.getElementById('commonTools');
+  if(common) common.open = true;
+  if(typeof commonWasOpenBeforeSearch !== 'undefined') commonWasOpenBeforeSearch = null;
   selectedFilter = 'all';
   syncFilterUI();
   if(currentRole !== defaultCatalogRole) setRole(defaultCatalogRole || 'office');
@@ -111,7 +114,13 @@ function resetCatalogFilters(){
 }
 
 for(const id of ['workTypeFilter','requirementFilter','catalogSort']){
-  document.getElementById(id)?.addEventListener('change', () => applyFilters());
+  document.getElementById(id)?.addEventListener('change', () => {
+    if(id !== 'catalogSort' && document.getElementById(id).value){
+      const common = document.getElementById('commonTools');
+      if(common) common.open = true;
+    }
+    applyFilters();
+  });
 }
 document.addEventListener('click', event => {
   const clear = event.target.closest('[data-catalog-clear]');
