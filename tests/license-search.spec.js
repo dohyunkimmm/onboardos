@@ -78,7 +78,7 @@ test('First page return preserves the role and allows SSO again',async({page})=>
  await expect(page.locator('#loginScreen')).toBeHidden();
  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
  await expect(page.locator('.top-actions [data-action="go-home"]')).toHaveCount(0);
- await page.getByRole('button',{name:'ONBOARD·OS 첫 페이지',exact:true}).press('Enter');
+ await page.getByRole('button',{name:'ToolFlow 첫 페이지',exact:true}).press('Enter');
  await expect(page.locator('#loginScreen')).toBeVisible();
  await expect(page.getByRole('button',{name:'Google SSO로 시작하기'})).toBeEnabled();
  await page.getByRole('button',{name:'Google SSO로 시작하기'}).click();

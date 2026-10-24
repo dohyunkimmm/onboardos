@@ -23,7 +23,7 @@ function validateReleaseContract(){
   const stateSource = fs.readFileSync('js/state.js', 'utf8');
 
   if(release.schemaVersion !== 10) fail(`schemaVersion must be 10, found ${release.schemaVersion}`);
-  if(release.product !== 'ONBOARD·OS') fail(`product mismatch: ${release.product}`);
+  if(release.product !== 'ToolFlow') fail(`product mismatch: ${release.product}`);
   if(!/^\d+\.\d+\.\d+$/.test(release.version || '')) fail(`invalid semantic version: ${release.version}`);
   if(release.freeze !== 'P6') fail(`freeze must remain P6, found ${release.freeze}`);
   if(release.canonicalVersionSource !== 'release.json') fail('canonicalVersionSource must be release.json');
@@ -151,8 +151,8 @@ function validateReleaseContract(){
     if(!readme.includes(`Portfolio release — ${expectedTag} / P6 ${release.productReview ? 'product-review' : 'design-only'} candidate.`)) fail(`README candidate release block is not aligned to ${expectedTag}`);
   }
 
-  const versionMatch = versionText.match(/^ONBOARD·OS v(\d+\.\d+\.\d+)$/m);
-  if(!versionMatch) fail('version.txt must declare ONBOARD·OS semantic version');
+  const versionMatch = versionText.match(/^ToolFlow v(\d+\.\d+\.\d+)$/m);
+  if(!versionMatch) fail('version.txt must declare ToolFlow semantic version');
   if(versionMatch[1] !== release.version) fail(`version.txt=${versionMatch[1]} release.json=${release.version}`);
   if(!/^releaseChannel=production$/m.test(versionText)) fail('version.txt must declare releaseChannel=production');
   if(!versionText.includes(`releaseStatus=${release.releaseStatus}`)) fail(`version.txt releaseStatus is not aligned to ${release.releaseStatus}`);

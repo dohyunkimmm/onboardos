@@ -1,4 +1,4 @@
-# ONBOARD·OS
+# ToolFlow
 
 [![E2E Verification](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 
@@ -56,6 +56,6 @@ npm run test:e2e
 - [릴리스 이력](CHANGELOG.md) · [최신 CI 검증](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain)
 - [Production 수동 검증](https://github.com/dohyunkimmm/onboardos/actions/workflows/production-verify.yml)
 
-![ONBOARD·OS 미리보기](og-image.png)
+![ToolFlow 미리보기](og-image.png)
 
 **기획 · 설계 · 프로토타입 구현: 김도현**

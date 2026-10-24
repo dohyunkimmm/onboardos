@@ -57,7 +57,7 @@ fs.mkdirSync(dir,{recursive:true});
 fs.writeFileSync(path.join(dir,'security-summary.json'),JSON.stringify(summary,null,2)+'\n');
 const lines = [
   '# Security Evidence','',
-  `- Release: **ONBOARD·OS v${release.version} / ${release.freeze}**`,
+  `- Release: **ToolFlow v${release.version} / ${release.freeze}**`,
   `- Scenarios: **${summary.passedCount}/${summary.scenarioCount} PASS**`,'',
   '| ID | Scenario | Result |','| --- | --- | --- |',
   ...scenarios.map(row => `| ${row.id} | ${row.title} | **${row.result === 'success' ? 'PASS' : 'FAIL'}** |`),''

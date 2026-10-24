@@ -59,7 +59,7 @@ fs.writeFileSync(path.join(dir,'resilience-summary.json'), JSON.stringify(summar
 const lines = [
   '# Resilience Evidence',
   '',
-  `- Release: **ONBOARD·OS v${release.version} / ${release.freeze}**`,
+  `- Release: **ToolFlow v${release.version} / ${release.freeze}**`,
   `- Session schema: \`${summary.sessionSchemaVersion}\``,
   `- Scenarios: **${summary.passedCount}/${summary.scenarioCount} PASS**`,
   '',

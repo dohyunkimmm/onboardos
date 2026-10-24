@@ -1,4 +1,4 @@
-/* ONBOARD·OS post-login experience refinement layers — production through v14.
+/* ToolFlow post-login experience refinement layers — production through v14.
    Scope: visual/UX refinement only. P6 behavior and login baseline stay unchanged. */
 :root{
   --v11-panel:rgba(23,26,33,.94);
@@ -165,7 +165,7 @@ body:not(.login-open) .complete-box.is-complete{box-shadow:0 22px 56px -38px rgb
   body:not(.login-open) .card,body:not(.login-open) :where(.top-btn,.filter-chip,.role-tab,.cta,.request-actions button,.modal-actions button){transition-duration:0s!important;}
 }
 
-/* ONBOARD·OS v12 candidate — action-first experience system.
+/* ToolFlow v12 candidate — action-first experience system.
    Scope: visual hierarchy, scanability, responsive ergonomics, and state clarity.
    Business logic, login baseline, request state machine, and role behavior remain unchanged. */
 :root{
@@ -385,7 +385,7 @@ body:not(.login-open) .section-head .count{color:var(--v12-muted);}
   body:not(.login-open) .progress-step{flex:1 1 0;min-width:0;}
 }
 
-/* ONBOARD·OS v13 candidate — product-grade visual system.
+/* ToolFlow v13 candidate — product-grade visual system.
    Scope: post-login product composition, hierarchy, state legibility, and responsive ergonomics.
    Business logic, login baseline, P6 state machine, role isolation, and release provenance remain unchanged. */
 :root{
@@ -799,7 +799,7 @@ body:not(.login-open) .request-actions button{min-height:44px;border-radius:11px
   body:not(.login-open) .filter-chip.active{border:1px solid CanvasText;}
 }
 
-/* ONBOARD·OS v14 production — operational command center.
+/* ToolFlow v14 production — operational command center.
    Scope: post-login information architecture, task priority, state legibility, execution surfaces, and mobile ergonomics.
    Business logic, login baseline, P6 state machine, role isolation, and request semantics remain unchanged. */
 :root{
@@ -1228,7 +1228,7 @@ body:not(.login-open) :where(.role-tab,.filter-chip,.cta,.request-actions button
 }
 
 
-/* ONBOARD·OS v15 candidate — visual polish, density and rhythm.
+/* ToolFlow v15 candidate — visual polish, density and rhythm.
    Scope: post-login presentation only. Business/state/request/role logic remains frozen. */
 :root{
   --v15-surface:rgba(18,20,26,.94);
