@@ -13,6 +13,12 @@
 **AI 추천 모달이 단일 진입점**이다. 직군 기본 추천을 먼저 보여 주며, 입력한 업무가 현재 직군을 벗어나는 경우에 한해 공통 업무 케이스를 이용해 외부 도구를 추천할 수 있다. 해당 도구는 예외 요청으로만 연결한다.
 
 
+## 2026-10-24 운영 기준 (PR #144·#145)
+
+[PR #144](https://github.com/dohyunkimmm/onboardos/pull/144)에서 직군 외 업무 케이스와 43개 내부 추천 카탈로그를 확장했고, [PR #145](https://github.com/dohyunkimmm/onboardos/pull/145)에서는 첫 화면의 복잡한 자동 추천 UI·진한 배경·추가 카테고리 패널을 제거했다. 현재 **유일한 추천 진입점은 'AI 추천' 버튼**이며, 모달의 기본 3개 제안은 규칙 기반(실제 Gemini 응답으로 표시하지 않음)이다. 짧은 업무 문구나 빈 문자열도 허용하며 **'추천 받기'를 누를 때만** 서버 API를 요청한다.
+
+**운영 배포** `32876f1a9ccd538879c215badd38d5a968aee495` (Vercel READY), GitHub Actions 해당 커밋의 검사 14개 성공. 이 검증은 공급자 모의 응답·UI·보안·Production Smoke에 관한 것이며, 사용자 실제 Gemini 요청 결과/추천 적합성까지 검증한 것은 아니다. Vercel에 등록된 환경변수는 기존 값을 사용하며 키 재발급을 요구하지 않는다.
+
 ## 실행 설정
 
 기존 정적 화면에 Vercel Node.js Function `api/recommend.js`를 추가했다. 브라우저는 같은 출처의 `/api/recommend`만 호출한다. 서버는 `data.js`의 동일한 카탈로그를 직접 읽고 Gemini Generate Content API의 JSON Schema 출력을 검증한다. 별도 패키지 설치는 필요 없다.
@@ -60,7 +66,7 @@ WebKit의 신청·승인 기능 검사 컨텍스트에만 공식 임시 대응�
 
 1. https://aistudio.google.com/api-keys 에서 Google 계정으로 로그인하고 프로젝트·API 키를 생성한다. 화면 안내에 따라 약관·프로젝트 생성을 완료한다.
 2. 프로젝트가 Free Tier인지 확인하고 결제 계정을 연결하거나 유료 업그레이드를 하지 않는다. 모델별 실제 한도는 계정에서 확인한다.
-3. Vercel Preview 환경변수에 `GEMINI_API_KEY`와 `AI_RECOMMENDATIONS_ENABLED=true`를 등록한다. 키를 소스·채팅에 넣지 않는다. 기존 OpenAI/Groq 키는 이 코드에서 사용하지 않는다.
+3. **최초 설치 시에만** Vercel Preview/Production 환경변수에 `GEMINI_API_KEY`와 `AI_RECOMMENDATIONS_ENABLED=true`를 등록한다. 현재 ONBOARD·OS Vercel에는 두 변수 이름이 이미 등록되어 있으므로, 정상 동작 중이라면 재등록·키 재발급이 필요 없다. 보안상 실제 값은 문서에 기록하지 않는다. 기존 OpenAI/Groq 키는 이 코드에서 사용하지 않는다.
 4. 미리보기 재배포 후 실제 추천 품질과 한도 초과 안내를 확인한다. 키가 없으면 503 안내를 유지한다.
 
 공식 무료 등급 안내: https://ai.google.dev/gemini-api/docs/pricing · https://ai.google.dev/gemini-api/docs/billing
