@@ -122,6 +122,7 @@ function renderAiInlineCards(recommendations,role,detail,sequence,source,caseId)
       : status === 'rejected' ? '반려 사유 확인'
       : ['pending','approved'].includes(status) ? '신청현황 확인'
       : '신청 내용 확인';
+    action.setAttribute('aria-label',`${item.name} ${action.textContent}`);
     action.addEventListener('click',()=>{
       if(!loggedIn || sequence!==aiInlineSequence || currentRole!==role
         || aiInlineDetail.value.trim()!==detail || (aiInlineChoice(role)?.id || '')!==caseId) return;
