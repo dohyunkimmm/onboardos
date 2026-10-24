@@ -177,7 +177,7 @@ function renderCard(item, showCta){
   const ownerRow = isAuto ? '' : `<div class="card-owner">담당 · <b>${item.owner}</b></div>`;
   const bottomRight = ctaBtn ? `<div class="card-action">${ctaBtn}</div>` : '';
   return `
-    <div class="card${isApplied ? ' applied' : ''}" data-name="${item.name}" data-status="${effectiveStatus}">
+    <div class="card${isApplied ? ' applied' : ''}" data-name="${escapeHTML(item.name)}" data-status="${effectiveStatus}" data-category="${escapeHTML(item.bucket||item.cat)}">
       <div class="card-top">
         <div class="logo-chip" aria-hidden="true">${item.icon ? `<img src="${item.icon}" alt="" loading="lazy">` : `<div class="mono-chip">${item.mono}</div>`}</div>
         <div>
@@ -201,6 +201,31 @@ function renderCommon(){
   const cc = document.getElementById('commonCount');
   cc.dataset.base = `${commonLicenses.length}개`;
   cc.textContent = cc.dataset.base;
+}
+
+let extraCategory = 'all';
+function syncExtraCategoryUI(){
+  document.querySelectorAll('#roleExtraTools [data-extra-category]').forEach(button=>{
+    const active = button.dataset.extraCategory === extraCategory;
+    button.classList.toggle('selected',active);
+    button.setAttribute('aria-pressed',String(active));
+  });
+}
+function setExtraCategory(value){
+  extraCategory = ['all','AI','협업툴','PM툴','기타'].includes(value) ? value : 'all';
+  syncExtraCategoryUI();
+  applyFilters();
+}
+function renderRoleExtras(){
+  const section = document.getElementById('roleExtraTools');
+  const grid = document.getElementById('extraGrid');
+  const count = document.getElementById('extraCount');
+  const extras = roles[currentRole]?.extras || [];
+  section.hidden = !extras.length;
+  grid.innerHTML = extras.map(item=>renderCard(item,true)).join('');
+  count.dataset.base = `${extras.length}개 · 카테고리별 보기`;
+  count.textContent = count.dataset.base;
+  syncExtraCategoryUI();
 }
 
 function renderRoleTabs(){
@@ -241,6 +266,8 @@ function setRole(key){
   } else {
     grid.innerHTML = [...r.cards].sort((a,b)=>(requirementFor(a)==='필수'?0:1)-(requirementFor(b)==='필수'?0:1)).map(item => renderCard(item, true)).join('');
   }
+  if(previousRole !== currentRole) extraCategory = 'all';
+  renderRoleExtras();
   applyFilters();
   updateDashboard();
   if(previousRole !== currentRole && typeof updateAiInlineRole === 'function') updateAiInlineRole();
@@ -255,9 +282,10 @@ function showToast(message){
 }
 
 
-function openSupportRequest(kind){
+function openSupportRequest(kind,license=null){
   const roleRequest = kind === 'role';
-  const name = roleRequest ? '직무 정보 확인 요청' : '기타 라이선스 요청';
+  const name = roleRequest ? '직무 정보 확인 요청'
+    : license ? `${license.name} 직군 외 라이선스 검토` : '기타 라이선스 요청';
   const existing = requestState[name];
   if(existing){
     showToast(`${name}은 이미 접수되어 있습니다. 신청현황에서 같은 ITSM 번호로 상태를 확인해 주세요.`);
@@ -266,7 +294,8 @@ function openSupportRequest(kind){
   }
   supportRequestContext = {kind,name};
   document.getElementById('actionModalEyebrow').textContent = 'IT HELPDESK';
-  document.getElementById('actionModalTitle').textContent = roleRequest ? '직무 정보 확인 요청' : '목록에 없는 라이선스 요청';
+  document.getElementById('actionModalTitle').textContent = roleRequest ? '직무 정보 확인 요청'
+    : license ? `${license.name} 예외 검토 요청` : '목록에 없는 라이선스 요청';
   document.getElementById('actionModalBody').innerHTML = `
     <p class="support-request-lead">${roleRequest
       ? 'Google Workspace 조직·직무 정보가 매핑되지 않은 상황을 가정한 Fallback Flow입니다. 접수 후 사용자와 IT 관리자 화면에서 같은 요청번호로 추적됩니다.'
@@ -416,6 +445,7 @@ function fakeLogin(){
     login.inert = true;
     document.body.classList.remove('login-open');
     loggedIn = true;
+    if(typeof updateAiInlineRole === 'function') updateAiInlineRole();
     saveSession();
     trackEvent('Demo Login',{role:currentRole});
     button.removeAttribute('aria-busy');
@@ -427,7 +457,7 @@ function fakeLogin(){
 
 function findLicenseByName(name){
   const all = [...commonLicenses];
-  Object.values(roles).forEach(r => all.push(...r.cards));
+  Object.values(roles).forEach(r => all.push(...r.cards,...(r.extras || [])));
   return all.find(x => x.name === name);
 }
 
@@ -442,7 +472,9 @@ function applyFilters(){
   const group = FILTER_GROUPS[selectedFilter];
   document.querySelectorAll('.card').forEach(card => {
     const query = (document.getElementById('toolSearch')?.value || '').trim().toLocaleLowerCase();
-    const matchesFilter = (!group || group.has(card.dataset.status)) && (!query || card.dataset.name.toLocaleLowerCase().includes(query));
+    const matchesCategory = !card.closest('#roleExtraTools') || extraCategory === 'all' || card.dataset.category===extraCategory;
+    const matchesFilter = matchesCategory && (!group || group.has(card.dataset.status))
+      && (!query || (card.dataset.name+' '+card.dataset.category).toLocaleLowerCase().includes(query));
     card.classList.toggle('is-hidden', !matchesFilter);
     card.hidden = !matchesFilter;
     card.inert = !matchesFilter;
@@ -455,7 +487,7 @@ function updateSectionEmptyStates(){
   const searching = !!document.getElementById('toolSearch')?.value.trim();
   const filtering = selectedFilter !== 'all' || searching;
   let totalVisible = 0;
-  [['commonGrid','commonEmpty','commonCount'],['roleGrid','roleEmpty','roleCount']].forEach(([gridId,emptyId,countId])=>{
+  [['commonGrid','commonEmpty','commonCount'],['roleGrid','roleEmpty','roleCount'],['extraGrid','extraEmpty','extraCount']].forEach(([gridId,emptyId,countId])=>{
     const grid = document.getElementById(gridId);
     const empty = document.getElementById(emptyId);
     const countEl = document.getElementById(countId);

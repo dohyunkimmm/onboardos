@@ -31,7 +31,7 @@ test('기본 대시보드 visual baseline', async ({ page }) => {
   await expect(page.getByRole('button',{name:'도움말',exact:true})).toBeVisible();
   await expect(page.locator('#toast')).not.toHaveClass(/show/);
   // Preserve the legacy dashboard baseline; the new opt-in AI panel has dedicated interaction tests.
-  await page.locator('#aiInlinePanel').evaluate(panel => { panel.hidden = true; });
+  await page.locator('#aiInlinePanel, #roleExtraTools').evaluateAll(panels => { panels.forEach(panel => { panel.hidden = true; }); });
   await expect(page).toHaveScreenshot('office-dashboard.png', { ...screenshotOptions, fullPage:true });
 });
 

@@ -126,27 +126,43 @@
 <div class="card-grid" id="commonGrid"></div>
 <div class="empty-state no-result" hidden="" id="commonEmpty"><b>조건에 맞는 라이선스가 없습니다</b>상태 필터를 바꿔 다시 확인해 보세요.</div>
 </details>
+<details class="licenses role-additional" id="roleExtraTools">
+  <summary class="common-summary"><h2>직군별 추가 탐색 도구</h2><span class="count mono" id="extraCount"></span></summary>
+  <p class="role-extra-help">AI · 협업툴 · PM툴 · 기타 중 필요한 도구를 찾아보세요. 지급과 비용은 조직 정책에 따라 별도 검토됩니다.</p>
+  <div class="role-extra-filters" role="group" aria-label="추가 도구 카테고리">
+    <button type="button" class="extra-filter-chip selected" aria-pressed="true" data-extra-category="all">전체</button>
+    <button type="button" class="extra-filter-chip" aria-pressed="false" data-extra-category="AI">AI</button>
+    <button type="button" class="extra-filter-chip" aria-pressed="false" data-extra-category="협업툴">협업툴</button>
+    <button type="button" class="extra-filter-chip" aria-pressed="false" data-extra-category="PM툴">PM툴</button>
+    <button type="button" class="extra-filter-chip" aria-pressed="false" data-extra-category="기타">기타</button>
+  </div>
+  <div class="card-grid" id="extraGrid"></div>
+  <div class="empty-state no-result" id="extraEmpty" hidden><b>해당 조건의 도구가 없습니다</b>다른 카테고리나 검색어를 선택해 주세요.</div>
+</details>
 <div class="empty-state no-result" hidden="" id="globalEmpty"><b>조건에 맞는 라이선스가 없습니다</b>현재 직무의 상태 필터를 바꿔 다시 확인해 보세요.</div>
 
 <section class="ai-inline-panel" id="aiInlinePanel" aria-labelledby="aiInlineHeading">
   <div class="ai-inline-header">
     <div>
       <p class="ai-inline-eyebrow">AI 직무 맞춤 추천</p>
-      <h2 id="aiInlineHeading">담당 업무에 맞는 라이선스를 찾아보세요</h2>
-      <p class="ai-inline-description">선택한 직군과 담당 업무를 기준으로 등록된 라이선스 중 최대 3개를 추천합니다.</p>
+      <h2 id="aiInlineHeading">직군만 선택하면 라이선스를 추천합니다</h2>
+      <p class="ai-inline-description">직군을 기본으로, 업무 케이스까지 고려해 추천합니다. 다른 직군 도구도 찾되 지급은 별도 검토합니다.</p>
     </div>
-    <span class="ai-inline-tag">동의 후 자동 추천</span>
+    <span class="ai-inline-tag">직군 + 업무 케이스 추천</span>
   </div>
   <div class="ai-inline-input">
-    <label for="aiInlineDetail">담당 업무 설명</label>
-    <textarea class="request-note" id="aiInlineDetail" rows="2" minlength="5" maxlength="500" placeholder="예: 월별 예산 보고서를 작성하고 계약서 PDF를 검토합니다." aria-describedby="aiInlinePrivacy aiInlineStatus"></textarea>
+    <label for="aiInlineCase">업무 케이스 (선택사항)</label>
+    <select class="ai-inline-case-select" id="aiInlineCase" aria-describedby="aiInlineCaseHint"></select>
+    <p class="ai-inline-case-hint" id="aiInlineCaseHint">선택하지 않으면 업무 설명을 보고 관련 케이스를 찾습니다. 다른 직군 도구도 추천 후보가 될 수 있습니다.</p>
+    <label for="aiInlineDetail">업무·케이스 검색 (선택사항)</label>
+    <textarea class="request-note" id="aiInlineDetail" rows="2" maxlength="500" placeholder="예: 디자인 편집 / 계약서 PDF 검토 / UI 디자인" aria-describedby="aiInlinePrivacy aiInlineStatus"></textarea>
     <label class="ai-inline-consent" for="aiInlineConsent">
       <input id="aiInlineConsent" type="checkbox">
-      <span>직군·담당 업무 및 해당 라이선스 목록을 외부 Gemini AI에 전송하는 데 동의합니다.</span>
+      <span>선택한 직군·라이선스 목록 및 입력한 경우 세부 업무를 외부 Gemini AI에 전송하는 데 동의합니다.</span>
     </label>
-    <p class="ai-inline-privacy" id="aiInlinePrivacy">개인정보나 회사 기밀은 입력하지 마세요. 입력 내용은 별도로 저장하지 않으며 추천은 자동 신청·승인을 의미하지 않습니다.</p>
+    <p class="ai-inline-privacy" id="aiInlinePrivacy">동의하지 않아도 직군 기본 추천은 볼 수 있습니다. 개인정보나 회사 기밀은 입력하지 마세요. 추천은 자동 신청·승인을 의미하지 않습니다.</p>
   </div>
-  <p class="ai-inline-status" id="aiInlineStatus" role="status" aria-live="polite" aria-atomic="true">담당 업무를 입력하고 전송에 동의하면 자동으로 추천합니다.</p>
+  <p class="ai-inline-status" id="aiInlineStatus" role="status" aria-live="polite" aria-atomic="true">직군별 기본 추천을 준비합니다.</p>
   <div class="ai-inline-results" id="aiInlineResults" role="group" aria-label="AI 추천 결과"></div>
 </section>
 

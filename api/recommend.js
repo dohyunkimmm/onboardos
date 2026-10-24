@@ -1,7 +1,7 @@
 'use strict';
 
 const {acquireRecommendation}=require('../lib/recommendation-rate-limit');
-const {catalogFor,schemaFor,validateRecommendation,instructions} = require('../lib/recommendation');
+const {catalogFor,caseFor,detectRecommendationCase,schemaFor,validateRecommendation,instructions} = require('../lib/recommendation');
 
 module.exports = async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
@@ -21,8 +21,20 @@ module.exports = async function handler(req,res){
     if(!raw || Buffer.byteLength(raw) > 4096) return res.status(413).json({error:'payload_too_large'});
     body = typeof req.body === 'string' ? JSON.parse(raw) : req.body;
   }catch(_error){ return res.status(400).json({error:'invalid_input'}); }
-  const catalog = typeof body?.role === 'string' ? catalogFor(body.role) : null;
-  if(!catalog || typeof body.detail !== 'string' || body.detail.trim().length < 5 || body.detail.length > 500) return res.status(400).json({error:'invalid_input'});
+  const detail = body?.detail === undefined ? '' : body.detail;
+  const requestedCaseId = body?.caseId == null ? null : body.caseId;
+  if(typeof detail !== 'string' || detail.length > 500 || (requestedCaseId !== null
+    && (typeof requestedCaseId !== 'string' || !caseFor(body?.role,requestedCaseId)))){
+    return res.status(400).json({error:'invalid_input'});
+  }
+  // An explicit null caseId requests the original role-wide AI catalog (manual modal).
+  // When caseId is omitted, infer a cross-role task case from the search text.
+  const chosenCaseId = Object.prototype.hasOwnProperty.call(body,'caseId')
+    ? requestedCaseId : detectRecommendationCase(detail);
+  const selectedCase = caseFor(body?.role,chosenCaseId);
+  const catalog = typeof body?.role === 'string'
+    ? catalogFor(body.role,selectedCase?.id || null) : null;
+  if(!catalog) return res.status(400).json({error:'invalid_input'});
   if(process.env.AI_RECOMMENDATIONS_ENABLED !== 'true' || !process.env.GEMINI_API_KEY) return res.status(503).json({error:'ai_not_configured'});
   const lease=acquireRecommendation(req);
   if(!lease.ok){
@@ -38,7 +50,12 @@ module.exports = async function handler(req,res){
       signal:AbortSignal.timeout(20000),
       body:JSON.stringify({
         systemInstruction:{parts:[{text:instructions}]},
-        contents:[{role:'user',parts:[{text:JSON.stringify({role:body.role,detail:body.detail.trim(),catalog})}]}],
+        contents:[{role:'user',parts:[{text:JSON.stringify({
+          role:body.role,
+          detail:detail.trim(),
+          case:selectedCase ? {id:selectedCase.id,label:selectedCase.label,description:selectedCase.description} : null,
+          catalog
+        })}]}],
         generationConfig:{
           maxOutputTokens:1200,
           responseFormat:{text:{mimeType:'APPLICATION_JSON',schema:schemaFor(catalog)}}
