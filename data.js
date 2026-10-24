@@ -701,6 +701,20 @@ const recommendationCases = {
   ]
 };
 
+// Shared task intent detection is role-neutral: PDF editing is PDF editing in any job.
+const recommendationCaseRules = [
+  ['pdf-edit',/(?:pdf|피디에프|acrobat|아크로뱃)/i],
+  ['graphic-edit',/(?:사진|이미지|브랜딩|브랜드|포토샵|photoshop|그래픽|영상)/i],
+  ['design-edit',/(?:디자인|피그마|figma|figjam|ui\\b|ux\\b|시안|화면 설계|프로토타입)/i],
+  ['contracts',/(?:계약|전자서명|서명)/i],
+  ['analytics',/(?:데이터|대시보드|sql\\b|분석|리포트)/i],
+  ['coding',/(?:개발|코딩|github|깃허브|api\\b|프론트엔드|백엔드)/i]
+];
+function detectRecommendationCase(text){
+  if(typeof text !== 'string') return null;
+  return recommendationCaseRules.find(([,pattern])=>pattern.test(text))?.[0] || null;
+}
+
 const tooltipText = {
   auto:     '별도 신청 없이 계정 생성 후 1시간 이내 자동으로 지급됩니다.',
   request:  '신청 버튼을 눌러 요청하면 IT팀이 검토 후 영업일 1~2일 이내 처리합니다.',
@@ -719,4 +733,4 @@ const REJECT_REASONS = [
 ];
 
 // The server uses the same allowlisted catalog as the employee screen.
-if(typeof module !== 'undefined' && module.exports) module.exports = { commonLicenses, roles, recommendationCases };
+if(typeof module !== 'undefined' && module.exports) module.exports = { commonLicenses, roles, recommendationCases, detectRecommendationCase };
