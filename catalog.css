@@ -102,3 +102,16 @@ body #mainContent footer{margin-top:36px;padding-top:24px;border-top:1px solid #
  body #mainContent #roleGrid .card .cta,body #mainContent #commonGrid .card .cta{min-height:44px;}
 }
 @media(prefers-reduced-motion:reduce){body .catalog-controls *,body #mainContent .card{transition:none!important;}}
+/* Final accessibility and mobile checks. */
+body .catalog-heading .task-overview{background:transparent!important;}
+body .catalog-controls .tool-search>.sr-only,body .catalog-result-heading .sr-only{position:absolute!important;width:1px!important;height:1px!important;min-width:0!important;max-width:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;}
+body .catalog-status .filter-tabs{display:flex!important;width:100%!important;max-width:none!important;}
+body .catalog-field select{height:44px;min-height:44px;}
+body #mainContent #roleGrid .card:focus-within,body #mainContent #commonGrid .card:focus-within{border-color:#7aa9ee!important;box-shadow:0 0 0 3px #e8f0fe!important;}
+body #mainContent .card .card-purpose,body #mainContent .card .card-owner,body #mainContent .card .card-timing,body #mainContent .card .sla-pill,body #mainContent .count{color:#667085!important;}
+body #mainContent .card .requirement-pill.provided{color:#286644;}
+@media(max-width:768px){
+ body .catalog-result-heading select{height:44px;min-height:44px;}
+ body .catalog-selected-tag{min-height:44px;}
+ body .catalog-reset{min-height:44px;}
+}

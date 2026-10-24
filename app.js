@@ -173,7 +173,7 @@ function renderCard(item, showCta){
   const isApplied = !!requestState[item.name];
   const isAuto = item.status === 'auto';
   const ctaBtn = (showCta !== false) ? `<button class="cta" data-action="license-action" data-value="${escapeHTML(item.name)}">${['auto','completed'].includes(effectiveStatus) ? startLabel(item) : sc.cta}</button>` : `<button class="cta common-guide" data-action="license-action" data-value="${escapeHTML(item.name)}">사용 안내</button>`;
-  const slaPill = `<span class="sla-pill employee-timing">${escapeHTML(employeeTiming(item))}</span>`;
+  const slaPill = isApplied ? `<span class="sla-pill employee-timing">${escapeHTML(employeeTiming(item))}</span>` : '';
   const ownerRow = `<div class="catalog-card-meta"><div class="card-owner"><span>담당 부서</span><b>${escapeHTML(item.owner)}</b></div><div class="card-timing"><span>처리 기간</span><b>${isAuto ? '계정 생성 후 1시간 이내' : escapeHTML(getSlaMeta(item.status).detail.replace('영업일 기준','영업일'))}</b></div></div>`;
   const bottomRight = ctaBtn ? `<div class="card-action">${ctaBtn}</div>` : '';
   return `

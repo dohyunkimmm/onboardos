@@ -113,7 +113,7 @@ test('[D8] v17 preserves one product identity across login and post-login withou
   await login(page);
   await expect(page.locator('body')).not.toHaveClass(/login-open/);
   const panel = await css(page.locator('.task-overview'));
-  expect(parseFloat(panel.borderRadius)).toBe(12);
-  expect(panel.backgroundColor).toBe('rgb(255, 255, 255)');
+  expect(parseFloat(panel.borderRadius)).toBe(0);
+  expect(panel.backgroundColor).toBe('rgba(0, 0, 0, 0)');
   await expect(page.locator('.overview-panel')).not.toHaveAttribute('open');
 });
