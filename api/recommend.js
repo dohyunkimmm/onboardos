@@ -1,7 +1,7 @@
 'use strict';
 
 const {acquireRecommendation}=require('../lib/recommendation-rate-limit');
-const {catalogFor,schemaFor,validateRecommendation,instructions} = require('../lib/recommendation');
+const {catalogFor,caseFor,schemaFor,validateRecommendation,instructions} = require('../lib/recommendation');
 
 module.exports = async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
@@ -21,8 +21,14 @@ module.exports = async function handler(req,res){
     if(!raw || Buffer.byteLength(raw) > 4096) return res.status(413).json({error:'payload_too_large'});
     body = typeof req.body === 'string' ? JSON.parse(raw) : req.body;
   }catch(_error){ return res.status(400).json({error:'invalid_input'}); }
-  const catalog = typeof body?.role === 'string' ? catalogFor(body.role) : null;
-  if(!catalog || typeof body.detail !== 'string' || body.detail.trim().length < 5 || body.detail.length > 500) return res.status(400).json({error:'invalid_input'});
+  const detail = body?.detail === undefined ? '' : body.detail;
+  const caseId = body?.caseId === undefined ? null : body.caseId;
+  const catalog = typeof body?.role === 'string' ? catalogFor(body.role,caseId) : null;
+  if(!catalog || typeof detail !== 'string' || detail.length > 500
+    || (caseId !== null && (typeof caseId !== 'string' || !caseFor(body.role,caseId)))) {
+    return res.status(400).json({error:'invalid_input'});
+  }
+  const selectedCase = caseFor(body.role,caseId);
   if(process.env.AI_RECOMMENDATIONS_ENABLED !== 'true' || !process.env.GEMINI_API_KEY) return res.status(503).json({error:'ai_not_configured'});
   const lease=acquireRecommendation(req);
   if(!lease.ok){
@@ -38,7 +44,12 @@ module.exports = async function handler(req,res){
       signal:AbortSignal.timeout(20000),
       body:JSON.stringify({
         systemInstruction:{parts:[{text:instructions}]},
-        contents:[{role:'user',parts:[{text:JSON.stringify({role:body.role,detail:body.detail.trim(),catalog})}]}],
+        contents:[{role:'user',parts:[{text:JSON.stringify({
+          role:body.role,
+          detail:detail.trim(),
+          case:selectedCase ? {id:selectedCase.id,label:selectedCase.label,description:selectedCase.description} : null,
+          catalog
+        })}]}],
         generationConfig:{
           maxOutputTokens:1200,
           responseFormat:{text:{mimeType:'APPLICATION_JSON',schema:schemaFor(catalog)}}
