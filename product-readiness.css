@@ -122,7 +122,8 @@ body:not(.login-open) .request-modal .modal-actions{position:sticky;bottom:0;bac
 .role-additional>summary::after{content:'펼치기 ▾';font-size:12px;color:#d0bbff;white-space:nowrap;}
 .role-additional[open]>summary::after{content:'접기 ▴';}
 .role-additional>summary h2{font-size:16px;margin:0;color:#f3efff;line-height:1.5;}
-.role-additional>summary .count{margin-left:auto;font-size:12px;color:#bac2d5;}
+.role-additional>summary .count{margin-left:auto;font-size:12px;color:#d8dee9;}
+#roleExtraTools #extraCount{color:#d8dee9!important;}
 .role-extra-help{margin:12px 0 10px;color:#cbd0e0;font-size:12px;line-height:1.6;}
 .role-extra-filters{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px;}
 .role-extra-filters .extra-filter-chip{min-height:40px;border:1px solid rgba(167,139,250,.32);background:#242633;color:#e7defc;border-radius:999px;padding:8px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;}
