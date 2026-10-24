@@ -207,7 +207,7 @@ let extraCategory = 'all';
 function syncExtraCategoryUI(){
   document.querySelectorAll('#roleExtraTools [data-extra-category]').forEach(button=>{
     const active = button.dataset.extraCategory === extraCategory;
-    button.classList.toggle('active',active);
+    button.classList.toggle('selected',active);
     button.setAttribute('aria-pressed',String(active));
   });
 }
