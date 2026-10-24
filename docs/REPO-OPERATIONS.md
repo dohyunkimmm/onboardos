@@ -1,6 +1,14 @@
 # ONBOARD·OS — 저장소 운영·보호·서명 현황
 
-> 점검 기준일: **2026-10-23 (KST)**. 10월 22일의 정책 검증은 역사적 기록으로 유지하고, 아래에 23일의 최신 통합·배포 검사 결과를 별도로 기록합니다. 제품 기능·릴리스 이력은 [README](../README.md)·[CHANGELOG](../CHANGELOG.md)를 우선합니다. 이 문서는 운영 보호 상태와 남은 검증의 사실 기록입니다.
+> 최신 동기화: **2026-10-24 (KST)**. 아래 10월 22~23일 검증 기록은 당시 상태를 설명하는 역사적 이력이며, 현재 배포 기준은 다음 ‘2026-10-24’ 절을 우선합니다. 제품 기능·릴리스 이력은 [README](../README.md)·[CHANGELOG](../CHANGELOG.md)를 우선합니다. 이 문서는 운영 보호 상태와 남은 검증의 사실 기록입니다.
+
+## 2026-10-24 현재 Production 검증 (최신)
+
+- [PR #144](https://github.com/dohyunkimmm/onboardos/pull/144): AI·협업·PM·기타 20개 확장(내부 카탈로그 43개), 업무 케이스 기반 직군 외 도구 추천과 IT 예외 요청 분기, 입력 최소 글자 제한 제거.
+- [PR #145](https://github.com/dohyunkimmm/onboardos/pull/145): 신규입사자 첫 화면의 인라인 추천·케이스 선택·확장 목록·어두운 강조 배경 제거. 기존 핵심 카탈로그 23개 중심 화면 복구. ‘AI 추천’ 버튼 모달에서 기본 3개를 먼저 제시, 선택 입력 뒤 사용자가 요청할 때만 Gemini 호출.
+- **운영 소스 SHA:** `32876f1a9ccd538879c215badd38d5a968aee495`. [운영 사이트](https://onboardos-rho.vercel.app/)를 가리키는 Vercel Production 배포 **READY** 확인. 해당 커밋의 GitHub Actions **14/14 성공** (Chromium·Firefox/WebKit, 보안, 복구, 접근성, 데스크톱/모바일 Lighthouse, Production 데스크톱/모바일 Smoke·배포 무결성 및 증빙 포함).
+- **해석 한계:** 테스트는 모의 로그인·모의 티켓·모의 지급 흐름 및 Gemini 모의 공급자 테스트를 검증한다. 실제 Gemini 응답 품질, 회사 인증, 실제 JSM 연동·라이선스 발급을 입증하지 않는다. `release.json` v18.0.0/P6 `candidate` 유지.
+- GitHub [최신 main 검증](https://github.com/dohyunkimmm/onboardos/actions/workflows/e2e.yml?query=branch%3Amain), [배포 이력](https://vercel.com/dohyunkimm/onboard.os). 기존 `protect-main` 필수 PR·검사 정책, `Require signed commits` 미활성 상태에 대한 과거 기록은 별도 변경 없음.
 
 ## 완료 / 검증됨
 
@@ -30,7 +38,7 @@
 - `Commit signatures (informational)` 감사 워크플로는 병합돼 있지만 unsigned 상태에서도 작업을 **성공 처리**하므로 서명 정책 강제와 다릅니다. API 자동 변경 경로의 서명 해결·사용자 SSH/GPG 서명 PR 검증 결과는 아직 없습니다. **`Require signed commits`는 미활성**입니다.
 - [P1 보호 검증 이슈 #114](https://github.com/dohyunkimmm/onboardos/issues/114)는 중복 규칙·차단 검증 완료로 closed이며, 서명 강제 적용은 별도 미완료 보안 후속입니다.
 
-## 2026-10-23 최신 통합·검증 및 정리
+## 2026-10-23 당시 통합·검증 및 정리 (이력)
 
 - **기능 통합:** 직원용 직무 선택·라이선스 카탈로그, AI 추천·신청 초안, 직무별 Power BI/Postman/모두싸인, 추천 API 요청 제한·세션 복구를 포함한 [PR #120–#133](https://github.com/dohyunkimmm/onboardos/pull/133)까지 `main`에 통합됨.
 - **검증 오류 보정:** [PR #134](https://github.com/dohyunkimmm/onboardos/pull/134)에서 API `api/recommend.js`의 정상적인 GET 405를 정적 소스 다운로드 실패로 취급하던 검사 오류를 수정. 매니페스트 v2는 HTTP로 SHA-256 비교하는 공개 자산과 로컬 소스 존재/릴리스 계약으로 확인하는 서버·스크립트 파일을 구분하고, API는 POST 전용 응답 계약을 별도 확인.
