@@ -69,6 +69,8 @@ document.addEventListener('click', event => {
 
   const filter = event.target.closest('#filterTabs .filter-chip[data-filter]');
   if(filter) setFilter(filter.dataset.filter);
+  const extraCategory = event.target.closest('#roleExtraTools [data-extra-category]');
+  if(extraCategory) setExtraCategory(extraCategory.dataset.extraCategory);
 });
 
 document.getElementById('requestBackdrop')?.addEventListener('click', backdropClose);
@@ -84,6 +86,16 @@ document.getElementById('toolSearch')?.addEventListener('input', event => {
   } else if(commonWasOpenBeforeSearch !== null){
     if(common) common.open = commonWasOpenBeforeSearch;
     commonWasOpenBeforeSearch = null;
+  }
+  const extras = document.getElementById('roleExtraTools');
+  if(extras){
+    if(event.target.value.trim()){
+      if(extras.dataset.wasOpenBeforeSearch === undefined) extras.dataset.wasOpenBeforeSearch = extras.open ? 'true' : 'false';
+      extras.open = true;
+    }else if(extras.dataset.wasOpenBeforeSearch !== undefined){
+      extras.open = extras.dataset.wasOpenBeforeSearch === 'true';
+      delete extras.dataset.wasOpenBeforeSearch;
+    }
   }
   applyFilters();
 });
