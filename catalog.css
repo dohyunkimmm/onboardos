@@ -193,3 +193,5 @@ body #mainContent .card .status-rejected::before{background-image:url('icons/tos
 }
 
 body .catalog-controls #toolSearch{height:40px!important;min-height:0!important;max-height:40px!important;padding:0!important;border-radius:0!important;}
+
+body #mainContent #roleGrid,body #mainContent #roleGrid[data-count],body #mainContent #commonGrid{gap:16px!important;}

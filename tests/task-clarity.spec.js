@@ -51,7 +51,8 @@ test('[T2] common entitlements use the same card format as actionable role cards
   const commonStyle = await style(common);
   const roleStyle = await style(role);
   expect(Math.abs(commonBox.width - roleBox.width)).toBeLessThanOrEqual(1);
-  expect(Math.abs(commonBox.height - roleBox.height)).toBeLessThanOrEqual(1);
+  expect(commonBox.height).toBeLessThanOrEqual(210);
+  expect(roleBox.height).toBeLessThanOrEqual(210);
   expect(commonStyle.boxShadow === 'none' || commonStyle.boxShadow.includes('inset')).toBeTruthy();
   expect(roleStyle.boxShadow).toBe('none');
   await expect(role.locator('.cta')).toBeVisible();

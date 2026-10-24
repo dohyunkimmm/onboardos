@@ -882,8 +882,10 @@ document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEven
 restoreSession();
 const loginScreen = document.getElementById('loginScreen');
 if(loggedIn){
-  const catalogStylesheet = document.getElementById('catalogStylesheet');
-  if(catalogStylesheet) catalogStylesheet.media = 'all';
+  for(const id of ["baseStylesheet","loginFontLockStylesheet","visualSystemStylesheet","productReadinessStylesheet","typographyStylesheet","experienceRefinementStylesheet","executionHierarchyStylesheet","catalogStylesheet"]){
+    const link = document.getElementById(id);
+    if(link) link.media = 'all';
+  }
   hydrateDashboard();
   loadBrandFont();
   loginScreen.hidden = true;

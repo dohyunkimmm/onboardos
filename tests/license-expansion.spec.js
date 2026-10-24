@@ -12,7 +12,7 @@ test('new role licenses load icons and support AI-led requests',async({page},tes
     await page.getByRole('combobox',{name:'직군 선택'}).selectOption(role);
     const card=page.locator('#roleGrid .card').filter({hasText:name});
     await expect(card).toHaveCount(1);
-    await expect(card).toContainText('선택 라이선스');
+    await expect(card.locator('.requirement-pill')).toHaveText('선택');
     await expect.poll(()=>card.locator('img').evaluate(img=>img.complete && img.naturalWidth>0)).toBe(true);
     await testInfo.attach(role+'-new-license',{body:await card.screenshot(),contentType:'image/png'});
     await page.route('**/api/recommend',route=>route.fulfill({json:{recommendations:[{toolId:id,reason:detail}],followUpQuestion:null}}));
