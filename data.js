@@ -877,15 +877,15 @@ const recommendationCases = {
 const recommendationCaseRules = [
   ['pdf-edit',/(?:pdf|피디에프|acrobat|아크로뱃)/i],
   ['graphic-edit',/(?:사진|이미지|브랜딩|브랜드|포토샵|photoshop|그래픽|영상)/i],
-  ['design-edit',/(?:디자인|피그마|figma|figjam|ui\\b|ux\\b|시안|화면 설계|프로토타입)/i],
+  ['design-edit',/(?:디자인|피그마|figma|figjam|ui\b|ux\b|시안|화면 설계|프로토타입)/i],
   ['contracts',/(?:계약|전자서명|서명)/i],
-  ['analytics',/(?:데이터|대시보드|sql\\b|분석|리포트)/i],
-  ['coding',/(?:개발|코딩|github|깃허브|api\\b|프론트엔드|백엔드)/i],
+  ['analytics',/(?:데이터|대시보드|sql\b|분석|리포트)/i],
+  ['coding',/(?:개발|코딩|github|깃허브|api\b|프론트엔드|백엔드)/i],
   ['pm-work',/(?:프로젝트|업무관리|일정 관리|칸반|PM툴|태스크)/i],
   ['collab-work',/(?:화상|회의|워크숍|화이트보드|협업|zoom|miro)/i],
-  ['ai-work',/(?:인공지능|AI툴|AI\\b|chatgpt|챗지피티|claude|클로드|생성형)/i],
+  ['ai-work',/(?:인공지능|AI툴|AI\b|chatgpt|챗지피티|claude|클로드|생성형)/i],
   ['writing',/(?:문서 작성|문서 편집|보고서 작성|문서 정리|영문)/i]
-]
+];
 function detectRecommendationCase(text){
   if(typeof text !== 'string') return null;
   return recommendationCaseRules.find(([,pattern])=>pattern.test(text))?.[0] || null;
