@@ -72,6 +72,110 @@ const roles = {
 
 // Role-first use cases: the UI and Gemini API share this allowlisted source of truth.
 const recommendationCases = {
+  "shared": [
+  {
+    "id": "pdf-edit",
+    "label": "PDF 편집·검토",
+    "description": "PDF 문서 편집·주석·변환",
+    "recommendations": [
+      {
+        "toolId": "AD",
+        "reason": "PDF 문서를 편집하고 주석·검토 작업에 활용합니다."
+      },
+      {
+        "toolId": "MO",
+        "reason": "원본 문서나 관련 표를 작성할 때 활용합니다."
+      }
+    ]
+  },
+  {
+    "id": "design-edit",
+    "label": "화면·디자인 편집",
+    "description": "디자인 편집·화면 시안·UI·UX 협업",
+    "recommendations": [
+      {
+        "toolId": "FG",
+        "reason": "화면 시안·UI 디자인을 편집하고 협업합니다."
+      },
+      {
+        "toolId": "FJ",
+        "reason": "사용자 흐름과 디자인 아이디어를 정리합니다."
+      },
+      {
+        "toolId": "CC",
+        "reason": "이미지·시각 자산 제작 및 편집에 활용합니다."
+      }
+    ]
+  },
+  {
+    "id": "graphic-edit",
+    "label": "이미지·브랜딩 제작",
+    "description": "사진·이미지·그래픽 편집과 브랜드 시각물 제작",
+    "recommendations": [
+      {
+        "toolId": "CC",
+        "reason": "이미지와 브랜드 그래픽을 제작·편집합니다."
+      },
+      {
+        "toolId": "FG",
+        "reason": "브랜드 시안과 디자인 결과물을 공유합니다."
+      }
+    ]
+  },
+  {
+    "id": "contracts",
+    "label": "계약·전자서명",
+    "description": "계약서 작성·검토·전자서명",
+    "recommendations": [
+      {
+        "toolId": "MD",
+        "reason": "계약 문서의 전자서명을 요청·관리합니다."
+      },
+      {
+        "toolId": "AD",
+        "reason": "계약서 PDF를 검토하고 주석을 작성합니다."
+      }
+    ]
+  },
+  {
+    "id": "coding",
+    "label": "개발·API 테스트",
+    "description": "프로그램 개발·코드 관리·API 테스트",
+    "recommendations": [
+      {
+        "toolId": "GH",
+        "reason": "소스 코드 버전 관리와 협업에 활용합니다."
+      },
+      {
+        "toolId": "PM",
+        "reason": "API 요청과 응답을 테스트합니다."
+      },
+      {
+        "toolId": "JB",
+        "reason": "코드 작성과 디버깅에 활용합니다."
+      }
+    ]
+  },
+  {
+    "id": "analytics",
+    "label": "데이터 분석·대시보드",
+    "description": "데이터 분석·SQL·대시보드 작성",
+    "recommendations": [
+      {
+        "toolId": "PBI",
+        "reason": "분석 결과를 시각화하고 대시보드를 만듭니다."
+      },
+      {
+        "toolId": "DB",
+        "reason": "SQL을 이용해 데이터베이스를 조회합니다."
+      },
+      {
+        "toolId": "SF",
+        "reason": "승인받은 데이터 분석 환경에 접근합니다."
+      }
+    ]
+  }
+],
   "design": [
     {
       "id": "ui",
@@ -307,15 +411,6 @@ const recommendationCases = {
     }
   ],
   "office": [
-    {
-      "id": "design-edit",
-      "label": "디자인·이미지 편집",
-      "description": "디자인 편집·화면 시안 제작·간단한 그래픽 작업. 경영지원 직군이라도 직군 외 라이선스를 검토할 수 있습니다.",
-      "recommendations": [
-        {"toolId":"FG","reason":"디자인 화면과 시안을 제작·편집하고 협업합니다. 현재 직군 외 라이선스이므로 IT 검토가 필요합니다."},
-        {"toolId":"CC","reason":"브랜드 이미지와 그래픽을 편집할 때 활용합니다. 현재 직군 외 라이선스이므로 IT 검토가 필요합니다."}
-      ]
-    },
     {
       "id": "docs",
       "label": "문서·보고서 작성",
