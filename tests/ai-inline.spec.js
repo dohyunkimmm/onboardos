@@ -1,4 +1,4 @@
-const {test,expect} = require('@playwright/test');
+const {test,expect}=require('@playwright/test');
 
 async function login(page){
   await page.goto('/');
@@ -6,172 +6,76 @@ async function login(page){
   await expect(page.locator('#loginScreen')).toBeHidden();
 }
 
-const panel = page => page.locator('#aiInlinePanel');
-const consent = page => panel(page).locator('#aiInlineConsent');
-
-test('inline AI never sends user input before consent; then recommends and hands off a reviewed draft',async({page})=>{
-  let requests = 0;
-  await page.route('**/api/recommend',route=>{
-    requests++;
-    return route.fulfill({json:{recommendations:[{toolId:'AD',reason:'계약서 PDF 검토에 필요합니다.'}],followUpQuestion:null}});
-  });
+test('new hires see the clean dashboard, not inline AI or expanded SaaS category sections',async({page})=>{
   await login(page);
-  await panel(page).getByLabel('업무·케이스 검색').fill('계약서 PDF 검토를 담당합니다.');
-  await page.waitForTimeout(1250);
-  expect(requests).toBe(0);
-  await consent(page).check();
-  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
-  expect(requests).toBe(1);
-  await expect(panel(page)).toContainText('Adobe Acrobat Pro DC');
-  await panel(page).getByRole('button',{name:'신청 내용 확인'}).click();
-  await expect(page.locator('#requestBackdrop')).toHaveAttribute('aria-hidden','false');
-  await expect(page.locator('#requestNote')).toHaveValue(/담당 역할: 계약서 PDF 검토를 담당합니다/);
-  await expect(page.locator('#requestNote')).toHaveValue(/활용 목적: 계약서 PDF 검토에 필요합니다/);
-  await expect(page.getByLabel('신청 사유를 확인했습니다')).not.toBeChecked();
-});
-
-test('editing input invalidates a pending response and renders only the latest role detail',async({page})=>{
-  let release;
-  let firstStarted;
-  const started = new Promise(resolve => { firstStarted = resolve; });
-  let requests = 0;
-  await page.route('**/api/recommend',async route=>{
-    requests++;
-    const detail = JSON.parse(route.request().postData()).detail;
-    if(detail.includes('이전')){
-      firstStarted();
-      await new Promise(resolve => { release = resolve; });
-      try{await route.fulfill({json:{recommendations:[{toolId:'MO',reason:'이전 업무 결과'}],followUpQuestion:null}});}
-      catch(_error){/* The browser intentionally aborted this stale request. */}
-    }else{
-      await route.fulfill({json:{recommendations:[{toolId:'AD',reason:'최신 업무 결과'}],followUpQuestion:null}});
-    }
-  });
-  await login(page);
-  await consent(page).check();
-  await panel(page).getByLabel('업무·케이스 검색').fill('이전 계약서 자료를 검토합니다.');
-  await started;
-  await panel(page).getByLabel('업무·케이스 검색').fill('최신 계약서 PDF를 검토합니다.');
-  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
-  await expect(panel(page)).toContainText('최신 업무 결과');
-  release();
-  await expect(panel(page)).not.toContainText('이전 업무 결과');
-  expect(requests).toBe(2);
-});
-
-test('consent removal and role change clear output, and no new request is sent without consent',async({page})=>{
-  let calls = 0;
-  await page.route('**/api/recommend',route=>{
-    calls++;
-    return route.fulfill({json:{recommendations:[{toolId:'NT',reason:'공통 문서 작성에 사용합니다.'}],followUpQuestion:null}});
-  });
-  await login(page);
-  await panel(page).getByLabel('업무·케이스 검색').fill('업무 문서를 정리합니다.');
-  await consent(page).check();
-  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
-  await consent(page).uncheck();
-  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(3);
-  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
-  await page.waitForTimeout(1250);
-  expect(calls).toBe(1);
-  await consent(page).check();
-  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(1);
-  expect(calls).toBe(2);
-  await page.locator('[data-action="reset-demo"]').first().evaluate(el=>el.click());
-  await expect(panel(page).getByLabel('업무·케이스 검색')).toHaveValue('');
-  await expect(consent(page)).not.toBeChecked();
-});
-
-test('inline AI errors leave the normal catalog available and never execute returned markup',async({page})=>{
-  await page.route('**/api/recommend',route=>route.fulfill({status:503,json:{error:'ai_not_configured'}}));
-  await login(page);
-  await panel(page).getByLabel('업무·케이스 검색').fill('계약서 PDF 자료를 검토합니다.');
-  await consent(page).check();
-  await expect(panel(page).locator('#aiInlineStatus')).toContainText('연결되지 않았습니다');
+  await expect(page.locator('#aiInlinePanel')).toHaveCount(0);
+  await expect(page.locator('#roleExtraTools')).toHaveCount(0);
+  await expect(page.locator('#commonGrid .card')).toHaveCount(5);
   await expect(page.locator('#roleGrid .card')).toHaveCount(4);
-  await page.unroute('**/api/recommend');
-  await page.route('**/api/recommend',route=>route.fulfill({json:{recommendations:[{toolId:'AD',reason:'<img src=x onerror="alert(1)">'}],followUpQuestion:null}}));
-  await consent(page).uncheck();
-  await consent(page).check();
-  await expect(panel(page)).toContainText('<img');
-  await expect(panel(page).locator('img')).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'AI 추천',exact:true})).toBeVisible();
+  await expect(page.locator('#actionModalBackdrop')).not.toHaveClass(/show/);
 });
 
-test('inline AI does not persist input or consent across reload',async({page})=>{
+test('AI button displays three immediately useful role suggestions; no background Gemini request',async({page})=>{
+  let sent=0;
+  await page.route('**/api/recommend',route=>{sent++;return route.fulfill({json:{recommendations:[],followUpQuestion:null}});});
   await login(page);
-  await panel(page).getByLabel('업무·케이스 검색').fill('월별 예산 보고서를 정리합니다.');
-  await consent(page).check();
-  await page.reload();
-  await expect(panel(page).getByLabel('업무·케이스 검색')).toHaveValue('');
-  await expect(consent(page)).not.toBeChecked();
+  await page.getByRole('button',{name:'AI 추천',exact:true}).click();
+  const modal=page.locator('#actionModalBackdrop');
+  await expect(modal).toHaveClass(/show/);
+  await expect(modal.locator('.ai-starter-tool')).toHaveCount(3);
+  await expect(modal).toContainText('Microsoft Office');
+  await expect(modal.locator('#aiRoleDetail')).toHaveValue('');
+  await page.waitForTimeout(1100);
+  expect(sent).toBe(0);
+  await modal.getByRole('button',{name:'추천 받기',exact:true}).click();
+  await expect.poll(()=>sent).toBe(1);
 });
 
-
-test('office design editing recommends Figma as an exception without changing employee role',async({page})=>{
-  let calls=0;
-  await page.route('**/api/recommend',route=>{calls++;return route.fulfill({json:{recommendations:[],followUpQuestion:null}});});
+test('office staff can request Figma exception by typing design editing',async({page})=>{
+  let posted;
+  await page.route('**/api/recommend',route=>{
+    posted=JSON.parse(route.request().postData());
+    return route.fulfill({json:{recommendations:[{toolId:'FG',reason:'UI 디자인 화면 편집이 필요합니다.'}],followUpQuestion:null}});
+  });
   await login(page);
-  await expect(panel(page).locator('.ai-inline-result')).toHaveCount(3);
-  await panel(page).getByLabel('업무·케이스 검색').fill('디자인 편집');
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Figma');
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('예외 검토 필요');
+  await page.getByRole('button',{name:'AI 추천',exact:true}).click();
+  await page.getByLabel('세부 직무·담당 역할').fill('디자인 편집');
+  await page.getByRole('button',{name:'추천 받기',exact:true}).click();
+  await expect(page.locator('#aiRecommendationResults')).toContainText('Figma');
+  expect(posted).toMatchObject({role:'office',detail:'디자인 편집',caseId:'design-edit'});
   await expect(page.locator('#roleSelect')).toHaveValue('office');
-  await expect.poll(()=>calls,{timeout:2500}).toBe(0);
-  await panel(page).locator('.ai-inline-result').first().getByRole('button',{name:'예외 요청 작성'}).click();
-  await expect(page.locator('#actionModalBackdrop')).toHaveClass(/show/);
+  await page.locator('#aiRecommendationResults').getByRole('button',{name:'예외 요청 작성'}).click();
   await expect(page.locator('#supportRequestNote')).toHaveValue(/Figma.*예외/);
   await expect(page.locator('#requestBackdrop')).not.toHaveClass(/show/);
 });
 
-test('design role PDF editing recommends Acrobat as an exception and short text triggers Gemini only after consent',async({page})=>{
-  const seen=[];
+test('design staff can request Acrobat for PDF from a three-letter task with no minimum',async({page})=>{
+  let posted;
   await page.route('**/api/recommend',route=>{
-    const body=JSON.parse(route.request().postData());
-    seen.push(body);
-    return route.fulfill({json:{recommendations:[{toolId:'AD',reason:'PDF 편집 용도'}],followUpQuestion:null}});
+    posted=JSON.parse(route.request().postData());
+    return route.fulfill({json:{recommendations:[{toolId:'AD',reason:'PDF 수정 작업을 처리합니다.'}],followUpQuestion:null}});
   });
   await login(page);
   await page.getByRole('combobox',{name:'직군 선택'}).selectOption('design');
-  await panel(page).getByLabel('업무·케이스 검색').fill('PDF');
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Adobe Acrobat Pro DC');
-  await expect(panel(page)).toContainText('직군 외 · 예외 검토 필요');
-  expect(seen).toHaveLength(0);
-  await consent(page).check();
-  await expect.poll(()=>seen.length).toBe(1);
-  expect(seen[0]).toMatchObject({role:'design',detail:'PDF',caseId:'pdf-edit'});
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Gemini 추천');
-  await panel(page).locator('.ai-inline-result').first().getByRole('button',{name:'예외 요청 작성'}).click();
-  await expect(page.locator('#supportRequestNote')).toHaveValue(/Adobe Acrobat Pro DC/);
+  await page.getByRole('button',{name:'AI 추천',exact:true}).click();
+  await expect(page.locator('.ai-starter-tool')).toHaveCount(3);
+  await page.getByLabel('세부 직무·담당 역할').fill('PDF');
+  await page.getByRole('button',{name:'추천 받기',exact:true}).click();
+  await expect(page.locator('#aiRecommendationResults')).toContainText('Adobe Acrobat Pro DC');
+  expect(posted).toMatchObject({role:'design',detail:'PDF',caseId:'pdf-edit'});
+  await expect(page.locator('#aiRecommendationResults')).toContainText('예외 검토 필요');
 });
 
-test('shared and selected case works across roles with no task description',async({page})=>{
+test('modal AI failure keeps starter tools visible, and user input is not persisted',async({page})=>{
+  await page.route('**/api/recommend',route=>route.fulfill({status:503,json:{error:'ai_not_configured'}}));
   await login(page);
-  await panel(page).locator('#aiInlineCase').selectOption('pm-work');
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Asana');
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('신청 필요');
-  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
-  await expect(panel(page).locator('#aiInlineCase')).toHaveValue('pm-work');
-  await expect(panel(page).locator('.ai-inline-result').first()).toContainText('Asana');
-  await expect(consent(page)).not.toBeChecked();
-});
-
-test('expanded license categories contain five optional tools per role and are searchable',async({page})=>{
-  await login(page);
-  const extra=page.locator('#roleExtraTools');
-  await expect(extra.locator('#extraGrid .card')).toHaveCount(5);
-  await extra.locator('summary').click();
-  await extra.getByRole('button',{name:'PM툴',exact:true}).click();
-  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toHaveCount(2);
-  await expect(extra).toContainText('Asana');
-  await expect(extra).toContainText('Trello');
-  await extra.getByRole('button',{name:'전체',exact:true}).click();
-  await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('Zoom');
-  await expect(extra).toHaveAttribute('open');
-  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toHaveCount(1);
-  await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('');
-  await page.getByRole('combobox',{name:'직군 선택'}).selectOption('dev');
-  await expect(extra.locator('#extraGrid .card')).toHaveCount(5);
-  await extra.getByRole('button',{name:'AI',exact:true}).click();
-  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toHaveCount(1);
-  await expect(extra.locator('#extraGrid .card:not(.is-hidden)')).toContainText('Cursor');
+  await page.getByRole('button',{name:'AI 추천',exact:true}).click();
+  await page.getByLabel('세부 직무·담당 역할').fill('AI');
+  await page.getByRole('button',{name:'추천 받기',exact:true}).click();
+  await expect(page.locator('#aiRecommendationStatus')).toContainText('아직 연결되지 않았습니다');
+  await expect(page.locator('.ai-starter-tool')).toHaveCount(3);
+  await page.reload();
+  await page.getByRole('button',{name:'AI 추천',exact:true}).click();
+  await expect(page.locator('#aiRoleDetail')).toHaveValue('');
 });
