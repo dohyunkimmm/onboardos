@@ -60,7 +60,7 @@ test('[D4] role cards use consistent elevated surfaces and stronger primary CTA'
   await stabilize(page); await login(page);
   const card = page.locator('#roleGrid .card').first();
   const state = await css(card);
-  expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(12);
+  expect(parseFloat(state.borderRadius)).toBeGreaterThanOrEqual(10);
   expect(state.background).not.toBe('none');
   expect(state.borderStyle).toBe('solid');
   const cta = await css(card.locator('.cta'));

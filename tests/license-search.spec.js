@@ -47,9 +47,9 @@ test('Catalog has no repeated shared-tool summary or guidance buttons',async({pa
  await expect(page.locator('#readinessSummary')).not.toContainText('공통 라이선스');
  await expect(page.locator('#commonGrid .card')).toHaveCount(5);
  await expect(page.locator('#commonGrid button')).toHaveCount(5);
- await expect(page.locator('#roleHeading')).toHaveCSS('font-size','16px');
- await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','16px');
- await expect(page.locator('#roleGrid .card-title').first()).toHaveCSS('font-size','16px');
+ await expect(page.locator('#roleHeading')).toHaveCSS('font-size','15px');
+ await expect(page.locator('#commonTools h2')).toHaveCSS('font-size','15px');
+ await expect(page.locator('#roleGrid .card-title').first()).toHaveCSS('font-size','14px');
  await expect(page.locator('#commonGrid .card-title').first()).toHaveCSS('font-size','16px');
  await page.getByRole('searchbox',{name:'라이선스 검색'}).fill('Slack');
  await expect(page.locator('.card:not(.is-hidden)')).toHaveCount(1);

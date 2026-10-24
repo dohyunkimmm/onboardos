@@ -882,6 +882,8 @@ document.getElementById('caseStudyLink')?.addEventListener('click',()=>trackEven
 restoreSession();
 const loginScreen = document.getElementById('loginScreen');
 if(loggedIn){
+  const catalogStylesheet = document.getElementById('catalogStylesheet');
+  if(catalogStylesheet) catalogStylesheet.media = 'all';
   hydrateDashboard();
   loadBrandFont();
   loginScreen.hidden = true;

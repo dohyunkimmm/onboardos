@@ -20,7 +20,8 @@
     "typography-qa.css",
     "catalog.css",
     "fonts/TOSSFACE-LICENSE.txt",
-    "fonts/TOSSFACE-NOTICE.txt"
+    "fonts/TOSSFACE-NOTICE.txt",
+    "font-preferences.css"
   ],
   "recursiveSets": [
     {
